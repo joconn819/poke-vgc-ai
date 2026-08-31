@@ -102,7 +102,7 @@ class TeamPool:
         
         # Check ability (case-insensitive)
         ability = pokemon.get("ability", "").lower().replace(" ", "-")
-        if ability not in self.regulation.legal_abilities:
+        if not self._is_ability_legal(ability):
             return False
         
         # Check moves (case-insensitive)
@@ -112,10 +112,28 @@ class TeamPool:
         
         for move in moves:
             move_lower = move.lower().replace(" ", "-")
-            if move_lower not in self.regulation.legal_moves:
+            if not self._is_move_legal(move_lower):
                 return False
         
         return True
+
+    def _is_move_legal(self, move_name: str) -> bool:
+        """Check move legality while tolerating known naming aliases."""
+        aliases = {move_name}
+        if move_name == "protect":
+            aliases.add("protected")
+        elif move_name == "protected":
+            aliases.add("protect")
+        return any(alias in self.regulation.legal_moves for alias in aliases)
+
+    def _is_ability_legal(self, ability_name: str) -> bool:
+        """Check ability legality while tolerating known naming aliases."""
+        aliases = {ability_name}
+        if ability_name == "unseen-hand":
+            aliases.add("unseen-fist")
+        elif ability_name == "unseen-fist":
+            aliases.add("unseen-hand")
+        return any(alias in self.regulation.legal_abilities for alias in aliases)
     
     def sample_team(self) -> Dict[str, Any]:
         """Sample a random team from the pool.

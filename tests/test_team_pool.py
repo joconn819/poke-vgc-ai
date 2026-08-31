@@ -1,8 +1,10 @@
 """Tests for team pool sampling and loading."""
 
+from pathlib import Path
+
 import json
 import pytest
-from pathlib import Path
+
 from src.utils.config import REGULATION_SV2024_1, RegulationConfig
 from src.utils.team_pool import TeamPool
 
@@ -350,3 +352,16 @@ class TestTeamPoolLength:
         
         # Assert
         assert team is not None
+
+
+class TestChampionsTeamPoolIntegration:
+    """Integration tests for the shipped Champions MB team list."""
+
+    def test_champions_team_file_contains_legal_teams(self):
+        """The bundled Champions MB dataset should remain usable for sampling."""
+        repo_root = Path(__file__).resolve().parents[1]
+        from src.utils.config import REGULATION_CHAMPIONS_MB
+
+        pool = TeamPool(str(repo_root / "data/teams/champions_mb.json"), REGULATION_CHAMPIONS_MB)
+
+        assert len(pool) > 0

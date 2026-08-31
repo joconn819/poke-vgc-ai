@@ -546,7 +546,7 @@ REGULATION_CHAMPIONS_MB = RegulationConfig(
        "discharge", "volt-switch", "thundershock", "thunder-wave",
         
        # Support/utility
-       "protect", "recover", "swords-dance", "calm-mind", "dragon-dance",
+       "protect", "protected", "recover", "swords-dance", "calm-mind", "dragon-dance",
        "nasty-plot", "bulk-up", "work-up", "tailwind", "trick-room",
        "light-screen", "reflect", "stealth-rock", "spikes", "toxic-spikes",
        "will-o-wisp", "leech-seed", "toxic", "swagger", "charm",
@@ -585,6 +585,7 @@ REGULATION_CHAMPIONS_MB = RegulationConfig(
        "protean", "stance-change", "shadow-tag", "trick-or-treat",
        "unaware", "competitive", "defiant", "weak-armor", "download",
        "huge-power", "pure-power", "sheer-force", "iron-fist",
+       "unseen-hand", "unseen-fist",
         
        # Utility
        "harvest", "effect-spore", "immunity", "comatose", "neutralizing-gas",
