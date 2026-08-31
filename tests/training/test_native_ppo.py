@@ -13,6 +13,7 @@ def _record(timeout=False):
     return {
         "timed_out": timeout,
         "teams_differ": True,
+        "teams": {"player1": [], "player2": []},
         "trajectory": [{
             "observations": {"p": [0.0]},
             "action_masks": {"p": [1, 0, 1, 0]},

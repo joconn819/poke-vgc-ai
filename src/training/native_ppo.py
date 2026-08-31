@@ -26,7 +26,12 @@ def valid_native_records(records: Iterable[dict[str, Any]]) -> list[dict[str, An
     """Keep only complete, non-timeout records with distinct teams."""
     valid = []
     for record in records:
-        if record.get("timed_out") or record.get("teams_differ") is not True:
+        if (
+            record.get("timed_out")
+            or record.get("teams_differ") is not True
+            or not isinstance(record.get("teams"), dict)
+            or set(record["teams"]) != {"player1", "player2"}
+        ):
             continue
         trajectory = record.get("trajectory")
         if not isinstance(trajectory, list) or not trajectory:
