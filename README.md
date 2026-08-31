@@ -2,9 +2,9 @@
 
 This repository is an experiment in using AI to carry out a complex software
 engineering and research project end to end. The system is being developed
-with AI assistance as a practical test of whether an AI-driven workflow can
-design, implement, test, run, and document a substantial reinforcement
-learning project.
+with AI assistance as a learning experience for me: using an AI-driven
+workflow to design, implement, test, run, and document a substantial
+reinforcement learning project.
 
 The project is also intentionally outside my usual area of expertise. My
 typical interests are in **Numerics**, especially **Optimization** and
