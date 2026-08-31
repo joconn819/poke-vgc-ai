@@ -255,6 +255,9 @@ def run_self_play(
                         break
                 result = {
                     "episode": episode,
+                    "format": battle_format,
+                    "teams": {"player1": team1_data, "player2": team2_data},
+                    "policy_checkpoint": str(policy_checkpoint) if policy_checkpoint else None,
                     "teams_differ": team1 != team2,
                     "steps": steps,
                     "rewards": rewards,
@@ -266,6 +269,9 @@ def run_self_play(
             timed_out = True
             result = {
                 "episode": episode,
+                "format": battle_format,
+                "teams": {"player1": team1_data, "player2": team2_data},
+                "policy_checkpoint": str(policy_checkpoint) if policy_checkpoint else None,
                 "teams_differ": team1 != team2,
                 "steps": steps,
                 "error": str(exc),
