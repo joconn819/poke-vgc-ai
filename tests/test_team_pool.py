@@ -22,37 +22,37 @@ class TestTeamPoolLoading:
                         "name": "Salamence",
                         "item": "Choice Scarf",
                         "ability": "Intimidate",
-                        "moves": ["Earthquake", "Outrage", "Protect", "Superpower"]
+                        "moves": ["Earthquake", "Outrage", "Protected", "Superpower"]
                     },
                     {
                         "name": "Torkoal",
                         "item": "Assault Vest",
                         "ability": "Drought",
-                        "moves": ["Heat Wave", "Protect", "Recover", "Earth Power"]
+                        "moves": ["Heat Wave", "Protected", "Recover", "Earth Power"]
                     },
                     {
                         "name": "Rillaboom",
                         "item": "Life Orb",
                         "ability": "Grassy Surge",
-                        "moves": ["Grassy Glide", "Protect", "Close Combat", "Knock Off"]
+                        "moves": ["Grassy Glide", "Protected", "Close Combat", "Knock Off"]
                     },
                     {
                         "name": "Landorus",
                         "item": "Rocky Helmet",
                         "ability": "Intimidate",
-                        "moves": ["Earthquake", "Protect", "Stone Edge", "Superpower"]
+                        "moves": ["Earthquake", "Protected", "Stone Edge", "Superpower"]
                     },
                     {
                         "name": "Incineroar",
                         "item": "Heavy-Duty Boots",
                         "ability": "Intimidate",
-                        "moves": ["Flare Blitz", "Close Combat", "Protect", "Knock Off"]
+                        "moves": ["Flare Blitz", "Close Combat", "Protected", "Knock Off"]
                     },
                     {
                         "name": "Glastrier",
                         "item": "Choice Band",
                         "ability": "Chilling Neigh",
-                        "moves": ["Ice Punch", "Close Combat", "Protect", "Earthquake"]
+                        "moves": ["Ice Punch", "Close Combat", "Protected", "Earthquake"]
                     }
                 ]
             }
@@ -84,7 +84,7 @@ class TestTeamPoolLoading:
                         "name": "Salamence",
                         "item": "Choice Scarf",
                         "ability": "Intimidate",
-                        "moves": ["Earthquake", "Outrage", "Protect", "Superpower"]
+                        "moves": ["Earthquake", "Outrage", "Protected", "Superpower"]
                     }
                     for _ in range(6)
                 ]
@@ -115,37 +115,37 @@ class TestTeamPoolSampling:
                         "name": "Salamence",
                         "item": "Choice Scarf",
                         "ability": "Intimidate",
-                        "moves": ["Earthquake", "Outrage", "Protect", "Superpower"]
+                        "moves": ["Earthquake", "Outrage", "Protected", "Superpower"]
                     },
                     {
                         "name": "Torkoal",
                         "item": "Assault Vest",
                         "ability": "Drought",
-                        "moves": ["Heat Wave", "Protect", "Recover", "Earth Power"]
+                        "moves": ["Heat Wave", "Protected", "Recover", "Earth Power"]
                     },
                     {
                         "name": "Rillaboom",
                         "item": "Life Orb",
                         "ability": "Grassy Surge",
-                        "moves": ["Grassy Glide", "Protect", "Close Combat", "Knock Off"]
+                        "moves": ["Grassy Glide", "Protected", "Close Combat", "Knock Off"]
                     },
                     {
                         "name": "Landorus",
                         "item": "Rocky Helmet",
                         "ability": "Intimidate",
-                        "moves": ["Earthquake", "Protect", "Stone Edge", "Superpower"]
+                        "moves": ["Earthquake", "Protected", "Stone Edge", "Superpower"]
                     },
                     {
                         "name": "Incineroar",
                         "item": "Heavy-Duty Boots",
                         "ability": "Intimidate",
-                        "moves": ["Flare Blitz", "Close Combat", "Protect", "Knock Off"]
+                        "moves": ["Flare Blitz", "Close Combat", "Protected", "Knock Off"]
                     },
                     {
                         "name": "Glastrier",
                         "item": "Choice Band",
                         "ability": "Chilling Neigh",
-                        "moves": ["Ice Punch", "Close Combat", "Protect", "Earthquake"]
+                        "moves": ["Ice Punch", "Close Combat", "Protected", "Earthquake"]
                     }
                 ]
             }
@@ -182,7 +182,7 @@ class TestTeamPoolSampling:
                         "name": pokemon_name,
                         "item": "Choice Scarf",
                         "ability": "Intimidate",
-                        "moves": ["Earthquake", "Protect", "Stone Edge", "Superpower"]
+                        "moves": ["Earthquake", "Protected", "Stone Edge", "Superpower"]
                     }
                     for _ in range(6)
                 ]
@@ -233,23 +233,23 @@ class TestTeamPoolFiltering:
             {
                 "team_name": "Valid Team",
                 "pokemon": [
-                    {"name": "Salamence", "item": "Choice Scarf", "ability": "Intimidate", "moves": ["Earthquake", "Outrage", "Protect", "Superpower"]},
-                    {"name": "Torkoal", "item": "Assault Vest", "ability": "Drought", "moves": ["Heat Wave", "Protect", "Recover", "Earth Power"]},
-                    {"name": "Salamence", "item": "Choice Scarf", "ability": "Intimidate", "moves": ["Earthquake", "Outrage", "Protect", "Superpower"]},
-                    {"name": "Torkoal", "item": "Assault Vest", "ability": "Drought", "moves": ["Heat Wave", "Protect", "Recover", "Earth Power"]},
-                    {"name": "Salamence", "item": "Choice Scarf", "ability": "Intimidate", "moves": ["Earthquake", "Outrage", "Protect", "Superpower"]},
-                    {"name": "Torkoal", "item": "Assault Vest", "ability": "Drought", "moves": ["Heat Wave", "Protect", "Recover", "Earth Power"]},
+                    {"name": "Salamence", "item": "Choice Scarf", "ability": "Intimidate", "moves": ["Earthquake", "Outrage", "Protected", "Superpower"]},
+                    {"name": "Torkoal", "item": "Assault Vest", "ability": "Drought", "moves": ["Heat Wave", "Protected", "Recover", "Earth Power"]},
+                    {"name": "Salamence", "item": "Choice Scarf", "ability": "Intimidate", "moves": ["Earthquake", "Outrage", "Protected", "Superpower"]},
+                    {"name": "Torkoal", "item": "Assault Vest", "ability": "Drought", "moves": ["Heat Wave", "Protected", "Recover", "Earth Power"]},
+                    {"name": "Salamence", "item": "Choice Scarf", "ability": "Intimidate", "moves": ["Earthquake", "Outrage", "Protected", "Superpower"]},
+                    {"name": "Torkoal", "item": "Assault Vest", "ability": "Drought", "moves": ["Heat Wave", "Protected", "Recover", "Earth Power"]},
                 ]
             },
             {
                 "team_name": "Invalid Team (has Landorus)",
                 "pokemon": [
-                    {"name": "Salamence", "item": "Choice Scarf", "ability": "Intimidate", "moves": ["Earthquake", "Outrage", "Protect", "Superpower"]},
-                    {"name": "Landorus", "item": "Rocky Helmet", "ability": "Intimidate", "moves": ["Earthquake", "Protect", "Stone Edge", "Superpower"]},
-                    {"name": "Salamence", "item": "Choice Scarf", "ability": "Intimidate", "moves": ["Earthquake", "Outrage", "Protect", "Superpower"]},
-                    {"name": "Torkoal", "item": "Assault Vest", "ability": "Drought", "moves": ["Heat Wave", "Protect", "Recover", "Earth Power"]},
-                    {"name": "Salamence", "item": "Choice Scarf", "ability": "Intimidate", "moves": ["Earthquake", "Outrage", "Protect", "Superpower"]},
-                    {"name": "Torkoal", "item": "Assault Vest", "ability": "Drought", "moves": ["Heat Wave", "Protect", "Recover", "Earth Power"]},
+                    {"name": "Salamence", "item": "Choice Scarf", "ability": "Intimidate", "moves": ["Earthquake", "Outrage", "Protected", "Superpower"]},
+                    {"name": "Landorus", "item": "Rocky Helmet", "ability": "Intimidate", "moves": ["Earthquake", "Protected", "Stone Edge", "Superpower"]},
+                    {"name": "Salamence", "item": "Choice Scarf", "ability": "Intimidate", "moves": ["Earthquake", "Outrage", "Protected", "Superpower"]},
+                    {"name": "Torkoal", "item": "Assault Vest", "ability": "Drought", "moves": ["Heat Wave", "Protected", "Recover", "Earth Power"]},
+                    {"name": "Salamence", "item": "Choice Scarf", "ability": "Intimidate", "moves": ["Earthquake", "Outrage", "Protected", "Superpower"]},
+                    {"name": "Torkoal", "item": "Assault Vest", "ability": "Drought", "moves": ["Heat Wave", "Protected", "Recover", "Earth Power"]},
                 ]
             }
         ]
@@ -281,12 +281,12 @@ class TestTeamPoolFiltering:
             {
                 "team_name": "Invalid Team (has Assault Vest)",
                 "pokemon": [
-                    {"name": "Salamence", "item": "Choice Scarf", "ability": "Intimidate", "moves": ["Earthquake", "Outrage", "Protect", "Superpower"]},
-                    {"name": "Torkoal", "item": "Assault Vest", "ability": "Drought", "moves": ["Heat Wave", "Protect", "Recover", "Earth Power"]},
-                    {"name": "Salamence", "item": "Choice Scarf", "ability": "Intimidate", "moves": ["Earthquake", "Outrage", "Protect", "Superpower"]},
-                    {"name": "Salamence", "item": "Choice Scarf", "ability": "Intimidate", "moves": ["Earthquake", "Outrage", "Protect", "Superpower"]},
-                    {"name": "Salamence", "item": "Choice Scarf", "ability": "Intimidate", "moves": ["Earthquake", "Outrage", "Protect", "Superpower"]},
-                    {"name": "Salamence", "item": "Choice Scarf", "ability": "Intimidate", "moves": ["Earthquake", "Outrage", "Protect", "Superpower"]},
+                    {"name": "Salamence", "item": "Choice Scarf", "ability": "Intimidate", "moves": ["Earthquake", "Outrage", "Protected", "Superpower"]},
+                    {"name": "Torkoal", "item": "Assault Vest", "ability": "Drought", "moves": ["Heat Wave", "Protected", "Recover", "Earth Power"]},
+                    {"name": "Salamence", "item": "Choice Scarf", "ability": "Intimidate", "moves": ["Earthquake", "Outrage", "Protected", "Superpower"]},
+                    {"name": "Salamence", "item": "Choice Scarf", "ability": "Intimidate", "moves": ["Earthquake", "Outrage", "Protected", "Superpower"]},
+                    {"name": "Salamence", "item": "Choice Scarf", "ability": "Intimidate", "moves": ["Earthquake", "Outrage", "Protected", "Superpower"]},
+                    {"name": "Salamence", "item": "Choice Scarf", "ability": "Intimidate", "moves": ["Earthquake", "Outrage", "Protected", "Superpower"]},
                 ]
             }
         ]
@@ -310,7 +310,7 @@ class TestTeamPoolLength:
             {
                 "team_name": f"Team {i}",
                 "pokemon": [
-                    {"name": "Salamence", "item": "Choice Scarf", "ability": "Intimidate", "moves": ["Earthquake", "Outrage", "Protect", "Superpower"]}
+                    {"name": "Salamence", "item": "Choice Scarf", "ability": "Intimidate", "moves": ["Earthquake", "Outrage", "Protected", "Superpower"]}
                     for _ in range(6)
                 ]
             }
@@ -332,7 +332,7 @@ class TestTeamPoolLength:
             {
                 "team_name": "Team 1",
                 "pokemon": [
-                    {"name": "Salamence", "item": "Choice Scarf", "ability": "Intimidate", "moves": ["Earthquake", "Outrage", "Protect", "Superpower"]}
+                    {"name": "Salamence", "item": "Choice Scarf", "ability": "Intimidate", "moves": ["Earthquake", "Outrage", "Protected", "Superpower"]}
                     for _ in range(6)
                 ]
             }

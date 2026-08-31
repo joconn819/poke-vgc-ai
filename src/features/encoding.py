@@ -563,13 +563,13 @@ class FeatureEncoder:
                 bench_count += 1
         
         # Target masks: (1, max_active_pokemon, max_target_choices)
-        # In doubles, can target either opponent's active Pokemon
+        # In doubles, can target either opponent's active Pokemon (both available)
         target_masks = torch.ones(
             1,
             self.tensor_shapes.max_active_pokemon,
             self.tensor_shapes.max_target_choices,
             dtype=torch.float32,
             device=self.device,
-        ) * 0.5  # Both targets are usually valid
+        )  # Both targets are usually valid in doubles
         
         return move_masks.to(self.device), switch_masks.to(self.device), target_masks.to(self.device)
