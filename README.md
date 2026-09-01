@@ -102,6 +102,12 @@ PYTHONPATH=. venv/bin/python scripts/train_rl.py \
 
 Rerun the same command with `--resume` and a higher `--iterations` to continue an in-progress run; checkpoints (`latest.pt`, `iter_NNNNNN.pt`) and `history.jsonl` are written to `--checkpoint-dir`.
 
+The PPO CLI defaults are deliberately conservative for longer runs (`1e-4`
+learning rate, two epochs, gradient norm 0.5, and a 0.03 target KL). Each
+update records entropy, approximate KL, and clip fraction; an update stops
+early when target KL is exceeded. Review those metrics in `history.jsonl`
+before extending a run.
+
 **Known limitation**: `VGCDoublesEnv` still uses placeholder battle dynamics, so the self-play terminal reward is not yet grounded in real battle outcomes. Self-play currently validates the training mechanics (rollouts, PPO update, checkpoint resumability, opponent pool mixing) end-to-end; meaningful policy improvement requires richer environment dynamics first.
 
 ## Real Showdown battles

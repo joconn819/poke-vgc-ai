@@ -23,8 +23,11 @@ def main() -> None:
     parser.add_argument("--iterations", type=int, default=100)
     parser.add_argument("--episodes-per-update", type=int, default=32)
     parser.add_argument("--max-steps-per-episode", type=int, default=30)
-    parser.add_argument("--epochs-per-update", type=int, default=4)
-    parser.add_argument("--learning-rate", type=float, default=3e-4)
+    parser.add_argument("--epochs-per-update", type=int, default=2)
+    parser.add_argument("--learning-rate", type=float, default=1e-4)
+    parser.add_argument("--entropy-coef", type=float, default=0.01)
+    parser.add_argument("--target-kl", type=float, default=0.03)
+    parser.add_argument("--max-grad-norm", type=float, default=0.5)
     parser.add_argument("--checkpoint-sample-probability", type=float, default=0.3)
     parser.add_argument("--add-self-to-pool-every", type=int, default=5)
     parser.add_argument("--device", type=str, default="cpu")
@@ -44,6 +47,9 @@ def main() -> None:
         max_steps_per_episode=args.max_steps_per_episode,
         epochs_per_update=args.epochs_per_update,
         learning_rate=args.learning_rate,
+        entropy_coef=args.entropy_coef,
+        target_kl=args.target_kl,
+        max_grad_norm=args.max_grad_norm,
         checkpoint_sample_probability=args.checkpoint_sample_probability,
         add_self_to_pool_every=args.add_self_to_pool_every,
         init_from_checkpoint=str(args.init_from_checkpoint) if args.init_from_checkpoint else None,
