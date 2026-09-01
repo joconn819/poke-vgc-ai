@@ -237,12 +237,15 @@ class SelfPlayConfig:
     device: str = "cpu"
     episodes_per_update: int = 16
     max_steps_per_episode: int = 30
-    epochs_per_update: int = 4
-    learning_rate: float = 3e-4
+    epochs_per_update: int = 2
+    learning_rate: float = 1e-4
     gamma: float = 0.99
     gae_lambda: float = 0.95
     clip_epsilon: float = 0.2
     value_loss_coef: float = 0.5
+    entropy_coef: float = 0.01
+    target_kl: Optional[float] = 0.03
+    max_grad_norm: float = 0.5
     heuristic_agent_types: Optional[List[str]] = None
     checkpoint_sample_probability: float = 0.3
     add_self_to_pool_every: int = 5
@@ -312,6 +315,13 @@ class SelfPlayTrainer:
         last_metrics: Dict[str, float] = {}
         for _ in range(self.config.epochs_per_update):
             last_metrics = self._update_step(batch, advantages, returns)
+            if (
+                self.config.target_kl is not None
+                and last_metrics["approx_kl"] > self.config.target_kl
+            ):
+                last_metrics["kl_early_stop"] = 1.0
+                break
+        last_metrics.setdefault("kl_early_stop", 0.0)
 
         self._save_checkpoint(iteration, last_metrics)
 
@@ -368,15 +378,35 @@ class SelfPlayTrainer:
             log_probs, flat_old_log_probs, flat_advantages, clip_epsilon=self.config.clip_epsilon
         )
         value_loss = ppo_value_loss(values, flat_returns.clamp(0.0, 1.0))
-        loss = policy_loss + self.config.value_loss_coef * value_loss
+        entropy = -torch.where(
+            torch.isfinite(log_probs_all),
+            log_probs_all.exp() * log_probs_all,
+            torch.zeros_like(log_probs_all),
+        ).sum(dim=1).mean()
+        loss = (
+            policy_loss
+            + self.config.value_loss_coef * value_loss
+            - self.config.entropy_coef * entropy
+        )
+
+        ratio = torch.exp(log_probs - flat_old_log_probs)
+        approx_kl = ((ratio - 1.0) - (log_probs - flat_old_log_probs)).mean()
+        clip_fraction = ((ratio - 1.0).abs() > self.config.clip_epsilon).float().mean()
+        tensors = (loss, approx_kl, clip_fraction, entropy)
+        if not all(torch.isfinite(item).item() for item in tensors):
+            raise FloatingPointError("non-finite PPO loss or diagnostics")
 
         self.optimizer.zero_grad()
         loss.backward()
+        torch.nn.utils.clip_grad_norm_(self.model.parameters(), self.config.max_grad_norm)
         self.optimizer.step()
 
         return {
             "policy_loss": float(policy_loss.item()),
             "value_loss": float(value_loss.item()),
+            "entropy": float(entropy.item()),
+            "approx_kl": float(approx_kl.item()),
+            "clip_fraction": float(clip_fraction.item()),
             "total_loss": float(loss.item()),
         }
 

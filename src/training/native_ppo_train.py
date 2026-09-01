@@ -28,7 +28,7 @@ def load_native_records(path: str | Path) -> list[dict[str, Any]]:
 class NativePPOTrainer:
     """Small, resumable PPO trainer for real Showdown trajectories."""
 
-    def __init__(self, model: TransformerPolicy, checkpoint_dir: str | Path, lr: float = 3e-4):
+    def __init__(self, model: TransformerPolicy, checkpoint_dir: str | Path, lr: float = 1e-4):
         self.model = model
         self.optimizer = AdamW(model.parameters(), lr=lr)
         self.checkpoint_dir = Path(checkpoint_dir)
@@ -78,7 +78,7 @@ class NativePPOTrainer:
         loss = total_loss / transitions
         self.optimizer.zero_grad()
         loss.backward()
-        torch.nn.utils.clip_grad_norm_(self.model.parameters(), 1.0)
+        torch.nn.utils.clip_grad_norm_(self.model.parameters(), 0.5)
         self.optimizer.step()
         return {"loss": float(loss.detach().cpu()), "transitions": float(transitions)}
 
