@@ -1,6 +1,5 @@
 {
   "repository": "joconn819/poke-vgc-ai",
-  "target_pct": null,
   "objective": {
     "status": "Active research",
     "title": "Approach optimal play through robust self-play",

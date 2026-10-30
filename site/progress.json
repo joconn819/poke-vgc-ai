@@ -1,6 +1,5 @@
 {
   "repository": "joconn819/poke-vgc-ai",
-  "target_pct": null,
   "objective": {
     "status": "Active research",
     "title": "Approach optimal play through robust self-play",
@@ -146,5 +145,5 @@
   "method": "Native self-play PPO for in-battle decisions. Terminal win/loss remains the main objective; win-probability and hidden-set prediction are auxiliary tasks. Search comes after a stronger policy.",
   "jax_decision": "The current measured bottleneck lies outside the Showdown engine: counterplay scoring, policy inference, and observation encoding. The website profiles these paths and lists the next benchmarkable improvements.",
   "evaluation_note": "Score rates include wins and half credit for draws. Use paired held-out teams, side swaps, repeated outcomes, and cluster intervals. Track results across public counterplay, random, historical PPO, and Max Damage; no one matchup percentage is the finish line.",
-  "generated_at": "2026-10-30 09:14 UTC"
+  "generated_at": "2026-10-30 09:16 UTC"
 }
