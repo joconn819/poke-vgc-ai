@@ -95,7 +95,7 @@
     "games_per_second": "16.49",
     "context": "Round430, 20,000-game full training iteration including rollout and PPO preparation/optimization; not raw simulator speed.",
     "decision_latency": "~85 ms action selection per policy-pool match",
-    "current_bottleneck": "CPU policy inference and observation throughput remain shared bottlenecks; cached Counterplay damage scoring was 69% faster in a 32-game single-worker probe",
+    "current_bottleneck": "CPU policy inference and observation throughput remain shared bottlenecks; a cached Counterplay scorer sustained an 80 ms mean in a 240-game, 8-worker rollout",
     "gpu_status": "RTX 4060 used for PPO optimization; rollout inference and Showdown simulation remain CPU-side",
     "profile_context": "Round430, 20,000 self-play matches on 8 rollout workers. End-to-end episode time includes setup, agent decisions, engine calls, and trajectory writes. Per-opponent rates are per worker shard, not aggregate. Total rollout throughput was 22.55 games/s; the complete training iteration was 16.49 games/s. Action selection contains policy inference; Public Counterplay scoring is nested inside action selection.",
     "profile": [
@@ -148,7 +148,7 @@
       },
       {
         "title": "4 \u00b7 Reduce counterplay scorer cost",
-        "detail": "A per-decision cache for repeated public damage calculations reduced scorer time from 203.4 to 62.6 ms/match (69%) in a paired 32-game probe, with the same 13-19 win split and no action corrections or timeouts. Confirm the gain on the standard 8-worker mixed-training workload; then profile repeated speed and legality calculations."
+        "detail": "A per-decision cache for repeated public damage calculations cut scorer time from 203.4 to 62.6 ms/match (69%) in a paired 32-game single-worker probe. In a separate 240-game, 8-worker run, scoring averaged 80.1 ms/match and aggregate rollout throughput was 23.51 games/s, with no timeouts or corrections. Still compare an 8-worker pre-cache control and rerun the full mixed PPO iteration; then profile repeated speed and legality calculations."
       },
       {
         "title": "5 \u00b7 Trim trajectory persistence",
@@ -319,7 +319,19 @@
       "throughput_before_games_per_second": "3.03",
       "throughput_after_games_per_second": "5.36",
       "result": "Both runs produced 13 Headless P1 wins and 19 Headless P2 wins, with 0 timeouts and 0 action corrections. Policy inference averaged 31.9 vs 31.4 ms/match, observation encoding 19.5 vs 19.1 ms, and engine roundtrips 29.2 vs 28.1 ms.",
-      "limitation": "Only 32 games on one worker; the 20,000-game training throughput has not yet been remeasured with this optimization."
+      "eight_worker_games": "240",
+      "eight_worker_count": "8",
+      "eight_worker_aggregate_games_per_second": "23.51",
+      "eight_worker_peak_rss_gib": "6.63",
+      "eight_worker_mean_scorer_ms": "80.1",
+      "eight_worker_mean_episode_ms": "247.9",
+      "eight_worker_mean_inference_ms": "44.2",
+      "eight_worker_mean_encoding_ms": "26.8",
+      "eight_worker_mean_engine_ms": "36.8",
+      "eight_worker_mean_trajectory_write_ms": "9.9",
+      "eight_worker_failures": "0 timeouts \u00b7 0 action corrections",
+      "limitation": "The 32-game before/after is paired on identical seeds. The 8-worker rollout validates concurrent operation but has no pre-cache 8-worker control; full 20,000-game mixed PPO throughput has not yet been remeasured.",
+      "report": "training/outputs/phase12_headless/round430_counterplay_cache_benchmark_20261030/report.json"
     }
   },
   "latest_run": {
@@ -333,5 +345,5 @@
   "method": "Native self-play PPO for in-battle decisions. Terminal win/loss remains the main objective; win-probability and hidden-set prediction are auxiliary tasks. Search comes after a stronger policy.",
   "jax_decision": "Round430 did not establish a strength improvement. Prioritize measured inference batching, observation throughput, and rollouts; keep equilibrium-oriented opponent coverage and defer a JAX/GPU engine rewrite until its end-to-end payoff is measured.",
   "evaluation_note": "Score rates include wins and half credit for draws. Use paired held-out teams, side swaps, repeated outcomes, and cluster intervals. Track results across public counterplay, random, historical PPO, and Max Damage; no one matchup percentage is the finish line.",
-  "generated_at": "2026-10-30 10:22 UTC"
+  "generated_at": "2026-10-30 10:24 UTC"
 }

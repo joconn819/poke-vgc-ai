@@ -152,9 +152,16 @@ percentage alone.
   from 327.3 to 184.0 ms, and measured throughput rose from 3.03 to 5.36
   games/s. Both runs produced the same 13-19 win split, with zero timeouts and
   action corrections. Policy inference stayed near 31.6 ms/match, encoding
-  near 19.3 ms, and engine calls near 28.7 ms. This is a small single-worker
-  probe, not yet a full mixed-training throughput result; validate on the
-  standard eight-worker workload before treating it as the new training rate.
+  near 19.3 ms, and engine calls near 28.7 ms. A follow-up 240-game,
+  eight-worker Public Counterplay rollout completed at 23.51 aggregate games/s
+  with 6.63 GiB peak RSS. Mean episode time was 247.9 ms, including 80.1 ms
+  scorer, 44.2 ms policy inference, 26.8 ms observation encoding, and 36.8 ms
+  Showdown roundtrip; there were no timeouts or action corrections. This
+  validates concurrent rollout operation, but there is no pre-cache eight-
+  worker control and the full 20,000-game mixed PPO iteration has not been
+  rerun, so 16.49 full-iteration games/s remains the latest training rate.
+  Compact report:
+  `training/outputs/phase12_headless/round430_counterplay_cache_benchmark_20261030/report.json`.
 - **Measured action-feature micro-optimization (2026-10-30):** profiling 128
   saved states found thousands of scalar NumPy clamp calls in native action
   feature generation. Replaced scalar `np.clip` dispatches with a finite-float
