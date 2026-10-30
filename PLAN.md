@@ -15401,3 +15401,20 @@ team choice but does not change that conclusion.
 - Reproduction script and raw result:
   `scripts/benchmark_ppo_static_cache_reuse.py` and
   `site/ppo_input_preparation_benchmark.json`.
+
+### PPO transition extraction: replace scalar NumPy clipping (2026-10-30)
+
+- Profiling 256 Round435 Max Damage records (1,971 transitions) showed
+  `extract_player_transitions` at about 0.65 s under `cProfile`, with public
+  mechanics encoding accounting for roughly 0.37 s cumulative. Scalar
+  `numpy.clip` was called repeatedly for each Pokémon row.
+- Replacing that scalar clip with Python `min`/`max` bounds preserved every
+  public-context feature exactly and reduced median transition-extraction time
+  from 0.3589 s to 0.2781 s over six measured runs after warm-up (22.5%).
+- Linear extrapolation to Round435's 162,366 trainable transitions estimates
+  6.66 seconds saved in transition extraction. Combined with the separate
+  static-tensor reuse microbenchmark, the estimated gain is about 10.4 seconds
+  or 6.9% of the 151.5-second collection stage; validate with a full PPO run.
+- Reproduction script and report:
+  `scripts/benchmark_public_mechanics_scalar_clip.py` and
+  `site/public_mechanics_extraction_benchmark.json`.
