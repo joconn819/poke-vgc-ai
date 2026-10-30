@@ -268,6 +268,17 @@ percentage alone.
   59.91%/48.93%/46.55%/46.29%; the mean is lifted by random play. Keep Round430
   as the validated candidate. Scorecard:
   `training/outputs/phase12_headless/round436_external_matched128x2_retry1_20261030/external_scorecard.json`.
+- **Pre-PPO rollout scan reuse optimization (2026-10-30; end-to-end
+  confirmation pending):** a separate sample-count pass over the exact Round435
+  rollout files read 3.87 GiB and 28,000 valid records (162,366 trainable
+  transitions) in 35.96 seconds. This is outside the reported 159.3-second
+  trainer preparation/aggregation time. The headless path now passes the
+  completed preflight report's valid-record count, transition count, and
+  SHA-256 digest into PPO to skip the duplicate scan. The digest matched an
+  independent recomputation over all 4,155,849,741 nonblank bytes, and the
+  counts matched exactly. Expected saving is about 36 seconds per 20,000-game
+  PPO update; confirm with the next full iteration before claiming an
+  end-to-end speed gain.
 - **Round430 held-out screens (2026-10-30):** each used 128 held-out team
   clusters and two outcome repeats (512 side-swapped games); intervals are
   seeded 10,000-resample cluster bootstraps. Round430 scored 49.02% vs Max
