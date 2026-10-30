@@ -9,9 +9,11 @@ current source of truth and supersedes older recommendation sections below;
 dated entries remain the experiment ledger. Direct-policy self-play PPO with
 auxiliary win-probability and hidden-set prediction is active. Round424's
 multi-opponent screen showed no clear improvement, so the checkpoint was not
-promoted. Round430 is testing a stronger-opponent mixture with no random-play
-share. Search remains conditional on a stronger base policy. Preserve existing
-workspace changes while implementing and evaluating this direction.
+promoted. Round430 completed a 20,000-game stronger-opponent iteration, but its
+512-game screens do not establish an improvement over its Round424 start or
+support promotion. Search remains conditional on a stronger base policy.
+Preserve existing workspace changes while implementing and evaluating this
+direction.
 
 **Current objective (2026-10-30):** move toward optimal, equilibrium-oriented
 play in closed-team-sheet VGC. The earlier 80% goal against Max Damage is a
@@ -87,6 +89,38 @@ percentage alone.
   Public Counterplay action scoring alone took 228 ms/match. GPU use is in PPO
   optimization; rollout policy inference remains CPU-side. See the speed
   breakdown and ranked speed-up plan below.
+- **Round430 hard-opponent auxiliary PPO (2026-10-30; completed, not promoted):**
+  trained from Round424 for 20,000 matches with 30% Max Damage, 30% public
+  Counterplay, and 40% policy-pool opponents; random play was removed. The
+  historical pool used Round190, Round102, Round176, and the start policy.
+  Preflight accepted 163,224 transitions from 20,000 games, balanced 10,000
+  trainable seats per player, and reported no errors. Four PPO passes completed
+  in 1,276 optimizer steps. Rollouts took 886.7 seconds (22.55 aggregate
+  games/s); the full iteration took 1,213.0 seconds (16.49 games/s), so this
+  larger run did not improve total throughput over Round424's 16.89 games/s.
+  PPO preparation/optimization consumed 260.4 seconds, including 153.6 seconds
+  for record processing. The checkpoint is
+  `training/outputs/phase12_headless/round430_hard_opponent_auxiliary_ppo_20k_20261030/checkpoints/latest.pt`.
+- **Round430 held-out screens (2026-10-30):** each used 128 held-out team
+  clusters and two outcome repeats (512 side-swapped games); intervals are
+  seeded 10,000-resample cluster bootstraps. Round430 scored 49.02% vs Max
+  Damage [41.60%, 56.45%], 47.07% vs public Counterplay [40.23%, 53.71%],
+  95.51% vs random [93.36%, 97.46%], 48.24% vs historical Round102
+  [41.21%, 55.27%], and 53.52% vs its Round424 starting policy [46.68%,
+  60.35%]. Every screen had zero timeouts/errors and zero action corrections.
+  These are early screening estimates; the hard-opponent intervals include
+  50%, so Round430 is not promoted. Raw reports are under the Round430 output
+  directory in its `eval_*_128x2` folders.
+- **Fresh Round430 component profile:** per-match end-to-end means were 134.4
+  ms vs Max Damage, 359.5 ms vs public Counterplay, and 193.5 ms vs the policy
+  pool. Engine roundtrip means were 29.1, 27.9, and 33.9 ms, respectively
+  (about 22%, 8%, and 18% of end-to-end time). Policy-pool action selection
+  used 84.8 ms, including 73.1 ms inference; observation encoding used 27.4
+  ms, writes 12.6 ms, and setup about 10.6 ms. Public Counterplay's baseline
+  scorer used 239.0 ms per match. This confirms the shared priorities are
+  batched policy/observation throughput and more efficient concurrent rollouts;
+  counterplay scoring remains a workload-specific bottleneck. Do not add
+  nested inference/scorer timings again to action-selection totals.
 - **Progress site:** `site/index.html` presents held-out results, the current
   speed snapshot, and training status. `.github/workflows/pages.yml` rebuilds
   its JSON from this plan and deploys through GitHub Pages on pushes to `main`.
