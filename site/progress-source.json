@@ -1726,7 +1726,7 @@
     "interpretation": "All paired intervals include zero. No action-selection mode is promoted based on this diagnostic."
   },
   "round430_opening_intervention": {
-    "summary": "Replacing Round430 decisions 0\u20134 with public Max Damage actions improved side-swapped results on 512 matched clusters against Max Damage (36.62%\u219245.02%, +8.40 pp [4.30, 12.60]), public Counterplay (38.57%\u219245.70%, +7.13 pp [3.12, 11.23]), Round464 PPO (52.05%\u219260.55%, +8.50 pp [4.39, 12.60]), and Round465 PPO (52.15%\u219262.11%, +9.96 pp [5.76, 14.16]). Independent 128-cluster \u00d7 2-repeat sets also gained +9.38 pp vs Max Damage [2.54, 16.21], +10.74 pp vs Counterplay [3.52, 18.16], and +9.77 pp vs Round464 [2.73, 16.80]. All confidence intervals are paired team-cluster bootstrap intervals. These are heuristic interventions, not learned-policy improvements; older Round173 hybrids sometimes regressed against PPO, so retain this result as Round430-specific evidence.",
+    "summary": "Replacing Round430 decisions 0\u20134 with public Max Damage actions improved all four main screens: on 512 matched clusters, +8.40 pp vs Max Damage, +7.13 vs public Counterplay, +8.50 vs Round464 PPO, and +9.96 vs Round465 PPO. Fresh 128-cluster \u00d7 2-repeat sets independently gained +9.38 vs Max Damage, +10.74 vs Counterplay, +9.77 vs Round464, +9.38 vs Round465, and +7.62 vs historical PPO Round102 (95% cluster intervals all above zero). Exact team, preview, and battle-seed matching; no timeouts or action corrections. This remains a Round430-specific heuristic intervention, not a learned-policy improvement.",
     "report": "round430_opening_interventions.json",
     "opponents": {
       "max_damage": {
@@ -1855,6 +1855,46 @@
         "action_adjustments": 0,
         "baseline_artifact": "training/outputs/phase12_headless/round430_vs_round464_common_selector_128x2_20261030/paired_summary.json",
         "intervention_artifact": "training/outputs/phase12_headless/round430_opening0to4_maxdamage_intervention_vs_round464_128x2_seed2026103066/paired_summary.json"
+      },
+      "round465": {
+        "team_pair_clusters": 128,
+        "outcome_repeats_per_cluster": 2,
+        "games_per_arm": 512,
+        "side_swapped": true,
+        "baseline_score_pct": 43.1640625,
+        "intervention_score_pct": 52.5390625,
+        "paired_delta_pp": 9.375,
+        "paired_cluster_bootstrap_95_pp": [
+          2.1484375,
+          16.796875
+        ],
+        "bootstrap_seed": 20261030,
+        "same_team_preview_battle_seed_control_verified": true,
+        "timeouts_or_errors": 0,
+        "action_adjustments": 0,
+        "actions_overridden": 2532,
+        "baseline_artifact": "training/outputs/phase12_headless/round430_raw_vs_round465_128x2_seed2026103068_selector_both/paired_summary.json",
+        "intervention_artifact": "training/outputs/phase12_headless/round430_opening0to4_maxdamage_intervention_vs_round465_128x2_seed2026103068_selector_both/paired_summary.json"
+      },
+      "round102_historical_ppo": {
+        "team_pair_clusters": 128,
+        "outcome_repeats_per_cluster": 2,
+        "games_per_arm": 512,
+        "side_swapped": true,
+        "baseline_score_pct": 48.2421875,
+        "intervention_score_pct": 55.859375,
+        "paired_delta_pp": 7.6171875,
+        "paired_cluster_bootstrap_95_pp": [
+          1.3671875,
+          14.0625
+        ],
+        "bootstrap_seed": 712349,
+        "same_team_preview_battle_seed_control_verified": true,
+        "timeouts_or_errors": 0,
+        "action_adjustments": 0,
+        "actions_overridden": 2531,
+        "baseline_artifact": "training/outputs/phase12_headless/round430_hard_opponent_auxiliary_ppo_20k_20261030/eval_round102_128x2/paired_summary.json",
+        "intervention_artifact": "training/outputs/phase12_headless/round430_opening0to4_maxdamage_intervention_vs_round102_128x2_seed20264304/paired_summary.json"
       }
     },
     "pooled_across_seed_sets": {
