@@ -16457,6 +16457,11 @@ team choice but does not change that conclusion.
   timeouts or action corrections at 4.74 matches/s; 5,062 actions were
   overridden. The strict cluster comparison verified exact team, preview,
   and battle-seed matches to the Round430 control.
+- Tested against a second PPO checkpoint, Round465, on the same 512 common
+  team/preview clusters and side-swapped seats. Round430 improved from 52.15%
+  to 62.11%, a +9.96 pp paired gain (95% cluster interval +5.76 to +14.16).
+  All 1,024 games completed without timeout or action correction; 5,048
+  actions were overridden at 4.35 matches/s.
 - Independent-seed confirmation against Round464 used 128 new team-pair
   clusters × two repeats (512 matches per arm, side-swapped). On the same
   teams, previews, and battle seeds, Round430 scored 42.58%; the intervention
@@ -16465,19 +16470,27 @@ team choice but does not change that conclusion.
   128-cluster set gives 50.16% control versus 58.91% intervention, +8.75 pp
   (95% interval +5.20 to +12.34; 640 team clusters). All matches completed
   without action corrections or timeouts.
+- Independent seeds also confirm the heuristic-opponent results. On 128
+  clusters × two repeats, the side-swapped paired gain was +9.38 pp vs Max
+  Damage (95% CI +2.54 to +16.21) and +10.74 pp vs public Counterplay
+  (+3.52 to +18.16); both used the same Round402 preview selector on both
+  seats, exact matched team/preview/battle seeds, and had zero errors or
+  action corrections. Pooling each with its 512-cluster screen gives +8.59
+  pp vs Max Damage (95% CI +5.00 to +12.19; 640 clusters) and +7.85 pp vs
+  Counterplay (+4.34 to +11.45; 640 clusters).
 - The repeated positive differences across Max Damage, public Counterplay,
-  and a historical PPO suggest a general first-five-action weakness in
-  Round430, rather than an effect limited to one opponent. The Round464 gain
-  replicated on independent team seeds. However, older Round173 hybrid tests
-  sometimes regressed against PPO opponents, so the current evidence applies
-  specifically to Round430/Round464 and the measured roster prior. The
-  override remains a heuristic, not a learned policy or a guarantee against
-  novel responses.
-- Next: repeat Max Damage and public Counterplay intervention comparisons on
-  independent team-seed sets. Then evaluate a frozen hybrid on the existing
-  full held-out suite before training on any teacher labels; earlier PPO and
-  supervised attempts to absorb first-five Max Damage actions regressed or
-  failed to improve. Preserve the raw Round430 and hybrid as separate controls.
+  Round464, and Round465 suggest a general first-five-action weakness in
+  Round430, not an effect limited to a single opponent. Independent team-seed
+  replications confirm it against Max Damage, Counterplay, and Round464.
+  However, older Round173 hybrid tests sometimes regressed against PPO, so the
+  present evidence is checkpoint-specific and the override is still a
+  heuristic, not a learned policy or a guarantee against novel responses.
+- Next: test the hybrid against additional frozen PPO / held-out response
+  policies and an independent Round465 seed set. Preserve raw Round430 and
+  the intervention as separate controls. Only then decide whether to expose a
+  deployment hybrid; defer teacher-label PPO until a training method improves
+  on the earlier failed imitation/continuation attempts and passes the same
+  multi-opponent held-out gate.
 - Outputs:
   `training/outputs/phase12_headless/round430_464_465_common_preview_league_512x1_20261030/league_comparison.json`
   `training/outputs/phase12_headless/round430_464_465_common_preview_league_512x1_20261030/league_matrix.json`
@@ -16486,3 +16499,8 @@ team choice but does not change that conclusion.
   `training/outputs/phase12_headless/round430_opening0to4_maxdamage_intervention_vs_public_counterplay_sideswapped_512x1_20261030/paired_summary.json`
   `training/outputs/phase12_headless/round430_opening0to4_maxdamage_intervention_vs_round464_512x1_20261030_retry2/paired_summary.json`
   `training/outputs/phase12_headless/round430_opening0to4_maxdamage_intervention_vs_round464_128x2_seed2026103066/paired_summary.json`
+  `training/outputs/phase12_headless/round430_opening0to4_maxdamage_intervention_vs_maxdamage_128x2_seed2026103068/paired_summary.json`
+  `training/outputs/phase12_headless/round430_raw_vs_maxdamage_128x2_seed2026103068_selector_both/paired_summary.json`
+  `training/outputs/phase12_headless/round430_opening0to4_maxdamage_intervention_vs_public_counterplay_128x2_seed2026103068_selector_both/paired_summary.json`
+  `training/outputs/phase12_headless/round430_raw_vs_public_counterplay_128x2_seed2026103068_selector_both/paired_summary.json`
+  `training/outputs/phase12_headless/round430_opening0to4_maxdamage_intervention_vs_round465_512x1_20261030/paired_summary.json`

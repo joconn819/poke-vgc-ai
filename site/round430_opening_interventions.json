@@ -54,39 +54,120 @@
       "baseline_artifact": "training/outputs/phase12_headless/round430_vs_round464_common_selector_512x1_20261030/paired_summary.json",
       "intervention_artifact": "training/outputs/phase12_headless/round430_opening0to4_maxdamage_intervention_vs_round464_512x1_20261030_retry2/paired_summary.json",
       "bootstrap_seed": 2026103069
+    },
+    "round465": {
+      "clusters": 512,
+      "baseline_score_pct": 52.1484375,
+      "intervention_score_pct": 62.109375,
+      "paired_delta_pp": 9.9609375,
+      "paired_cluster_bootstrap_95_pp": [
+        5.76171875,
+        14.16015625
+      ],
+      "bootstrap_seed": 2026103071,
+      "timeouts_or_errors": 0,
+      "action_adjustments": 0,
+      "actions_overridden": 5048,
+      "games_per_second": 4.354550872674085,
+      "baseline_artifact": "training/outputs/phase12_headless/round430_464_465_common_preview_league_512x1_20261030/round430_vs_round465/paired_summary.json",
+      "intervention_artifact": "training/outputs/phase12_headless/round430_opening0to4_maxdamage_intervention_vs_round465_512x1_20261030/paired_summary.json"
     }
   },
-  "independent_round464_replication": {
-    "team_pair_clusters": 128,
-    "outcome_repeats_per_cluster": 2,
-    "games_per_arm": 512,
-    "side_swapped": true,
-    "baseline_score_pct": 42.578125,
-    "intervention_score_pct": 52.34375,
-    "paired_delta_pp": 9.765625,
-    "paired_cluster_bootstrap_95_pp": [
-      2.734375,
-      16.796875
-    ],
-    "bootstrap_seed": 2026103066,
-    "same_team_preview_battle_seed_control_verified": true,
-    "timeouts_or_errors": 0,
-    "action_adjustments": 0,
-    "baseline_artifact": "training/outputs/phase12_headless/round430_vs_round464_common_selector_128x2_20261030/paired_summary.json",
-    "intervention_artifact": "training/outputs/phase12_headless/round430_opening0to4_maxdamage_intervention_vs_round464_128x2_seed2026103066/paired_summary.json"
+  "independent_seed_replications": {
+    "max_damage": {
+      "team_pair_clusters": 128,
+      "outcome_repeats_per_cluster": 2,
+      "games_per_arm": 512,
+      "side_swapped": true,
+      "baseline_score_pct": 32.6171875,
+      "intervention_score_pct": 41.9921875,
+      "paired_delta_pp": 9.375,
+      "paired_cluster_bootstrap_95_pp": [
+        2.5390625,
+        16.2109375
+      ],
+      "bootstrap_seed": 2026103068,
+      "same_team_preview_battle_seed_control_verified": true,
+      "timeouts_or_errors": 0,
+      "action_adjustments": 0,
+      "baseline_artifact": "training/outputs/phase12_headless/round430_raw_vs_maxdamage_128x2_seed2026103068_selector_both/paired_summary.json",
+      "intervention_artifact": "training/outputs/phase12_headless/round430_opening0to4_maxdamage_intervention_vs_maxdamage_128x2_seed2026103068/paired_summary.json"
+    },
+    "public_counterplay": {
+      "team_pair_clusters": 128,
+      "outcome_repeats_per_cluster": 2,
+      "games_per_arm": 512,
+      "side_swapped": true,
+      "baseline_score_pct": 36.71875,
+      "intervention_score_pct": 47.4609375,
+      "paired_delta_pp": 10.7421875,
+      "paired_cluster_bootstrap_95_pp": [
+        3.515625,
+        18.1640625
+      ],
+      "bootstrap_seed": 2026103068,
+      "same_team_preview_battle_seed_control_verified": true,
+      "timeouts_or_errors": 0,
+      "action_adjustments": 0,
+      "baseline_artifact": "training/outputs/phase12_headless/round430_raw_vs_public_counterplay_128x2_seed2026103068_selector_both/paired_summary.json",
+      "intervention_artifact": "training/outputs/phase12_headless/round430_opening0to4_maxdamage_intervention_vs_public_counterplay_128x2_seed2026103068_selector_both/paired_summary.json"
+    },
+    "round464": {
+      "team_pair_clusters": 128,
+      "outcome_repeats_per_cluster": 2,
+      "games_per_arm": 512,
+      "side_swapped": true,
+      "baseline_score_pct": 42.578125,
+      "intervention_score_pct": 52.34375,
+      "paired_delta_pp": 9.765625,
+      "paired_cluster_bootstrap_95_pp": [
+        2.734375,
+        16.796875
+      ],
+      "bootstrap_seed": 2026103066,
+      "same_team_preview_battle_seed_control_verified": true,
+      "timeouts_or_errors": 0,
+      "action_adjustments": 0,
+      "baseline_artifact": "training/outputs/phase12_headless/round430_vs_round464_common_selector_128x2_20261030/paired_summary.json",
+      "intervention_artifact": "training/outputs/phase12_headless/round430_opening0to4_maxdamage_intervention_vs_round464_128x2_seed2026103066/paired_summary.json"
+    }
   },
-  "round464_pooled_across_seed_sets": {
-    "team_pair_clusters": 640,
-    "baseline_score_pct": 50.15625,
-    "intervention_score_pct": 58.90625,
-    "paired_delta_pp": 8.75,
-    "paired_cluster_bootstrap_95_pp": [
-      5.1953125,
-      12.34375
-    ],
-    "bootstrap_seed": 2026103070
+  "pooled_across_seed_sets": {
+    "max_damage": {
+      "team_pair_clusters": 640,
+      "baseline_score_pct": 35.8203125,
+      "intervention_score_pct": 44.4140625,
+      "paired_delta_pp": 8.59375,
+      "paired_cluster_bootstrap_95_pp": [
+        5.0,
+        12.1875
+      ],
+      "bootstrap_seed": 2026103070
+    },
+    "public_counterplay": {
+      "team_pair_clusters": 640,
+      "baseline_score_pct": 38.203125,
+      "intervention_score_pct": 46.0546875,
+      "paired_delta_pp": 7.8515625,
+      "paired_cluster_bootstrap_95_pp": [
+        4.3359375,
+        11.4453125
+      ],
+      "bootstrap_seed": 2026103071
+    },
+    "round464": {
+      "team_pair_clusters": 640,
+      "baseline_score_pct": 50.15625,
+      "intervention_score_pct": 58.90625,
+      "paired_delta_pp": 8.75,
+      "paired_cluster_bootstrap_95_pp": [
+        5.1953125,
+        12.34375
+      ],
+      "bootstrap_seed": 2026103070
+    }
   },
-  "historical_context": "Earlier Round173 first-five Max Damage hybrid experiments sometimes regressed against learned PPO opponents. This evidence is checkpoint-specific to Round430 vs Round464 and the tested team prior; retain raw and hybrid controls.",
-  "limitations": "This is an intervention that substitutes public Max Damage actions for the policy at decision indices 0\u20134. It does not show that PPO learned those choices or establish robustness to all legal teams and policies.",
+  "historical_context": "Older Round173 first-five Max Damage hybrid experiments sometimes regressed against PPO opponents. Current gains replicated versus Round464 and heuristics, but remain checkpoint-specific intervention evidence; preserve raw and hybrid controls.",
+  "limitations": "This is a deterministic intervention that substitutes public Max Damage actions at decision indices 0\u20134. It does not show that PPO learned those choices or establish robustness to all legal teams and policies.",
   "source_artifact": "training/outputs/phase12_headless/round430_first5_maxdamage_intervention_three_opponent_commonseed_512_20261030/report.json"
 }
