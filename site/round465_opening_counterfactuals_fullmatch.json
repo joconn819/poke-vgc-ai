@@ -1,0 +1,23 @@
+{
+  "round": 465,
+  "method": "Frozen Round465 full-match diagnostic vs Max Damage. Same 256 generated team-pair clusters, previews, repeat indices, and side swaps in both arms; two outcome repeats per cluster. Candidate replaces only the evaluated checkpoint\u2019s first joint action with the Max Damage action; Round465 controls every later decision. Cluster bootstrap pairs by team cluster because Showdown battle RNG is server-side and not identical between arms.",
+  "matches_per_arm": 1024,
+  "team_pair_clusters": 256,
+  "outcome_repeats_per_cluster": 2,
+  "opponent": "max_damage",
+  "control_score_rate": 0.431640625,
+  "first_action_override_score_rate": 0.462890625,
+  "paired_difference_percentage_points": 3.125,
+  "paired_cluster_bootstrap_95_interval_percentage_points": [
+    -1.26953125,
+    7.51953125
+  ],
+  "clusters_override_better": 74,
+  "clusters_control_better": 62,
+  "clusters_tied": 120,
+  "timeouts_or_errors": 0,
+  "conclusion": "Suggestive but inconclusive. This is a single-opponent intervention diagnostic, not a robust policy improvement. No checkpoint or default move selection changed; the PPO win-probability head remains auxiliary and is not used to rank actions.",
+  "control_summary": "round465_opening_override_fullmatch_maxdamage_control_256x2_20261030_retry1/paired_summary.json",
+  "candidate_summary": "round465_opening_override_fullmatch_maxdamage_candidate_256x2_20261030/paired_summary.json",
+  "paired_comparison": "round465_opening_override_fullmatch_maxdamage_comparison_256x2_20261030.json"
+}

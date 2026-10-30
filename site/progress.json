@@ -1110,7 +1110,7 @@
   "method": "Native self-play PPO for in-battle decisions. Terminal win/loss remains the main objective; win-probability and hidden-set prediction are auxiliary tasks. Search comes after a stronger policy.",
   "jax_decision": "Round430 has a confirmed self-play head-to-head lift over Round424, but external-opponent screens remain inconclusive. Prioritize measured inference batching, observation throughput, and rollouts; keep equilibrium-oriented opponent coverage and defer a JAX/GPU engine rewrite until its end-to-end payoff is measured.",
   "evaluation_note": "Round465 scored 45.51% against Max Damage [41.70%, 49.32%] and 46.00% against Public Counterplay [42.19%, 49.80%]. Same-seed Max Damage deltas over Round464 (+0.10 pp [-1.56, +1.76]) and Round430 (+0.88 pp [-1.27, +3.03]) include zero, so Round430 remains the validated incumbent. The 58.40% five-opponent mean is pulled upward by the 95.12% Random result; the p10 is 45.70% and the worst opponent score is 45.51%. Use paired team-cluster intervals and hard-opponent results to judge changes, not one overall mean.",
-  "generated_at": "2026-10-30 20:51 UTC",
+  "generated_at": "2026-10-30 20:59 UTC",
   "round462_evaluation": {
     "status": "Round462 not promoted · initial paired screen complete",
     "summary": "Round462 scored 44.82% against Max Damage [41.02%, 48.54%]. On the same teams and seeds, Round430 scored 44.73% and Round432 scored 44.43%; paired deltas were +0.10 pp [-1.37, +1.56] and +0.39 pp [-1.37, +2.05]. The update did not measurably change this weakness. Results against Public Counterplay and historical PPO are inconclusive; Random is an easy-baseline check.",
@@ -1620,8 +1620,8 @@
     "report": "round465_eval_scorecard.json",
     "trace_diagnostic": "64-cluster exploratory traces against Max Damage and Public Counterplay: first actions were moves in every game; losses were behind by about 0.4 active Pokémon and 0.3–0.4 team HP at the first post-action snapshot. Median decision counts matched between wins and losses. Long-match outliers distort total action counts; these associations are not causal.",
     "trace_report": "round465_trace_diagnostic.json",
-    "opening_counterfactual_diagnostic": "Fresh-seed replication (64 clusters × 8 repeats, three opponents): forcing the Max Damage opening action improved score by +9.77 pp vs Max Damage (39.26% policy opening vs 49.02%; 95% paired interval +2.73 to +16.99). Against Public Counterplay the delta was +4.88 pp (−3.32 to +13.48); against historical Round464 PPO +1.56 pp (−6.05 to +9.18). Only the Max Damage comparison is conclusive. P1-only intervention; no side swap and no checkpoint change.",
-    "opening_counterfactual_report": "round465_opening_counterfactuals_replication.json",
+    "opening_counterfactual_diagnostic": "Full-match, side-swapped Max Damage first-action override (256 team clusters × 2 repeats): Round465 scored 43.16%; override scored 46.29%, paired +3.13 pp (95% cluster interval −1.27 to +7.52). Suggestive but inconclusive; same teams/previews, but Showdown battle RNG is server-side and differs. No checkpoint or default action selection changed.",
+    "opening_counterfactual_report": "round465_opening_counterfactuals_fullmatch.json",
     "decision_flow": "Round465 selects moves directly from PPO action logits. Its win-probability head is auxiliary training only; default play does not use it to rank moves. Search with a separate evaluator is experimental and disabled after prior strength regressions."
   }
 }
