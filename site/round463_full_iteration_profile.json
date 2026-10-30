@@ -1,0 +1,112 @@
+{
+  "round": 463,
+  "date": "2026-10-30",
+  "status": "training complete; held-out evaluation in progress",
+  "configuration": {
+    "games": 20000,
+    "opponents": {
+      "max_damage": 6000,
+      "public_counterplay": 6000,
+      "policy_pool": 8000
+    },
+    "rollout_workers": 8,
+    "pool_policy_weights": {
+      "round432": 0.5,
+      "round462_parent": 0.5
+    },
+    "trainable_transitions": 162961,
+    "ppo_epochs": 4,
+    "optimizer_steps": 1276,
+    "learning_rate": 5e-05,
+    "minibatch_size": 512,
+    "device": "RTX 4060 Laptop GPU",
+    "gc_disabled_during_ppo_update": true
+  },
+  "speed": {
+    "full_iteration_wall_seconds": 803.8864058420004,
+    "full_iteration_games_per_second": 24.879136970915383,
+    "rollout_wall_seconds": 570.5071880169853,
+    "rollout_aggregate_games_per_second": 35.056525877469845,
+    "ppo_training_wall_seconds": 152.88897516697762,
+    "ppo_sample_preparation_seconds": 88.0377,
+    "ppo_tensor_aggregation_seconds": 5.65,
+    "ppo_optimization_seconds_approximate": 53.7,
+    "peak_aggregate_rollout_rss_gib": 10.363197326660156,
+    "peak_ppo_process_rss_gib": 7.341297149658203,
+    "rollout_mean_episode_seconds": 0.19926786947250222,
+    "rollout_mean_telemetry_seconds_per_episode": {
+      "action_selection_seconds": 0.083224,
+      "baseline_action_seconds": 0.025603,
+      "policy_inference_seconds": 0.047109,
+      "observation_encoding_seconds": 0.027572,
+      "headless_engine_roundtrip_seconds": 0.030682,
+      "trajectory_persist_seconds": 0.020379,
+      "pre_match_setup_seconds": 0.00894,
+      "end_to_end_episode_seconds": 0.199268
+    },
+    "ppo_stage_profile_available": false,
+    "ppo_stage_profile_note": "The orchestrator recorded total PPO preparation but did not emit per-stage timers for this run. Round462 instrumented reference: extraction 27.78 s, model-input building 20.38 s, record load/parse/validation 20.20 s.",
+    "speed_context": "Clean 20,000-game run, strict audit passed with no incomplete games or errors. Full workflow timing includes rollouts, audit, and PPO update. The 24.88 games/s is one measured iteration, not yet a repeated controlled speed claim."
+  },
+  "training": {
+    "loss": 0.8105495388044459,
+    "policy_loss": -0.003539925039713753,
+    "value_loss": 0.209500390569151,
+    "entropy": 1.655833092789665,
+    "approx_kl": 0.004575457627390374,
+    "clip_fraction": 0.051774649784482756,
+    "win_probability_loss": 0.4730243397683933,
+    "hidden_move_loss": 4.475186939523511,
+    "hidden_item_loss": 2.873929713960725,
+    "hidden_ability_loss": 4.127782488504547,
+    "epochs_run": 1276.0,
+    "transitions": 162961.0,
+    "stop_reason": "step_budget",
+    "initial_log_prob_max_error": 1.9073486328125e-06,
+    "initial_log_prob_mean_error": 2.7165970095666125e-07
+  },
+  "preflight": {
+    "ready_for_ppo": true,
+    "trainable_games": 20000,
+    "player_view_rows": 40000,
+    "trainable_transitions": 162961,
+    "incomplete_rows": 0,
+    "errors": [],
+    "report": "preflight/round_0001.json"
+  },
+  "checkpoint": "checkpoints/round_0001/latest.pt",
+  "rollout_manifest": "rounds.jsonl",
+  "output_log": "stdout.log",
+  "opportunities": [
+    {
+      "rank": 1,
+      "name": "Rollout policy inference and action selection",
+      "evidence": "83.2 ms/match; nested inference 47.1 ms; public counterplay scoring 25.6 ms mixed average.",
+      "next": "Batch decisions across workers; measure throughput, queue delay, and p95 latency."
+    },
+    {
+      "rank": 2,
+      "name": "Observation encoding",
+      "evidence": "27.6 ms/match.",
+      "next": "Reuse compact arrays and cache static team/dex values with leakage checks."
+    },
+    {
+      "rank": 3,
+      "name": "Showdown roundtrip",
+      "evidence": "30.7 ms/match (~15.4% of episode telemetry).",
+      "next": "Keep correctness reference; defer engine rewrite while larger agent and encoding stages remain."
+    },
+    {
+      "rank": 4,
+      "name": "Trajectory persistence",
+      "evidence": "20.4 ms/match; rollout corpus about 4.17 GB.",
+      "next": "Use buffered compact records and verifiable incremental audit; preserve strict preflight."
+    },
+    {
+      "rank": 5,
+      "name": "PPO sample preparation",
+      "evidence": "88.0 s total; per-stage timers were not emitted for Round463.",
+      "next": "Enable the exact preparation-stage profile in orchestrated updates, then optimize full-chunk transforms with parity."
+    }
+  ]
+}

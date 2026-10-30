@@ -16036,3 +16036,41 @@ team choice but does not change that conclusion.
   and investigate loss traces/state features before changing objectives.
 - Trace artifacts:
   `training/outputs/phase12_headless/round462_full_iteration_gc_default_20261030/evaluation/action_traces/`.
+
+### Round463 full iteration profile (2026-10-30; evaluation running)
+
+- Round463 completed 20,000 audited games from Round462 with the planned
+  30% Max Damage / 30% Public Counterplay / 40% policy-pool mixture (half
+  Round462, half Round432), learning rate 5e-5, four PPO passes, and batch 512.
+  The audit passed with 40,000 player-view rows, 162,961 transitions, and no
+  incomplete games or errors. The checkpoint is
+  `training/outputs/phase12_headless/round463_lr5e5_20k_20261030/checkpoints/round_0001/latest.pt`.
+- **Current speed:** the clean orchestrator iteration took 803.9 seconds
+  (**24.88 games/s**), including 570.5 seconds of rollout (**35.06 aggregate
+  games/s**), audit, and 152.9 seconds PPO work. The older Round430 reference
+  was 16.49 games/s end to end and 22.55 aggregate rollout games/s. This is a
+  faster measured iteration, but it is a single run with a different policy
+  pool/mix and is not yet a controlled speed claim. Peak aggregate rollout RSS
+  was 10.36 GiB; the top level PPO process peaked at 7.34 GiB.
+- PPO consumed 88.0 seconds for sample preparation and about 5.7 seconds for
+  tensor aggregation; optimization took about 53.7 seconds. This orchestrated
+  run did not emit per-stage preparation timers, so keep Round462's exact
+  instrumented stage profile as the latest split until a profiled orchestrated
+  replay is captured. Round463's final approximate KL was 0.00458, clip
+  fraction 5.18%, with exact initial policy replay (max log-probability error
+  1.91e-6); all 1,276 optimizer steps ran. Doubling the learning rate raised
+  KL modestly but did not trigger the KL stop.
+- **Current bottleneck:** rollouts remain the longest phase. In mean episode
+  telemetry, action selection was 83.2 ms (policy inference 47.1 ms and
+  baseline scoring 25.6 ms are nested), observation encoding 27.6 ms,
+  Showdown roundtrip 30.7 ms (~15.4%), and trajectory persistence 20.4 ms.
+  Public Counterplay scoring averaged 79.8 ms on its own shards; policy-pool
+  inference averaged 67.1 ms. Batching decisions, scorer cost, and feature
+  encoding are higher-value near-term opportunities than moving the battle
+  engine to GPU.
+- A fresh 512-cluster paired evaluation against Random, Max Damage, Public
+  Counterplay, Round432, and the Round462 parent is running on held-out seed
+  range 20262046. Do not promote Round463 until the score intervals and
+  cluster-level deltas against its parent and strong opponents are reviewed.
+- Raw profile:
+  `training/outputs/phase12_headless/round463_lr5e5_20k_20261030/profile.json`.
