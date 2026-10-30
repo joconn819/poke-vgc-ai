@@ -15989,3 +15989,50 @@ team choice but does not change that conclusion.
   coverage, then make a targeted PPO/data-mixture change and repeat the screen.
 - Report:
   `training/outputs/phase12_headless/round462_full_iteration_gc_default_20261030/evaluation/paired_screen_report.json`.
+
+### Same-seed Max Damage controls for Round462 (2026-10-30)
+
+- To determine whether the Round462 update caused its weak Max Damage result,
+  Round430 (the exact initialization checkpoint) and Round432 were evaluated
+  against Max Damage on the same 512 team pairs, preview choices, and battle
+  seeds as Round462. Each had 1,024 side-swapped games, zero timeouts/errors,
+  and zero action adjustments.
+- Round430 scored 44.73% vs Max Damage; Round432 scored 44.43%; Round462 scored
+  44.82%. Cluster-bootstrap paired score deltas were +0.10 percentage points
+  for Round462 vs Round430 (95% interval [-1.37, +1.56], 466 tied clusters)
+  and +0.39 pp vs Round432 ([-1.37, +2.05], 453 ties). The PPO update neither
+  measurably improved nor degraded these outcomes. The Max Damage weakness
+  predates Round462; this is not evidence of convergence or optimal play.
+- Next: collect traces from losses against Max Damage and the historical PPO
+  policies, classify errors (mechanics, preview, target/legality, state
+  features, and tactical action selection), and train against the discovered
+  failure modes with held-out teams. Keep paired worst-case evaluation as a
+  promotion gate. Do not infer success from the 96.97% Random result.
+- Control artifacts:
+  `training/outputs/phase12_headless/round462_full_iteration_gc_default_20261030/evaluation/paired_control_round430/`.
+
+### Round462 loss-trace diagnosis and Round463 experiment (2026-10-30)
+
+- A 64-team-pair trace sample compared Round462 and its Round430 initialization
+  against Max Damage on identical teams, previews, and random seeds. On first
+  decisions, 14 of 128 game-side records (10.9%) changed; all differences were
+  move selections, with no switch or target changes. Seven of 64 team pairs
+  had a changed first joint action. In this small slice Round462 scored 45.31%
+  [34.38%, 56.25%] and Round430 scored 47.66% [36.72%, 58.59%]. Outcome-
+  stratified states in losses showed the policy already behind after the first
+  resolved snapshot (5.4 vs 5.9 living Pokémon; team HP sum 4.97 vs 5.24), but
+  this association is not causal evidence about action quality. The low update
+  KL (0.00337) and limited action movement are consistent with a conservative
+  PPO update; they do not prove that learning rate alone caused the plateau.
+- Round463 experiment: collect a fresh 20,000-game rollout from Round462 using
+  the same 30% Max Damage / 30% Public Counterplay / 40% historical-policy
+  mixture, with the policy pool containing Round462 and Round432. Raise PPO
+  learning rate from 2.5e-5 to 5e-5 while retaining four passes, batch 512,
+  terminal win/loss reward, and auxiliary win-probability/hidden-set losses.
+  This tests whether the low measured policy movement can be increased without
+  sacrificing robust opponent coverage. Hold out team seeds; promote only if
+  paired score deltas improve across strong opponents without worsening the
+  lower tail. If the update is unstable or fails, return to the smaller rate
+  and investigate loss traces/state features before changing objectives.
+- Trace artifacts:
+  `training/outputs/phase12_headless/round462_full_iteration_gc_default_20261030/evaluation/action_traces/`.

@@ -166,8 +166,60 @@
     }
   ],
   "confidence_intervals": "Percentile bootstrap over side-swapped team-pair clusters (20,000 resamples, deterministic seed 20261046).",
-  "limitations": "Screening evaluation only; each team pair has one outcome per side. A single initial timed-out/incomplete pair for Public Counterplay and Round432 was replayed with the same team, preview, and battle seeds and included. No action adjustments occurred. Random is a weak baseline; its high score does not indicate robust play. The Max Damage interval is below 50%; the paired intervals against the two historical checkpoints include 50%.",
+  "limitations": "Screening evaluation only; each team pair has one outcome per side. One initial incomplete pair for Public Counterplay and Round432 was recovered by replaying the same teams, previews, and battle seeds. Round462 vs Max Damage was compared against Round430 and Round432 on the same 512 team pairs and battle seeds; the paired deltas are near zero. No action adjustments occurred. Random is a weak baseline.",
   "outputs": {
     "raw_report": "round462_eval_scorecard.json"
-  }
+  },
+  "matched_max_damage_controls": [
+    {
+      "control": "Round430",
+      "clusters": 512,
+      "round462_score_percent": 44.82,
+      "control_score_percent": 44.73,
+      "paired_delta_percentage_points": 0.1,
+      "paired_delta_cluster_bootstrap_95_pp": [
+        -1.37,
+        1.56
+      ],
+      "clusters_round462_wins": 25,
+      "clusters_tie": 466,
+      "clusters_control_wins": 21,
+      "same_team_preview_battle_seeds": true
+    },
+    {
+      "control": "Round432",
+      "clusters": 512,
+      "round462_score_percent": 44.82,
+      "control_score_percent": 44.43,
+      "paired_delta_percentage_points": 0.39,
+      "paired_delta_cluster_bootstrap_95_pp": [
+        -1.37,
+        2.05
+      ],
+      "clusters_round462_wins": 34,
+      "clusters_tie": 453,
+      "clusters_control_wins": 25,
+      "same_team_preview_battle_seeds": true
+    }
+  ],
+  "trace_diagnostic": {
+    "team_pair_clusters": 64,
+    "side_swapped_games": 128,
+    "first_joint_action_changed_game_sides": 14,
+    "first_joint_action_change_rate_pct": 10.94,
+    "changed_action_types": "move selections only; no switch or target changes",
+    "round462_score_pct": 45.31,
+    "round462_ci95_pct": [
+      34.38,
+      56.25
+    ],
+    "round430_score_pct": 47.66,
+    "round430_ci95_pct": [
+      36.72,
+      58.59
+    ],
+    "loss_first_resolved_snapshot": "Round462 mean 5.4 living Pok\u00e9mon vs 5.9 for Max Damage; team HP sum 4.97 vs 5.24",
+    "limitation": "Small descriptive sample; associations do not establish causal action values."
+  },
+  "next_experiment": "Round463: fresh 20,000-game rollout from Round462 with 30% Max Damage, 30% Public Counterplay, 40% policy pool (Round462 and Round432); test PPO learning rate 5e-5 vs 2.5e-5 baseline, with four passes and auxiliary win-probability/hidden-set losses."
 }
