@@ -1,0 +1,32 @@
+{
+  "run": "Round441 preprocess profile full PPO replay",
+  "source_run": "Round435 audited 20k rollouts",
+  "pytorch": "2.15.0+cu132",
+  "device": "NVIDIA GeForce RTX 4060 Laptop GPU",
+  "records": 28000,
+  "transitions": 162366,
+  "optimizer_steps": 1272,
+  "run_started_utc": "2026-10-30T14:06:05Z",
+  "run_completed_utc": "2026-10-30T14:10:55Z",
+  "wall_seconds_rounded_to_utc_timestamp_precision": 290,
+  "sample_collection_seconds": 226.26516649697442,
+  "input_tensor_aggregation_elapsed_seconds": 229.08502854398102,
+  "action_tensor_aggregation_elapsed_seconds": 233.09623653598828,
+  "input_tensor_aggregation_seconds": 2.8198620470066,
+  "action_tensor_aggregation_seconds": 4.01120799200743,
+  "optimization_seconds_approximate": 55,
+  "prior_replay_wall_seconds": {
+    "round437_preflight_reuse": 217.97542133700335,
+    "round438_legacy_scan_control": 260.74264455598313
+  },
+  "ppo_metrics_identical_to_round437": true,
+  "checkpoint_tensor_count": 82,
+  "checkpoint_tensors_bit_identical_to_round437": true,
+  "max_parameter_absolute_difference": 0,
+  "interpretation": "Semantics and final checkpoint are unchanged. This full replay was slower than both prior replays; differing runtime conditions prevent attributing the difference to the code changes. The isolated microbenchmark gains are not yet confirmed as an end-to-end speedup.",
+  "artifacts": [
+    "training/outputs/phase12_headless/round435_equilibrium_mixture_response_20k_20261030/preflight/round_0001_replay_verified.json",
+    "training/outputs/phase12_headless/round441_preprocess_profile_fullppo_20k_20261030/telemetry.jsonl",
+    "training/outputs/phase12_headless/round441_preprocess_profile_fullppo_20k_20261030/checkpoints/latest.pt"
+  ]
+}
