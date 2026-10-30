@@ -1625,5 +1625,6 @@
     "decision_flow": "Round465 selects moves directly from PPO action logits. Its win-probability head is auxiliary training only; default play does not use it to rank moves. Search with a separate evaluator is experimental and disabled after prior strength regressions.",
     "restricted_matrix_diagnostic": "Matched common-selector three-checkpoint matrix, pooled over 640 team clusters: Round430 vs Round464 50.16% [46.80, 53.55], Round465 vs Round430 50.78% [47.34, 54.14], and Round465 vs Round464 50.43% [47.11, 53.83]. Every interval spans 50%; the 128-cluster seed set favored Round464 while the 512-cluster set was near 52%, so rankings are seed-sensitive. Keep Round430 as incumbent; this is not a Nash claim.",
     "restricted_matrix_report": "round465_policy_population_matrix.json"
-  }
+  },
+  "action_selection": "Default battle decisions are selected from the masked PPO policy logits. The win-probability head is an auxiliary training target and does not rank moves. The optional one-turn search can use a state-value evaluator only when explicitly enabled; it is off by default."
 }
