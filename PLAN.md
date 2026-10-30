@@ -15469,3 +15469,150 @@ team choice but does not change that conclusion.
 - Benchmark script and report:
   `scripts/benchmark_ppo_hidden_target_precompute.py` and
   `site/ppo_hidden_target_precompute_benchmark.json`.
+
+### PPO audited record-offset replay (Round447, 2026-10-30)
+
+- Corrected the prevalidated iterator after Round444 showed a data-integrity
+  regression: bypassing all row checks admitted one incomplete learner row
+  (20,001 records / 162,374 transitions instead of the audited 20,000 / 162,366).
+  Round444 is excluded from speed and model comparisons.
+- Strictly re-audited the exact Round435 rollout inputs. The SHA-256 remained
+  `d74fbedf4d2b801885e228a221fc4fb513f5459f551a3318c2a6c9f3cdf3bd54`;
+  the audit recorded byte offsets for all 20,000 valid trainable views across
+  15 JSONL files. Training seeks to those offsets, then still performs the
+  full perspective and trajectory validation on every selected record.
+- Matched Round437's initial checkpoint, seed, action-feature variant, PPO
+  settings, and zero hidden-set auxiliary loss. Round447 prepared 162,366
+  transitions in 169.12 s; tensor aggregation took 5.86 s; full replay wall
+  time was about 232 s. Metrics matched Round437 exactly and all 82 checkpoint
+  tensors were bit-identical (maximum difference 0).
+- Sample preparation was 57.15 s (25.3%) faster than Round441's 226.27 s,
+  while total replay wall time was about 20% lower than Round441's 290 s.
+  Round447 was still about 14 s slower than the previous 217.98 s Round437
+  replay. Because runtime varied between runs, this establishes a promising
+  lower parsing/preparation cost versus Round441, not a reliable end-to-end
+  speedup versus the fastest matched baseline. The fresh audit itself also
+  scans the full input set and is outside the 232 s PPO replay timing.
+- The next measured targets remain batched policy inference / feature
+  preparation for rollout throughput and the 169 s PPO record-to-transition
+  path. Benchmark the combined fresh-audit-plus-update workflow before claiming
+  an overall training-iteration gain.
+- Profile report: `training/outputs/phase12_headless/round447_indexed_matched_replay_20k_20261030/profile.json`.
+
+### Live policy static-team token cache (Round448, 2026-10-30)
+
+- The live `PolicyAgent` did not pass the existing static-team tensor cache to
+  `build_model_inputs`, so species/move/item/ability tokens were rebuilt on
+  every decision. Added a per-agent cache and wired it into both independent
+  and same-model paired inference. Cache keys include the visible own and
+  opponent team signatures, so updated or different rosters cannot reuse stale
+  tensors; the cache is scoped to a match's agent.
+- On 1,971 Round435 transitions from 256 audited match records, model-input
+  construction fell from a 0.4680 s median to 0.3424 s (26.8%). Every input
+  tensor was exactly equal. Linear extrapolation gives 10.34 s saved across
+  162,366 transitions, but this does not measure whole-match speed.
+- A live deterministic action check using Round447's checkpoint returned the
+  same action `[24, 45]`, log probability, and value with caching enabled and
+  disabled. The checkpoint and policy were unchanged.
+- Remaining limitation: measure games/sec and p95 decision latency in paired
+  full rollouts before claiming a user-visible throughput gain. Cross-match
+  shared inference batching remains the larger policy-inference opportunity.
+- Benchmark: `scripts/benchmark_live_team_feature_cache.py` and
+  `training/outputs/phase12_headless/round448_live_team_feature_cache_20261030/benchmark.json`.
+
+### Queue-aware shared inference prototype (Round449, 2026-10-30)
+
+- Compared independent CPU inference processes with a single queue-batched GPU
+  worker using 256 real closed-sheet rollout inputs, 8 or 16 concurrent
+  producers, and 64 requests per producer. The shared queue includes input
+  collation, host-to-device transfer, model execution, output synchronization,
+  and queue wait; model inputs were already prepared in memory.
+- At an 8-worker concurrency, independent CPU processes reached 2,850
+  states/sec (p95 request 3.25 ms). The shared GPU queue reached 1,606
+  states/sec (p95 5.29 ms) with a 1 ms max wait and 1,088 states/sec (p95
+  7.82 ms) with a 3 ms wait. At 16 workers, CPU reached 3,530 states/sec
+  (p95 5.72 ms); GPU reached 2,912 (p95 6.27 ms) at 1 ms and 2,089 (p95
+  8.09 ms) at 3 ms.
+- The GPU service batched mostly 8 or 16 requests, but its end-to-end queue
+  overhead erased the isolated large-batch forward advantage. The probe
+  excludes IPC serialization and live feature preparation, so it is an upper
+  bound for a production service. Do not add the shared GPU broker at the
+  current 8/16 worker range; revisit only if a real rollout can sustain larger
+  batches and memory permits more concurrent matches.
+- The active speed priorities remain CPU-side per-worker inference and
+  observation/action feature preparation. The static team-token cache from
+  Round448 is live, but its whole-match effect still needs measurement.
+- Benchmark: `scripts/benchmark_shared_inference_queue.py` and
+  `training/outputs/phase12_headless/round449_shared_inference_queue_20261030/benchmark.json`.
+
+### CPU inference follow-ups (Rounds450–451, 2026-10-30)
+
+- Dynamic int8 quantization of eligible feed-forward Linear layers (excluding
+  Transformer attention internals) was tested on 256 real closed-sheet states
+  from Round435 with the Round447 checkpoint. Full native action selection
+  slowed from 2.295 ms to 2.511 ms median (0.91x); 5/256 actions differed
+  (1.95%). Reject this quantized path for now. Report:
+  `training/outputs/phase12_headless/round450_cpu_dynamic_quantization_20261030/benchmark.json`.
+- CPU `torch.compile(mode="reduce-overhead")` was tested on the same 256
+  states. Full native action selection improved from 2.219 ms to 1.510 ms
+  median (1.47x), p95 from 2.691 ms to 2.054 ms, with zero action
+  disagreements and log-probability/value deltas below 4e-7/1.2e-7. Compile
+  plus warmup took 4.92 s. This is a promising per-decision optimization, but
+  remains a microbenchmark: do not enable it by default until an eight-worker
+  complete-match comparison reports throughput, p95 decision latency,
+  compilation overhead, and outcomes. Report:
+  `training/outputs/phase12_headless/round451_cpu_compiled_policy_20261030/benchmark.json`.
+- Current end-to-end reference remains 16.49 training-iteration games/s
+  (Round430, including rollout plus PPO preparation/optimization); Round424's
+  measured rollout portion was 22.86 aggregate games/s. Round435 has newer
+  per-opponent shard profiles but no valid aggregate rate. Do not substitute
+  state-inference throughput or per-worker rates for complete-game speed.
+- Updated near-term priority: benchmark optional compiled CPU inference in
+  matched full rollouts. Keep the shared GPU queue, int8 quantization, and
+  `torch.compile` rejected at current workloads: the 64-match, eight-worker
+  Round452 comparison measured 13.15 games/s eager vs 4.30 compiled, and
+  telemetry showed policy inference at 65.8 vs 944.6 ms/match. Compiled run
+  peak RSS was 11.67 GiB vs 6.60 GiB eager. The 1.47x single-state
+  microbenchmark did not predict multiworker rollout behavior; compile/cache
+  overhead and/or repeated compilation dominates. Exact action parity in the
+  256-state probe is not enough to justify this path. Round452 used the same
+  policy checkpoint, seed, episode offsets, eight workers, and Max Damage
+  opponent; speed only, not a strength comparison. Keep the optional switch
+  for reproducibility and further profiling, but do not enable it in training.
+  Next measure the Round448 static-feature cache in matched full rollouts and
+  profile per-worker compile time/graph breaks only if this path is revisited.
+  PPO data parsing/preparation (169.1 s in Round447) remains a major
+  training-iteration cost after rollout.
+- Round452 reports:
+  `training/outputs/phase12_headless/round452_compiled_full_match_20261030/`.
+
+### PPO field-feature preparation (Round453, 2026-10-30)
+
+- Profiling 512 audited Round435 player views (3,892 transitions) separated
+  strict JSON/perspective validation, transition extraction, GAE, and model
+  input construction. Under `cProfile`, preparation input construction was
+  the largest measured substage in that slice; `_extract_field_features`
+  performed four per-slot tensor scalar reads for active volatile features.
+- Added a CPU float32 NumPy path that gathers those four active volatile rows
+  together. Other device/dtype/autograd callers retain the tensor path. The
+  Round453 benchmark used 1,026 real states and seven repetitions after
+  warm-up: full `build_model_inputs` median fell from 114.73 ms to 106.61 ms
+  (7.07%) with exact field-feature and full input-tensor parity. Empty, short,
+  full-length, and NaN-active-row feature cases also matched the prior logic.
+- Linear extrapolation to Round447's 162,366 transitions estimates 1.28 s
+  saved, about 0.76% of its 169.12 s sample-preparation time. This is a
+  microbenchmark estimate, not an end-to-end PPO or games/s result. Reproduce
+  with `scripts/benchmark_field_feature_encoding.py`; report:
+  `training/outputs/phase12_headless/round453_numpy_field_feature_encoding_20261030/benchmark.json`.
+- A separate validation specialization uses the known flat feature-vector
+  shape to avoid recursively validating every scalar while preserving the
+  recursive fallback for nested values. On 512 already-parsed real records,
+  median perspective validation fell from 227.82 ms to 219.40 ms (3.84%), and
+  all original results matched. This is a small isolated saving, not a full
+  loader measurement.
+- Current rate remains 16.49 full training-iteration games/s from Round430;
+  Round447 record-to-transition preparation remains 169.12 s for 20k games.
+  Current optimization priorities are full-update validation of these changes,
+  then precompute/cache repeated public-mechanics/team facts and profile the
+  remaining transition-extraction and tensor-assembly work. Do not report
+  isolated inference or state encoding rates as complete-game throughput.

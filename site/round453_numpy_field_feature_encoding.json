@@ -1,0 +1,34 @@
+{
+  "benchmark": "legacy vs NumPy CPU field-feature encoding",
+  "rollout": "training/outputs/phase12_headless/round435_equilibrium_mixture_response_20k_20261030/rollouts/round_0001_max_damage_p1_shard000.jsonl",
+  "audit": "training/outputs/phase12_headless/round445_offset_indexed_replay_20k_20261030/preflight/round_0001_indexed.json",
+  "states": 1026,
+  "repeats": 7,
+  "warmup_excluded": true,
+  "reference_seconds": [
+    0.11464983801124617,
+    0.11531818800722249,
+    0.11478508298750967,
+    0.11365453101461753,
+    0.11483041799510829,
+    0.11466882401145995,
+    0.1144848859985359
+  ],
+  "numpy_seconds": [
+    0.10573303099954501,
+    0.10699478202150203,
+    0.10702484799548984,
+    0.10618721801438369,
+    0.1069887499907054,
+    0.10623237400432117,
+    0.10598309300257824
+  ],
+  "reference_median_seconds": 0.11472695349948481,
+  "numpy_median_seconds": 0.10661056199751329,
+  "full_model_input_speedup": 1.0761312139238215,
+  "full_model_input_reduction_pct": 7.074528917921601,
+  "extrapolation_transitions": 162366,
+  "estimated_seconds_saved": 1.2844308212564404,
+  "exact_field_and_model_input_parity": true,
+  "scope_note": "Includes cached static team tokens, field features, state-derived tensors, and legal masks; record parsing and PPO optimization are excluded. Full-update impact is an estimate until a matched PPO replay is run."
+}
