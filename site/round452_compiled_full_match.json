@@ -1,0 +1,52 @@
+{
+  "benchmark": "Eight-worker complete-match rollout: eager vs torch.compile CPU inference",
+  "policy_checkpoint": "Round430 validated candidate checkpoint",
+  "opponent": "Max Damage",
+  "seed": 20261030,
+  "episode_offset_base": 452000,
+  "format": "gen9championsdoubles2026mcclosed",
+  "states_per_setting": 64,
+  "matched_worker_count": 8,
+  "comparison": {
+    "eager": {
+      "games_per_second": 13.149016701417633,
+      "elapsed_seconds": 4.8672841059742495,
+      "games": 64,
+      "workers": 8,
+      "peak_aggregate_rss_gib": 6.6024932861328125,
+      "mean_steps": 8.609375,
+      "mean_ms_per_match": {
+        "end_to_end_episode": 266.0377892971155,
+        "action_selection": 83.22711954406259,
+        "policy_inference": 65.7732754079916,
+        "observation_encoding": 28.599520538591605,
+        "headless_engine_roundtrip": 39.48324212524312,
+        "trajectory_persist": 12.882734109098237
+      }
+    },
+    "compiled": {
+      "games_per_second": 4.2995350935738,
+      "elapsed_seconds": 14.885330299002817,
+      "games": 64,
+      "workers": 8,
+      "peak_aggregate_rss_gib": 11.66888427734375,
+      "mean_steps": 8.609375,
+      "mean_ms_per_match": {
+        "end_to_end_episode": 1184.8103875645393,
+        "action_selection": 995.1592817456003,
+        "policy_inference": 944.6184198163792,
+        "observation_encoding": 26.08039630104031,
+        "headless_engine_roundtrip": 40.73762943653492,
+        "trajectory_persist": 24.996063484195474
+      }
+    }
+  },
+  "speed_ratio_compiled_over_eager": 0.3269852941254729,
+  "policy_inference_ratio_compiled_over_eager": 14.361736038792525,
+  "finding": "The single-state torch.compile advantage did not transfer to rollout workers. Cold eight-worker complete-match throughput fell from 13.15 to 4.30 games/s; measured policy inference rose from about 65.8 to 944.6 ms/match and peak RSS rose from 6.60 to 11.67 GiB. Keep compilation disabled for training. This small run is a speed comparison, not a strength evaluation.",
+  "limitations": "Each condition ran 64 matches and included process startup and compilation. Same seeds and episode offsets were used; policy action sampling and game randomness mean match outcomes are not a powered strength comparison. Test set was a short Max Damage workload, not the full opponent mixture.",
+  "reports": {
+    "eager": "eager/scaling_report.json",
+    "compiled": "compiled/scaling_report.json"
+  }
+}

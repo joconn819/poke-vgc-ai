@@ -338,8 +338,8 @@
         "detail": "Writes used 7\u201312 ms/match and Round424 stored about 1.8 GB for 10,000 games. Benchmark buffered compact records or chunk compression after the higher-cost action and inference paths."
       },
       {
-        "title": "7 \u00b7 Validate compiled CPU policy inference in complete rollouts",
-        "detail": "Round451 torch.compile cut full native action-selection median from 2.219 ms to 1.510 ms (1.47\u00d7) across 256 real states, with zero action disagreements; compile/warmup took 4.92 s. Add an opt-in worker mode and measure paired eight-worker full-match games/s, p95 decisions, and outcomes before adoption. Dynamic int8 was slower (0.91\u00d7) and changed 5/256 actions, so it is rejected. Raw Round450/451 reports are linked in the CPU inference follow-up panel."
+        "title": "7 \u00b7 Keep CPU inference eager; profile feature/scorer cost",
+        "detail": "Round452 completed the full-match check of torch.compile: 13.15 games/s eager vs 4.30 compiled at eight workers, with policy inference 65.8 vs 944.6 ms/match and peak RSS 6.60 vs 11.67 GiB. Reject compiled inference in rollout workers. The single-state 1.47\u00d7 gain did not transfer. Focus on feature preparation and public-counterplay scoring; see raw Round452 comparison."
       }
     ],
     "jax_decision": "Round430 confirms the Showdown engine used about 18% of policy-pool match time and 8% against Public Counterplay; a simulator-only port would leave the larger measured policy, observation, and baseline-scoring costs intact. Keep Showdown as the correctness reference and require an end-to-end measured gain before a JAX/GPU engine prototype.",
@@ -531,7 +531,7 @@
         "action_disagreements": 0,
         "states": 256,
         "compile_warmup_seconds": 4.9179,
-        "status": "Promising; hold for matched complete-match throughput and outcome evaluation.",
+        "status": "Rejected for rollout use: the full-match run was slower despite exact action parity in the earlier microbenchmark.",
         "report": "round451_cpu_compiled_policy.json"
       },
       "dynamic_int8": {
@@ -543,7 +543,19 @@
         "status": "Rejected for now: slower and 1.95% action disagreement.",
         "report": "round450_cpu_dynamic_quantization.json"
       },
-      "next_step": "Add an opt-in compile mode to rollout workers and compare eight-worker complete matches against eager inference on paired seeds; report aggregate games/s, p95 decision latency, compile warmup cost, and outcome deltas before enabling it in training."
+      "next_step": "Keep eager CPU inference. The matched eight-worker Round452 full-match run measured 13.15 games/s eager vs 4.30 compiled; policy inference was 65.8 vs 944.6 ms/match, and peak RSS was 6.60 vs 11.67 GiB. Focus next on observation/action feature preparation and public-counterplay scoring; only revisit compilation after explaining repeated compile/runtime overhead."
+    },
+    "full_match_compile_benchmark": {
+      "context": "Round452 compared eager and torch.compile CPU inference on the Round430 checkpoint with the same seed, episode offsets, eight workers, and Max Damage opponent; 64 complete matches per condition. Includes process startup and compilation.",
+      "eager_games_per_second": 13.15,
+      "compiled_games_per_second": 4.3,
+      "eager_inference_ms_per_match": 65.8,
+      "compiled_inference_ms_per_match": 944.6,
+      "eager_peak_rss_gib": 6.6,
+      "compiled_peak_rss_gib": 11.67,
+      "finding": "The single-state torch.compile advantage did not transfer to rollout workers. Cold eight-worker complete-match throughput fell from 13.15 to 4.30 games/s; measured policy inference rose from about 65.8 to 944.6 ms/match and peak RSS rose from 6.60 to 11.67 GiB. Keep compilation disabled for training. This small run is a speed comparison, not a strength evaluation.",
+      "limitations": "Each condition ran 64 matches and included process startup and compilation. Same seeds and episode offsets were used; policy action sampling and game randomness mean match outcomes are not a powered strength comparison. Test set was a short Max Damage workload, not the full opponent mixture.",
+      "report": "round452_compiled_full_match.json"
     }
   },
   "latest_run": {
