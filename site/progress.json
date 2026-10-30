@@ -95,7 +95,7 @@
     "games_per_second": "16.49",
     "context": "Round430, 20,000-game full training iteration including rollout and PPO preparation/optimization; not raw simulator speed.",
     "decision_latency": "~85 ms action selection per policy-pool match",
-    "current_bottleneck": "Batched policy inference and observation throughput; Public Counterplay scorer is the workload-specific hotspot",
+    "current_bottleneck": "CPU policy inference and observation throughput remain shared bottlenecks; cached Counterplay damage scoring was 69% faster in a 32-game single-worker probe",
     "gpu_status": "RTX 4060 used for PPO optimization; rollout inference and Showdown simulation remain CPU-side",
     "profile_context": "Round430, 20,000 self-play matches on 8 rollout workers. End-to-end episode time includes setup, agent decisions, engine calls, and trajectory writes. Per-opponent rates are per worker shard, not aggregate. Total rollout throughput was 22.55 games/s; the complete training iteration was 16.49 games/s. Action selection contains policy inference; Public Counterplay scoring is nested inside action selection.",
     "profile": [
@@ -148,7 +148,7 @@
       },
       {
         "title": "4 \u00b7 Reduce counterplay scorer cost",
-        "detail": "The Public Counterplay scorer used about 228 ms/match (66% of its end-to-end time); this is a major workload-specific hotspot. Cache invariant move/type data and batch score features while preserving switches, Protect, setup, and defensive responses."
+        "detail": "A per-decision cache for repeated public damage calculations reduced scorer time from 203.4 to 62.6 ms/match (69%) in a paired 32-game probe, with the same 13-19 win split and no action corrections or timeouts. Confirm the gain on the standard 8-worker mixed-training workload; then profile repeated speed and legality calculations."
       },
       {
         "title": "5 \u00b7 Trim trajectory persistence",
@@ -308,6 +308,18 @@
       "interpretation": "CUDA is slower for single states and roughly tied with CPU at batch 8, about 51% faster at batch 16, and 2.6x faster at batch 32. Queue wait is excluded. A scalar-clamp optimization reduced warm native action-feature time 41.3% (0.1983 to 0.1165 ms/state) with exact outputs against the prior NumPy-clamp implementation on 256 inputs; whole-match speed impact is not yet measured.",
       "feature_replay_caveat": "The initial Round430 parity audit used initial-team opponent ordering and PPO's conditionally narrowed action mask, unlike live feature generation. New rollout data now saves per-step opponent preview order, the raw feature mask, the PPO conditional mask, and encoder version. On a fresh 64-game rollout (128 perspective records, 481 feature states), recomputation matched every saved feature value exactly. Legacy Round430 records remain missing the raw action mask, but PPO continues to train from the saved feature arrays.",
       "report": "training/outputs/phase12_headless/round430_policy_inference_batching_20261030/report.json"
+    },
+    "counterplay_cache_benchmark": {
+      "context": "Same Round430 checkpoint, VGC format, 32 episode seeds, one CPU worker, and /dev/null trajectory output before and after memoizing repeated deterministic damage estimates within each joint-action score. This is a microbenchmark, not the standard 8-worker mixed-training run.",
+      "scorer_before_ms": "203.4",
+      "scorer_after_ms": "62.6",
+      "scorer_reduction_pct": "69.2%",
+      "episode_before_ms": "327.3",
+      "episode_after_ms": "184.0",
+      "throughput_before_games_per_second": "3.03",
+      "throughput_after_games_per_second": "5.36",
+      "result": "Both runs produced 13 Headless P1 wins and 19 Headless P2 wins, with 0 timeouts and 0 action corrections. Policy inference averaged 31.9 vs 31.4 ms/match, observation encoding 19.5 vs 19.1 ms, and engine roundtrips 29.2 vs 28.1 ms.",
+      "limitation": "Only 32 games on one worker; the 20,000-game training throughput has not yet been remeasured with this optimization."
     }
   },
   "latest_run": {
@@ -321,5 +333,5 @@
   "method": "Native self-play PPO for in-battle decisions. Terminal win/loss remains the main objective; win-probability and hidden-set prediction are auxiliary tasks. Search comes after a stronger policy.",
   "jax_decision": "Round430 did not establish a strength improvement. Prioritize measured inference batching, observation throughput, and rollouts; keep equilibrium-oriented opponent coverage and defer a JAX/GPU engine rewrite until its end-to-end payoff is measured.",
   "evaluation_note": "Score rates include wins and half credit for draws. Use paired held-out teams, side swaps, repeated outcomes, and cluster intervals. Track results across public counterplay, random, historical PPO, and Max Damage; no one matchup percentage is the finish line.",
-  "generated_at": "2026-10-30 10:17 UTC"
+  "generated_at": "2026-10-30 10:22 UTC"
 }

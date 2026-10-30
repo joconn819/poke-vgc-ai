@@ -143,6 +143,18 @@ percentage alone.
   These are isolated model-forward results, not rollout throughput; queueing
   and inference-service overhead are excluded. The eight-worker arrangement
   may not supply large batches without keeping multiple games in flight.
+- **Public Counterplay scorer damage cache (2026-10-30):** memoized
+  deterministic damage estimates within a single joint-action decision, where
+  many legal action pairs repeatedly ask for the same attacker/defender/move
+  calculation. A paired 32-game CPU probe used the same Round430 checkpoint,
+  format, seed, teams, and one worker before and after the change. Mean scorer
+  time fell from 203.4 to 62.6 ms/match (69.2%); mean full episode time fell
+  from 327.3 to 184.0 ms, and measured throughput rose from 3.03 to 5.36
+  games/s. Both runs produced the same 13-19 win split, with zero timeouts and
+  action corrections. Policy inference stayed near 31.6 ms/match, encoding
+  near 19.3 ms, and engine calls near 28.7 ms. This is a small single-worker
+  probe, not yet a full mixed-training throughput result; validate on the
+  standard eight-worker workload before treating it as the new training rate.
 - **Measured action-feature micro-optimization (2026-10-30):** profiling 128
   saved states found thousands of scalar NumPy clamp calls in native action
   feature generation. Replaced scalar `np.clip` dispatches with a finite-float
