@@ -267,11 +267,11 @@
     "decision_latency": "~83 ms action selection per mixed-policy episode",
     "current_bottleneck": "Round464 rollout telemetry: Public Counterplay scoring 80.4 ms/episode on its own shards (25.8 ms mixed average), action selection 83.4 ms mixed average with nested inference 47.0 ms, encoding 27.3 ms, and Showdown 30.6 ms (~15.3%). A same-roster team collision also triggered a manual strict-audit recovery.",
     "gpu_status": "RTX 4060 used for PPO optimization; rollout policy inference and Showdown simulation remain CPU-side",
-    "profile_context": "Round464: 20,000 episodes, 35.38 aggregate rollout games/s across eight workers; 17.66 end-to-end games/s including strict audit recovery. Per-opponent rows show per-worker episode rates. Evaluation is running.",
+    "profile_context": "Round464 remains the latest fully measured training profile: 20,000 episodes, 35.38 aggregate rollout games/s across eight workers; 17.66 end-to-end games/s including strict-audit recovery. Round465 completed training; its paired evaluation currently runs at 4.92 games/s for Random and 6.66 for Max Damage. Per-opponent training rows are per-worker rates.",
     "active_training_profile": {
       "round": "464",
-      "status": "20,000-game rollout and PPO complete · held-out screen running",
-      "context": "Per-opponent episode telemetry from the 20,000-game Round464 rollout. Shard games/s is episodes divided by the sum of the matching worker wall times; total rollout rate was 35.38 aggregate games/s across all eight workers.",
+      "status": "Round464 profile retained · Round465 training complete; paired evaluation running",
+      "context": "Per-opponent episode telemetry from the 20,000-game Round464 rollout. Round465 training is complete and its paired held-out screen is in progress. Shard games/s is episodes divided by the sum of matching worker wall times; Round464 total rollout rate was 35.38 aggregate games/s across eight workers.",
       "profile": [
         {
           "opponent": "Max Damage",
@@ -1101,16 +1101,16 @@
   },
   "latest_run": {
     "round": 465,
-    "status": "20,000-game rollout running · continued from Round464",
-    "summary": "Round465 started from Round464 with the same 30% Max Damage / 30% Public Counterplay exposure and a 40% policy pool split evenly between Round430 and Round464. PPO settings remain at LR 5e-5, four passes, batch 512. Round464 did not beat its same-seed Max Damage controls reliably; Round430 remains the incumbent.",
-    "games": "20,000 target · rollout in progress",
-    "epochs": "4 PPO passes planned",
-    "evaluation": "held-out paired screen follows audit and PPO"
+    "status": "20,000-game training complete · paired evaluation running",
+    "summary": "Round465 completed 20,000 audited games and its PPO update from Round464. The mix was 6,000 Max Damage, 6,000 Public Counterplay, and 8,000 policy-pool games split between Round430 and Round464. Paired evaluation is underway: Random has 510/512 clusters complete (4.92 games/s) and Max Damage 512/512 (6.66 games/s). Round430 remains the validated incumbent until the full matched screen is complete.",
+    "games": "20,000 completed",
+    "epochs": "4 PPO passes complete",
+    "evaluation": "Paired held-out screen running; candidate not promoted"
   },
   "method": "Native self-play PPO for in-battle decisions. Terminal win/loss remains the main objective; win-probability and hidden-set prediction are auxiliary tasks. Search comes after a stronger policy.",
   "jax_decision": "Round430 has a confirmed self-play head-to-head lift over Round424, but external-opponent screens remain inconclusive. Prioritize measured inference batching, observation throughput, and rollouts; keep equilibrium-oriented opponent coverage and defer a JAX/GPU engine rewrite until its end-to-end payoff is measured.",
   "evaluation_note": "Round463 beat Round432 and its Round462 parent in direct head-to-heads (54.00% against each; 95% team-cluster intervals just above 50%). It scored 45.02% against Max Damage and 46.19% against Public Counterplay. Same-seed Max Damage controls scored 43.95% for Round430 and 43.55% for Round462; paired gains of +1.07 and +1.46 pp both have intervals spanning zero. Round463 is not promoted; Round430 remains the validated robust candidate.",
-  "generated_at": "2026-10-30 19:14 UTC",
+  "generated_at": "2026-10-30 19:40 UTC",
   "round462_evaluation": {
     "status": "Round462 not promoted · initial paired screen complete",
     "summary": "Round462 scored 44.82% against Max Damage [41.02%, 48.54%]. On the same teams and seeds, Round430 scored 44.73% and Round432 scored 44.43%; paired deltas were +0.10 pp [-1.37, +1.56] and +0.39 pp [-1.37, +2.05]. The update did not measurably change this weakness. Results against Public Counterplay and historical PPO are inconclusive; Random is an easy-baseline check.",
@@ -1407,7 +1407,7 @@
     "local_report": "training/outputs/phase12_headless/round463_lr5e5_20k_20261030/evaluation/round463_paired_scorecard.json"
   },
   "round464_experiment": {
-    "status": "training and evaluation complete · not promoted · Round465 training in progress",
+    "status": "training and evaluation complete · not promoted · Round465 evaluation in progress",
     "seed": 20263047,
     "games": 20000,
     "start_checkpoint": "Round463",
@@ -1427,7 +1427,7 @@
     "training_script": "scripts/train_round464_round463_continue_lr5e5_20k.sh",
     "checkpoint": "training/outputs/phase12_headless/round464_round463_continue_pool463_462_lr5e5_20k_20261030/checkpoints/latest.pt",
     "evaluation_report": "round464_eval_scorecard.json",
-    "evaluation_summary": "Round464 scored 45.41% vs Max Damage and 46.19% vs Public Counterplay; its paired Max Damage gains over Round463 (+0.20 pp) and Round430 (+0.78 pp) have 95% intervals spanning zero. Direct scores vs Round463 and Round430 were 52.64% and 52.15%; neither establishes a reliable policy improvement. Round430 remains the validated incumbent while Round465 trains."
+    "evaluation_summary": "Round464 scored 45.41% vs Max Damage and 46.19% vs Public Counterplay; its paired Max Damage gains over Round463 (+0.20 pp) and Round430 (+0.78 pp) have 95% intervals spanning zero. Direct scores vs Round463 and Round430 were 52.64% and 52.15%; neither establishes a reliable policy improvement. Round430 remains the validated incumbent while Round465 evaluation runs."
   },
   "round464_evaluation": {
     "status": "Complete · Round464 not promoted",

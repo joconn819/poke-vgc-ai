@@ -16202,3 +16202,36 @@ team choice but does not change that conclusion.
 - Training-process priority: automate strict-audit top-up and re-audit for
   rejected/incomplete games. Preserve the strict data and information-boundary
   gate; never silently relax audit criteria to keep PPO moving.
+
+### Round465 training complete; paired evaluation in progress (2026-10-30)
+
+- The 20,000-game continuation from Round464 completed with 6,000 Max Damage,
+  6,000 Public Counterplay, and 8,000 policy-pool matches split evenly between
+  Round430 and Round464. The strict audit passed after replacing one identical-
+  team Public Counterplay match with a fresh-seed match. Final training data has
+  40,000 safe player-perspective rows, 28,000 PPO-valid rows, 162,609 trainable
+  transitions, and 10,000 trainable examples per seat.
+- PPO completed 1,272 CUDA optimizer steps. Approximate KL was 0.00473, clip
+  fraction 5.40%, policy loss -0.00352, value loss 0.20913, and auxiliary
+  win-probability loss 0.46717. The candidate was atomically published as
+  `training/outputs/phase12_headless/round465_round464_continue_pool430_464_lr5e5_20k_20261030/checkpoints/latest.pt`
+  (SHA-256 `3d94b891a635a90047a48326543ffcf3e98f68e11120b71213bc44149abf7c1e`).
+- **Speed:** the recovery-inclusive input-snapshot-to-checkpoint interval was
+  about 17m54s, or 18.62 games/s. This is not a clean rollout-throughput
+  comparison; the orchestrator stopped after its first audit and the recovery
+  plus PPO update were resumed manually, so no aggregate rollout monitor report
+  was retained. In the paired evaluation, Random completed 510/512 clusters at
+  4.92 games/s; Max Damage completed 512/512 clusters at 6.66 games/s (1,024
+  games, 466 wins and 558 losses). These are interim measurements, not a final
+  scorecard. The other five screens and exact-seed recovery remain pending.
+- Round430 remains the validated incumbent. Do not promote Round465 until all
+  matched held-out screens and cluster-bootstrap comparisons are complete.
+- **Training-process improvement:** the strict auditor now rejects incomplete
+  rows, empty trajectories, missing behavior log probabilities, and any player-
+  view count other than two rows per game. The PPO orchestrator now identifies
+  bad or missing episode IDs, retains rejected rows, regenerates the whole match
+  with the same opponent and trainable seat at a disjoint RNG offset, atomically
+  replaces the rows, and reruns the strict audit before PPO. Automatic repair is
+  capped at 128 matches and five fresh-seed attempts per match; ambiguous or
+  unexpected IDs stop with the original shards preserved. Syntax compilation
+  passed; this recovery path has not yet been exercised by a later training run.
