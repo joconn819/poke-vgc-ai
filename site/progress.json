@@ -262,55 +262,55 @@
     }
   ],
   "speed": {
-    "games_per_second": "24.88",
-    "context": "Round463 measured 24.88 games/s over a clean full 20,000-game iteration; rollout alone was 35.06 aggregate games/s across eight workers. Single run with a changed policy mix, so this is not a controlled speedup claim.",
+    "games_per_second": "17.66",
+    "context": "Round464 measured 17.66 games/s from initial checkpoint snapshot to atomically published checkpoint, including a failed audit and one-game recovery. Original rollout shards ran at 35.38 aggregate games/s. Treat the full-iteration number as recovery-inclusive, not a controlled speed comparison.",
     "decision_latency": "~83 ms action selection per mixed-policy episode",
-    "current_bottleneck": "Round463 rollouts remain the longest phase (570.5 s of 803.9 s). Action selection averaged 83.2 ms/episode, with nested inference 47.1 ms and scoring 25.6 ms; encoding took 27.6 ms, Showdown roundtrip 30.7 ms (~15.4%), and persistence 20.4 ms. PPO preparation took 88.0 s, but stage timers were not emitted.",
+    "current_bottleneck": "Round464 rollout telemetry: Public Counterplay scoring 80.4 ms/episode on its own shards (25.8 ms mixed average), action selection 83.4 ms mixed average with nested inference 47.0 ms, encoding 27.3 ms, and Showdown 30.6 ms (~15.3%). A same-roster team collision also triggered a manual strict-audit recovery.",
     "gpu_status": "RTX 4060 used for PPO optimization; rollout policy inference and Showdown simulation remain CPU-side",
-    "profile_context": "Round463 full run: 20,000 games across eight workers; 35.06 aggregate rollout games/s, 24.88 full-iteration games/s. One run, not a controlled speed claim. See its profile for episode timings and limits.",
+    "profile_context": "Round464: 20,000 episodes, 35.38 aggregate rollout games/s across eight workers; 17.66 end-to-end games/s including strict audit recovery. Per-opponent rows show per-worker episode rates. Evaluation is running.",
     "active_training_profile": {
-      "round": "462",
-      "status": "full rollout and PPO iteration \u00b7 paired strength screen complete",
-      "context": "Per-opponent episode telemetry aggregated over the 20,000-game rollout. The total 31.22 games/s is the aggregate rollout rate across eight workers; rows show per-worker rates, not additive values.",
+      "round": "464",
+      "status": "20,000-game rollout and PPO complete \u00b7 held-out screen running",
+      "context": "Per-opponent episode telemetry from the 20,000-game Round464 rollout. Shard games/s is episodes divided by the sum of the matching worker wall times; total rollout rate was 35.38 aggregate games/s across all eight workers.",
       "profile": [
         {
           "opponent": "Max Damage",
           "completed_episodes": "6,000",
-          "matches_per_second": "6.75",
-          "end_to_end_ms": "148",
-          "action_ms": "48",
-          "inference_ms": "33",
-          "baseline_ms": "6",
-          "encoding_ms": "27",
-          "engine_ms": "29",
-          "persistence_ms": "17"
+          "matches_per_second": "6.71",
+          "end_to_end_ms": "147.0",
+          "action_ms": "48.2",
+          "inference_ms": "32.8",
+          "baseline_ms": "5.7",
+          "encoding_ms": "26.9",
+          "engine_ms": "28.8",
+          "persistence_ms": "16.6"
         },
         {
           "opponent": "Historical policy pool",
           "completed_episodes": "8,000",
-          "matches_per_second": "4.68",
-          "end_to_end_ms": "214",
-          "action_ms": "77",
-          "inference_ms": "66",
-          "baseline_ms": "0",
-          "encoding_ms": "28",
-          "engine_ms": "32",
-          "persistence_ms": "25"
+          "matches_per_second": "4.50",
+          "end_to_end_ms": "219.0",
+          "action_ms": "78.9",
+          "inference_ms": "67.4",
+          "baseline_ms": "0.0",
+          "encoding_ms": "28.2",
+          "engine_ms": "32.6",
+          "persistence_ms": "25.4"
         },
         {
           "opponent": "Public Counterplay",
           "completed_episodes": "6,000",
-          "matches_per_second": "4.51",
-          "end_to_end_ms": "222",
-          "action_ms": "122",
-          "inference_ms": "34",
-          "baseline_ms": "79",
-          "encoding_ms": "26",
-          "engine_ms": "30",
-          "persistence_ms": "17"
+          "matches_per_second": "4.41",
+          "end_to_end_ms": "225.0",
+          "action_ms": "124.5",
+          "inference_ms": "34.0",
+          "baseline_ms": "80.4",
+          "encoding_ms": "26.6",
+          "engine_ms": "29.6",
+          "persistence_ms": "17.0"
         }
       ],
-      "finding": "Round462 did not establish robust improvement: the 512-cluster screen scored 44.82% vs Max Damage; intervals vs Public Counterplay and historical PPO include 50%. Rollout speed/profile are included above; see the separate evaluation card for opponent intervals."
+      "finding": "The Public Counterplay scorer is the slowest shard class. Policy inference/selection and observation encoding remain larger optimization targets than Showdown simulation; engine time is about 15% of episode telemetry."
     },
     "profile": [
       {
@@ -998,20 +998,119 @@
           "share": "10.0%"
         }
       ]
+    },
+    "round464_full_iteration_profile": {
+      "round": 464,
+      "observed_rollout_games_per_second": "35.38",
+      "observed_workflow_games_per_second": "17.66",
+      "observed_rollout_wall_seconds": "565.2",
+      "observed_workflow_wall_seconds": "1,132.5",
+      "ppo_wall_seconds": "152.38",
+      "ppo_sample_preparation_seconds": "87.46",
+      "optimizer_seconds_approximate": "~53.6",
+      "transitions": "162,775",
+      "peak_rss_gib": "7.33 PPO; rollout RSS unavailable",
+      "timing_caveat": "The input-snapshot-to-checkpoint wall time (1,132.5 s; 17.66 games/s) includes a failed first strict audit, a rejected identical-team episode, a replacement game, re-audit, and PPO. It is a recovery-inclusive measurement, not a clean speed comparison. Original rollout shards alone took 565.2 s (35.38 aggregate games/s). The rollout resource monitor did not persist after the orchestrator exited at the audit; PPO peak RSS was measured with /usr/bin/time.",
+      "ppo_stages": [
+        {
+          "stage": "Sample preparation",
+          "seconds": "87.46"
+        },
+        {
+          "stage": "PPO optimization loop (approximate)",
+          "seconds": "~53.6"
+        },
+        {
+          "stage": "Remaining PPO overhead / tensor work (approximate)",
+          "seconds": "~11.3"
+        }
+      ],
+      "rollout_stages": [
+        {
+          "stage": "Action selection (includes nested inference/scoring)",
+          "ms": "83.4"
+        },
+        {
+          "stage": "Policy inference (nested)",
+          "ms": "47.0"
+        },
+        {
+          "stage": "Baseline scoring (nested)",
+          "ms": "25.8"
+        },
+        {
+          "stage": "Observation encoding",
+          "ms": "27.3"
+        },
+        {
+          "stage": "Showdown engine roundtrip",
+          "ms": "30.6",
+          "share": "15.3%"
+        },
+        {
+          "stage": "Trajectory persistence",
+          "ms": "20.2"
+        },
+        {
+          "stage": "Pre-match setup",
+          "ms": "8.9"
+        }
+      ],
+      "iteration_stages": [
+        {
+          "stage": "Rollout generation (original shards)",
+          "seconds": "565.2",
+          "share": "49.9%"
+        },
+        {
+          "stage": "PPO update",
+          "seconds": "152.4",
+          "share": "13.5%"
+        },
+        {
+          "stage": "Failed audit, recovery, re-audit, orchestration",
+          "seconds": "414.9",
+          "share": "36.6%"
+        }
+      ],
+      "opportunities": [
+        {
+          "title": "Reduce Public Counterplay scoring cost",
+          "detail": "Scoring averaged 80.4 ms/episode on Public Counterplay shards (25.8 ms mixed-run average); this was the slowest rollout class at 4.41 shard games/s. Optimize scorer reuse and remeasure without changing action quality."
+        },
+        {
+          "title": "Batch rollout policy decisions",
+          "detail": "Action selection averaged 83.4 ms/episode, including 47.0 ms nested inference. Batch ready decisions across workers and measure throughput, queue delay, and p95 latency."
+        },
+        {
+          "title": "Speed observation encoding",
+          "detail": "Encoding averaged 27.3 ms/episode. Reuse compact buffers and static team/dex features while preserving closed-sheet checks."
+        },
+        {
+          "title": "Automate incomplete-game top-up",
+          "detail": "A rare identical-team matchup caused the first strict audit to stop. Add targeted recovery and re-audit to the orchestrator; preserve the hard completeness gate."
+        },
+        {
+          "title": "Keep Showdown as the correctness reference",
+          "detail": "The engine was about 15.3% of per-episode telemetry. Keep prioritizing the larger policy and scoring stages before considering another simulator."
+        }
+      ],
+      "report": "round464_full_iteration_profile.json",
+      "summary": "Round464 completed 20,000 audited games and PPO from Round463. Rollouts ran at 35.38 aggregate games/s; recovery-inclusive input-to-checkpoint speed was 17.66 games/s. A strict audit caught one identical-team match, which was replaced before PPO. Held-out evaluation is running; no promotion decision yet."
     }
   },
   "latest_run": {
     "round": 464,
-    "status": "20,000-game rollout and PPO update in progress",
-    "summary": "Round464 started from Round463 at learning rate 5e-5, keeping 30% Max Damage and 30% Public Counterplay coverage and updating the 40% policy pool to Round463/Round462. Results are pending. The latest complete training speed profile is Round463: 24.88 full-iteration games/s, 35.06 aggregate rollout games/s.",
-    "games": "20,000 planned outcomes",
-    "epochs": "4 passes \u00b7 1,276 optimizer steps planned",
-    "evaluation": "Pending rollout and PPO update"
+    "status": "20,000-game rollout and PPO complete \u00b7 held-out evaluation running",
+    "summary": "Round464 completed 20,000 audited games and PPO from Round463. Rollouts ran at 35.38 aggregate games/s; recovery-inclusive input-to-checkpoint speed was 17.66 games/s. A strict audit caught one identical-team match, which was replaced before PPO. Held-out evaluation is running; no promotion decision yet.",
+    "games": "20,000 audited outcomes",
+    "epochs": "4 passes \u00b7 1,272 optimizer steps",
+    "evaluation": "512-cluster screen plus matched Max Damage controls in progress"
   },
   "method": "Native self-play PPO for in-battle decisions. Terminal win/loss remains the main objective; win-probability and hidden-set prediction are auxiliary tasks. Search comes after a stronger policy.",
   "jax_decision": "Round430 has a confirmed self-play head-to-head lift over Round424, but external-opponent screens remain inconclusive. Prioritize measured inference batching, observation throughput, and rollouts; keep equilibrium-oriented opponent coverage and defer a JAX/GPU engine rewrite until its end-to-end payoff is measured.",
   "evaluation_note": "Round463 beat Round432 and its Round462 parent in direct head-to-heads (54.00% against each; 95% team-cluster intervals just above 50%). It scored 45.02% against Max Damage and 46.19% against Public Counterplay. Same-seed Max Damage controls scored 43.95% for Round430 and 43.55% for Round462; paired gains of +1.07 and +1.46 pp both have intervals spanning zero. Round463 is not promoted; Round430 remains the validated robust candidate.",
-  "generated_at": "2026-10-30 18:25 UTC",
+  "generated_at": "2026-10-30 18:42 UTC",
   "round462_evaluation": {
     "status": "Round462 not promoted \u00b7 initial paired screen complete",
     "summary": "Round462 scored 44.82% against Max Damage [41.02%, 48.54%]. On the same teams and seeds, Round430 scored 44.73% and Round432 scored 44.43%; paired deltas were +0.10 pp [-1.37, +1.56] and +0.39 pp [-1.37, +2.05]. The update did not measurably change this weakness. Results against Public Counterplay and historical PPO are inconclusive; Random is an easy-baseline check.",
@@ -1308,7 +1407,7 @@
     "local_report": "training/outputs/phase12_headless/round463_lr5e5_20k_20261030/evaluation/round463_paired_scorecard.json"
   },
   "round464_experiment": {
-    "status": "running",
+    "status": "training complete; held-out evaluation running",
     "seed": 20263047,
     "games": 20000,
     "start_checkpoint": "Round463",
@@ -1325,6 +1424,7 @@
       "Round462"
     ],
     "run_directory": "training/outputs/phase12_headless/round464_round463_continue_pool463_462_lr5e5_20k_20261030/",
-    "training_script": "scripts/train_round464_round463_continue_lr5e5_20k.sh"
+    "training_script": "scripts/train_round464_round463_continue_lr5e5_20k.sh",
+    "checkpoint": "training/outputs/phase12_headless/round464_round463_continue_pool463_462_lr5e5_20k_20261030/checkpoints/latest.pt"
   }
 }

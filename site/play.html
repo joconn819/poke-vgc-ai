@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#101a2c">
+  <title>Play against the latest VGC bot</title>
+  <style>
+    :root { color-scheme:dark; --bg:#0b1220; --panel:#131e31; --line:#263650; --muted:#a7b5c9; --text:#eef4ff; --blue:#72b7ff; --green:#72dfb1; }
+    * { box-sizing:border-box; }
+    body { margin:0; background:radial-gradient(ellipse at 15% 0%,#172846 0,transparent 45%),var(--bg); color:var(--text); font:16px/1.55 system-ui,-apple-system,Segoe UI,sans-serif; }
+    main { width:min(820px,calc(100% - 32px)); margin:48px auto 72px; }
+    h1 { margin:0 0 8px; font-size:clamp(2rem,6vw,3.4rem); line-height:1.05; letter-spacing:-.04em; }
+    h2 { margin:0 0 10px; font-size:1.15rem; }
+    p { color:var(--muted); margin:0; }
+    a { color:var(--blue); }
+    .eyebrow { color:var(--blue); font-size:.78rem; font-weight:700; letter-spacing:.13em; text-transform:uppercase; margin-bottom:10px; }
+    .card { margin-top:16px; padding:22px; background:linear-gradient(145deg,rgba(23,36,58,.98),rgba(17,28,46,.98)); border:1px solid var(--line); border-radius:16px; }
+    .badge { display:inline-block; border:1px solid #37634f; color:var(--green); border-radius:99px; padding:3px 10px; font-size:.78rem; font-weight:700; margin-bottom:14px; }
+    label { display:block; color:var(--text); font-weight:650; margin:14px 0 6px; }
+    input { width:100%; border:1px solid #405572; border-radius:9px; padding:12px; color:var(--text); background:#0d1728; font:inherit; }
+    button,.button { display:inline-block; border:0; border-radius:9px; padding:11px 16px; background:#3985e7; color:#fff; font:inherit; font-weight:700; cursor:pointer; text-decoration:none; }
+    button.secondary { background:#263650; border:1px solid #405572; }
+    .actions { display:flex; gap:10px; flex-wrap:wrap; margin-top:16px; }
+    code,pre { color:#d9eaff; background:#0b1423; border:1px solid #263650; border-radius:8px; }
+    code { padding:2px 6px; }
+    pre { padding:13px; overflow:auto; margin:12px 0; }
+    ol { padding-left:22px; color:var(--muted); }
+    li { padding:4px 0; }
+    .note { font-size:.88rem; margin-top:12px; }
+    .status { min-height:1.5em; color:#ffc5a8; margin-top:10px; font-size:.9rem; }
+    footer { color:var(--muted); font-size:.88rem; margin-top:20px; }
+    @media(max-width:600px) { main { margin-top:28px; } .card { padding:17px; } }
+  </style>
+</head>
+<body>
+  <main>
+    <header>
+      <div class="eyebrow">Local Pokémon Showdown · VGC · Closed Team Sheet</div>
+      <h1>Play the latest bot</h1>
+      <p>Challenge the current completed policy checkpoint in a full best-of-one VGC match. The bot generates a fresh legal team for each match.</p>
+    </header>
+
+    <section class="card" aria-labelledby="checkpoint-title">
+      <span class="badge">Latest completed policy: Round464</span>
+      <h2 id="checkpoint-title">Checkpoint used for matches</h2>
+      <p>Round464 finished training from 20,000 audited games. Its held-out evaluation is still running, so Round430 remains the validated strength candidate. This page uses Round464 because it is the newest completed policy checkpoint.</p>
+    </section>
+
+    <section class="card" aria-labelledby="connect-title">
+      <h2 id="connect-title">Connect to the local battle server</h2>
+      <p>Enter the address of the machine running the local Showdown server. The server must be reachable from this device, and the checkpoint bot must be running there.</p>
+      <label for="server">Showdown server address</label>
+      <input id="server" inputmode="url" autocomplete="url" placeholder="192.168.1.153:8001" aria-describedby="server-help">
+      <p class="note" id="server-help">Use the host IP and port, for example <code>192.168.1.153:8001</code>. This connection stays on your configured server; this page does not connect to public Pokémon Showdown.</p>
+      <div class="actions">
+        <button id="open-server" type="button">Open local Showdown</button>
+        <button id="copy-challenge" class="secondary" type="button">Copy challenge command</button>
+      </div>
+      <div class="status" id="status" role="status" aria-live="polite"></div>
+    </section>
+
+    <section class="card" aria-labelledby="steps-title">
+      <h2 id="steps-title">Start a match</h2>
+      <ol>
+        <li>Start the local Showdown server and the bot service on the same machine. The bot must use the completed Round464 checkpoint and Round402 team selector.</li>
+        <li>Open the server above, sign in or choose a username, then create or select a legal team for <code>gen9championsdoubles2026mcclosed</code>.</li>
+        <li>In the Showdown lobby, issue this challenge to the bot:</li>
+      </ol>
+      <pre id="challenge">/challenge VGCCheckpointBot, gen9championsdoubles2026mcclosed</pre>
+      <p class="note">The bot picks four from a newly generated six-Pokémon team. Your own team is selected in Showdown. The match runs entirely on the local server.</p>
+    </section>
+
+    <section class="card" aria-labelledby="setup-title">
+      <h2 id="setup-title">Start the latest checkpoint bot</h2>
+      <p>On the machine hosting Showdown, run this from the project directory after setting <code>HOST_IP</code> to that machine’s private network address:</p>
+      <pre>HOST_IP=192.168.1.153
+scripts/run_local_showdown_lan.sh "$HOST_IP" 8001</pre>
+      <p>In a second terminal, start the bot with the latest finished checkpoint:</p>
+      <pre>PYTHONPATH=. POKEMON_SHOWDOWN_PATH=/home/justin/p/poke_learning/pokemon-showdown \
+  venv/bin/python scripts/run_lan_bot.py \
+  --server-host "$HOST_IP" --port 8001 \
+  --username VGCCheckpointBot \
+  --checkpoint training/outputs/phase12_headless/round464_round463_continue_pool463_462_lr5e5_20k_20261030/checkpoints/latest.pt \
+  --team-selection-checkpoint training/outputs/phase12_headless/round402_selector_currentdata_8ep_20261030/selector_candidate.pt</pre>
+      <p class="note">The published progress site cannot host the Showdown battle process or access checkpoint files on the training machine, so the server and bot need to be running on a machine you control. These commands use the Round464 checkpoint shown above.</p>
+    </section>
+    <footer><a href="./">← Back to training progress</a></footer>
+  </main>
+  <script>
+    const serverInput = document.querySelector("#server");
+    const status = document.querySelector("#status");
+    const challenge = "/challenge VGCCheckpointBot, gen9championsdoubles2026mcclosed";
+    document.querySelector("#open-server").addEventListener("click", () => {
+      let host = serverInput.value.trim().replace(/^https?:\/\//i, "").replace(/\/$/, "");
+      if (!host || /[/?#\s]/.test(host)) {
+        status.textContent = "Enter a host and port, such as 192.168.1.153:8001.";
+        serverInput.focus();
+        return;
+      }
+      status.textContent = "Opening your configured local Showdown server in a new tab.";
+      window.open(`http://${host}`, "_blank", "noopener,noreferrer");
+    });
+    document.querySelector("#copy-challenge").addEventListener("click", async () => {
+      try {
+        await navigator.clipboard.writeText(challenge);
+        status.textContent = "Challenge command copied.";
+      } catch {
+        status.textContent = "Copy unavailable. Select and copy the command shown below.";
+      }
+    });
+  </script>
+</body>
+</html>

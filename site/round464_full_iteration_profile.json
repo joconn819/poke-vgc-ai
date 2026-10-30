@@ -1,0 +1,206 @@
+{
+  "round": 464,
+  "date": "2026-10-30",
+  "status": "20,000-game training complete; strict audit passed after one game replacement; evaluation pending",
+  "configuration": {
+    "games": 20000,
+    "opponents": {
+      "max_damage": 6000,
+      "public_counterplay": 6000,
+      "policy_pool": 8000
+    },
+    "rollout_workers": 8,
+    "pool_policy_weights": {
+      "round462": 0.5,
+      "round463_parent": 0.5
+    },
+    "trainable_transitions": 162775,
+    "ppo_epochs": 4,
+    "optimizer_steps": 1272,
+    "learning_rate": 5e-05,
+    "minibatch_size": 512,
+    "device": "RTX 4060 Laptop GPU",
+    "gc_disabled_during_ppo_update": true,
+    "seed": 20263047
+  },
+  "speed": {
+    "full_iteration_wall_seconds_recovery_inclusive": 1132.520945072174,
+    "full_iteration_games_per_second_recovery_inclusive": 17.65971754167021,
+    "rollout_wall_seconds_original_shards": 565.2369525432587,
+    "rollout_aggregate_games_per_second": 35.3833908239914,
+    "ppo_training_wall_seconds": 152.38,
+    "ppo_peak_rss_gib": 7.33,
+    "rollout_mean_episode_seconds": 0.19917438570587548,
+    "rollout_mean_telemetry_seconds_per_episode": {
+      "action_proposal_seconds": 0.00129887408328359,
+      "action_selection_seconds": 0.08337086304908735,
+      "baseline_action_seconds": 0.025844269784278003,
+      "end_to_end_episode_seconds": 0.19917438570587548,
+      "headless_engine_roundtrip_seconds": 0.030565314926100838,
+      "observation_encoding_seconds": 0.02734308712714992,
+      "policy_inference_seconds": 0.04697715931833663,
+      "pre_match_setup_seconds": 0.008915114985077525,
+      "preview_and_first_step_seconds": 0.0019441296200471698,
+      "trajectory_persist_seconds": 0.020236159446812233
+    },
+    "rollout_profile_by_opponent": {
+      "max_damage": {
+        "episodes": 6000,
+        "mean_runtime_metrics": {
+          "action_proposal_seconds": 0.0012493535342267327,
+          "action_selection_seconds": 0.04816425782818017,
+          "baseline_action_seconds": 0.005739416878272702,
+          "end_to_end_episode_seconds": 0.14701984848550637,
+          "headless_engine_roundtrip_seconds": 0.028755216546846592,
+          "observation_encoding_seconds": 0.026901632728622643,
+          "policy_inference_seconds": 0.03275525259010222,
+          "pre_match_setup_seconds": 0.008519559363087561,
+          "preview_and_first_step_seconds": 0.0020294207953847946,
+          "trajectory_persist_seconds": 0.016550720415262427
+        },
+        "shard_games_per_second": 6.71
+      },
+      "public_counterplay": {
+        "episodes": 6000,
+        "mean_runtime_metrics": {
+          "action_proposal_seconds": 0.0012831893998421341,
+          "action_selection_seconds": 0.12449953525062786,
+          "baseline_action_seconds": 0.08040814906932064,
+          "end_to_end_episode_seconds": 0.22495686268014833,
+          "headless_engine_roundtrip_seconds": 0.029634353442811213,
+          "observation_encoding_seconds": 0.026618867572828702,
+          "policy_inference_seconds": 0.0340214997328779,
+          "pre_match_setup_seconds": 0.00824302423990836,
+          "preview_and_first_step_seconds": 0.0019342182330874494,
+          "trajectory_persist_seconds": 0.01698499943005057
+        },
+        "shard_games_per_second": 4.405
+      },
+      "policy": {
+        "episodes": 8000,
+        "mean_runtime_metrics": {
+          "action_proposal_seconds": 0.0013477780076573253,
+          "action_selection_seconds": 0.07892931281361235,
+          "baseline_action_seconds": 0.0,
+          "end_to_end_episode_seconds": 0.21895343089044764,
+          "headless_engine_roundtrip_seconds": 0.03262110982300874,
+          "observation_encoding_seconds": 0.028217342591786293,
+          "policy_inference_seconds": 0.06736033405360649,
+          "pre_match_setup_seconds": 0.009715849760446872,
+          "preview_and_first_step_seconds": 0.0018875947787637415,
+          "trajectory_persist_seconds": 0.02543860873304584
+        },
+        "shard_games_per_second": 4.502
+      }
+    },
+    "ppo_stage_profile_available": false,
+    "ppo_stage_profile_note": "Manual PPO replay after recovery records total preparation and update time but not per-stage preparation timers. Round463 retains the latest exact stage split.",
+    "rollout_resource_monitor_available": false,
+    "speed_context": "The input-snapshot-to-checkpoint interval includes the first failed strict audit, one replacement episode, re-audit, and PPO. It is a recovery-inclusive measurement, not a clean speed comparison."
+  },
+  "training": {
+    "update": 1,
+    "loss": 0.7902408297050674,
+    "policy_loss": -0.003579413902699807,
+    "value_loss": 0.2087019572280488,
+    "entropy": 1.6328095916494634,
+    "approx_kl": 0.004708315791452759,
+    "clip_fraction": 0.053611131584119495,
+    "counterplay_teacher_loss": 0.0,
+    "soft_joint_teacher_loss": 0.0,
+    "win_probability_loss": 0.46874639075600877,
+    "hidden_move_loss": 4.404886682078524,
+    "hidden_item_loss": 2.773706391360025,
+    "hidden_ability_loss": 3.9128415279043547,
+    "epochs_run": 1272.0,
+    "transitions": 162775.0,
+    "stop_reason": "step_budget",
+    "initial_approx_kl": 7.240493792052642e-14,
+    "initial_log_prob_max_error": 1.430511474609375e-06,
+    "initial_log_prob_mean_error": 2.5505005396553315e-07,
+    "temperature": 1.0,
+    "reward_mode": "terminal",
+    "gae_lambda": 0.95,
+    "gae_gamma": 0.99,
+    "counterplay_prior_weight": 0.0,
+    "advantage_normalization": "global",
+    "opponent_balanced_loss": 0.0,
+    "opponent_balance_power": 1.0,
+    "max_damage_loss_weight": 1.0,
+    "optimizer_steps_run": 1272.0,
+    "optimizer_steps_per_sweep": 318.0,
+    "passes_requested": 4.0,
+    "passes_equivalent_run": 4.0,
+    "training_team": "trainable"
+  },
+  "preflight": {
+    "ready_for_ppo": true,
+    "counts": {
+      "missing_behavior_rows": 12000,
+      "opponent_view_rows": 8000,
+      "player_view_rows": 40000,
+      "ppo_valid_rows": 28000,
+      "safe_rows": 40000,
+      "trainable_games": 20000,
+      "trainable_transitions": 162775
+    },
+    "trainable_games_by_opponent": {
+      "max_damage": 6000,
+      "policy": 8000,
+      "public_counterplay": 6000
+    },
+    "trainable_seats": {
+      "player1": 10000,
+      "player2": 10000
+    },
+    "errors": []
+  },
+  "checkpoint": "checkpoints/round_0001/update_000001.pt",
+  "latest_checkpoint": "checkpoints/latest.pt",
+  "recovery": {
+    "rejected_episode": 20263047008609,
+    "reason": "both generated rosters contained the same six species; teams_differ=false",
+    "rejected_rows": 2,
+    "replacement_episode": 20263047020000,
+    "replacement_records": 2,
+    "replacement_rows_appended_to": "training/outputs/phase12_headless/round464_round463_continue_pool463_462_lr5e5_20k_20261030/rollouts/round_0001_public_counterplay_p1_shard001.jsonl",
+    "rejected_rows_artifact": "training/outputs/phase12_headless/round464_round463_continue_pool463_462_lr5e5_20k_20261030/rollouts/rejected_public_counterplay_team_collision.jsonl",
+    "initial_preflight_trainable_games": 19999,
+    "initial_preflight_errors": [
+      "expected 20000 trainable games, found 19999",
+      "opponent public_counterplay: expected 6000 trainable games, found 5999"
+    ]
+  },
+  "opportunities": [
+    {
+      "rank": 1,
+      "name": "Public Counterplay scoring",
+      "evidence": "80.4 ms/episode and 4.41 games/s per shard",
+      "next": "Optimize scorer reuse and accelerate the heaviest rollout shard."
+    },
+    {
+      "rank": 2,
+      "name": "Policy inference and action selection",
+      "evidence": "83.4 ms/episode action selection, including 47.0 ms nested inference",
+      "next": "Batch decisions across rollout workers and measure queue delay and p95 latency."
+    },
+    {
+      "rank": 3,
+      "name": "Observation encoding",
+      "evidence": "27.3 ms/episode",
+      "next": "Reuse compact buffers and static features with leakage checks."
+    },
+    {
+      "rank": 4,
+      "name": "Auditor recovery path",
+      "evidence": "A same-roster generated matchup invalidated two perspective rows and stopped PPO until a replacement episode was added.",
+      "next": "Add automatic targeted rollout top-up when strict audit detects incomplete games."
+    }
+  ],
+  "report_paths": {
+    "preflight": "preflight/round_0001.json",
+    "round_summary": "rounds.jsonl",
+    "raw_ppo_log": "stdout.log",
+    "ppo_time": "ppo_time.log"
+  }
+}

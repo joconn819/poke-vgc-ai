@@ -16121,3 +16121,41 @@ team choice but does not change that conclusion.
   and its uncertain but positive matched Max Damage deltas. The changed pool
   moves one slot from Round432 to the current Round463 checkpoint. Evaluate
   against the same hard-opponent and historical-policy set before promotion.
+
+### Round464 training complete; held-out evaluation pending (2026-10-30)
+
+- The 20,000-game Round464 rollout finished with 6,000 Max Damage, 6,000
+  Public Counterplay, and 8,000 policy-pool episodes (Round463/Round462 split
+  50/50). Strict preflight initially stopped because one generated Public
+  Counterplay match selected the same six species for both teams. Its two
+  perspective rows were removed and retained in a rejected-row artifact; one
+  replacement match with a distinct seed was added. The second strict audit
+  passed with 20,000 trainable games, 40,000 safe perspective rows, 162,775
+  trainable transitions, balanced 10,000/10,000 trainable seats, and no errors.
+- PPO then completed all 1,272 optimizer steps on CUDA. KL was 0.00471, clip
+  fraction 5.36%, value loss 0.2087, and policy loss -0.00358. The candidate is
+  at `training/outputs/phase12_headless/round464_round463_continue_pool463_462_lr5e5_20k_20261030/checkpoints/latest.pt`.
+- **Measured speed:** the original rollout shards took 565.2 s (**35.38
+  aggregate games/s**) and PPO took 152.38 s, with 7.33 GiB PPO peak RSS.
+  Input-snapshot-to-checkpoint measured 1,132.5 s (**17.66 games/s**), including
+  the failed audit and replacement/re-audit. Treat that end-to-end value as a
+  recovery-inclusive measurement, not a clean comparison. The rollout resource
+  monitor and PPO preparation sub-stage timers were not retained after the
+  first orchestrator exited at its strict audit.
+- Episode telemetry still identifies policy action selection (83.4 ms mixed
+  average, nested inference 47.0 ms) and Public Counterplay scoring (80.4 ms on
+  its own shards) as the largest agent-side opportunities. Observation
+  encoding was 27.3 ms; Showdown roundtrip 30.6 ms (~15.3% of episode telemetry).
+- Raw speed report: `training/outputs/phase12_headless/round464_round463_continue_pool463_462_lr5e5_20k_20261030/profile.json`.
+  The initial failed audit, rejected rows, replacement record, strict passing
+  audit, PPO replay, and atomic checkpoint publication are all retained under
+  that round's output directory.
+- Held-out evaluation is now running on 512 side-swapped clusters per matchup
+  against Random, Max Damage, Public Counterplay, Round463, and Round430; the
+  Max Damage matchup also has same-seed Round463 and Round430 controls. Do not
+  promote Round464 until the cluster-bootstrap intervals and paired Max Damage
+  deltas are reviewed.
+- The audit failure exposed a process gap: `train_headless_ppo.py` currently
+  stops instead of topping up when a rare team collision makes one episode
+  untrainable. Future iterations should add a targeted top-up path while
+  preserving the strict perspective and completeness gate.
