@@ -4,16 +4,14 @@ Use this checklist to track implementation. Add dated notes under each phase as
 work progresses. Training may use a faster headless/local simulation path, but
 Pokémon Showdown remains the correctness reference and required battle platform.
 
-**Active policy-improvement plan (2026-10-29):**
-[NEXT_AGENT_PLAN.md](NEXT_AGENT_PLAN.md) explains the 40% plateau hypotheses,
-the decision-quality experiments, and the staged path toward robust play. It
-supersedes older recommendation sections below; dated entries remain the
-experiment ledger. The 2026-10-29 revision makes direct-policy population
-self-play the primary path, with measured population mixtures and fresh
-response audits. Evaluator/search work is conditional on demonstrated gains.
-The current agent is implementing the handoff plan. Preserve pre-existing
-workspace changes. Corrected Round219 has completed; its result is recorded
-below.
+**Active policy-improvement plan (updated 2026-10-30):** this section is the
+current source of truth and supersedes older recommendation sections below;
+dated entries remain the experiment ledger. Direct-policy self-play PPO with
+auxiliary win-probability and hidden-set prediction is active. Round424's
+multi-opponent screen showed no clear improvement, so the checkpoint was not
+promoted. Round430 is testing a stronger-opponent mixture with no random-play
+share. Search remains conditional on a stronger base policy. Preserve existing
+workspace changes while implementing and evaluating this direction.
 
 **Current objective (2026-10-30):** move toward optimal, equilibrium-oriented
 play in closed-team-sheet VGC. The earlier 80% goal against Max Damage is a
@@ -15004,8 +15002,8 @@ team choice but does not change that conclusion.
   (22.86 aggregate rollout games/s); PPO data preparation and optimization
   took 123.5 seconds; total iteration wall time was 592.4 seconds (16.89
   games/s). Host: 16 logical CPUs and an RTX 4060 Laptop GPU with 8 GB.
-- Per-opponent end-to-end rollout profiles (milliseconds per match; rates
-  measured across two parallel trainable-side shards):
+- Per-opponent end-to-end rollout profiles (milliseconds per match; games/s is
+  the mean per-worker shard rate, not aggregate throughput):
 
   | Opponent | games/s | End-to-end | Action selection | Observation encoding | Showdown roundtrip | trajectory write |
   | --- | ---: | ---: | ---: | ---: | ---: | ---: |
@@ -15013,6 +15011,10 @@ team choice but does not change that conclusion.
   | Max Damage | 7.27 | 136 | 50 | 26 | 29 | 9 |
   | Historical policy pool | 5.10 | 193 | 84 | 27 | 34 | 12 |
   | Public counterplay | 2.89 | 344 | 269 | 22 | 27 | 7 |
+
+  The complete 8-worker mixed rollout achieved 22.86 aggregate games/s; the
+  full iteration including PPO preparation and optimization achieved 16.89
+  games/s. Per-opponent rows describe individual shard rates.
 
 - Nested timing details: policy inference accounted for about 36 ms/match
   against Random, 35 ms vs Max Damage, 72 ms vs the historical policy pool,

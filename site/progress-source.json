@@ -62,7 +62,7 @@
     "decision_latency": "See per-opponent breakdown",
     "current_bottleneck": "Counterplay action scoring; then policy inference and observation encoding",
     "gpu_status": "RTX 4060 used for PPO optimization; Showdown simulation and rollout inference remain CPU-side",
-    "profile_context": "Round424, 10,000 self-play matches on 8 rollout workers. End-to-end episode time includes setup, agent decisions, engine calls, and trajectory writes. Action selection contains policy inference; counterplay scoring is nested inside action selection, so the columns overlap.",
+    "profile_context": "Round424, 10,000 self-play matches on 8 rollout workers. End-to-end episode time includes setup, agent decisions, engine calls, and trajectory writes. Per-opponent rates are per worker shard (each shard\u2019s episodes divided by its own elapsed time), not aggregate throughput. Total rollout throughput was 22.86 games/s across the full 8-worker run; the complete training iteration was 16.89 games/s. Action selection contains policy inference; counterplay scoring is nested inside action selection, so timing columns overlap.",
     "profile": [
       {
         "opponent": "Random",
