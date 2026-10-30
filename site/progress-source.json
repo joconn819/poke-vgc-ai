@@ -12,7 +12,7 @@
     "games": "2,042",
     "label": "Current in-battle policy vs Round424 start",
     "status": "Current validated candidate \u00b7 Round431 and Round432 showed no clear lift",
-    "note": "Round431 scored 49.36% [45.85%, 52.93%] against Round430, and Round432 scored 47.90% [44.29%, 51.61%]; neither showed a clear gain. Round430 remains the validated in-battle candidate. Round402's 77.15% result is a separate team-preview selector benchmark."
+    "note": "Round431 scored 49.36% [45.85%, 52.93%] against Round430, and Round432 scored 47.90% [44.29%, 51.61%]; neither showed a clear gain. Round430 remains the validated in-battle candidate. Round402's 77.15% result is a separate team-preview selector benchmark. Round432 external screens also showed no clear lift: all paired 95% intervals vs Round430 and Round431 include zero. Round432 cross-opponent equal-weight mean/median/p10/worst were 60.35%/48.83%/47.64%/47.46%; the mean is buoyed by random play."
   },
   "evaluation_scorecard": [
     {
@@ -23,11 +23,32 @@
       "status": "Team-selection benchmark; separate from in-battle policy strength"
     },
     {
-      "opponent": "Round430 starting policy \u00b7 Round432",
-      "score": "47.90%",
-      "games": "2,046",
-      "interval": "[44.29%, 51.61%]",
-      "status": "512 clusters \u00b7 1 incomplete repeat \u00b7 0 action corrections \u00b7 no measured lift"
+      "opponent": "Max Damage \u00b7 Round432",
+      "score": "49.61%",
+      "games": "512",
+      "interval": "[42.38%, 57.03%]",
+      "status": "128 matched clusters \u00b7 delta vs Round430 +0.59 pp [-1.76, +2.93]; vs Round431 +1.37 pp [-1.37, +4.30] \u00b7 zero errors/action corrections"
+    },
+    {
+      "opponent": "Public counterplay \u00b7 Round432",
+      "score": "47.46%",
+      "games": "512",
+      "interval": "[40.63%, 54.10%]",
+      "status": "128 matched clusters \u00b7 delta vs Round430 +0.39 pp [-1.95, +2.93]; vs Round431 +0.39 pp [-1.95, +2.73] \u00b7 zero errors/action corrections"
+    },
+    {
+      "opponent": "Random \u00b7 Round432",
+      "score": "96.29%",
+      "games": "512",
+      "interval": "[94.14%, 98.24%]",
+      "status": "128 matched clusters \u00b7 delta vs Round430 +0.78 pp [-0.39, +2.15]; vs Round431 0.00 pp [-1.37, +1.56] \u00b7 zero errors/action corrections"
+    },
+    {
+      "opponent": "Historical PPO Round102 \u00b7 Round432",
+      "score": "48.05%",
+      "games": "512",
+      "interval": "[41.21%, 54.88%]",
+      "status": "128 matched clusters \u00b7 delta vs Round430 -0.20 pp [-3.32, +2.73]; vs Round431 +0.20 pp [-3.32, +3.71] \u00b7 zero errors/action corrections"
     },
     {
       "opponent": "Round430 starting policy \u00b7 Round431",
@@ -145,7 +166,7 @@
     "active_training_profile": {
       "round": "431",
       "status": "Detailed Round431 rollout profile \u00b7 Round430 retained as candidate",
-      "context": "Round431 completed 20,000 matches on 8 rollout workers with a 30% Max Damage / 30% Public Counterplay / 40% policy-pool mixture. Round432 has also completed PPO and its paired self-play comparison; matched external screens are underway. The values below are per-worker shard-batch means from Round431, not full-run aggregate throughput; do not sum shard rates.",
+      "context": "Round431 and Round432 completed 20,000-game PPO iterations. Detailed phase timing and per-worker shard profiles below are from Round431; Round432 matched external screens have now completed at 5.1\u20138.1 aggregate evaluator games/s over eight workers. Per-opponent rollout rates in the profile are per-worker shard means, not aggregate rates.",
       "profile": [
         {
           "opponent": "Max Damage",
@@ -184,7 +205,7 @@
           "persistence_ms": "13"
         }
       ],
-      "finding": "The bottleneck shifts by opponent: Public Counterplay scoring took about 79 ms/match, while policy-pool inference took about 73 ms/match; both exceed the 29\u201334 ms Showdown engine time. PPO record preparation took 153.2 s in Round431 and 155.7 s in Round432 for 20,000-game updates; tensor aggregation was 6\u20137 s and optimization about 51 s. Prioritize batching inference across rollout workers and speeding audited record parsing/tensor preparation; preserve the best checkpoint when an iteration shows no measured gain."
+      "finding": "The bottleneck shifts by opponent: Public Counterplay scoring took about 79 ms/match, while policy-pool inference took about 73 ms/match; both exceed the 29\u201334 ms Showdown engine time. PPO record preparation took 153.2 s in Round431 and 155.7 s in Round432 for 20,000-game updates; tensor aggregation was 6\u20137 s and optimization about 51 s. Round432 external evaluation ran 5.1\u20138.1 aggregate games/s on eight workers. Prioritize batching inference across rollout workers and speeding audited record parsing/tensor preparation; preserve the best checkpoint when an iteration shows no measured gain."
     },
     "profile": [
       {

@@ -175,8 +175,21 @@ percentage alone.
   repeat timed out/errored and zero actions were corrected. This did not show a
   gain over Round430. Summary and cluster analysis are in
   `training/outputs/phase12_headless/round432_vs_round430_fresh_confirm_512x2_20261030/`.
-  Matched 128-cluster screens against the same external-opponent set are in
-  progress; keep Round430 as the candidate pending those results.
+  Matched external screens are complete: 128 held-out team-pair clusters,
+  two side-swapped outcome repeats per cluster (512 matches per opponent).
+  Round432 scored 49.61% vs Max Damage [42.38%, 57.03%], 47.46% vs public
+  Counterplay [40.63%, 54.10%], 96.29% vs random [94.14%, 98.24%], and
+  48.05% vs historical Round102 [41.21%, 54.88%]. Paired score deltas vs
+  Round430 were +0.59 pp [-1.76, +2.93], +0.39 pp [-1.95, +2.93], +0.78 pp
+  [-0.39, +2.15], and -0.20 pp [-3.32, +2.73], respectively; paired deltas
+  vs Round431 were +1.37 pp [-1.37, +4.30], +0.39 pp [-1.95, +2.73], 0.00 pp
+  [-1.37, +1.56], and +0.20 pp [-3.32, +3.71]. Every paired interval
+  includes zero, so Round432 is not promoted. It has zero timeouts/errors and
+  zero action corrections in these four screens. Equal-weight cross-opponent
+  mean/median/p10/worst were 60.35%/48.83%/47.64%/47.46%; the high mean is
+  largely due to random play, so the lower-tail and hard-opponent scores are
+  more informative. Reports are under
+  `training/outputs/phase12_headless/round432_eval_*_matched128x2_20261030/`.
 - **Round430 held-out screens (2026-10-30):** each used 128 held-out team
   clusters and two outcome repeats (512 side-swapped games); intervals are
   seeded 10,000-resample cluster bootstraps. Round430 scored 49.02% vs Max
