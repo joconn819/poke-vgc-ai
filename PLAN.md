@@ -15418,3 +15418,24 @@ team choice but does not change that conclusion.
 - Reproduction script and report:
   `scripts/benchmark_public_mechanics_scalar_clip.py` and
   `site/public_mechanics_extraction_benchmark.json`.
+
+### Full PPO replay after preprocessing changes (Round441, 2026-10-30)
+
+- Replayed the exact Round435 audited rollout set (28,000 valid records,
+  162,366 trainable transitions) on the RTX 4060 with CUDA Torch, the same
+  initialization, seed, PPO settings, and 1,272 optimizer steps as Round437.
+  The refreshed strict audit reproduced the existing SHA-256 digest and all
+  counts exactly.
+- Sample collection took 226.27 s; input tensor aggregation took 2.82 s and
+  action tensor aggregation 4.01 s. Optimization was about 55 s. Rounded
+  telemetry start/end timestamps give about 290 s wall time.
+- The loss/metric record matched Round437 exactly, and all 82 model tensors in
+  the final checkpoint are bit-identical (maximum parameter difference 0).
+  Thus the preprocessing edits preserve the training result.
+- This full replay was slower than the prior 217.98 s preflight-reuse replay
+  and 260.74 s legacy-scan control. Runtime conditions differ and the isolated
+  benchmark gains do not establish a full-iteration speedup. Treat sample
+  parsing/preparation as the current bottleneck, and repeat a matched control
+  before claiming end-to-end improvement.
+- Profile:
+  `site/round441_full_ppo_replay_profile.json`.
