@@ -144,7 +144,7 @@
       },
       {
         "title": "3 \u00b7 Batch rollouts and tune worker count",
-        "detail": "Keep multiple independent battles in flight and batch their policy requests to reduce per-match overhead. Then benchmark 8, 12, and 16 workers on the 16-logical-CPU host with math-library threads capped; track aggregate games/s, memory, and tail latency."
+        "detail": "A fixed 240-game Max Damage benchmark measured 30.94 games/s at 8 workers, versus 29.09 at 12 and 26.04 at 16; memory also rose from 6.77 GB at 8 to 13.25 GB at 16. Keep 8 as the measured setting for now. Test batching requests across those workers before increasing concurrency."
       },
       {
         "title": "4 \u00b7 Reduce counterplay scorer cost",
@@ -194,6 +194,39 @@
         "share": "14%",
         "note": "Remaining measured episode time after named stages."
       }
+    ],
+    "worker_scaling_context": "Round430 CPU rollout scaling on the 16-logical-CPU host, with 240 complete matches per setting against Max Damage. Eight workers were fastest in this short single-opponent sample; 12 and 16 workers consumed more memory and ran slower. Test batching across the existing workers before increasing worker count.",
+    "worker_scaling": [
+      {
+        "workers": "1",
+        "games_per_second": "8.90",
+        "elapsed_seconds": "26.96",
+        "peak_rss_gb": "0.99"
+      },
+      {
+        "workers": "4",
+        "games_per_second": "24.76",
+        "elapsed_seconds": "9.69",
+        "peak_rss_gb": "3.48"
+      },
+      {
+        "workers": "8",
+        "games_per_second": "30.94",
+        "elapsed_seconds": "7.76",
+        "peak_rss_gb": "6.77"
+      },
+      {
+        "workers": "12",
+        "games_per_second": "29.09",
+        "elapsed_seconds": "8.25",
+        "peak_rss_gb": "10.02"
+      },
+      {
+        "workers": "16",
+        "games_per_second": "26.04",
+        "elapsed_seconds": "9.22",
+        "peak_rss_gb": "13.25"
+      }
     ]
   },
   "latest_run": {
@@ -207,5 +240,5 @@
   "method": "Native self-play PPO for in-battle decisions. Terminal win/loss remains the main objective; win-probability and hidden-set prediction are auxiliary tasks. Search comes after a stronger policy.",
   "jax_decision": "Round430 did not establish a strength improvement. Prioritize measured inference batching, observation throughput, and rollouts; keep equilibrium-oriented opponent coverage and defer a JAX/GPU engine rewrite until its end-to-end payoff is measured.",
   "evaluation_note": "Score rates include wins and half credit for draws. Use paired held-out teams, side swaps, repeated outcomes, and cluster intervals. Track results across public counterplay, random, historical PPO, and Max Damage; no one matchup percentage is the finish line.",
-  "generated_at": "2026-10-30 09:47 UTC"
+  "generated_at": "2026-10-30 09:50 UTC"
 }

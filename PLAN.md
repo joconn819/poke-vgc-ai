@@ -121,6 +121,16 @@ percentage alone.
   batched policy/observation throughput and more efficient concurrent rollouts;
   counterplay scoring remains a workload-specific bottleneck. Do not add
   nested inference/scorer timings again to action-selection totals.
+- **Round430 CPU rollout scaling (2026-10-30):** a fixed 240-game local
+  Showdown workload against Max Damage measured 8.90, 24.76, 30.94, 29.09,
+  and 26.04 games/s at 1, 4, 8, 12, and 16 worker processes. Peak aggregate
+  RSS rose from 0.99 GB at one worker to 6.77 GB at eight, 10.02 GB at
+  twelve, and 13.25 GB at sixteen. Eight workers were fastest in this short
+  single-opponent sample; more workers consumed more memory and reduced
+  throughput. Retain eight for now. The next concurrency gain should come from
+  batching inference/features across the existing workers, not increasing
+  worker count. Report:
+  `training/outputs/phase12_headless/round430_scaling_benchmark_240_20261030/scaling_report.json`.
 - **Progress site:** `site/index.html` presents held-out results, the current
   speed snapshot, and training status. `.github/workflows/pages.yml` rebuilds
   its JSON from this plan and deploys through GitHub Pages on pushes to `main`.
@@ -15066,9 +15076,10 @@ team choice but does not change that conclusion.
   2. Cache and fuse observation features / static lookups, then benchmark
      precomputed team features and reusable compact-array buffers. Keep the
      player-view leakage audit.
-  3. Keep more independent matches in flight and benchmark 8, 12, and 16
-     workers with CPU math-library threads capped; compare aggregate games/s,
-     memory, and tail decision latency.
+  3. Keep eight workers as the measured best setting for the 240-game
+     Max-Damage workload; 12/16 workers were slower and used more memory.
+     Prototype batching across the existing live rollouts before retesting
+     broader mixtures and tail decision latency.
   4. Profile and accelerate Public Counterplay candidate scoring; its scorer
      accounts for 228 ms/match in that workload. Cache static move/type data
      and batch score features while retaining switches, Protect, setup, and
