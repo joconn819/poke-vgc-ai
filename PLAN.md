@@ -190,6 +190,54 @@ percentage alone.
   largely due to random play, so the lower-tail and hard-opponent scores are
   more informative. Reports are under
   `training/outputs/phase12_headless/round432_eval_*_matched128x2_20261030/`.
+- **Round433 lineage-matrix setup audit (2026-10-30; rejected):** the first
+  128-cluster policy-lineage matrix applied the Round402 preview selector only
+  to the candidate, not the policy opponent. This changed preview choices by
+  seat, so its apparent checkpoint ranking is invalid and excluded from all
+  strength claims. Raw files remain in
+  `training/outputs/phase12_headless/round433_lineage_payoff_matrix_128x1_20261030/`
+  for audit only.
+- **Round434 symmetric-selector lineage matrix (2026-10-30; exploratory):**
+  re-evaluated Round424/430/431/432 on six paired matchups, each with 128
+  development team-pair clusters and side-swapped games; the Round402 preview
+  selector was applied to both policies. Point scores ranged from 53.52% to
+  55.08%, but every cluster-bootstrap 95% interval included 50%; there were
+  zero action corrections and no errors except one incomplete repeat in
+  Round431 vs Round432. Combining these payoffs with held-out Max Damage,
+  public Counterplay, and Round102 screens gives a restricted-game point
+  mixture of 32.1% Round430, effectively 0% Round431, and 67.9% Round432.
+  Its estimated value against this finite response set is 47.34%; it is not a
+  full-game Nash strategy. The lower-bound matrix gives 20.1%/5.3%/74.6%,
+  showing how noisy these small estimates are. Matrix artifacts are under
+  `training/outputs/phase12_headless/round434_lineage_payoff_matrix_128x1_symmetric_preview_20261030/`.
+- **Round435 equilibrium-mixture response (2026-10-30; completed, not
+  promoted):** trained a Round430 response for 20,000 matches against 30% Max
+  Damage, 30% public Counterplay, and 40% policy opponents sampled from the
+  Round434 point mixture (31.7% Round430 / 68.3% Round432 within that pool).
+  Preflight initially rejected one same-team public-Counterplay P2 match. Two
+  recovery games were recorded; only a fresh P2 game was used, yielding exactly
+  20,000 trainable games, 6,000/6,000/8,000 by opponent and 10,000 per seat.
+  The data has 162,366 trainable transitions and no audit errors. PPO completed
+  1,272 steps (4 passes), KL 0.00335, value loss 0.21189, and win-head loss
+  0.47367. Preparation plus tensor aggregation took 159.3 s; optimization
+  took about 55 s. The orchestrator stopped at its strict preflight failure,
+  so the recovered audit and PPO were run manually; the unused P1 replacement
+  remains archived and was excluded. Per-worker rollout samples were 7.3
+  games/s and 134 ms/match vs Max Damage, 4.9–5.6 games/s and 179–202 ms/match
+  vs policy opponents, and about 4.9 games/s and 202 ms/match vs public
+  Counterplay. Inference took about 34 ms vs Max Damage and 65–73 ms vs policy
+  opponents; public Counterplay scoring took about 76 ms. Full-run aggregate
+  rollout throughput was not captured, so these shard rates must not be summed.
+  On 512 fresh team clusters, Round435 scored 52.98% vs Round430
+  [49.41%, 56.59%] (one incomplete pair, zero action corrections). Matched
+  128-cluster external screens scored 48.44% vs Max Damage [41.21%, 55.66%],
+  46.48% vs public Counterplay [39.84%, 53.13%], 95.70% vs random
+  [93.95%, 97.46%], and 49.80% vs historical Round102 [42.77%, 56.84%]. All
+  paired differences vs Round430 and Round432 included zero. Cross-opponent
+  mean/median/p10/worst were 60.11%/49.12%/47.07%/46.48%; random inflates the
+  mean. This does not establish a gain; retain Round430 as the validated
+  candidate and do not repeat the same mixture unchanged. Artifacts are under
+  `training/outputs/phase12_headless/round435_equilibrium_mixture_response_20k_20261030/`.
 - **Round430 held-out screens (2026-10-30):** each used 128 held-out team
   clusters and two outcome repeats (512 side-swapped games); intervals are
   seeded 10,000-resample cluster bootstraps. Round430 scored 49.02% vs Max
