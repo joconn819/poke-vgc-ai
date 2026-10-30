@@ -16337,3 +16337,30 @@ team choice but does not change that conclusion.
   the best candidate and report its same-sample score as unbiased performance.
 - Output:
   `training/outputs/phase12_headless/round465_round464_continue_pool430_464_lr5e5_20k_20261030/evaluation/opening_counterfactuals_32pairs_20261030.json`
+
+### Round465 expanded opening action counterfactuals (2026-10-30)
+
+- Expanded to 128 generated team-pair clusters and eight chance repeats for
+  each candidate against Max Damage and Public Counterplay: 9,693 complete
+  matches in 1,225.2 seconds (7.91 games/s). Each candidate changes only
+  P1's first joint action; the frozen Round465 policy controls continuation.
+  Candidate outcomes share team seeds and battle seeds, and confidence
+  intervals resample team-pair clusters.
+- Against Max Damage, the policy opening scored 47.85% [40.62, 55.08]. The
+  Max Damage opening action scored 55.27%, a paired +7.42 percentage-point
+  difference [2.15, 12.89]. The two slot-wise hybrids scored 52.73% (+4.88 pp,
+  [0.59, 9.28]) and 53.03% (+5.18 pp, [0.59, 10.06]). Against Public
+  Counterplay, the policy opening scored 48.83% [41.70, 56.15]; Max Damage's
+  opening scored 52.93% (+4.10 pp, [−0.88, 9.18]), which is not conclusive.
+  Random legal actions were substantially worse in both matchups.
+- This is evidence that the policy's opening joint action selection may be a
+  weakness against Max Damage, not evidence that always choosing the Max
+  Damage action is robust or improves the full policy. The diagnostic always
+  intervenes for P1 and does not side-swap; the significant result is a paired
+  within-seat contrast on these generated openings. No checkpoint was changed.
+- Next: replicate on fresh seeds against a wider frozen opponent pool, then
+  test whether the gains persist when the intervention seat is swapped. If
+  they persist, train or distill the opening action choice against diverse
+  responses and verify on the full held-out match suite before promotion.
+- Output:
+  `training/outputs/phase12_headless/round465_round464_continue_pool430_464_lr5e5_20k_20261030/evaluation/opening_counterfactuals_128pairs_8repeats_20261030.json`
