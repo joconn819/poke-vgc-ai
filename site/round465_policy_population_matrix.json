@@ -1,0 +1,62 @@
+{
+  "title": "Three-checkpoint restricted population matrix",
+  "format": "gen9championsdoubles2026mcclosed",
+  "method": "Local Showdown full matches, side-swapped paired evaluation, generated teams from each checkpoint's saved preview selector, two outcomes per team-pair cluster. Each off-diagonal cell was bootstrap-resampled by team-seed cluster. Diagonal 50% entries are symmetry assumptions, not self-play measurements.",
+  "policies": [
+    "Round430",
+    "Round464",
+    "Round465"
+  ],
+  "payoff_matrix_mean_score": [
+    [0.5, 0.5498046875, 0.548828125],
+    [0.4501953125, 0.5, 0.5400390625],
+    [0.451171875, 0.4599609375, 0.5]
+  ],
+  "cells": [
+    {
+      "row": "Round430",
+      "column": "Round464",
+      "score": 0.5498046875,
+      "cluster_bootstrap_95_interval": [0.5009765625, 0.59765625],
+      "clusters": 256,
+      "matches": 1024,
+      "timeouts_or_errors": 0,
+      "local_run_artifact": "training/outputs/phase12_headless/round430_vs_round464_crossplay_256x2_20261030/paired_summary.json"
+    },
+    {
+      "row": "Round465",
+      "column": "Round430",
+      "score": 0.451171875,
+      "cluster_bootstrap_95_interval": [0.380859375, 0.5234375],
+      "clusters": 128,
+      "matches": 510,
+      "timeouts_or_errors": 1,
+      "local_run_artifact": "training/outputs/phase12_headless/round465_opening_override_fullmatch_round430_control_128x2_20261030/paired_summary.json"
+    },
+    {
+      "row": "Round465",
+      "column": "Round464",
+      "score": 0.4599609375,
+      "cluster_bootstrap_95_interval": [0.4111328125, 0.5087890625],
+      "clusters": 256,
+      "matches": 1024,
+      "timeouts_or_errors": 0,
+      "local_run_artifact": "training/outputs/phase12_headless/round465_opening_override_fullmatch_round464_control_256x2_20261030/paired_summary.json"
+    }
+  ],
+  "restricted_game_solution": {
+    "point_estimate_equilibrium_support": [
+      "Round430"
+    ],
+    "point_estimate_game_value": 0.5,
+    "interpretation": "Among these three policies, the Round430 row point-estimate scores at least 50% against every column policy; the corresponding empirical restricted-game solution is pure Round430. This estimate inherits sampling uncertainty and does not cover unmeasured policies or hidden-team responses.",
+    "promotion_decision": "No new checkpoint is promoted. Round430 remains the measured incumbent."
+  },
+  "limitations": [
+    "This is a three-checkpoint restricted game, not an equilibrium certificate for VGC.",
+    "Only one of the three off-diagonal matchups is a fresh 256-cluster run; the other cells reuse separate recent Round465 screens with 128 or 256 clusters.",
+    "The opponent population contains only related PPO versions and does not include newly trained responses.",
+    "The Round465-vs-Round430 screen had one incomplete game; the published interval uses completed records and clusters.",
+    "Round430-vs-Round464's lower 95% endpoint is only 0.10 percentage points above 50%; this ranking is fragile."
+  ]
+}
