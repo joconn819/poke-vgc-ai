@@ -238,6 +238,23 @@ percentage alone.
   mean. This does not establish a gain; retain Round430 as the validated
   candidate and do not repeat the same mixture unchanged. Artifacts are under
   `training/outputs/phase12_headless/round435_equilibrium_mixture_response_20k_20261030/`.
+- **Round436 hidden-set loss ablation (2026-10-30; inconclusive):** reused
+  Round435's exact 20,000-game rollout data and Round430 initialization, with
+  hidden-set auxiliary loss weight changed from 0.05 to 0; win-probability
+  auxiliary weight remained 0.1. PPO completed 1,272 steps. Training loss
+  fell from 0.8263 to 0.2392 because the large hidden-set losses were no longer
+  weighted, while policy loss, value loss, KL, and win-probability loss stayed
+  nearly identical. On 512 fresh side-swapped team-pair clusters against
+  Round435, Round436 scored 53.42% (2,046 completed games; 95% cluster
+  bootstrap interval [49.80%, 56.93%]); one game was incomplete and there
+  were no action corrections. The interval includes 50%, so keep Round430 as
+  the validated candidate and do not promote Round436 without external
+  opponent confirmation. Evaluation throughput was 4.29 completed games/s
+  across eight CPU workers (477.4 seconds); this is not rollout training
+  throughput. Artifacts are under
+  `training/outputs/phase12_headless/round436_hidden_set_ablation_same_data_20k_20261030/`
+  and
+  `training/outputs/phase12_headless/round436_vs_round435_same_data_ablation_512x2_20261030/`.
 - **Round430 held-out screens (2026-10-30):** each used 128 held-out team
   clusters and two outcome repeats (512 side-swapped games); intervals are
   seeded 10,000-resample cluster bootstraps. Round430 scored 49.02% vs Max
