@@ -11,8 +11,8 @@
     "ci95": "[51.86%, 58.79%]",
     "games": "2,042",
     "label": "Current in-battle policy vs Round424 start",
-    "status": "Current validated candidate \u00b7 Round431 showed no clear lift",
-    "note": "Round431's 512-cluster paired score versus Round430 was 49.36% [45.85%, 52.93%], so Round430 remains the validated in-battle candidate. Round402's 77.15% result is a separate team-preview selector benchmark, not in-battle policy strength."
+    "status": "Current validated candidate \u00b7 Round431 and Round432 showed no clear lift",
+    "note": "Round431 scored 49.36% [45.85%, 52.93%] against Round430, and Round432 scored 47.90% [44.29%, 51.61%]; neither showed a clear gain. Round430 remains the validated in-battle candidate. Round402's 77.15% result is a separate team-preview selector benchmark."
   },
   "evaluation_scorecard": [
     {
@@ -21,6 +21,13 @@
       "games": "2,048",
       "interval": "[74.90%, 79.35%]",
       "status": "Team-selection benchmark; separate from in-battle policy strength"
+    },
+    {
+      "opponent": "Round430 starting policy \u00b7 Round432",
+      "score": "47.90%",
+      "games": "2,046",
+      "interval": "[44.29%, 51.61%]",
+      "status": "512 clusters \u00b7 1 incomplete repeat \u00b7 0 action corrections \u00b7 no measured lift"
     },
     {
       "opponent": "Round430 starting policy \u00b7 Round431",
@@ -137,8 +144,8 @@
     "profile_context": "Round430, 20,000 self-play matches on 8 rollout workers. End-to-end episode time includes setup, agent decisions, engine calls, and trajectory writes. Per-opponent rates are per worker shard, not aggregate. Total rollout throughput was 22.55 games/s; the complete training iteration was 16.49 games/s. Action selection contains policy inference; Public Counterplay scoring is nested inside action selection.",
     "active_training_profile": {
       "round": "431",
-      "status": "Training and validation complete \u00b7 Round430 retained as candidate",
-      "context": "Round431 completed 20,000 matches on 8 rollout workers with a 30% Max Damage / 30% Public Counterplay / 40% policy-pool mixture. The full audit accepted 20,000 games and 163,751 trainable transitions. Values below are completed per-worker shard-batch means, not full-run aggregate throughput; do not sum shard rates.",
+      "status": "Detailed Round431 rollout profile \u00b7 Round430 retained as candidate",
+      "context": "Round431 completed 20,000 matches on 8 rollout workers with a 30% Max Damage / 30% Public Counterplay / 40% policy-pool mixture. Round432 has also completed PPO and its paired self-play comparison; matched external screens are underway. The values below are per-worker shard-batch means from Round431, not full-run aggregate throughput; do not sum shard rates.",
       "profile": [
         {
           "opponent": "Max Damage",
@@ -421,11 +428,11 @@
   },
   "latest_run": {
     "round": 432,
-    "status": "PPO complete \u00b7 paired held-out validation running",
-    "summary": "From Round430, 20,000 games with 30% Max Damage, 30% public Counterplay, and 40% policy pool (Round431, Round424, Round190, Round176). The audited set has 162,965 transitions; four PPO passes completed at learning rate 5e-5 in 1,276 steps. Checkpoint validated and atomically published.",
+    "status": "not promoted \u00b7 no measured strength gain",
+    "summary": "From Round430, 20,000 games with 30% Max Damage, 30% public Counterplay, and 40% policy pool (Round431, Round424, Round190, Round176). The audited set has 162,965 transitions; four PPO passes at 5e-5 completed in 1,276 steps. Checkpoint validated and atomically published.",
     "games": "20,000",
     "epochs": "4 PPO passes \u00b7 1,276 optimizer steps",
-    "evaluation": "512-cluster paired comparison vs Round430 is running; Round430 remains the candidate pending results."
+    "evaluation": "47.90% vs Round430 over 512 clusters [44.29%, 51.61%]; one incomplete repeat, zero action corrections. External screens are running; Round430 remains candidate."
   },
   "method": "Native self-play PPO for in-battle decisions. Terminal win/loss remains the main objective; win-probability and hidden-set prediction are auxiliary tasks. Search comes after a stronger policy.",
   "jax_decision": "Round430 has a confirmed self-play head-to-head lift over Round424, but external-opponent screens remain inconclusive. Prioritize measured inference batching, observation throughput, and rollouts; keep equilibrium-oriented opponent coverage and defer a JAX/GPU engine rewrite until its end-to-end payoff is measured.",

@@ -155,7 +155,7 @@ percentage alone.
   driven by random play and should not mask the hard-opponent scores. Reports
   and paired comparisons are under
   `training/outputs/phase12_headless/round431_eval_*_matched128x2_20261030/`.
-- **Round432 (2026-10-30; PPO complete, validation running):** a fresh 20,000-game
+- **Round432 (2026-10-30; PPO complete, not promoted):** a fresh 20,000-game
   iteration starts from the validated Round430 checkpoint at learning rate
   5e-5 (twice Round431's rate), with 4 PPO passes. Keep the 30% Max Damage,
   30% public Counterplay, and 40% policy-pool mixture; update the pool to
@@ -170,8 +170,13 @@ percentage alone.
   Data preparation took 155.7 seconds, tensor aggregation 6.8 seconds, and
   optimizer time 51.1 seconds. The validated checkpoint is
   `training/outputs/phase12_headless/round432_round430_start_lr5e5_pool431_20k_20261030/checkpoints/latest.pt`;
-  its 512-cluster paired test against Round430 is running in
+  a 512-cluster paired test scored 47.90% (980 wins, 1,066 losses), with a
+  seeded 10,000-resample team-cluster 95% interval of [44.29%, 51.61%]. One
+  repeat timed out/errored and zero actions were corrected. This did not show a
+  gain over Round430. Summary and cluster analysis are in
   `training/outputs/phase12_headless/round432_vs_round430_fresh_confirm_512x2_20261030/`.
+  Matched 128-cluster screens against the same external-opponent set are in
+  progress; keep Round430 as the candidate pending those results.
 - **Round430 held-out screens (2026-10-30):** each used 128 held-out team
   clusters and two outcome repeats (512 side-swapped games); intervals are
   seeded 10,000-resample cluster bootstraps. Round430 scored 49.02% vs Max
