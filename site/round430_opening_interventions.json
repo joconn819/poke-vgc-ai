@@ -241,5 +241,104 @@
   },
   "historical_context": "Older Round173 first-five Max Damage hybrid experiments sometimes regressed against PPO opponents. Current gains replicated versus Round464 and heuristics, but remain checkpoint-specific intervention evidence; preserve raw and hybrid controls. Independent Round465 and historical Round102 PPO replications on 128 fresh team clusters each also remained positive (+9.38 pp and +7.62 pp, respectively), including the Round102 cluster-bootstrap interval above zero. This is still a deterministic opening intervention, not PPO learning. A second independent 128-cluster Round102 seed set gave +8.79 pp [1.37, 16.41]; pooled across both Round102 seed sets (256 clusters), the intervention gained +8.20 pp [3.32, 13.09].",
   "limitations": "This is a deterministic intervention that substitutes public Max Damage actions at decision indices 0\u20134. It does not show that PPO learned those choices or establish robustness to all legal teams and policies. Fresh 128-cluster replications were positive against Max Damage, public Counterplay, Round464, Round465, and historical Round102, but full independent seed replication remains warranted. The Round102 transfer gain repeated on a disjoint second seed set, with a pooled +8.20 pp interval above zero; analyze decision-level attribution and test a learned policy before treating this as a deployable strategy.",
-  "source_artifact": "training/outputs/phase12_headless/round430_first5_maxdamage_intervention_three_opponent_commonseed_512_20261030/report.json"
+  "source_artifact": "training/outputs/phase12_headless/round430_first5_maxdamage_intervention_three_opponent_commonseed_512_20261030/report.json",
+  "round102_single_decision_attribution": {
+    "format": "gen9championsdoubles2026mcclosed",
+    "team_pair_clusters": 128,
+    "outcome_repeats_per_cluster": 1,
+    "games_per_arm": 256,
+    "side_swapped": true,
+    "baseline_score_pct": 55.078125,
+    "same_team_preview_battle_seed_control_verified": true,
+    "bootstrap_replicates": 20000,
+    "timeouts_or_errors": 0,
+    "action_adjustments": 0,
+    "decisions": [
+      {
+        "index": 0,
+        "intervention_score_pct": 51.953125,
+        "paired_delta_pp": -3.125,
+        "paired_cluster_bootstrap_95_pp": [
+          -10.9375,
+          4.6875
+        ],
+        "bootstrap_seed": 20265100,
+        "actions_overridden": 256,
+        "timeouts_or_errors": 0,
+        "action_adjustments": 0,
+        "artifact": "training/outputs/phase12_headless/round430_single_decision_0_round102_128x1_seed20265000/paired_summary.json"
+      },
+      {
+        "index": 1,
+        "intervention_score_pct": 54.6875,
+        "paired_delta_pp": -0.390625,
+        "paired_cluster_bootstrap_95_pp": [
+          -5.859375,
+          5.078125
+        ],
+        "bootstrap_seed": 20265101,
+        "actions_overridden": 256,
+        "timeouts_or_errors": 0,
+        "action_adjustments": 0,
+        "artifact": "training/outputs/phase12_headless/round430_single_decision_1_round102_128x1_seed20265000/paired_summary.json"
+      },
+      {
+        "index": 2,
+        "intervention_score_pct": 53.125,
+        "paired_delta_pp": -1.953125,
+        "paired_cluster_bootstrap_95_pp": [
+          -7.8125,
+          3.515625
+        ],
+        "bootstrap_seed": 20265102,
+        "actions_overridden": 256,
+        "timeouts_or_errors": 0,
+        "action_adjustments": 0,
+        "artifact": "training/outputs/phase12_headless/round430_single_decision_2_round102_128x1_seed20265000/paired_summary.json"
+      },
+      {
+        "index": 3,
+        "intervention_score_pct": 53.90625,
+        "paired_delta_pp": -1.171875,
+        "paired_cluster_bootstrap_95_pp": [
+          -6.25,
+          3.90625
+        ],
+        "bootstrap_seed": 20265103,
+        "actions_overridden": 251,
+        "timeouts_or_errors": 0,
+        "action_adjustments": 0,
+        "artifact": "training/outputs/phase12_headless/round430_single_decision_3_round102_128x1_seed20265000/paired_summary.json"
+      },
+      {
+        "index": 4,
+        "intervention_score_pct": 56.25,
+        "paired_delta_pp": 1.171875,
+        "paired_cluster_bootstrap_95_pp": [
+          -3.125,
+          5.46875
+        ],
+        "bootstrap_seed": 20265104,
+        "actions_overridden": 249,
+        "timeouts_or_errors": 0,
+        "action_adjustments": 0,
+        "artifact": "training/outputs/phase12_headless/round430_single_decision_4_round102_128x1_seed20265000/paired_summary.json"
+      }
+    ],
+    "all_five": {
+      "intervention_score_pct": 62.109375,
+      "paired_delta_pp": 7.03125,
+      "paired_cluster_bootstrap_95_pp": [
+        -1.171875,
+        15.234375
+      ],
+      "bootstrap_seed": 20265105,
+      "actions_overridden": 1267,
+      "timeouts_or_errors": 0,
+      "action_adjustments": 0,
+      "artifact": "training/outputs/phase12_headless/round430_opening0to4_maxdamage_intervention_vs_round102_128x1_seed20265000/paired_summary.json"
+    },
+    "interpretation": "No single decision index had a paired interval excluding zero. The all-five intervention was directionally positive on this one-repeat set but its interval also includes zero. Combined with the separate two-repeat Round102 seed-set gain, this suggests possible sequence interaction but does not establish it.",
+    "control_artifact": "training/outputs/phase12_headless/round430_raw_vs_round102_128x1_seed20265000/paired_summary.json"
+  }
 }

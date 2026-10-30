@@ -1964,7 +1964,106 @@
         "bootstrap_seed": 2026103070
       }
     },
-    "historical_context": "Older Round173 first-five Max Damage hybrid experiments sometimes regressed against PPO opponents. Current gains replicated versus Round464 and heuristics, but remain checkpoint-specific intervention evidence; preserve raw and hybrid controls."
+    "historical_context": "Older Round173 first-five Max Damage hybrid experiments sometimes regressed against PPO opponents. Current gains replicated versus Round464 and heuristics, but remain checkpoint-specific intervention evidence; preserve raw and hybrid controls.",
+    "single_index_attribution": {
+      "format": "gen9championsdoubles2026mcclosed",
+      "team_pair_clusters": 128,
+      "outcome_repeats_per_cluster": 1,
+      "games_per_arm": 256,
+      "side_swapped": true,
+      "baseline_score_pct": 55.078125,
+      "same_team_preview_battle_seed_control_verified": true,
+      "bootstrap_replicates": 20000,
+      "timeouts_or_errors": 0,
+      "action_adjustments": 0,
+      "decisions": [
+        {
+          "index": 0,
+          "intervention_score_pct": 51.953125,
+          "paired_delta_pp": -3.125,
+          "paired_cluster_bootstrap_95_pp": [
+            -10.9375,
+            4.6875
+          ],
+          "bootstrap_seed": 20265100,
+          "actions_overridden": 256,
+          "timeouts_or_errors": 0,
+          "action_adjustments": 0,
+          "artifact": "training/outputs/phase12_headless/round430_single_decision_0_round102_128x1_seed20265000/paired_summary.json"
+        },
+        {
+          "index": 1,
+          "intervention_score_pct": 54.6875,
+          "paired_delta_pp": -0.390625,
+          "paired_cluster_bootstrap_95_pp": [
+            -5.859375,
+            5.078125
+          ],
+          "bootstrap_seed": 20265101,
+          "actions_overridden": 256,
+          "timeouts_or_errors": 0,
+          "action_adjustments": 0,
+          "artifact": "training/outputs/phase12_headless/round430_single_decision_1_round102_128x1_seed20265000/paired_summary.json"
+        },
+        {
+          "index": 2,
+          "intervention_score_pct": 53.125,
+          "paired_delta_pp": -1.953125,
+          "paired_cluster_bootstrap_95_pp": [
+            -7.8125,
+            3.515625
+          ],
+          "bootstrap_seed": 20265102,
+          "actions_overridden": 256,
+          "timeouts_or_errors": 0,
+          "action_adjustments": 0,
+          "artifact": "training/outputs/phase12_headless/round430_single_decision_2_round102_128x1_seed20265000/paired_summary.json"
+        },
+        {
+          "index": 3,
+          "intervention_score_pct": 53.90625,
+          "paired_delta_pp": -1.171875,
+          "paired_cluster_bootstrap_95_pp": [
+            -6.25,
+            3.90625
+          ],
+          "bootstrap_seed": 20265103,
+          "actions_overridden": 251,
+          "timeouts_or_errors": 0,
+          "action_adjustments": 0,
+          "artifact": "training/outputs/phase12_headless/round430_single_decision_3_round102_128x1_seed20265000/paired_summary.json"
+        },
+        {
+          "index": 4,
+          "intervention_score_pct": 56.25,
+          "paired_delta_pp": 1.171875,
+          "paired_cluster_bootstrap_95_pp": [
+            -3.125,
+            5.46875
+          ],
+          "bootstrap_seed": 20265104,
+          "actions_overridden": 249,
+          "timeouts_or_errors": 0,
+          "action_adjustments": 0,
+          "artifact": "training/outputs/phase12_headless/round430_single_decision_4_round102_128x1_seed20265000/paired_summary.json"
+        }
+      ],
+      "all_five": {
+        "intervention_score_pct": 62.109375,
+        "paired_delta_pp": 7.03125,
+        "paired_cluster_bootstrap_95_pp": [
+          -1.171875,
+          15.234375
+        ],
+        "bootstrap_seed": 20265105,
+        "actions_overridden": 1267,
+        "timeouts_or_errors": 0,
+        "action_adjustments": 0,
+        "artifact": "training/outputs/phase12_headless/round430_opening0to4_maxdamage_intervention_vs_round102_128x1_seed20265000/paired_summary.json"
+      },
+      "interpretation": "No single decision index had a paired interval excluding zero. The all-five intervention was directionally positive on this one-repeat set but its interval also includes zero. Combined with the separate two-repeat Round102 seed-set gain, this suggests possible sequence interaction but does not establish it.",
+      "control_artifact": "training/outputs/phase12_headless/round430_raw_vs_round102_128x1_seed20265000/paired_summary.json"
+    }
   },
   "round430_common_preview_matrix": {
     "summary": "Matched 512 team-pair clusters across Round430, Round464, and Round465 with the same Round402 preview selector and side-swapped matches. Round430 scored 36.62% vs Max Damage / 38.57% vs public Counterplay; Round464 35.84% / 38.67%; Round465 36.99% / 37.67%. Round465\u2019s paired equal-weight baseline delta vs Round430 was \u22120.24 pp (95% CI \u22121.91 to +1.42), so no checkpoint promotion is supported.",
