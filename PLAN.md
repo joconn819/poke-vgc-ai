@@ -105,6 +105,56 @@ percentage alone.
   PPO preparation/optimization consumed 260.4 seconds, including 153.6 seconds
   for record processing. The checkpoint is
   `training/outputs/phase12_headless/round430_hard_opponent_auxiliary_ppo_20k_20261030/checkpoints/latest.pt`.
+- **Round431 training and speed profile (2026-10-30; completed, not promoted):**
+  continued from Round430 for 20,000 matches with 30% Max Damage,
+  30% public Counterplay, and 40% historical-policy pool (Round430 plus four
+  earlier policies), using the Round402 team selector. The first preflight
+  found 19,999 usable games because one public-Counterplay match selected the
+  same team on both sides; the audit excluded that match. One replacement
+  player-1 game was collected with a fresh offset. The final preflight accepted
+  exactly 20,000 games: 6,000 Max Damage, 6,000 public Counterplay, and 8,000
+  policy-pool, balanced at 10,000 trainable games per side. It retained 2
+  excluded perspective rows for the same-team match. The resulting dataset has
+  163,751 trainable transitions and no audit errors.
+  Four PPO passes completed in 1,280 optimizer steps, with approximate KL
+  0.00330, policy loss -0.00349, and value loss 0.21383. The checkpoint was
+  validated and atomically published to
+  `training/outputs/phase12_headless/round431_round430_continue_mixed_pool_20k_20261030/checkpoints/latest.pt`.
+  Training-data preparation took 153.2 seconds, tensor aggregation another
+  6.2 seconds, and PPO optimization 51.0 seconds; telemetry spans 217 seconds
+  from training start to completion. These exclude rollout collection and are
+  not directly comparable to the full Round430 iteration rate.
+  During rollout, per-worker shard profiles were 7.2 games/s / 136 ms per game
+  vs Max Damage (50 ms action selection, 35 ms inference, 26 ms encoding,
+  29 ms Showdown, 9 ms persistence); 4.7 games/s / 209 ms vs public
+  Counterplay (124 ms action selection, including 79 ms baseline scoring,
+  35 ms inference, 25 ms encoding, 30 ms Showdown, 9 ms persistence); and
+  about 5.0 games/s / 196 ms vs the policy pool (85 ms action selection,
+  including 73 ms inference, 28 ms encoding, 34 ms Showdown, 13 ms persistence).
+  Rates are per worker shard, not aggregate run throughput. The 512-cluster,
+  two-repeat paired Round431-vs-Round430 held-out confirmation completed with
+  2,040 games across 512 team clusters. Round431 scored 49.36% (1,007 wins,
+  1,033 losses; 4 incomplete repeats due to timeouts/errors; zero action
+  corrections); its seeded 10,000-resample team-cluster 95% interval is
+  [45.85%, 52.93%]. This provides no evidence of an improvement over Round430,
+  so Round430 remains the validated candidate. Report:
+  `training/outputs/phase12_headless/round431_vs_round430_fresh_confirm_512x2_20261030/paired_summary.json`
+  and `cluster_analysis.json`. Matched 128-cluster, two-repeat screens against
+  the Round430 external-opponent set also found no clear change. Round431 scored
+  48.24% vs Max Damage [41.02%, 55.67%], 47.07% vs public Counterplay
+  [40.23%, 53.91%], 96.29% vs random [94.34%, 98.05%], and 47.85% vs Round102
+  [41.01%, 55.08%]. On identical team clusters, the Round431-minus-Round430
+  paired differences were -0.78 pp [-3.12, +1.56] vs Max Damage, 0.00 pp
+  [-2.54, +2.34] vs public Counterplay, +0.78 pp [-0.39, +2.15] vs random,
+  and -0.39 pp [-2.73, +1.76] vs Round102; every interval includes zero.
+  All four screens had zero timeouts/errors and action corrections. Keep
+  Round430 as the candidate; Round431 supplied fresh training data but no
+  detectable strength gain. Across these four opponent pools, equal-weight
+  mean was 59.86%, median 48.05%, p10 47.30%, and worst score 47.07%; Round430
+  was 59.96%, 48.63%, 47.42%, and 47.07%, respectively. The high mean is
+  driven by random play and should not mask the hard-opponent scores. Reports
+  and paired comparisons are under
+  `training/outputs/phase12_headless/round431_eval_*_matched128x2_20261030/`.
 - **Round430 held-out screens (2026-10-30):** each used 128 held-out team
   clusters and two outcome repeats (512 side-swapped games); intervals are
   seeded 10,000-resample cluster bootstraps. Round430 scored 49.02% vs Max
