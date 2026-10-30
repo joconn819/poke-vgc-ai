@@ -1620,7 +1620,7 @@
     "report": "round465_eval_scorecard.json",
     "trace_diagnostic": "64-cluster exploratory traces against Max Damage and Public Counterplay: first actions were moves in every game; losses were behind by about 0.4 active Pokémon and 0.3–0.4 team HP at the first post-action snapshot. Median decision counts matched between wins and losses. Long-match outliers distort total action counts; these associations are not causal.",
     "trace_report": "round465_trace_diagnostic.json",
-    "opening_counterfactual_diagnostic": "Expanded 128-cluster/8-repeat pilot: against Max Damage, forcing its opening joint action scored 55.27% versus 47.85% for the Round465 policy opening (+7.42 pp paired, 95% cluster interval +2.15 to +12.89). Against Public Counterplay the difference was +4.10 pp (interval −0.88 to +9.18), inconclusive. The intervention only changed P1 first action, had no side swap, and did not change checkpoints.",
-    "opening_counterfactual_report": "round465_opening_counterfactuals_expanded.json"
+    "opening_counterfactual_diagnostic": "Fresh-seed replication (64 clusters × 8 repeats, three opponents): forcing the Max Damage opening action improved score by +9.77 pp vs Max Damage (39.26% policy opening vs 49.02%; 95% paired interval +2.73 to +16.99). Against Public Counterplay the delta was +4.88 pp (−3.32 to +13.48); against historical Round464 PPO +1.56 pp (−6.05 to +9.18). Only the Max Damage comparison is conclusive. P1-only intervention; no side swap and no checkpoint change.",
+    "opening_counterfactual_report": "round465_opening_counterfactuals_replication.json"
   }
 }

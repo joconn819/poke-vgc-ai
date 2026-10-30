@@ -16364,3 +16364,27 @@ team choice but does not change that conclusion.
   responses and verify on the full held-out match suite before promotion.
 - Output:
   `training/outputs/phase12_headless/round465_round464_continue_pool430_464_lr5e5_20k_20261030/evaluation/opening_counterfactuals_128pairs_8repeats_20261030.json`
+
+### Round465 fresh-seed opening replication with historical PPO (2026-10-30)
+
+- Replicated on a second generated-team seed set with 64 clusters and eight
+  repeats against Max Damage, Public Counterplay, and frozen PPO Round464:
+  7,590 complete matches in 1,031.8 seconds (7.36 games/s). Only P1's first
+  joint action was intervened on; all later decisions used the frozen Round465
+  policy. Cluster bootstrap intervals preserve matched-team dependence.
+- The Max Damage opening action again improved results against Max Damage:
+  49.02% vs 39.26% for the policy opening, paired +9.77 pp [2.73, 16.99].
+  This repeats the 128-cluster finding. Against Public Counterplay the delta
+  was +4.88 pp [−3.32, 13.48], and against PPO Round464 it was +1.56 pp
+  [−6.05, 9.18]; both are inconclusive. Slot-wise hybrids did not improve
+  consistently. Random legal actions remained worse.
+- Interpretation: the initial action choice is a reproducible vulnerability
+  specifically against Max Damage, while evidence for a robust improvement
+  against other opponents is absent. The intervention is still P1-only and
+  has no side swap. Do not replace the policy opening with Max Damage globally.
+- Next step is a seat-swapped confirmation and then action-level training
+  against a diverse response mixture, followed by the complete paired held-out
+  suite. Maintain a separate opponent-specific result so the Max Damage signal
+  cannot obscure aggregate or worst-case performance.
+- Output:
+  `training/outputs/phase12_headless/round465_round464_continue_pool430_464_lr5e5_20k_20261030/evaluation/opening_counterfactuals_64pairs_8repeats_3opponents_20261030.json`
