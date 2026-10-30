@@ -306,6 +306,7 @@
         }
       ],
       "interpretation": "CUDA is slower for single states, about 7% faster at batch 8, and 59% faster at batch 16. At batch 32 it is 2.6x the CPU throughput. Queue wait is excluded. A scalar-clamp optimization reduced warm native action-feature time 41.3% (0.1983 to 0.1165 ms/state) with exact outputs against the prior NumPy-clamp implementation on 256 inputs; whole-match speed impact is not yet measured.",
+      "feature_replay_caveat": "A parity audit of 1,024 saved Round430 states found recomputed native-action features differed in 788 states (9,764 scalar values; 9,597 on currently legal actions). PPO consumes the feature arrays saved at rollout time, but these older records lack enough encoder/input provenance to reproduce them. Do not use reconstructed historical features as a correctness oracle until code version, roster/form order, and state/mask capture are audited.",
       "report": "training/outputs/phase12_headless/round430_policy_inference_batching_20261030/report.json"
     }
   },
@@ -320,5 +321,5 @@
   "method": "Native self-play PPO for in-battle decisions. Terminal win/loss remains the main objective; win-probability and hidden-set prediction are auxiliary tasks. Search comes after a stronger policy.",
   "jax_decision": "Round430 did not establish a strength improvement. Prioritize measured inference batching, observation throughput, and rollouts; keep equilibrium-oriented opponent coverage and defer a JAX/GPU engine rewrite until its end-to-end payoff is measured.",
   "evaluation_note": "Score rates include wins and half credit for draws. Use paired held-out teams, side swaps, repeated outcomes, and cluster intervals. Track results across public counterplay, random, historical PPO, and Max Damage; no one matchup percentage is the finish line.",
-  "generated_at": "2026-10-30 10:04 UTC"
+  "generated_at": "2026-10-30 10:10 UTC"
 }

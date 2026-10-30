@@ -160,6 +160,21 @@ percentage alone.
   `training/outputs/phase12_headless/round430_policy_inference_batching_20261030/report.json`.
   Keep CPU batching as the first rollout target and investigate multi-game
   in-flight scheduling across existing workers before a shared GPU service.
+- **Historical feature replay audit (2026-10-30; unresolved):** recomputed the
+  Round430 action features for 1,024 saved policy states using the stored
+  observation, legal mask, team metadata, visible opponent species, and the
+  checkpoint's feature variant. 788 states differed, with 9,764 differing
+  scalars; 9,597 were on currently legal actions and most were damage/KO
+  values. This is not explained by the scalar-clamp optimization, which was
+  output-identical to the previous NumPy clamps. PPO currently consumes the
+  feature arrays saved during rollout, so existing training labels are not
+  silently replaced by these reconstructions. The mismatch means saved
+  records do not yet provide enough provenance to reproduce feature inputs
+  exactly. Before using recomputed historical features as a correctness oracle,
+  identify whether the cause is code-version drift, roster/form ordering, or
+  state/mask mutation during logging. Future rollout records should include a
+  feature-encoder version or source hash and audit against freshly captured
+  inputs.
 - **Progress site:** `site/index.html` presents held-out results, the current
   speed snapshot, and training status. `.github/workflows/pages.yml` rebuilds
   its JSON from this plan and deploys through GitHub Pages on pushes to `main`.
