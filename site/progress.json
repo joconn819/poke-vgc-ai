@@ -230,7 +230,7 @@
     "games_per_second": "16.49",
     "context": "Round430 20,000-game complete training iteration including rollout and PPO preparation/optimization; Round435 full aggregate rollout telemetry was not captured. Not raw simulator speed.",
     "decision_latency": "~85 ms action selection per policy-pool match",
-    "current_bottleneck": "PPO sample preparation is the measured bottleneck: Round458 in-loop profiling attributes 78.51 s (48.4%) to row load/parse/validation, 36.22 s (22.3%) to transition extraction, and 24.97 s (15.4%) to model-input construction, out of 162.08 s for 20,000 games. Another 8.74 s is unattributed. This PPO-only replay does not include rollouts; complete-iteration rate remains 16.49 games/s from Round430.",
+    "current_bottleneck": "Round460 reduced a matched PPO-only update to 152.46 s from 227.17 s (32.9%) by disabling cyclic GC around the update; sample preparation fell to 87.25 s from 162.08 s (46.2%). All 28 numeric metrics and 82 model tensors remained bit-identical; peak RSS was 7.32 GiB. This is one PPO-only run, not a rollout-inclusive speed measurement. Complete-iteration throughput remains 16.49 games/s (Round430). Current preparation costs: transition extraction 27.26 s, model-input building 20.46 s, and load/parse/validation 20.24 s; PPO optimization takes about 52 s.",
     "gpu_status": "RTX 4060 used for PPO optimization; rollout inference and Showdown simulation remain CPU-side",
     "profile_context": "Round430 remains the latest complete end-to-end 20,000-game profile: eight-worker rollout 22.55 games/s and full iteration 16.49 games/s. Round435 offers newer per-shard timings but no valid aggregate rate after preflight recovery. Per-opponent shard rates are not aggregate rates. Action selection contains policy inference; Public Counterplay scoring is nested inside action selection.",
     "active_training_profile": {
@@ -712,18 +712,54 @@
         }
       ],
       "report": "round458_ppo_stage_profile.json"
+    },
+    "round460_gc_profile": {
+      "sample_preparation_seconds": 87.24871862900909,
+      "full_update_wall_seconds": 152.46,
+      "round458_sample_preparation_seconds": 162.07568677299423,
+      "round458_full_update_wall_seconds": 227.17013671601308,
+      "sample_preparation_reduction_pct": 46.17,
+      "full_update_wall_reduction_pct": 32.89,
+      "update_only_outcomes_per_second": 131.18,
+      "peak_rss_gib": 7.32,
+      "numeric_metrics_exact": true,
+      "numeric_metrics_count": 28,
+      "checkpoint_tensors_bit_identical": true,
+      "checkpoint_tensor_count": 82,
+      "status": "Promising single matched PPO-only run; opt-in mode, pending repeat and rollout-inclusive benchmark.",
+      "finding": "Disabling cyclic GC for the whole PPO update reduced sample preparation by 46.2% and full update wall time by 32.9%, with exact metric/checkpoint parity. Peak RSS was 7.32 GiB. The complete-iteration rate remains 16.49 games/s because no rollout was included.",
+      "rejected_round459": "Disabling GC only during per-chunk record loading reduced the loader timer but total preparation increased to 171.74 s; GC work shifted into later feature-building stages.",
+      "next_bottlenecks": [
+        {
+          "title": "Batch transition extraction",
+          "detail": "Current largest preparation stage: 27.26 s, 31.2% of 87.25 s."
+        },
+        {
+          "title": "Batch model-input construction",
+          "detail": "20.46 s, 23.5% of preparation; preserve exact tensors and closed-sheet inputs."
+        },
+        {
+          "title": "Reduce audited row preparation",
+          "detail": "Load/parse/validation remains 20.24 s, 23.2%; keep full row validation and verify dataset signatures."
+        },
+        {
+          "title": "Measure full training iteration",
+          "detail": "Repeat the GC-off PPO update and benchmark rollout plus PPO with peak memory before enabling it by default or revising complete-iteration throughput."
+        }
+      ],
+      "report": "round460_gc_profile.json"
     }
   },
   "latest_run": {
-    "round": 458,
-    "status": "instrumented matched PPO replay · exact output parity",
-    "summary": "Round458 profiled the real PPO loop on the same audited 20,000-game data and configuration as Round447. Preparation took 162.08 s: 78.51 s loading/parse/validation, 36.22 s extraction, 24.97 s input building, and 8.74 s unattributed. All 28 numeric metrics and 82 checkpoint tensors matched exactly. The complete-iteration rate remains 16.49 games/s because rollouts were not run.",
+    "round": 460,
+    "status": "matched PPO-only speed replay · exact outputs · experimental GC mode",
+    "summary": "Round460 disabled cyclic GC around the whole PPO update on the exact audited Round447 dataset/config. Sample preparation fell 46.2% (162.08 to 87.25 s), and full PPO-only wall time fell 32.9% (227.17 to 152.46 s). All 28 numeric metrics and 82 checkpoint tensors were identical; peak RSS was 7.32 GiB. Round459 per-chunk GC suppression was slower and rejected. Round460 omits rollouts; complete-iteration throughput remains 16.49 games/s.",
     "games": "20,000 outcomes",
     "epochs": "1,272 optimizer steps",
-    "evaluation": "Exact replay parity; no strength change"
+    "evaluation": "Exact replay parity; strength unchanged"
   },
   "method": "Native self-play PPO for in-battle decisions. Terminal win/loss remains the main objective; win-probability and hidden-set prediction are auxiliary tasks. Search comes after a stronger policy.",
   "jax_decision": "Round430 has a confirmed self-play head-to-head lift over Round424, but external-opponent screens remain inconclusive. Prioritize measured inference batching, observation throughput, and rollouts; keep equilibrium-oriented opponent coverage and defer a JAX/GPU engine rewrite until its end-to-end payoff is measured.",
   "evaluation_note": "Score rates include wins and half credit for draws. Use paired held-out teams, side swaps, repeated outcomes, and cluster intervals. Track results across public counterplay, random, historical PPO, and Max Damage; no one matchup percentage is the finish line. Round431's equal-weight four-opponent mean was 59.86%, but the median was 48.05%, p10 47.30%, and worst score 47.07%; the mean is lifted by random play. All paired differences vs Round430 included zero.",
-  "generated_at": "2026-10-30 16:23 UTC"
+  "generated_at": "2026-10-30 16:39 UTC"
 }

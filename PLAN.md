@@ -19,14 +19,18 @@ external policies. Search remains conditional on stronger held-out performance.
 Preserve existing workspace changes while implementing and evaluating this
 direction.
 
-**Speed status (Round458, 2026-10-30):** the latest complete rollout-plus-PPO
-reference remains 16.49 games/s (Round430). Round458 was PPO-only and took
-227.17 s for a matched 20,000-game update, so it does not change the complete
-iteration rate. Its in-loop profile attributes 48.4% of the 162.08 s sample
-preparation to record loading/parse/validation, 22.3% to transition extraction,
-and 15.4% to model-input construction; 5.4% is unattributed. The next speed
-work is to profile in-loop reads/validation/allocation, reduce decoded-record
-lifetime, and batch transition/input construction while checking exact parity.
+**Speed status (Round460, 2026-10-30):** the latest complete rollout-plus-PPO
+reference remains 16.49 games/s (Round430). A matched PPO-only update with
+cyclic GC disabled for the duration of the update completed in 152.46 s vs
+227.17 s in Round458 (32.9% lower wall time); sample preparation fell from
+162.08 s to 87.25 s (46.2% lower). All 28 numeric metrics and all 82 checkpoint
+tensors were exactly equal. Peak RSS was 7.32 GiB. This does not update the
+complete-iteration games/s because it omits rollout generation, and it needs a
+repeat plus a full rollout/update comparison before making GC suppression the
+default. Current prep stages are transition extraction (27.26 s), model-input
+construction (20.46 s), and load/parse/validation (20.24 s); PPO optimization
+then takes about 52 s. The next performance gate is a repeated, full
+rollout-plus-update measurement with peak-memory tracking.
 
 **Current objective (2026-10-30):** move toward optimal, equilibrium-oriented
 play in closed-team-sheet VGC. The earlier 80% goal against Max Damage is a
@@ -15874,3 +15878,29 @@ team choice but does not change that conclusion.
   Re-run the same matched update and check exact sample signatures, all metrics,
   checkpoint tensors, peak memory, and full wall time after each change.
 - Profile: `training/outputs/phase12_headless/round458_instrumented_full_ppo_20261030/profile.json`.
+
+### Cyclic-GC speed experiments (Rounds459–460, 2026-10-30)
+
+- A reader-only repeat with cyclic GC enabled took 26.84 s on the 20,000 exact
+  audited records; disabling GC reduced that isolated scan to 15.54 s (42.1%),
+  with identical counts. The 1,024-row-chunk experiment (Round459) disabled GC
+  only while loading each chunk, then re-enabled it during extraction. It
+  shifted collection work into later phases: total preparation rose to 171.74
+  s from Round458's 162.08 s, so this scope is rejected.
+- Round460 disabled GC only around the full PPO update and restored its prior
+  enabled/disabled state in a `finally` block. On the same audited records,
+  seed, initialization, and optimizer budget, sample preparation fell to 87.25
+  s and complete PPO-only update wall time was 152.46 s, vs 162.08 s and
+  227.17 s in Round458. That is a 46.2% sample-preparation reduction and
+  32.9% full-update reduction. All 28 numeric training metrics and 82 model
+  tensors matched Round447 exactly. `/usr/bin/time -v` measured peak RSS at
+  7.32 GiB (19 GiB system memory available after the run). This is promising
+  but is one run of the new mode; repeat it and measure full rollout-plus-PPO
+  throughput before enabling it by default. Do not replace the 16.49 complete
+  iteration games/s benchmark with the update-only rate.
+- The Round460 preparation bottleneck shifted to transition extraction (27.26
+  s), model-input construction (20.46 s), and row load/parse/validation (20.24
+  s); optimizer time remains about 51 s. Subsequent tuning should prioritize
+  extraction and input-array construction, then measure the end-to-end
+  training iteration after validating the GC mode's memory behavior.
+- Report: `training/outputs/phase12_headless/round460_gc_disabled_update_20261030/profile.json`.
