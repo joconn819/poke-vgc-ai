@@ -11,8 +11,8 @@
     "ci95": "[51.86%, 58.79%]",
     "games": "2,042",
     "label": "Current in-battle policy vs Round424 start",
-    "status": "Current validated candidate \u00b7 Round435 showed no clear lift",
-    "note": "Round431 scored 49.36% [45.85%, 52.93%] against Round430, and Round432 scored 47.90% [44.29%, 51.61%]; neither showed a clear gain. Round430 remains the validated in-battle candidate. Round402's 77.15% result is a separate team-preview selector benchmark. Round432 external screens also showed no clear lift: all paired 95% intervals vs Round430 and Round431 include zero. Round432 cross-opponent equal-weight mean/median/p10/worst were 60.35%/48.83%/47.64%/47.46%; the mean is buoyed by random play. Round435 used a Round434 restricted-game mixture (31.7% Round430 / 68.3% Round432 in the policy pool) and scored 52.98% [49.41%, 56.59%] head-to-head with Round430; all matched external deltas vs Round430/432 included zero. Round430 remains the candidate."
+    "status": "Current validated candidate \u00b7 Round436 ablation inconclusive",
+    "note": "Round431 scored 49.36% [45.85%, 52.93%] against Round430, and Round432 scored 47.90% [44.29%, 51.61%]; neither showed a clear gain. Round430 remains the validated in-battle candidate. Round402's 77.15% result is a separate team-preview selector benchmark. Round432 external screens also showed no clear lift: all paired 95% intervals vs Round430 and Round431 include zero. Round432 cross-opponent equal-weight mean/median/p10/worst were 60.35%/48.83%/47.64%/47.46%; the mean is buoyed by random play. Round435 used a Round434 restricted-game mixture (31.7% Round430 / 68.3% Round432 in the policy pool) and scored 52.98% [49.41%, 56.59%] head-to-head with Round430; all matched external deltas vs Round430/432 included zero. Round430 remains the candidate. Round436 removed hidden-set auxiliary loss on the identical Round435 data; it scored 53.42% [49.80%, 56.93%] vs Round435 over 512 clusters (one incomplete game), an inconclusive ablation. Round430 remains the validated candidate."
   },
   "evaluation_scorecard": [
     {
@@ -21,6 +21,13 @@
       "games": "2,048",
       "interval": "[74.90%, 79.35%]",
       "status": "Team-selection benchmark; separate from in-battle policy strength"
+    },
+    {
+      "opponent": "Round435 policy \u00b7 Round436 hidden-set ablation",
+      "score": "53.42%",
+      "games": "2,046",
+      "interval": "[49.80%, 56.93%]",
+      "status": "512 matched team-pair clusters \u00b7 1 incomplete repeat \u00b7 0 action corrections \u00b7 interval includes 50%"
     },
     {
       "opponent": "Max Damage \u00b7 Round435",
@@ -193,15 +200,15 @@
   ],
   "speed": {
     "games_per_second": "16.49",
-    "context": "Round430, 20,000-game full training iteration including rollout and PPO preparation/optimization; not raw simulator speed.",
+    "context": "Round430 20,000-game complete training iteration including rollout and PPO preparation/optimization; Round435 full aggregate rollout telemetry was not captured. Not raw simulator speed.",
     "decision_latency": "~85 ms action selection per policy-pool match",
-    "current_bottleneck": "CPU rollout and policy/action processing remain the measured costs. Round435 per-worker samples were 7.3 games/s vs Max Damage, 4.9 games/s vs public Counterplay, and 4.9\u20135.6 games/s vs policy opponents; PPO data preparation plus tensor aggregation took 159.3 s versus about 55 s of optimization. Full aggregate rollout throughput was not captured after the strict preflight stopped the orchestrator.",
+    "current_bottleneck": "Round435 shard profile: policy inference 65\u201373 ms/match vs historical policies; public counterplay scoring about 76 ms/match; observation encoding 25\u201328 ms; Showdown roundtrip 28\u201337 ms. PPO audit/record preparation plus tensor aggregation took 159.3 s for 20,000 games versus about 55 s optimization. Full aggregate Round435 rollout rate was not captured.",
     "gpu_status": "RTX 4060 used for PPO optimization; rollout inference and Showdown simulation remain CPU-side",
-    "profile_context": "Round430, 20,000 self-play matches on 8 rollout workers. End-to-end episode time includes setup, agent decisions, engine calls, and trajectory writes. Per-opponent rates are per worker shard, not aggregate. Total rollout throughput was 22.55 games/s; the complete training iteration was 16.49 games/s. Action selection contains policy inference; Public Counterplay scoring is nested inside action selection.",
+    "profile_context": "Round430 remains the latest complete end-to-end 20,000-game profile: eight-worker rollout 22.55 games/s and full iteration 16.49 games/s. Round435 offers newer per-shard timings but no valid aggregate rate after preflight recovery. Per-opponent shard rates are not aggregate rates. Action selection contains policy inference; Public Counterplay scoring is nested inside action selection.",
     "active_training_profile": {
-      "round": "431",
-      "status": "Detailed Round431 rollout profile \u00b7 Round430 retained as candidate",
-      "context": "Round431 supplied the detailed per-worker profile; Round435 adds single-shard timing samples after a 20,000-game update. Round435 strict preflight rejected one duplicate-team game; after seat-balanced recovery the audit passed and PPO completed, but the wrapper did not write full-run aggregate rollout telemetry. Do not sum per-shard rates as an aggregate.",
+      "round": "435",
+      "status": "Round435 per-worker profile \u00b7 Round430 retained as candidate",
+      "context": "Round435 single-shard timing samples from 20,000-game PPO update, after seat-balanced recovery from one duplicate-team record. The wrapper did not capture full-run aggregate rollout telemetry. Do not sum per-shard rates as aggregate.",
       "profile": [
         {
           "opponent": "Max Damage",
@@ -240,7 +247,7 @@
           "persistence_ms": "13"
         }
       ],
-      "finding": "The bottleneck shifts by opponent: Round435 measured about 76 ms/match of Public Counterplay scoring, 65\u201373 ms of policy inference, and 28\u201337 ms of Showdown engine time. Its record preparation plus tensor aggregation took 159.3 s for 20,000 games, with about 55 s optimization. The full-run aggregate throughput was not captured. Improve automatic duplicate-team recovery in the orchestrator, then prioritize batched policy inference and audited record parsing/tensor preparation."
+      "finding": "Round435 measured about 76 ms/match of Public Counterplay scoring, 65\u201373 ms/match policy inference against pool opponents, and 28\u201337 ms/match Showdown engine time. PPO record preparation plus tensor aggregation took 159.3 s for 20,000 games, versus about 55 s optimization. Improve automatic duplicate-team recovery, then prioritize batched policy inference and audited record parsing/tensor preparation."
     },
     "profile": [
       {
@@ -483,14 +490,15 @@
     }
   },
   "latest_run": {
-    "round": 432,
-    "status": "not promoted \u00b7 no measured strength gain",
-    "summary": "From Round430, 20,000 games with 30% Max Damage, 30% public Counterplay, and 40% policy pool (Round431, Round424, Round190, Round176). The audited set has 162,965 transitions; four PPO passes at 5e-5 completed in 1,276 steps. Checkpoint validated and atomically published.",
-    "games": "20,000",
-    "epochs": "4 PPO passes \u00b7 1,276 optimizer steps",
-    "evaluation": "47.90% vs Round430 over 512 clusters [44.29%, 51.61%]; one incomplete repeat, zero action corrections. External screens are running; Round430 remains candidate."
+    "round": 436,
+    "status": "completed \u00b7 ablation inconclusive",
+    "summary": "Round436 repeated Round435 PPO training on the same 20,000 games and Round430 initialization, with hidden-set auxiliary loss weight set to zero. It scored 53.42% [49.80%, 56.93%] against Round435 over 512 side-swapped team-pair clusters; one game was incomplete. No supported lift; Round430 remains the validated candidate.",
+    "games": "20,000 reused outcomes",
+    "epochs": "4 PPO passes \u00b7 1,272 optimizer steps",
+    "evaluation": "53.42% vs Round435 \u00b7 2,046 games \u00b7 512 clusters \u00b7 inconclusive"
   },
   "method": "Native self-play PPO for in-battle decisions. Terminal win/loss remains the main objective; win-probability and hidden-set prediction are auxiliary tasks. Search comes after a stronger policy.",
   "jax_decision": "Round430 has a confirmed self-play head-to-head lift over Round424, but external-opponent screens remain inconclusive. Prioritize measured inference batching, observation throughput, and rollouts; keep equilibrium-oriented opponent coverage and defer a JAX/GPU engine rewrite until its end-to-end payoff is measured.",
-  "evaluation_note": "Score rates include wins and half credit for draws. Use paired held-out teams, side swaps, repeated outcomes, and cluster intervals. Track results across public counterplay, random, historical PPO, and Max Damage; no one matchup percentage is the finish line. Round431's equal-weight four-opponent mean was 59.86%, but the median was 48.05%, p10 47.30%, and worst score 47.07%; the mean is lifted by random play. All paired differences vs Round430 included zero."
+  "evaluation_note": "Score rates include wins and half credit for draws. Use paired held-out teams, side swaps, repeated outcomes, and cluster intervals. Track results across public counterplay, random, historical PPO, and Max Damage; no one matchup percentage is the finish line. Round431's equal-weight four-opponent mean was 59.86%, but the median was 48.05%, p10 47.30%, and worst score 47.07%; the mean is lifted by random play. All paired differences vs Round430 included zero.",
+  "generated_at": "2026-10-30 Round436"
 }
