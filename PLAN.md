@@ -15610,9 +15610,17 @@ team choice but does not change that conclusion.
   median perspective validation fell from 227.82 ms to 219.40 ms (3.84%), and
   all original results matched. This is a small isolated saving, not a full
   loader measurement.
-- Current rate remains 16.49 full training-iteration games/s from Round430;
-  Round447 record-to-transition preparation remains 169.12 s for 20k games.
-  Current optimization priorities are full-update validation of these changes,
-  then precompute/cache repeated public-mechanics/team facts and profile the
-  remaining transition-extraction and tensor-assembly work. Do not report
-  isolated inference or state encoding rates as complete-game throughput.
+- Matched full PPO replay validation: the same audited data, Round447 initial
+  checkpoint, seed, and settings completed 1,272 optimizer steps. Sample
+  preparation took 163.07 s vs 169.12 s (6.05 s / 3.58% lower); all losses and
+  metrics matched exactly, and all 82 final checkpoint tensors were
+  bit-identical. Full update wall time was 228.64 s vs about 232 s for Round447,
+  still above Round437's 217.98 s. One run cannot separate code savings from
+  runtime variation or attribute all savings to the field encoder. This
+  PPO-only replay excludes self-play rollout generation, so complete-iteration
+  speed remains 16.49 games/s. Report: `round453_full_ppo_replay.json`.
+- Round447 record-to-transition preparation remains a major cost. Repeat the
+  matched PPO replay before claiming a stable gain; then profile repeated
+  public-mechanics/team facts and the remaining transition-extraction and
+  tensor-assembly work. Do not report isolated inference or state-encoding
+  rates as complete-game throughput.

@@ -689,19 +689,29 @@
       "estimated_share_of_preparation_pct": 0.76,
       "exact_input_parity": true,
       "scope_note": "1,026 real states, seven repeats after warm-up. Linear extrapolation only; no full PPO replay has measured the net change yet.",
-      "report": "round453_numpy_field_feature_encoding.json"
+      "report": "round453_numpy_field_feature_encoding.json",
+      "matched_replay_context": "The complete PPO replay preserved all metrics and model tensors. Sample collection was 6.05 s (3.58%) faster than Round447; the whole replay was about 3.36 s faster than Round447 but remains slower than Round437\u2019s 217.98 s. One matched replay cannot separate the code change from run-to-run variance or attribute all observed savings to the NumPy encoder; repeat the matched comparison before claiming reliable end-to-end throughput gain.",
+      "matched_replay_sample_preparation_seconds": 163.07,
+      "matched_replay_baseline_seconds": 169.12,
+      "matched_replay_sample_seconds_saved": 6.05,
+      "matched_replay_sample_reduction_pct": 3.58,
+      "full_update_wall_seconds": 228.64,
+      "round447_full_update_wall_seconds": 232,
+      "checkpoint_bit_identical": true,
+      "metrics_exact_match": true,
+      "full_replay_report": "round453_full_ppo_replay.json"
     }
   },
   "latest_run": {
-    "round": 447,
-    "status": "matched PPO replay \u00b7 no candidate change",
-    "summary": "Round447 replayed the audited 20,000-game Round435 rollout set with 162,366 transitions. Sample preparation took 169.12 s and full replay about 232 s; all metrics and 82 checkpoint tensors matched Round437 exactly. Round430 remains the validated in-battle candidate.",
+    "round": 453,
+    "status": "matched PPO replay \u00b7 exact model parity",
+    "summary": "Round453 replayed the audited 20,000-game Round435 set with 162,366 transitions. Sample preparation took 163.07 s vs Round447\u2019s 169.12 s; all metrics and all 82 checkpoint tensors matched exactly. Full update wall time was 228.64 s vs about 232 s in Round447, but remains slower than Round437\u2019s 217.98 s. One replay does not establish a reliable end-to-end speedup. Round430 remains the validated in-battle candidate.",
     "games": "20,000 outcomes",
     "epochs": "1,272 optimizer steps",
-    "evaluation": "Exact replay parity; not a strength evaluation"
+    "evaluation": "Exact replay parity; no strength change"
   },
   "method": "Native self-play PPO for in-battle decisions. Terminal win/loss remains the main objective; win-probability and hidden-set prediction are auxiliary tasks. Search comes after a stronger policy.",
   "jax_decision": "Round430 has a confirmed self-play head-to-head lift over Round424, but external-opponent screens remain inconclusive. Prioritize measured inference batching, observation throughput, and rollouts; keep equilibrium-oriented opponent coverage and defer a JAX/GPU engine rewrite until its end-to-end payoff is measured.",
   "evaluation_note": "Score rates include wins and half credit for draws. Use paired held-out teams, side swaps, repeated outcomes, and cluster intervals. Track results across public counterplay, random, historical PPO, and Max Damage; no one matchup percentage is the finish line. Round431's equal-weight four-opponent mean was 59.86%, but the median was 48.05%, p10 47.30%, and worst score 47.07%; the mean is lifted by random play. All paired differences vs Round430 included zero.",
-  "generated_at": "2026-10-30 15:20 UTC"
+  "generated_at": "2026-10-30 15:28 UTC"
 }
