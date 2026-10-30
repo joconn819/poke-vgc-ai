@@ -15830,3 +15830,38 @@ team choice but does not change that conclusion.
   validation/parsing from transition extraction and model-input construction
   over complete representative chunks. Avoid treating per-state microbenchmarks
   as whole-update speed gains.
+
+### PPO sample-preparation stage profile (Round458, 2026-10-30)
+
+- Instrumented the real PPO collection loop for the exact 20,000-game,
+  Round447-matched audited dataset. Sample preparation took 162.08 s for
+  28,000 valid records and 162,366 transitions; full PPO replay wall time was
+  227.17 s. Loading/parse/validation took 78.51 s (48.4%), transition
+  extraction 36.22 s (22.3%), model-input construction 24.97 s (15.4%), GAE
+  4.71 s (2.9%), sample packaging 8.57 s (5.3%), record metadata/cache keys
+  0.35 s (0.2%), with 8.74 s (5.4%) not attributed by the stage timers.
+- All 28 numeric training metrics and all 82 checkpoint tensors were
+  bit-identical to Round447. Instrumentation thus exposes the timing split
+  without altering the PPO result. The replay is PPO-only; complete
+  rollout-plus-update throughput remains the last measured 16.49 games/s from
+  Round430.
+- **Current bottleneck:** row loading, JSON parsing, and strict validation are
+  the largest measured stage, followed by per-transition extraction and input
+  construction. This exact-loop profile supersedes extrapolations from isolated
+  reader probes. The standalone full-reader took 26.89 s, illustrating that
+  it did not reproduce the real loop's 78.51 s; investigate storage/cache
+  contention, Python object lifetime/GC, and repeated per-record overhead
+  before assuming a parser-only fix.
+- **Next speed-up opportunities:** (1) profile one representative full chunk
+  at function level inside the loader/validator to separate seek/read, JSON
+  decoding, validation, and allocation/GC; (2) reduce validated row material
+  retained simultaneously, or stream compact transition arrays so decoded
+  dictionaries are released promptly; (3) batch transition extraction and
+  model-input construction over contiguous arrays, keeping the current
+  perspective/integrity checks and parity gates; (4) evaluate safe parallel
+  prefetch/decode only after measuring CPU, storage, memory bandwidth, and peak
+  RSS, since parallel readers may contend with the GPU optimizer; (5) measure
+  aggregation and PPO optimization separately before spending effort there.
+  Re-run the same matched update and check exact sample signatures, all metrics,
+  checkpoint tensors, peak memory, and full wall time after each change.
+- Profile: `training/outputs/phase12_headless/round458_instrumented_full_ppo_20261030/profile.json`.

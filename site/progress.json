@@ -230,7 +230,7 @@
     "games_per_second": "16.49",
     "context": "Round430 20,000-game complete training iteration including rollout and PPO preparation/optimization; Round435 full aggregate rollout telemetry was not captured. Not raw simulator speed.",
     "decision_latency": "~85 ms action selection per policy-pool match",
-    "current_bottleneck": "PPO update sample preparation remains the main bottleneck: 158.25 s in Round456 and 161.40 s in Round457 for 20,000 games, followed by roughly 60 s of optimization. Reader/extraction microbenchmarks improved, but matched replays do not establish a stable full-update speed gain. Complete-iteration games/s remains the 16.49 Round430 baseline; these PPO-only replays exclude rollouts.",
+    "current_bottleneck": "PPO sample preparation is the measured bottleneck: Round458 in-loop profiling attributes 78.51 s (48.4%) to row load/parse/validation, 36.22 s (22.3%) to transition extraction, and 24.97 s (15.4%) to model-input construction, out of 162.08 s for 20,000 games. Another 8.74 s is unattributed. This PPO-only replay does not include rollouts; complete-iteration rate remains 16.49 games/s from Round430.",
     "gpu_status": "RTX 4060 used for PPO optimization; rollout inference and Showdown simulation remain CPU-side",
     "profile_context": "Round430 remains the latest complete end-to-end 20,000-game profile: eight-worker rollout 22.55 games/s and full iteration 16.49 games/s. Round435 offers newer per-shard timings but no valid aggregate rate after preflight recovery. Per-opponent shard rates are not aggregate rates. Action selection contains policy inference; Public Counterplay scoring is nested inside action selection.",
     "active_training_profile": {
@@ -275,7 +275,7 @@
           "persistence_ms": "13"
         }
       ],
-      "finding": "Round435 measured about 76 ms/match of Public Counterplay scoring, 65–73 ms/match policy inference against pool opponents, and 28–37 ms/match Showdown engine time. PPO record preparation plus tensor aggregation took 159.3 s for 20,000 games, versus about 55 s optimization. Improve automatic duplicate-team recovery, then prioritize batched policy inference and audited record parsing/tensor preparation. A CPU microbenchmark of PPO model-input construction found 16.4% lower stage time by reusing cached static tensors rather than cloning them per state; linear extrapolation is 3.76 s over 162,366 transitions, still awaiting full-iteration confirmation. A targeted public-mechanics scalar-clip change cut transition extraction by 22.5% on 1,971 real states, with exact feature parity; estimated saving is 6.66 s per 162,366 transitions, pending end-to-end validation. A fresh Round441 full PPO replay took 226.3 s for sample collection and about 290 s wall time. All 82 final checkpoint tensors matched Round437 exactly, but the run was slower than both prior replays, so isolated preprocessing gains are not yet proven end to end. A subsequent observation-array reuse microbenchmark cut transition extraction by 7.1% with exact transition parity, estimating 1.62 s saved over 162,366 transitions. It postdates Round441 and still needs full-run validation. Precomputing static hidden-set targets per record yielded 4.2% lower extraction time with exact parity, estimating 0.90 s saved per Round435 rollout; post-Round441 and not yet tested end to end. Round447 then used a strict-audit byte-offset index and full row validation: 169.12 s sample preparation for 20,000 games (25.3% below Round441), with exact metrics and checkpoint parity to Round437. Full replay was ~232 s, still ~14 s slower than Round437; this does not establish a faster end-to-end iteration."
+      "finding": "Round435 measured about 76 ms/match of Public Counterplay scoring, 65–73 ms/match policy inference against pool opponents, and 28–37 ms/match Showdown engine time. PPO record preparation plus tensor aggregation took 159.3 s for 20,000 games, versus about 55 s optimization. Improve automatic duplicate-team recovery, then prioritize batched policy inference and audited record parsing/tensor preparation."
     },
     "profile": [
       {
@@ -314,12 +314,12 @@
     ],
     "opportunities": [
       {
-        "title": "1 · Keep per-worker CPU inference at current concurrency",
-        "detail": "Round449 tested a shared CUDA inference queue against independent CPU model processes at 8 and 16 producers. With a 1 ms batch window, CPU reached 2,850 / 3,530 states/s and GPU reached 1,606 / 2,912; CPU also had lower p95 latency. A 3 ms GPU wait made throughput worse. Do not add a GPU broker at these worker counts. Reconsider only if real rollouts can sustain larger batches and the memory budget supports more concurrent matches; the prototype excludes IPC and live feature preparation."
+        "title": "1 · Batch policy inference across live rollouts",
+        "detail": "Historical-policy rollouts spent about 72 ms/match in inference. Workers currently infer independently on CPU. Gather ready decisions from concurrent matches into a shared batch, then compare CPU batching with a single GPU inference service at observed batch sizes. Measure games/s, queue delay, and p95 decision latency before adopting it."
       },
       {
-        "title": "2 · Cache static team tokens and trim observation encoding",
-        "detail": "Round448 added a per-match PolicyAgent cache for static species/move/item/ability tensors. On 1,971 real states, live model-input construction fell 26.8% (0.4680 s to 0.3424 s) with exact input parity; a deterministic policy action, log probability, and value also matched. Linear extrapolation is 10.34 s per 162,366 PPO states, not whole-match evidence. Next measure games/s and p95 decision time, then profile remaining dynamic observation and public-mechanics encoding."
+        "title": "2 · Reduce observation encoding work",
+        "detail": "Encoding used about 22–29 ms/match. Precompute static dex/team features, cache repeated derived values, and reuse compact numeric buffers across decisions. Profile each stage and retain the closed-team-sheet leakage audit."
       },
       {
         "title": "3 · Batch rollouts and tune worker count",
@@ -330,8 +330,8 @@
         "detail": "A per-decision cache for repeated public damage calculations cut scorer time from 203.4 to 62.6 ms/match (69%) in a paired 32-game single-worker probe. In a separate 240-game, 8-worker run, scoring averaged 80.1 ms/match and aggregate rollout throughput was 23.51 games/s, with no timeouts or corrections. Still compare an 8-worker pre-cache control and rerun the full mixed PPO iteration; then profile repeated speed and legality calculations."
       },
       {
-        "title": "5 · Index audited PPO records for training",
-        "detail": "A fresh strict audit of the 3.87 GiB Round435 set writes byte offsets for its 20,000 valid trainable views. The trainer seeks to those rows and still validates each one, avoiding parsing and transition preparation for the opponent views and invalid records. Round447 prepared 162,366 transitions in 169.12 s, 25.3% below Round441; all 82 checkpoint tensors matched Round437 exactly. Full replay took ~232 s versus 218 s for Round437, so no overall speedup versus the fastest matched baseline is established. The required full audit scan is not included in these replay timings."
+        "title": "5 · Reuse the audited PPO counts and digest",
+        "detail": "A separate sample-count scan over Round435’s 3.87 GiB and 28,000 valid rollout records took 35.96 s (162,366 trainable transitions). The strict audit already reads the data and computes those counts, so the headless PPO path reuses its counts and SHA-256 digest to skip the duplicate pass. An independent recomputation matched the digest and counts exactly. Same-data PPO replay wall time was 217.98 s with reuse vs 260.74 s without (42.77 s / 16.4% faster); both produced bit-identical model parameters and identical metrics across 1,272 steps. These are PPO-update timings without rollout generation. Treat the separately measured 35.96 s scan as the direct saving; the rest of the observed difference is run variation."
       },
       {
         "title": "6 · Trim trajectory persistence",
@@ -528,123 +528,6 @@
       "limitation": "The 32-game before/after is paired on identical seeds. The 8-worker rollout validates concurrent operation but has no pre-cache 8-worker control; full 20,000-game mixed PPO throughput has not yet been remeasured.",
       "report": "training/outputs/phase12_headless/round430_counterplay_cache_benchmark_20261030/report.json"
     },
-    "ppo_input_preparation_benchmark": {
-      "context": "Round435 PPO input-preparation microbenchmark using 1,971 real transitions from 256 records. Six passes per mode; first pass excluded. CPU-only PyTorch 2.15, Python 3.12. Rollout parsing and PPO optimization excluded.",
-      "clone_median_seconds": 0.2779923469934147,
-      "reuse_median_seconds": 0.23240241399616934,
-      "reduction_pct": 16.399707938120077,
-      "exact_input_parity": true,
-      "transitions": 1971,
-      "round435_transitions": 162366,
-      "estimated_seconds_saved_full_preparation": 3.76,
-      "estimated_preparation_reduction_pct": 2.48,
-      "estimate_context": "Linear extrapolation from microbenchmark saving to 162,366 transitions, compared with 151.5 s PPO sample collection; not an end-to-end training measurement.",
-      "torch_version": "2.15.0+cpu",
-      "report": "ppo_input_preparation_benchmark.json"
-    },
-    "rollout_extraction_microbenchmark": {
-      "context": "Round435 Max Damage shard: 256 records and 1,971 trainable transitions, seven passes per implementation with the first excluded. CPU-only PyTorch 2.15 / Python 3.12; transition extraction only.",
-      "old_median_seconds": 0.35886753151135053,
-      "new_median_seconds": 0.2780791709810728,
-      "reduction_pct": 22.512028377168047,
-      "exact_public_context_parity": true,
-      "transitions": 1971,
-      "full_transition_count": 162366,
-      "estimated_seconds_saved_full_preparation": 6.66,
-      "estimate_context": "Linear extrapolation from a single Max Damage shard sample to 162,366 transitions; not a full PPO timing.",
-      "report": "public_mechanics_extraction_benchmark.json"
-    },
-    "ppo_full_update_replay": {
-      "context": "Round441 replayed the exact Round435 20k rollout data on the RTX 4060 with 1,272 PPO steps. Model metrics and all 82 checkpoint tensors were bit-identical to Round437.",
-      "wall_seconds": 290,
-      "sample_collection_seconds": 226.26516649697442,
-      "input_tensor_aggregation_seconds": 2.8198620470066,
-      "action_tensor_aggregation_seconds": 4.01120799200743,
-      "optimization_seconds_approximate": 55,
-      "round437_preflight_reuse_wall_seconds": 217.97542133700335,
-      "round438_legacy_control_wall_seconds": 260.74264455598313,
-      "checkpoint_tensors_bit_identical": true,
-      "finding": "Round441 was slower than both prior replays. Runtime conditions differ, so this is not evidence that the code changes caused the regression; the isolated microbenchmark gains are not yet confirmed end to end. PPO record parsing/preparation remains the largest measured stage.",
-      "report": "round441_full_ppo_replay_profile.json"
-    },
-    "ppo_observation_array_reuse_benchmark": {
-      "context": "Round435 Max Damage shard: 256 records and 1,971 transitions, seven passes with first excluded. CUDA Torch 2.15 / Python 3.12; transition extraction only.",
-      "before_median_seconds": 0.27904398398823105,
-      "after_median_seconds": 0.25934963500185404,
-      "reduction_pct": 7.057793794689957,
-      "exact_transition_parity": true,
-      "transitions": 1971,
-      "full_transition_count": 162366,
-      "estimated_seconds_saved_full_preparation": 1.62,
-      "estimate_context": "Linear extrapolation to 162,366 transitions. Added after the Round441 full replay; this change is not yet included in end-to-end training timing.",
-      "report": "ppo_observation_array_reuse_benchmark.json"
-    },
-    "ppo_hidden_target_precompute_benchmark": {
-      "context": "Round435 Max Damage shard: 256 records and 1,971 transitions, seven passes with first excluded. CUDA Torch 2.15 / Python 3.12; transition extraction only.",
-      "before_median_seconds": 0.2600400229857769,
-      "after_median_seconds": 0.24910550301137846,
-      "reduction_pct": 4.204937320358758,
-      "exact_transition_parity": true,
-      "transitions": 1971,
-      "full_transition_count": 162366,
-      "estimated_seconds_saved_full_preparation": 0.9,
-      "estimate_context": "Linear extrapolation to 162,366 transitions. Added after Round441 and not included in an end-to-end PPO replay.",
-      "report": "ppo_hidden_target_precompute_benchmark.json"
-    },
-    "ppo_offset_index_replay": {
-      "context": "Round447 used byte offsets emitted by a fresh strict audit to seek directly to the 20,000 valid trainable views in the 3.87 GiB Round435 rollout set. Each selected row was still fully checked against the closed-sheet perspective and trajectory contract.",
-      "games": 20000,
-      "transitions": 162366,
-      "sample_collection_seconds": 169.1197936599783,
-      "input_aggregation_seconds": 2.741560222,
-      "action_aggregation_seconds": 3.122270174,
-      "total_wall_seconds": 232,
-      "round441_sample_collection_seconds": 226.26516649697442,
-      "round441_wall_seconds": 290,
-      "round437_wall_seconds": 217.97542133700335,
-      "sample_preparation_reduction_vs_round441_pct": 25.3,
-      "wall_delta_vs_round437_seconds": 14,
-      "checkpoint_tensors": 82,
-      "checkpoint_bit_identical": true,
-      "max_parameter_difference": 0,
-      "audit_sha256": "d74fbedf4d2b801885e228a221fc4fb513f5459f551a3318c2a6c9f3cdf3bd54",
-      "finding": "Sample preparation was 57.15 s faster than Round441, but Round447 full replay was about 14 s slower than Round437. This is a promising reduction against Round441, not a confirmed end-to-end speedup against the fastest matched baseline; the strict audit pass is also excluded from the replay total.",
-      "integrity_note": "Round444 was excluded: skipping validation admitted one incomplete row, producing 20,001 records and 162,374 transitions. Round447 used audited offsets and full row validation; future training now checks actual prepared transitions against the audited count before checkpoint save.",
-      "report": "round447_indexed_ppo_replay_profile.json"
-    },
-    "live_team_cache_benchmark": {
-      "context": "Round448 compared the live input encoder with and without the per-agent static team-token cache on 1,971 real Round435 transitions from 256 match records. The cached path is now wired into both ordinary and paired PolicyAgent inference.",
-      "uncached_median_seconds": 0.46796893450664356,
-      "cached_median_seconds": 0.3424380524957087,
-      "reduction_pct": 26.824618634840764,
-      "transitions": 1971,
-      "records": 256,
-      "estimated_seconds_saved_162366_states": 10.340916889186937,
-      "exact_input_parity": true,
-      "live_action_parity": true,
-      "action": "[24, 45]",
-      "log_probability_and_value_parity": true,
-      "scope_note": "Model-input construction only; no full-match games/sec or p95 decision-latency comparison yet.",
-      "report": "round448_live_team_feature_cache.json"
-    },
-    "shared_inference_queue_benchmark": {
-      "context": "Round449 queue-aware prototype using 256 real closed-sheet inputs from Round435, 64 requests per concurrent producer, and the Round447 checkpoint. CPU baseline used independent processes (one Torch thread each); GPU used one shared CUDA queue. Inputs were prebuilt, so these are upper bounds for production throughput.",
-      "cpu_8_workers_states_per_second": 2849.8,
-      "cpu_8_workers_p95_ms": 3.254,
-      "gpu_8_workers_states_per_second": 1605.5,
-      "gpu_8_workers_p95_ms": 5.292,
-      "gpu_8_workers_mean_batch_1ms": 7.88,
-      "cpu_16_workers_states_per_second": 3529.9,
-      "cpu_16_workers_p95_ms": 5.72,
-      "gpu_16_workers_states_per_second": 2912.1,
-      "gpu_16_workers_p95_ms": 6.268,
-      "gpu_16_workers_mean_batch_1ms": 15.28,
-      "gpu_8_workers_3ms_wait_states_per_second": 1088.1,
-      "gpu_16_workers_3ms_wait_states_per_second": 2088.5,
-      "finding": "At both 8 and 16 producers, the shared GPU queue was slower and had higher p95 latency than independent CPU processes. Waiting 3 ms for batches reduced GPU throughput further. Do not implement a shared GPU broker at the current worker counts; its actual performance would also include IPC and live feature preparation.",
-      "scope_note": "Inputs were already in memory. The shared queue includes batch collation, H2D transfer, model forward, output synchronization and queue latency, but excludes IPC serialization and rollout think time; results are an upper bound for production service throughput.",
-      "report": "round449_shared_inference_queue.json"
-    },
     "cpu_inference_followups": {
       "context": "Round450 and Round451 used the Round447 checkpoint and 256 real closed-sheet Round435 states; measurements cover full native action selection but are microbenchmarks, not complete matches.",
       "compiled_policy": {
@@ -788,12 +671,53 @@
       "checkpoint_tensors": 82,
       "finding": "Round457 sample preparation took 161.40 s, 3.15 s slower than Round456; full wall time was 226.59 s vs 223.76 s. These single-run comparisons do not show an end-to-end speed improvement from the map-field traversal change, despite a 6.0% audited reader microbenchmark reduction. All 28 numeric training metrics and all 82 model tensors matched Round447 bit-for-bit. Keep the simple validator fast paths as measured local reductions, but do not report a stable full-update speed gain; sample preparation remains the dominant cost. Complete-iteration throughput is still the historical 16.49 games/s Round430 result because no rollout occurred here.",
       "report": "round457_full_ppo_replay.json"
+    },
+    "round458_stage_profile": {
+      "sample_preparation_seconds": 162.07568677299423,
+      "full_replay_wall_seconds": 227.17013671601308,
+      "trainable_games": 20000,
+      "valid_records": 28000,
+      "transitions": 162366,
+      "record_loading_parse_validation_seconds": 78.50787538004806,
+      "record_loading_share_pct": 48.4,
+      "transition_extraction_seconds": 36.22282241572975,
+      "transition_extraction_share_pct": 22.3,
+      "model_input_build_seconds": 24.967668911849614,
+      "model_input_build_share_pct": 15.4,
+      "gae_seconds": 4.711221204284811,
+      "sample_packaging_seconds": 8.573857867042534,
+      "unattributed_seconds": 8.744470797711983,
+      "unattributed_share_pct": 5.4,
+      "numeric_metrics_exact_match": true,
+      "numeric_metrics_count": 28,
+      "checkpoint_tensors_bit_identical": true,
+      "checkpoint_tensor_count": 82,
+      "finding": "Exact in-loop attribution identifies loading/parsing/validation as the largest stage, then transition extraction and input construction. A standalone full-reader measured 26.89 s and did not reproduce the 78.51 s in-loop row-loading bucket. All 28 numeric PPO metrics and all 82 model tensors matched Round447 exactly. No rollout was measured, so this is not a new games/s result.",
+      "opportunities": [
+        {
+          "title": "Profile the load path in place",
+          "detail": "Separate indexed seek/read, JSON decoding, strict validation, object allocation, and garbage collection inside full training chunks; the standalone reader missed most of the in-loop load cost."
+        },
+        {
+          "title": "Shorten decoded-row lifetime",
+          "detail": "Stream validated transitions into compact arrays and release record dictionaries promptly; measure peak RSS and verify exact sample parity."
+        },
+        {
+          "title": "Batch feature preparation",
+          "detail": "Vectorize transition extraction and model-input construction over contiguous arrays while retaining perspective-safe validation."
+        },
+        {
+          "title": "Test bounded read prefetch",
+          "detail": "Only if CPU, storage, memory bandwidth, and GPU contention profiles support it; report memory and complete-update wall time."
+        }
+      ],
+      "report": "round458_ppo_stage_profile.json"
     }
   },
   "latest_run": {
-    "round": 457,
-    "status": "matched PPO replay · exact output parity",
-    "summary": "Round457 replayed the same audited 20,000-game Round447 data/config. All 28 numeric training metrics and all 82 checkpoint tensors matched exactly. Sample preparation took 161.40 s vs 158.25 s in Round456; wall time was 226.59 s vs 223.76 s. These one-run differences show no stable whole-update speedup. A separate 1,024-row audited-reader benchmark was 5.99% faster with identical accepted rows. Round430 remains the validated policy candidate.",
+    "round": 458,
+    "status": "instrumented matched PPO replay · exact output parity",
+    "summary": "Round458 profiled the real PPO loop on the same audited 20,000-game data and configuration as Round447. Preparation took 162.08 s: 78.51 s loading/parse/validation, 36.22 s extraction, 24.97 s input building, and 8.74 s unattributed. All 28 numeric metrics and 82 checkpoint tensors matched exactly. The complete-iteration rate remains 16.49 games/s because rollouts were not run.",
     "games": "20,000 outcomes",
     "epochs": "1,272 optimizer steps",
     "evaluation": "Exact replay parity; no strength change"
@@ -801,5 +725,5 @@
   "method": "Native self-play PPO for in-battle decisions. Terminal win/loss remains the main objective; win-probability and hidden-set prediction are auxiliary tasks. Search comes after a stronger policy.",
   "jax_decision": "Round430 has a confirmed self-play head-to-head lift over Round424, but external-opponent screens remain inconclusive. Prioritize measured inference batching, observation throughput, and rollouts; keep equilibrium-oriented opponent coverage and defer a JAX/GPU engine rewrite until its end-to-end payoff is measured.",
   "evaluation_note": "Score rates include wins and half credit for draws. Use paired held-out teams, side swaps, repeated outcomes, and cluster intervals. Track results across public counterplay, random, historical PPO, and Max Damage; no one matchup percentage is the finish line. Round431's equal-weight four-opponent mean was 59.86%, but the median was 48.05%, p10 47.30%, and worst score 47.07%; the mean is lifted by random play. All paired differences vs Round430 included zero.",
-  "generated_at": "2026-10-30 16:03 UTC"
+  "generated_at": "2026-10-30 16:23 UTC"
 }
