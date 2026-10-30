@@ -203,12 +203,14 @@ percentage alone.
   selector was applied to both policies. Point scores ranged from 53.52% to
   55.08%, but every cluster-bootstrap 95% interval included 50%; there were
   zero action corrections and no errors except one incomplete repeat in
-  Round431 vs Round432. Combining these payoffs with held-out Max Damage,
-  public Counterplay, and Round102 screens gives a restricted-game point
-  mixture of 32.1% Round430, effectively 0% Round431, and 67.9% Round432.
-  Its estimated value against this finite response set is 47.34%; it is not a
-  full-game Nash strategy. The lower-bound matrix gives 20.1%/5.3%/74.6%,
-  showing how noisy these small estimates are. Matrix artifacts are under
+  Round431 vs Round432. The large apparent separation in the rejected Round433
+  setup disappeared when previews were controlled. Combining these payoffs
+  with held-out Max Damage, public Counterplay, and Round102 screens gives a
+  restricted-game point mixture of 32.1% Round430, effectively 0% Round431,
+  and 67.9% Round432. Its estimated value against this finite response set is
+  47.34%; it is not a full-game Nash strategy. The lower-bound matrix gives
+  20.1%/5.3%/74.6%, showing how noisy these small estimates are. Matrix
+  artifacts are under
   `training/outputs/phase12_headless/round434_lineage_payoff_matrix_128x1_symmetric_preview_20261030/`.
 - **Round435 equilibrium-mixture response (2026-10-30; completed, not
   promoted):** trained a Round430 response for 20,000 matches against 30% Max
@@ -238,57 +240,6 @@ percentage alone.
   mean. This does not establish a gain; retain Round430 as the validated
   candidate and do not repeat the same mixture unchanged. Artifacts are under
   `training/outputs/phase12_headless/round435_equilibrium_mixture_response_20k_20261030/`.
-- **Round436 hidden-set loss ablation (2026-10-30; inconclusive):** reused
-  Round435's exact 20,000-game rollout data and Round430 initialization, with
-  hidden-set auxiliary loss weight changed from 0.05 to 0; win-probability
-  auxiliary weight remained 0.1. PPO completed 1,272 steps. Training loss
-  fell from 0.8263 to 0.2392 because the large hidden-set losses were no longer
-  weighted, while policy loss, value loss, KL, and win-probability loss stayed
-  nearly identical. On 512 fresh side-swapped team-pair clusters against
-  Round435, Round436 scored 53.42% (2,046 completed games; 95% cluster
-  bootstrap interval [49.80%, 56.93%]); one game was incomplete and there
-  were no action corrections. The interval includes 50%, so keep Round430 as
-  the validated candidate and do not promote Round436 without external
-  opponent confirmation. Evaluation throughput was 4.29 completed games/s
-  across eight CPU workers (477.4 seconds); this is not rollout training
-  throughput. Artifacts are under
-  `training/outputs/phase12_headless/round436_hidden_set_ablation_same_data_20k_20261030/`
-  and
-  `training/outputs/phase12_headless/round436_vs_round435_same_data_ablation_512x2_20261030/`.
-- **Round436 external-opponent screens (2026-10-30; not promoted):**
-  evaluated 256 held-out team-pair clusters with two outcome repeats (1,024
-  games per opponent), matching the first 128 clusters to Round435 and adding
-  128 more. Round436 scored 46.29% vs Max Damage [41.31%, 51.37%], 47.17% vs
-  public Counterplay [42.19%, 52.05%], 95.51% vs random [94.14%, 96.78%], and
-  50.68% vs historical Round102 [45.61%, 55.86%]. Paired changes vs Round435
-  on 128 shared clusters were +0.20 pp [-0.59, +0.98], +0.39 pp [-0.59,
-  +1.37], 0.00 pp [-0.78, +0.78], and -0.20 pp [-0.98, +0.39], respectively.
-  All intervals include zero; there were zero action adjustments, timeouts,
-  or errors. Cross-opponent mean/median/p10/worst were
-  59.91%/48.93%/46.55%/46.29%; the mean is lifted by random play. Keep Round430
-  as the validated candidate. Scorecard:
-  `training/outputs/phase12_headless/round436_external_matched128x2_retry1_20261030/external_scorecard.json`.
-- **Pre-PPO rollout scan reuse optimization (2026-10-30; end-to-end
-  confirmation pending):** a separate sample-count pass over the exact Round435
-  rollout files read 3.87 GiB and 28,000 valid records (162,366 trainable
-  transitions) in 35.96 seconds. This is outside the reported 159.3-second
-  trainer preparation/aggregation time. The headless path now passes the
-  completed preflight report's valid-record count, transition count, and
-  SHA-256 digest into PPO to skip the duplicate scan. The digest matched an
-  independent recomputation over all 4,155,849,741 nonblank bytes, and the
-  counts matched exactly. Matched same-data PPO replays using the same initial
-  checkpoint, settings, seed, and CUDA device took 217.98 seconds with
-  preflight reuse and 260.74 seconds with the old scan (42.77 seconds / 16.4%
-  lower wall time). Both produced bit-identical model parameters and identical
-  losses, KL, transition count, and 1,272 optimizer steps. The separately
-  measured scan took 35.96 seconds; treat that as the repeatable direct
-  saving, with the remaining wall-time difference attributed to run variation.
-  This measures the PPO update only, excluding rollout generation. Artifacts:
-  `training/outputs/phase12_headless/round437_input_scan_reuse_speedbench_20k_20261030/`
-  and
-  `training/outputs/phase12_headless/round438_input_scan_control_20k_20261030/`;
-  comparison summary:
-  `training/outputs/phase12_headless/round437_input_scan_reuse_speedbench_20k_20261030/comparison.json`.
 - **Round430 held-out screens (2026-10-30):** each used 128 held-out team
   clusters and two outcome repeats (512 side-swapped games); intervals are
   seeded 10,000-resample cluster bootstraps. Round430 scored 49.02% vs Max
@@ -15385,22 +15336,117 @@ team choice but does not change that conclusion.
   `round428_candidate_vs_historical_round102_128x2_20261030/`, and
   `round429_candidate_vs_maxdamage_128x2_20261030/`.
 
+### Round436 hidden-set loss ablation (2026-10-30)
+
+- Reused Round435's exact 20,000-game rollout data and Round430 initialization;
+  removed only the hidden-set auxiliary-loss weight (0.05 to 0), retaining
+  win-probability auxiliary weight 0.1. PPO completed 1,272 steps. Total
+  training loss fell from 0.8263 to 0.2392, with near-identical policy loss,
+  value loss, KL, and win-probability loss; this is expected because the large
+  hidden-set losses were no longer weighted. It does not by itself demonstrate
+  better actions.
+- Fresh side-swapped evaluation vs Round435: Round436 scored 53.42% across
+  2,046 completed games and 512 team-pair clusters; 1 of 2,048 games was
+  incomplete. Ten-thousand cluster bootstrap resamples give 95% interval
+  [49.80%, 56.93%]. No actions were corrected. The interval includes 50%, so
+  this single ablation is inconclusive; keep Round430 as the validated
+  candidate. Do not promote Round436 without external-opponent confirmation.
+- The paired evaluation took 477.4 seconds on eight CPU workers, or 4.29
+  complete games/s. This is evaluation throughput, not training rollout speed.
+- Artifacts:
+  `training/outputs/phase12_headless/round436_hidden_set_ablation_same_data_20k_20261030/`
+  and
+  `training/outputs/phase12_headless/round436_vs_round435_same_data_ablation_512x2_20261030/`.
+
+### Round436 external-opponent screens (2026-10-30; not promoted)
+
+- Evaluated Round436 on 256 held-out team-pair clusters with two outcomes per
+  cluster (1,024 games per opponent), matching the first 128 clusters to the
+  Round435 external screen and adding 128 more clusters. Both policies used
+  the Round402 team-preview selector where applicable. Intervals below use
+  10,000 team-cluster bootstrap resamples.
+- Round436 vs Max Damage: 46.29% [41.31%, 51.37%]; paired change vs Round435
+  on 128 shared clusters +0.20 pp [-0.59, +0.98].
+- Round436 vs public Counterplay: 47.17% [42.19%, 52.05%]; paired change
+  +0.39 pp [-0.59, +1.37].
+- Round436 vs random: 95.51% [94.14%, 96.78%]; paired change 0.00 pp
+  [-0.78, +0.78].
+- Round436 vs historical PPO Round102: 50.68% [45.61%, 55.86%]; paired
+  change -0.20 pp [-0.98, +0.39]. All evaluations completed with zero action
+  adjustments, timeouts, or errors.
+- Equal-weight mean/median/p10/worst across these four opponents were
+  59.91%/48.93%/46.55%/46.29%; random play again lifts the mean. None of the
+  paired intervals excludes zero. The hidden-set loss ablation shows no
+  measurable external-opponent benefit; retain Round430 as the validated
+  candidate. Do not continue the same ablation unchanged.
+- Full scorecard:
+  `training/outputs/phase12_headless/round436_external_matched128x2_retry1_20261030/external_scorecard.json`.
+
+### Pre-PPO rollout scan reuse optimization (2026-10-30; end-to-end confirmation pending)
+
+- Measured the separate sample-count pass in `train_native_rl.py` on the exact
+  Round435 rollout files: 3.87 GiB and 28,000 valid records, totaling 162,366
+  trainable transitions. The scan took 35.96 seconds (115.6 MB/s). This is
+  outside the 159.3-second trainer preparation/aggregation timing reported for
+  Round435, so it is a distinct repeated read.
+- The headless training path now passes its completed preflight report into the
+  PPO trainer. The report provides the exact valid-record count, trainable
+  transition count, and rollout SHA-256 digest, allowing the trainer to skip
+  the extra trajectory parse while preserving optimizer step budgeting and
+  rollout identity. The audit's digest was verified against an independent
+  recomputation over all 4,155,849,741 nonblank bytes; counts matched the
+  previous scan exactly.
+- Matched same-data PPO replays, using the same initial checkpoint, data,
+  settings, seed, and CUDA device, took 217.98 seconds with preflight reuse
+  and 260.74 seconds with the old scan (42.77 seconds / 16.4% lower wall time).
+  Both produced bit-identical model parameters and identical loss, KL,
+  transition, and 1,272-step metrics. The measured standalone scan was 35.96
+  seconds, so treat that as the repeatable direct saving; attribute the rest
+  of the wall-time difference to run variation. This measures the PPO update
+  only, with rollout generation excluded.
+- Artifacts:
+  `training/outputs/phase12_headless/round437_input_scan_reuse_speedbench_20k_20261030/`
+  and
+  `training/outputs/phase12_headless/round438_input_scan_control_20k_20261030/`;
+  comparison summary:
+  `training/outputs/phase12_headless/round437_input_scan_reuse_speedbench_20k_20261030/comparison.json`.
+
 ### PPO input preparation: reuse cached static tensors (2026-10-30)
 
-- PPO preparation now reads each match's immutable cached team-token tensors
-  directly rather than cloning seven small tensors for every state. Other
-  `build_model_inputs` callers retain clone behavior.
-- On 1,971 real Round435 transitions (256 records, Python 3.12, PyTorch 2.15
-  CPU; six passes with the first excluded), input construction took a median
-  0.2780 s with clones and 0.2324 s with reuse, a 16.4% reduction in that
-  stage. Every output tensor matched exactly.
+- `build_model_inputs` already caches each match's static team-token tensors.
+  PPO preparation now reads those immutable cached tensors directly instead of
+  cloning seven small tensors for every recorded state. Other callers retain
+  the default clone behavior.
+- A reproducible CPU microbenchmark on 1,971 real Round435 transitions
+  (256 records, Python 3.12, PyTorch 2.15 CPU, six passes with the first
+  excluded) measured a median 0.2780 s with clones and 0.2324 s with reuse,
+  a 16.4% reduction for this input-building stage. Every returned model-input
+  tensor matched exactly.
+- If the saving scales linearly to Round435's 162,366 trainable transitions,
+  the estimate is 3.76 seconds, or about 2.5% of the 151.5-second PPO sample
+  collection time. This is a microbenchmark extrapolation, not yet an
+  end-to-end PPO timing. Continue profiling record extraction and tensor
+  aggregation, which remain larger costs.
+- Reproduction command:
+  `PYTHONPATH=. python scripts/benchmark_ppo_static_cache_reuse.py training/outputs/phase12_headless/round435_equilibrium_mixture_response_20k_20261030/rollouts/round_0001_max_damage_p1_shard000.jsonl --records 256 --transitions 1971 --repeats 6`.
+- Report: `training/outputs/phase12_headless/round439_static_cache_reuse_profile_20261030/benchmark.json`.
+
+### PPO transition extraction: replace scalar NumPy clipping (2026-10-30)
+
+- Profiling 256 Round435 Max Damage records (1,971 transitions) showed
+  `extract_player_transitions` at about 0.65 s under `cProfile`, with public
+  mechanics encoding accounting for roughly 0.37 s cumulative. Scalar
+  `numpy.clip` was called repeatedly for each Pokémon row.
+- Replacing that scalar clip with Python `min`/`max` bounds preserved every
+  public-context feature exactly and reduced median transition-extraction time
+  from 0.3589 s to 0.2781 s over six measured runs after warm-up (22.5%).
 - Linear extrapolation to Round435's 162,366 trainable transitions estimates
-  3.76 seconds saved, about 2.5% of its 151.5-second PPO sample collection
-  time. This is not yet an end-to-end PPO timing; record extraction and tensor
-  aggregation remain larger costs.
-- Reproduction script and raw result:
-  `scripts/benchmark_ppo_static_cache_reuse.py` and
-  `site/ppo_input_preparation_benchmark.json`.
+  6.66 seconds saved in transition extraction. Combined with the separate
+  static-tensor reuse microbenchmark, the estimated gain is about 10.4 seconds
+  or 6.9% of the 151.5-second collection stage; validate with a full PPO run.
+- Reproduction script and report:
+  `scripts/benchmark_public_mechanics_scalar_clip.py` and
+  `training/outputs/phase12_headless/round440_public_mechanics_clip_profile_20261030/benchmark.json`.
 
 ### PPO transition extraction: replace scalar NumPy clipping (2026-10-30)
 
@@ -15438,6 +15484,27 @@ team choice but does not change that conclusion.
   parsing/preparation as the current bottleneck, and repeat a matched control
   before claiming end-to-end improvement.
 - Profile:
+  `training/outputs/phase12_headless/round441_preprocess_profile_fullppo_20k_20261030/full_update_profile.json`.
+
+### Full PPO replay after preprocessing changes (Round441, 2026-10-30)
+
+- Replayed the exact Round435 audited rollout set (28,000 valid records,
+  162,366 trainable transitions) on the RTX 4060 with CUDA Torch, the same
+  initialization, seed, PPO settings, and 1,272 optimizer steps as Round437.
+  The refreshed strict audit reproduced the existing SHA-256 digest and all
+  counts exactly.
+- Sample collection took 226.27 s; input tensor aggregation took 2.82 s and
+  action tensor aggregation 4.01 s. Optimization was about 55 s. Rounded
+  telemetry start/end timestamps give about 290 s wall time.
+- The loss/metric record matched Round437 exactly, and all 82 model tensors in
+  the final checkpoint are bit-identical (maximum parameter difference 0).
+  Thus the preprocessing edits preserve the training result.
+- This full replay was slower than the prior 217.98 s preflight-reuse replay
+  and 260.74 s legacy-scan control. Runtime conditions differ and the isolated
+  benchmark gains do not establish a full-iteration speedup. Treat sample
+  parsing/preparation as the current bottleneck, and repeat a matched control
+  before claiming end-to-end improvement.
+- Profile:
   `site/round441_full_ppo_replay_profile.json`.
 
 ### PPO transition extraction: reuse the converted observation array (Round442, 2026-10-30)
@@ -15453,7 +15520,37 @@ team choice but does not change that conclusion.
   replay; validate end-to-end before claiming a training speedup.
 - Benchmark script and report:
   `scripts/benchmark_ppo_observation_array_reuse.py` and
+  `training/outputs/phase12_headless/round442_observation_array_reuse_profile_20261030/benchmark.json`.
+
+### PPO transition extraction: reuse the converted observation array (Round442, 2026-10-30)
+
+- `extract_player_transitions` now converts each JSON observation to float32
+  once and passes that array to both public-mechanics encoding and the
+  `NativeTransition`, avoiding a repeated list-to-NumPy conversion.
+- On the same 256 Round435 records and 1,971 transitions, seven runs with the
+  first excluded measured 0.2790 s before and 0.2593 s after (7.1% lower
+  extraction time). Every `NativeTransition` field was exactly equal.
+- Linear extrapolation estimates 1.62 s saved at 162,366 transitions. This
+  optimization was added after Round441 and has not been included in a full PPO
+  replay; validate end-to-end before claiming a training speedup.
+- Benchmark script and report:
+  `scripts/benchmark_ppo_observation_array_reuse.py` and
   `site/ppo_observation_array_reuse_benchmark.json`.
+
+### PPO transition extraction: precompute hidden-set targets per record (Round443, 2026-10-30)
+
+- Hidden opponent moves, items, and abilities are constant within a trajectory
+  record. `extract_player_transitions` now prepares those targets once per
+  record and only builds the turn-dependent revealed-move masks per step.
+- On the same 256 Round435 records and 1,971 transitions, seven runs with the
+  first excluded measured 0.2600 s before and 0.2491 s after (4.2% lower
+  extraction time). Every `NativeTransition` field was exactly equal.
+- Linear extrapolation estimates 0.90 s saved over 162,366 transitions. This
+  change postdates Round441 and has not been included in a full PPO replay.
+  The next major target remains JSON record parsing and sample preparation.
+- Benchmark script and report:
+  `scripts/benchmark_ppo_hidden_target_precompute.py` and
+  `training/outputs/phase12_headless/round443_hidden_target_precompute_profile_20261030/benchmark.json`.
 
 ### PPO transition extraction: precompute hidden-set targets per record (Round443, 2026-10-30)
 
@@ -15601,29 +15698,33 @@ team choice but does not change that conclusion.
   full-length, and NaN-active-row feature cases also matched the prior logic.
 - Linear extrapolation to Round447's 162,366 transitions estimates 1.28 s
   saved, about 0.76% of its 169.12 s sample-preparation time. This is a
-  microbenchmark estimate, not an end-to-end PPO or games/s result. Reproduce
-  with `scripts/benchmark_field_feature_encoding.py`; report:
+  microbenchmark estimate, not a complete-game throughput result. Reproduce
+  the isolated probe with `scripts/benchmark_field_feature_encoding.py`; report:
   `training/outputs/phase12_headless/round453_numpy_field_feature_encoding_20261030/benchmark.json`.
+- Replayed the exact Round447 PPO configuration on the same audited data.
+  Sample preparation took 163.07 s vs 169.12 s (6.05 s / 3.58% lower); tensor
+  aggregation was effectively unchanged. Losses, KL, all 1,272 optimizer-step
+  metrics, transition counts, and all 82 final checkpoint tensors matched
+  Round447 exactly. The complete update wall time was 228.64 s vs about 232 s
+  in Round447, but remains slower than Round437's 217.98 s. One replay cannot
+  separate code savings from run-to-run timing variation or attribute the full
+  difference to the NumPy encoder; repeat before claiming a reliable
+  end-to-end update-speed gain. The update excludes rollout generation, so the
+  established complete-iteration rate remains 16.49 games/s.
+- Full replay report:
+  `training/outputs/phase12_headless/round453_numpy_field_feature_encoding_20261030/full_ppo_replay/profile.json`.
 - A separate validation specialization uses the known flat feature-vector
   shape to avoid recursively validating every scalar while preserving the
   recursive fallback for nested values. On 512 already-parsed real records,
   median perspective validation fell from 227.82 ms to 219.40 ms (3.84%), and
   all original results matched. This is a small isolated saving, not a full
   loader measurement.
-- Matched full PPO replay validation: the same audited data, Round447 initial
-  checkpoint, seed, and settings completed 1,272 optimizer steps. Sample
-  preparation took 163.07 s vs 169.12 s (6.05 s / 3.58% lower); all losses and
-  metrics matched exactly, and all 82 final checkpoint tensors were
-  bit-identical. Full update wall time was 228.64 s vs about 232 s for Round447,
-  still above Round437's 217.98 s. One run cannot separate code savings from
-  runtime variation or attribute all savings to the field encoder. This
-  PPO-only replay excludes self-play rollout generation, so complete-iteration
-  speed remains 16.49 games/s. Report: `round453_full_ppo_replay.json`.
-- Round447 record-to-transition preparation remains a major cost. Repeat the
-  matched PPO replay before claiming a stable gain; then profile repeated
-  public-mechanics/team facts and the remaining transition-extraction and
-  tensor-assembly work. Do not report isolated inference or state-encoding
-  rates as complete-game throughput.
+- Current rate remains 16.49 full training-iteration games/s from Round430;
+  Round447 record-to-transition preparation remains 169.12 s for 20k games.
+  Current optimization priorities are repeated measures of the matched PPO
+  pipeline, then precompute/cache repeated public-mechanics/team facts and
+  profile the remaining transition-extraction and tensor-assembly work. Do not report
+  isolated inference or state encoding rates as complete-game throughput.
 
 ### Static team-token signature reuse (Round454, 2026-10-30)
 
@@ -15647,3 +15748,29 @@ team choice but does not change that conclusion.
   timing variation. Current complete-iteration rate remains 16.49 games/s.
 - Repeated full replay report:
   `training/outputs/phase12_headless/round454_static_team_key_cache_20261030/full_ppo_replay/profile.json`.
+
+### Public-mechanics static-facts reuse (Round455, 2026-10-30)
+
+- During extraction, compute own-team Fake Out capability and format-specific
+  Fake Out learnability once per player-view trajectory record. On 1,026
+  audited states / 135 records, seven warmed repeats reduced the encoder
+  median from 48.27 ms to 42.69 ms (11.56%), with exact public-mechanics
+  feature parity. The linear estimate is about 0.9 s across 162,366 states;
+  JSON parsing and other extraction remain outside this probe. Reproduce with
+  `scripts/benchmark_public_mechanics_static_facts.py`; report:
+  `training/outputs/phase12_headless/round455_public_mechanics_static_facts_20261030/benchmark.json`.
+- A matched PPO replay used the same Round447 audited 20,000-game dataset,
+  162,366 transitions, initialization, seed, and 1,272 optimizer steps.
+  Preparation was 161.79 s, versus 163.68 s in Round454 and 169.12 s in
+  Round447. All 30 numeric training metrics and all 82 checkpoint tensors
+  matched Round447 bit-for-bit. The run took about 224 s by whole-second UTC
+  timestamps, versus 228.62–228.64 s in Rounds453/454; one run per code state
+  is insufficient to claim an end-to-end gain. This PPO-only replay excludes
+  rollout generation. Keep the established complete-iteration throughput at
+  16.49 games/s (Round430) until a full rollout-plus-update run is measured.
+- Current measured bottleneck remains PPO transition preparation and data
+  construction (~162 s of this ~224 s update); the static facts cache saves
+  about 1.9 s in this replay but does not alter the dominant work. Next profile
+  remaining extraction and assembly paths, then repeat matched update timings
+  before attributing a durable speedup. Report:
+  `training/outputs/phase12_headless/round455_public_mechanics_static_facts_20261030/full_ppo_replay/profile.json`.

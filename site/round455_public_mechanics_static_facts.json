@@ -1,0 +1,33 @@
+{
+  "benchmark": "per-state vs per-record public-mechanics static facts",
+  "audit": "training/outputs/phase12_headless/round445_offset_indexed_replay_20k_20261030/preflight/round_0001_indexed.json",
+  "states": 1026,
+  "records": 135,
+  "repeats": 7,
+  "warmup_excluded": true,
+  "per_state_facts_seconds": [
+    0.0494921010104008,
+    0.048266199009958655,
+    0.04829945199890062,
+    0.0482803960039746,
+    0.04826064797816798,
+    0.04832105300738476,
+    0.04818670899840072
+  ],
+  "per_record_facts_seconds": [
+    0.04250451299594715,
+    0.0427081260131672,
+    0.0427063129900489,
+    0.04258439299883321,
+    0.04259699699468911,
+    0.0426772280188743,
+    0.04273504699813202
+  ],
+  "per_state_facts_median_seconds": 0.04827329750696663,
+  "per_record_facts_median_seconds": 0.0426917705044616,
+  "speedup": 1.1307401154028436,
+  "reduction_pct": 11.562348732649808,
+  "exact_feature_parity": true,
+  "scope_note": "Only public-mechanics feature encoding is timed. Candidate computes own Fake Out capability and format learnability once per player-view record, as in extract_player_transitions; JSON parsing and other transition extraction are excluded.",
+  "estimated_seconds_saved_162366": 0.88
+}

@@ -11,219 +11,219 @@
     "ci95": "[51.86%, 58.79%]",
     "games": "2,042",
     "label": "Current in-battle policy vs Round424 start",
-    "status": "Current validated candidate \u00b7 Round436 ablation and external screens inconclusive",
+    "status": "Current validated candidate · Round436 ablation and external screens inconclusive",
     "note": "Round431 scored 49.36% [45.85%, 52.93%] against Round430, and Round432 scored 47.90% [44.29%, 51.61%]; neither showed a clear gain. Round430 remains the validated in-battle candidate. Round402's 77.15% result is a separate team-preview selector benchmark. Round432 external screens also showed no clear lift: all paired 95% intervals vs Round430 and Round431 include zero. Round432 cross-opponent equal-weight mean/median/p10/worst were 60.35%/48.83%/47.64%/47.46%; the mean is buoyed by random play. Round435 used a Round434 restricted-game mixture (31.7% Round430 / 68.3% Round432 in the policy pool) and scored 52.98% [49.41%, 56.59%] head-to-head with Round430; all matched external deltas vs Round430/432 included zero. Round430 remains the candidate. Round436 removed hidden-set auxiliary loss on the identical Round435 data; it scored 53.42% [49.80%, 56.93%] vs Round435 over 512 clusters (one incomplete game), an inconclusive ablation. Round430 remains the validated candidate. Round436 external screens at 256 clusters found no supported paired gain vs Round435: deltas on 128 shared clusters were +0.20 pp vs Max Damage [-0.59,+0.98], +0.39 pp vs public Counterplay [-0.59,+1.37], 0.00 pp vs random [-0.78,+0.78], and -0.20 pp vs Round102 [-0.98,+0.39]. Round436 remains unpromoted; Round430 is still the validated candidate."
   },
   "evaluation_scorecard": [
     {
-      "opponent": "Max Damage \u00b7 Round436",
+      "opponent": "Max Damage · Round436",
       "score": "46.29%",
       "games": "1,024",
       "interval": "[41.31%, 51.37%]",
-      "status": "256 clusters \u00b7 paired delta vs Round435 +0.20 pp [-0.59, +0.98] on 128 shared clusters \u00b7 0 errors/corrections"
+      "status": "256 clusters · paired delta vs Round435 +0.20 pp [-0.59, +0.98] on 128 shared clusters · 0 errors/corrections"
     },
     {
-      "opponent": "Public counterplay \u00b7 Round436",
+      "opponent": "Public counterplay · Round436",
       "score": "47.17%",
       "games": "1,024",
       "interval": "[42.19%, 52.05%]",
-      "status": "256 clusters \u00b7 paired delta vs Round435 +0.39 pp [-0.59, +1.37] on 128 shared clusters \u00b7 0 errors/corrections"
+      "status": "256 clusters · paired delta vs Round435 +0.39 pp [-0.59, +1.37] on 128 shared clusters · 0 errors/corrections"
     },
     {
-      "opponent": "Random \u00b7 Round436",
+      "opponent": "Random · Round436",
       "score": "95.51%",
       "games": "1,024",
       "interval": "[94.14%, 96.78%]",
-      "status": "256 clusters \u00b7 paired delta vs Round435 0.00 pp [-0.78, +0.78] on 128 shared clusters \u00b7 0 errors/corrections"
+      "status": "256 clusters · paired delta vs Round435 0.00 pp [-0.78, +0.78] on 128 shared clusters · 0 errors/corrections"
     },
     {
-      "opponent": "Historical PPO Round102 \u00b7 Round436",
+      "opponent": "Historical PPO Round102 · Round436",
       "score": "50.68%",
       "games": "1,024",
       "interval": "[45.61%, 55.86%]",
-      "status": "256 clusters \u00b7 paired delta vs Round435 -0.20 pp [-0.98, +0.39] on 128 shared clusters \u00b7 0 errors/corrections"
+      "status": "256 clusters · paired delta vs Round435 -0.20 pp [-0.98, +0.39] on 128 shared clusters · 0 errors/corrections"
     },
     {
-      "opponent": "Round435 policy \u00b7 Round436 hidden-set ablation",
+      "opponent": "Round435 policy · Round436 hidden-set ablation",
       "score": "53.42%",
       "games": "2,046",
       "interval": "[49.80%, 56.93%]",
-      "status": "512 matched team-pair clusters \u00b7 1 incomplete repeat \u00b7 0 action corrections \u00b7 interval includes 50%"
+      "status": "512 matched team-pair clusters · 1 incomplete repeat · 0 action corrections · interval includes 50%"
     },
     {
-      "opponent": "Team preview benchmark \u00b7 Round402 selector",
+      "opponent": "Team preview benchmark · Round402 selector",
       "score": "77.15%",
       "games": "2,048",
       "interval": "[74.90%, 79.35%]",
       "status": "Team-selection benchmark; separate from in-battle policy strength"
     },
     {
-      "opponent": "Max Damage \u00b7 Round435",
+      "opponent": "Max Damage · Round435",
       "score": "48.44%",
       "games": "512",
       "interval": "[41.21%, 55.66%]",
-      "status": "128 matched clusters \u00b7 delta vs Round430 -0.59 pp [-3.13, +1.76]; vs Round432 -1.17 pp [-3.91, +1.37]"
+      "status": "128 matched clusters · delta vs Round430 -0.59 pp [-3.13, +1.76]; vs Round432 -1.17 pp [-3.91, +1.37]"
     },
     {
-      "opponent": "Public counterplay \u00b7 Round435",
+      "opponent": "Public counterplay · Round435",
       "score": "46.48%",
       "games": "512",
       "interval": "[39.84%, 53.13%]",
-      "status": "128 matched clusters \u00b7 delta vs Round430 -0.59 pp [-2.54, +1.37]; vs Round432 -0.98 pp [-3.71, +1.56]"
+      "status": "128 matched clusters · delta vs Round430 -0.59 pp [-2.54, +1.37]; vs Round432 -0.98 pp [-3.71, +1.56]"
     },
     {
-      "opponent": "Random \u00b7 Round435",
+      "opponent": "Random · Round435",
       "score": "95.70%",
       "games": "512",
       "interval": "[93.95%, 97.46%]",
-      "status": "128 matched clusters \u00b7 delta vs Round430 +0.20 pp [-1.17, +1.76]; vs Round432 -0.59 pp [-2.34, +0.98]"
+      "status": "128 matched clusters · delta vs Round430 +0.20 pp [-1.17, +1.76]; vs Round432 -0.59 pp [-2.34, +0.98]"
     },
     {
-      "opponent": "Historical PPO Round102 \u00b7 Round435",
+      "opponent": "Historical PPO Round102 · Round435",
       "score": "49.80%",
       "games": "512",
       "interval": "[42.77%, 56.84%]",
-      "status": "128 matched clusters \u00b7 delta vs Round430 +1.56 pp [-0.78, +3.91]; vs Round432 +1.76 pp [-1.17, +4.88]"
+      "status": "128 matched clusters · delta vs Round430 +1.56 pp [-0.78, +3.91]; vs Round432 +1.76 pp [-1.17, +4.88]"
     },
     {
-      "opponent": "Round430 starting policy \u00b7 Round435",
+      "opponent": "Round430 starting policy · Round435",
       "score": "52.98%",
       "games": "2,046",
       "interval": "[49.41%, 56.59%]",
-      "status": "512 clusters \u00b7 1 incomplete repeat \u00b7 0 action corrections \u00b7 no supported lift"
+      "status": "512 clusters · 1 incomplete repeat · 0 action corrections · no supported lift"
     },
     {
-      "opponent": "Max Damage \u00b7 Round432",
+      "opponent": "Max Damage · Round432",
       "score": "49.61%",
       "games": "512",
       "interval": "[42.38%, 57.03%]",
-      "status": "128 matched clusters \u00b7 delta vs Round430 +0.59 pp [-1.76, +2.93]; vs Round431 +1.37 pp [-1.37, +4.30] \u00b7 zero errors/action corrections"
+      "status": "128 matched clusters · delta vs Round430 +0.59 pp [-1.76, +2.93]; vs Round431 +1.37 pp [-1.37, +4.30] · zero errors/action corrections"
     },
     {
-      "opponent": "Public counterplay \u00b7 Round432",
+      "opponent": "Public counterplay · Round432",
       "score": "47.46%",
       "games": "512",
       "interval": "[40.63%, 54.10%]",
-      "status": "128 matched clusters \u00b7 delta vs Round430 +0.39 pp [-1.95, +2.93]; vs Round431 +0.39 pp [-1.95, +2.73] \u00b7 zero errors/action corrections"
+      "status": "128 matched clusters · delta vs Round430 +0.39 pp [-1.95, +2.93]; vs Round431 +0.39 pp [-1.95, +2.73] · zero errors/action corrections"
     },
     {
-      "opponent": "Random \u00b7 Round432",
+      "opponent": "Random · Round432",
       "score": "96.29%",
       "games": "512",
       "interval": "[94.14%, 98.24%]",
-      "status": "128 matched clusters \u00b7 delta vs Round430 +0.78 pp [-0.39, +2.15]; vs Round431 0.00 pp [-1.37, +1.56] \u00b7 zero errors/action corrections"
+      "status": "128 matched clusters · delta vs Round430 +0.78 pp [-0.39, +2.15]; vs Round431 0.00 pp [-1.37, +1.56] · zero errors/action corrections"
     },
     {
-      "opponent": "Historical PPO Round102 \u00b7 Round432",
+      "opponent": "Historical PPO Round102 · Round432",
       "score": "48.05%",
       "games": "512",
       "interval": "[41.21%, 54.88%]",
-      "status": "128 matched clusters \u00b7 delta vs Round430 -0.20 pp [-3.32, +2.73]; vs Round431 +0.20 pp [-3.32, +3.71] \u00b7 zero errors/action corrections"
+      "status": "128 matched clusters · delta vs Round430 -0.20 pp [-3.32, +2.73]; vs Round431 +0.20 pp [-3.32, +3.71] · zero errors/action corrections"
     },
     {
-      "opponent": "Round430 starting policy \u00b7 Round431",
+      "opponent": "Round430 starting policy · Round431",
       "score": "49.36%",
       "games": "2,040",
       "interval": "[45.85%, 52.93%]",
-      "status": "512 clusters \u00b7 4 incomplete repeats \u00b7 0 action corrections \u00b7 no measured lift"
+      "status": "512 clusters · 4 incomplete repeats · 0 action corrections · no measured lift"
     },
     {
-      "opponent": "Max Damage \u00b7 Round431",
+      "opponent": "Max Damage · Round431",
       "score": "48.24%",
       "games": "512",
       "interval": "[41.02%, 55.67%]",
-      "status": "128 matched clusters \u00b7 paired delta vs Round430 -0.78 pp [-3.12, +1.56]"
+      "status": "128 matched clusters · paired delta vs Round430 -0.78 pp [-3.12, +1.56]"
     },
     {
-      "opponent": "Public counterplay \u00b7 Round431",
+      "opponent": "Public counterplay · Round431",
       "score": "47.07%",
       "games": "512",
       "interval": "[40.23%, 53.91%]",
-      "status": "128 matched clusters \u00b7 paired delta vs Round430 0.00 pp [-2.54, +2.34]"
+      "status": "128 matched clusters · paired delta vs Round430 0.00 pp [-2.54, +2.34]"
     },
     {
-      "opponent": "Random \u00b7 Round431",
+      "opponent": "Random · Round431",
       "score": "96.29%",
       "games": "512",
       "interval": "[94.34%, 98.05%]",
-      "status": "128 matched clusters \u00b7 paired delta vs Round430 +0.78 pp [-0.39, +2.15]"
+      "status": "128 matched clusters · paired delta vs Round430 +0.78 pp [-0.39, +2.15]"
     },
     {
-      "opponent": "Historical PPO Round102 \u00b7 Round431",
+      "opponent": "Historical PPO Round102 · Round431",
       "score": "47.85%",
       "games": "512",
       "interval": "[41.01%, 55.08%]",
-      "status": "128 matched clusters \u00b7 paired delta vs Round430 -0.39 pp [-2.73, +1.76]"
+      "status": "128 matched clusters · paired delta vs Round430 -0.39 pp [-2.73, +1.76]"
     },
     {
-      "opponent": "Max Damage \u00b7 Round430",
+      "opponent": "Max Damage · Round430",
       "score": "49.02%",
       "games": "512",
       "interval": "[41.60%, 56.45%]",
-      "status": "Round430 \u00b7 128 clusters \u00b7 0 errors"
+      "status": "Round430 · 128 clusters · 0 errors"
     },
     {
-      "opponent": "Public counterplay \u00b7 Round430",
+      "opponent": "Public counterplay · Round430",
       "score": "47.07%",
       "games": "512",
       "interval": "[40.23%, 53.71%]",
-      "status": "Round430 \u00b7 128 clusters \u00b7 0 errors"
+      "status": "Round430 · 128 clusters · 0 errors"
     },
     {
-      "opponent": "Random \u00b7 Round430",
+      "opponent": "Random · Round430",
       "score": "95.51%",
       "games": "512",
       "interval": "[93.36%, 97.46%]",
-      "status": "Round430 \u00b7 128 clusters \u00b7 0 errors"
+      "status": "Round430 · 128 clusters · 0 errors"
     },
     {
-      "opponent": "Historical PPO Round102 \u00b7 Round430",
+      "opponent": "Historical PPO Round102 · Round430",
       "score": "48.24%",
       "games": "512",
       "interval": "[41.21%, 55.27%]",
-      "status": "Round430 \u00b7 128 clusters \u00b7 0 errors"
+      "status": "Round430 · 128 clusters · 0 errors"
     },
     {
-      "opponent": "Round424 starting policy \u00b7 Round430",
+      "opponent": "Round424 starting policy · Round430",
       "score": "55.32%",
       "games": "2,042",
       "interval": "[51.86%, 58.79%]",
-      "status": "Round430 vs start \u00b7 512 clusters \u00b7 3 incomplete repeats \u00b7 0 corrections"
+      "status": "Round430 vs start · 512 clusters · 3 incomplete repeats · 0 corrections"
     },
     {
-      "opponent": "Max Damage \u00b7 Round424 candidate",
+      "opponent": "Max Damage · Round424 candidate",
       "score": "46.88%",
       "games": "512",
       "interval": "[39.45%, 54.30%]",
-      "status": "Round424 \u00b7 128 clusters \u00b7 0 errors"
+      "status": "Round424 · 128 clusters · 0 errors"
     },
     {
-      "opponent": "Public counterplay \u00b7 Round424",
+      "opponent": "Public counterplay · Round424",
       "score": "43.16%",
       "games": "512",
       "interval": "[36.52%, 49.80%]",
-      "status": "Round424 \u00b7 128 clusters \u00b7 0 errors"
+      "status": "Round424 · 128 clusters · 0 errors"
     },
     {
-      "opponent": "Random \u00b7 Round424",
+      "opponent": "Random · Round424",
       "score": "94.92%",
       "games": "512",
       "interval": "[92.77%, 96.88%]",
-      "status": "Round424 \u00b7 128 clusters \u00b7 0 errors"
+      "status": "Round424 · 128 clusters · 0 errors"
     },
     {
-      "opponent": "Historical PPO Round102 \u00b7 Round424",
+      "opponent": "Historical PPO Round102 · Round424",
       "score": "45.90%",
       "games": "512",
       "interval": "[38.67%, 52.93%]",
-      "status": "Round424 vs Round102 \u00b7 128 clusters \u00b7 0 errors"
+      "status": "Round424 vs Round102 · 128 clusters · 0 errors"
     },
     {
-      "opponent": "Round423 starting policy \u00b7 Round424",
+      "opponent": "Round423 starting policy · Round424",
       "score": "51.46%",
       "games": "1,020",
       "interval": "[46.29%, 56.64%]",
-      "status": "Round424 vs start \u00b7 256 clusters \u00b7 2 timeouts/errors"
+      "status": "Round424 vs start · 256 clusters · 2 timeouts/errors"
     }
   ],
   "speed": {
@@ -235,7 +235,7 @@
     "profile_context": "Round430 remains the latest complete end-to-end 20,000-game profile: eight-worker rollout 22.55 games/s and full iteration 16.49 games/s. Round435 offers newer per-shard timings but no valid aggregate rate after preflight recovery. Per-opponent shard rates are not aggregate rates. Action selection contains policy inference; Public Counterplay scoring is nested inside action selection.",
     "active_training_profile": {
       "round": "435",
-      "status": "Round435 per-worker profile \u00b7 Round430 retained as candidate",
+      "status": "Round435 per-worker profile · Round430 retained as candidate",
       "context": "Round435 single-shard timing samples from 20,000-game PPO update, after seat-balanced recovery from one duplicate-team record. The wrapper did not capture full-run aggregate rollout telemetry. Do not sum per-shard rates as aggregate.",
       "profile": [
         {
@@ -275,7 +275,7 @@
           "persistence_ms": "13"
         }
       ],
-      "finding": "Round435 measured about 76 ms/match of Public Counterplay scoring, 65\u201373 ms/match policy inference against pool opponents, and 28\u201337 ms/match Showdown engine time. PPO record preparation plus tensor aggregation took 159.3 s for 20,000 games, versus about 55 s optimization. Improve automatic duplicate-team recovery, then prioritize batched policy inference and audited record parsing/tensor preparation."
+      "finding": "Round435 measured about 76 ms/match of Public Counterplay scoring, 65–73 ms/match policy inference against pool opponents, and 28–37 ms/match Showdown engine time. PPO record preparation plus tensor aggregation took 159.3 s for 20,000 games, versus about 55 s optimization. Improve automatic duplicate-team recovery, then prioritize batched policy inference and audited record parsing/tensor preparation."
     },
     "profile": [
       {
@@ -314,40 +314,40 @@
     ],
     "opportunities": [
       {
-        "title": "1 \u00b7 Batch policy inference across live rollouts",
+        "title": "1 · Batch policy inference across live rollouts",
         "detail": "Historical-policy rollouts spent about 72 ms/match in inference. Workers currently infer independently on CPU. Gather ready decisions from concurrent matches into a shared batch, then compare CPU batching with a single GPU inference service at observed batch sizes. Measure games/s, queue delay, and p95 decision latency before adopting it."
       },
       {
-        "title": "2 \u00b7 Reduce observation encoding work",
-        "detail": "Encoding used about 22\u201329 ms/match. Precompute static dex/team features, cache repeated derived values, and reuse compact numeric buffers across decisions. Profile each stage and retain the closed-team-sheet leakage audit."
+        "title": "2 · Reduce observation encoding work",
+        "detail": "Encoding used about 22–29 ms/match. Precompute static dex/team features, cache repeated derived values, and reuse compact numeric buffers across decisions. Profile each stage and retain the closed-team-sheet leakage audit."
       },
       {
-        "title": "3 \u00b7 Batch rollouts and tune worker count",
+        "title": "3 · Batch rollouts and tune worker count",
         "detail": "A fixed 240-game Max Damage benchmark measured 30.94 games/s at 8 workers, versus 29.09 at 12 and 26.04 at 16; memory also rose from 6.77 GB at 8 to 13.25 GB at 16. Keep 8 as the measured setting for now. Test batching requests across those workers before increasing concurrency."
       },
       {
-        "title": "4 \u00b7 Reduce counterplay scorer cost",
+        "title": "4 · Reduce counterplay scorer cost",
         "detail": "A per-decision cache for repeated public damage calculations cut scorer time from 203.4 to 62.6 ms/match (69%) in a paired 32-game single-worker probe. In a separate 240-game, 8-worker run, scoring averaged 80.1 ms/match and aggregate rollout throughput was 23.51 games/s, with no timeouts or corrections. Still compare an 8-worker pre-cache control and rerun the full mixed PPO iteration; then profile repeated speed and legality calculations."
       },
       {
-        "title": "5 \u00b7 Reuse the audited PPO counts and digest",
-        "detail": "A separate sample-count scan over Round435\u2019s 3.87 GiB and 28,000 valid rollout records took 35.96 s (162,366 trainable transitions). The strict audit already reads the data and computes those counts, so the headless PPO path reuses its counts and SHA-256 digest to skip the duplicate pass. An independent recomputation matched the digest and counts exactly. Same-data PPO replay wall time was 217.98 s with reuse vs 260.74 s without (42.77 s / 16.4% faster); both produced bit-identical model parameters and identical metrics across 1,272 steps. These are PPO-update timings without rollout generation. Treat the separately measured 35.96 s scan as the direct saving; the rest of the observed difference is run variation."
+        "title": "5 · Reuse the audited PPO counts and digest",
+        "detail": "A separate sample-count scan over Round435’s 3.87 GiB and 28,000 valid rollout records took 35.96 s (162,366 trainable transitions). The strict audit already reads the data and computes those counts, so the headless PPO path reuses its counts and SHA-256 digest to skip the duplicate pass. An independent recomputation matched the digest and counts exactly. Same-data PPO replay wall time was 217.98 s with reuse vs 260.74 s without (42.77 s / 16.4% faster); both produced bit-identical model parameters and identical metrics across 1,272 steps. These are PPO-update timings without rollout generation. Treat the separately measured 35.96 s scan as the direct saving; the rest of the observed difference is run variation."
       },
       {
-        "title": "6 \u00b7 Trim trajectory persistence",
-        "detail": "Writes used 7\u201312 ms/match and Round424 stored about 1.8 GB for 10,000 games. Benchmark buffered compact records or chunk compression after the higher-cost action and inference paths."
+        "title": "6 · Trim trajectory persistence",
+        "detail": "Writes used 7–12 ms/match and Round424 stored about 1.8 GB for 10,000 games. Benchmark buffered compact records or chunk compression after the higher-cost action and inference paths."
       },
       {
-        "title": "7 \u00b7 Keep CPU inference eager; profile feature/scorer cost",
-        "detail": "Round452 completed the full-match check of torch.compile: 13.15 games/s eager vs 4.30 compiled at eight workers, with policy inference 65.8 vs 944.6 ms/match and peak RSS 6.60 vs 11.67 GiB. Reject compiled inference in rollout workers. The single-state 1.47\u00d7 gain did not transfer. Focus on feature preparation and public-counterplay scoring; see raw Round452 comparison."
+        "title": "7 · Keep CPU inference eager; profile feature/scorer cost",
+        "detail": "Round452 completed the full-match check of torch.compile: 13.15 games/s eager vs 4.30 compiled at eight workers, with policy inference 65.8 vs 944.6 ms/match and peak RSS 6.60 vs 11.67 GiB. Reject compiled inference in rollout workers. The single-state 1.47× gain did not transfer. Focus on feature preparation and public-counterplay scoring; see raw Round452 comparison."
       },
       {
-        "title": "8 \u00b7 Trim per-state PPO input assembly",
-        "detail": "Round453\u2019s NumPy field encoder and Round454\u2019s per-record static team-key reuse both preserve exact model-input tensors. Their isolated input-builder reductions were 7.07% and 10.75%, respectively. Round454\u2019s full 20k-game PPO replay matched all metrics/checkpoint tensors but had 163.68 s preparation vs Round453\u2019s 163.07 s, so the isolated gain did not produce a further measurable full-update reduction. Complete-iteration rate remains 16.49 games/s."
+        "title": "8 · Trim per-state PPO input assembly",
+        "detail": "Round453’s NumPy field encoder and Round454’s per-record static team-key reuse both preserve exact model-input tensors. Their isolated input-builder reductions were 7.07% and 10.75%, respectively. Round454’s full 20k-game PPO replay matched all metrics/checkpoint tensors but had 163.68 s preparation vs Round453’s 163.07 s, so the isolated gain did not produce a further measurable full-update reduction. Complete-iteration rate remains 16.49 games/s."
       },
       {
-        "title": "9 \u00b7 Profile public-mechanics and transition extraction",
-        "detail": "Current preparation still uses about 163\u2013169 s for 20k games. Measure repeated public-mechanics encoding, per-transition NumPy conversions, and sample-object assembly against the exact audited rollout set. Retain full row validation and closed-sheet checks; require exact model-input/checkpoint parity before accepting a change."
+        "title": "9 · Profile public-mechanics and transition extraction",
+        "detail": "Current preparation still uses about 163–169 s for 20k games. Measure repeated public-mechanics encoding, per-transition NumPy conversions, and sample-object assembly against the exact audited rollout set. Retain full row validation and closed-sheet checks; require exact model-input/checkpoint parity before accepting a change."
       }
     ],
     "jax_decision": "Round430 confirms the Showdown engine used about 18% of policy-pool match time and 8% against Public Counterplay; a simulator-only port would leave the larger measured policy, observation, and baseline-scoring costs intact. Keep Showdown as the correctness reference and require an end-to-end measured gain before a JAX/GPU engine prototype.",
@@ -524,7 +524,7 @@
       "eight_worker_mean_encoding_ms": "26.8",
       "eight_worker_mean_engine_ms": "36.8",
       "eight_worker_mean_trajectory_write_ms": "9.9",
-      "eight_worker_failures": "0 timeouts \u00b7 0 action corrections",
+      "eight_worker_failures": "0 timeouts · 0 action corrections",
       "limitation": "The 32-game before/after is paired on identical seeds. The 8-worker rollout validates concurrent operation but has no pre-cache 8-worker control; full 20,000-game mixed PPO throughput has not yet been remeasured.",
       "report": "training/outputs/phase12_headless/round430_counterplay_cache_benchmark_20261030/report.json"
     },
@@ -577,7 +577,7 @@
       "exact_input_parity": true,
       "scope_note": "1,026 real states, seven repeats after warm-up. Linear extrapolation only; no full PPO replay has measured the net change yet.",
       "report": "round453_numpy_field_feature_encoding.json",
-      "matched_replay_context": "The complete PPO replay preserved all metrics and model tensors. Sample collection was 6.05 s (3.58%) faster than Round447; the whole replay was about 3.36 s faster than Round447 but remains slower than Round437\u2019s 217.98 s. One matched replay cannot separate the code change from run-to-run variance or attribute all observed savings to the NumPy encoder; repeat the matched comparison before claiming reliable end-to-end throughput gain.",
+      "matched_replay_context": "The complete PPO replay preserved all metrics and model tensors. Sample collection was 6.05 s (3.58%) faster than Round447; the whole replay was about 3.36 s faster than Round447 but remains slower than Round437’s 217.98 s. One matched replay cannot separate the code change from run-to-run variance or attribute all observed savings to the NumPy encoder; repeat the matched comparison before claiming reliable end-to-end throughput gain.",
       "matched_replay_sample_preparation_seconds": 163.07,
       "matched_replay_baseline_seconds": 169.12,
       "matched_replay_sample_seconds_saved": 6.05,
@@ -610,14 +610,40 @@
       "sample_preparation_delta_vs_round453_seconds": 0.62,
       "checkpoint_bit_identical": true,
       "metrics_exact_match": true,
-      "finding": "All 82 final model tensors and all numeric training metrics matched Round447 exactly. Run ID, checkpoint path, and wall-clock timestamp naturally differ. The full replay took 228.62 s, effectively identical to Round453\u2019s 228.64 s; sample preparation took 163.68 s vs Round453\u2019s 163.07 s, so this replay did not show an additional end-to-end speed gain from precomputing team signatures. It was 3.21% faster in sample preparation than Round447, but that comparison includes multiple changes and run-to-run timing variation.",
+      "finding": "All 82 final model tensors and all numeric training metrics matched Round447 exactly. Run ID, checkpoint path, and wall-clock timestamp naturally differ. The full replay took 228.62 s, effectively identical to Round453’s 228.64 s; sample preparation took 163.68 s vs Round453’s 163.07 s, so this replay did not show an additional end-to-end speed gain from precomputing team signatures. It was 3.21% faster in sample preparation than Round447, but that comparison includes multiple changes and run-to-run timing variation.",
       "report": "round454_full_ppo_replay.json"
+    },
+    "public_mechanics_static_facts_benchmark": {
+      "context": "Round455 precomputes own Fake Out capability and format-specific learnability once per audited player-view record.",
+      "states": 1026,
+      "records": 135,
+      "per_state_facts_median_ms": 48.27,
+      "per_record_facts_median_ms": 42.69,
+      "reduction_pct": 11.56,
+      "exact_feature_parity": true,
+      "estimated_seconds_saved_162366": 0.88,
+      "scope_note": "Encoder only; JSON parsing and the rest of transition extraction are excluded. Linear estimate is not end-to-end timing.",
+      "report": "round455_public_mechanics_static_facts.json"
+    },
+    "public_mechanics_static_facts_replay": {
+      "context": "Matched Round447 PPO replay: same audited data, initialization, seed, and 1,272 optimizer steps.",
+      "sample_preparation_seconds": 161.79,
+      "round454_sample_preparation_seconds": 163.68,
+      "round447_sample_preparation_seconds": 169.12,
+      "full_update_wall_utc_rounded_seconds": 224,
+      "checkpoint_bit_identical": true,
+      "metrics_exact_match": true,
+      "numeric_metric_keys_checked": 28,
+      "checkpoint_tensor_count": 82,
+      "finding": "The public-mechanics static-facts cache reduced its isolated encoder median by 11.56% (48.27 to 42.69 ms) with exact feature parity. In the matched PPO replay, preparation took 161.79 s, 1.89 s lower than Round454 and 7.32 s below Round447. This is the fastest of the recent replay samples, but a single replay per code state cannot establish a stable speedup. Full update wall time from UTC start/completion timestamps rounded to seconds was about 224 s versus 228.6 s in Rounds453/454; do not treat this as a reliable end-to-end improvement. All 30 numeric metrics and all 82 model tensors matched Round447 exactly. Complete-iteration games/s remains 16.49 from Round430 because rollout generation was not measured here.",
+      "scope_note": "PPO update only; self-play rollout generation excluded. Wall time is rounded to whole UTC seconds from run-start and completion telemetry. Repeat matched replays to separate savings from run variation. Isolated public-mechanics timing excludes JSON parsing and other transition extraction.",
+      "report": "round455_full_ppo_replay.json"
     }
   },
   "latest_run": {
-    "round": 454,
-    "status": "matched PPO replay \u00b7 exact output parity",
-    "summary": "Round454 replayed the exact audited 20,000-game Round435 data with 162,366 transitions and 1,272 optimizer steps. All numeric training metrics and all 82 checkpoint tensors matched Round447 exactly. Sample preparation was 163.68 s vs Round453\u2019s 163.07 s; full update wall time was 228.62 s vs 228.64 s, so the new signature-key optimization had no detectable full-update speed effect in this run. Round430 remains the validated policy candidate.",
+    "round": 455,
+    "status": "matched PPO replay · exact output parity",
+    "summary": "Round455 replayed the exact audited Round447 20,000-game data (162,366 transitions, 1,272 optimizer steps). All 28 numeric training metrics and all 82 model tensors matched Round447. Sample preparation was 161.79 s vs 163.68 s in Round454 and 169.12 s in Round447. Whole-second UTC wall time was about 224 s, but one run per code state cannot establish a stable full-update speed gain. Round430 remains the validated policy candidate.",
     "games": "20,000 outcomes",
     "epochs": "1,272 optimizer steps",
     "evaluation": "Exact replay parity; no strength change"
@@ -625,5 +651,5 @@
   "method": "Native self-play PPO for in-battle decisions. Terminal win/loss remains the main objective; win-probability and hidden-set prediction are auxiliary tasks. Search comes after a stronger policy.",
   "jax_decision": "Round430 has a confirmed self-play head-to-head lift over Round424, but external-opponent screens remain inconclusive. Prioritize measured inference batching, observation throughput, and rollouts; keep equilibrium-oriented opponent coverage and defer a JAX/GPU engine rewrite until its end-to-end payoff is measured.",
   "evaluation_note": "Score rates include wins and half credit for draws. Use paired held-out teams, side swaps, repeated outcomes, and cluster intervals. Track results across public counterplay, random, historical PPO, and Max Damage; no one matchup percentage is the finish line. Round431's equal-weight four-opponent mean was 59.86%, but the median was 48.05%, p10 47.30%, and worst score 47.07%; the mean is lifted by random play. All paired differences vs Round430 included zero.",
-  "generated_at": "2026-10-30 15:37 UTC"
+  "generated_at": "2026-10-30 15:44 UTC"
 }
