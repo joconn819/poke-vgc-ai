@@ -1,0 +1,123 @@
+{
+  "round": 465,
+  "status": "Complete · not promoted",
+  "checkpoint": "training/outputs/phase12_headless/round465_round464_continue_pool430_464_lr5e5_20k_20261030/checkpoints/latest.pt",
+  "checkpoint_sha256": "3d94b891a635a90047a48326543ffcf3e98f68e11120b71213bc44149abf7c1e",
+  "format": "gen9championsdoubles2026mcclosed",
+  "method": "512 team-pair clusters per matchup; two side-swapped local Showdown games per cluster; 20,000 percentile bootstrap resamples at the team-pair cluster level. Showdown battle randomness is server-side. Same-seed Max Damage controls use identical teams and previews.",
+  "opponents": [
+    {
+      "opponent": "Random",
+      "score_percent": 95.1171875,
+      "cluster_bootstrap_95_pct": [
+        93.65234375,
+        96.484375
+      ],
+      "games": 1024,
+      "clusters": 512,
+      "evaluation_games_per_second": 4.917720392111744,
+      "action_adjustments": 0,
+      "initial_timeout_attempts": 2,
+      "unresolved_pairs": 0
+    },
+    {
+      "opponent": "Max Damage",
+      "score_percent": 45.5078125,
+      "cluster_bootstrap_95_pct": [
+        41.69921875,
+        49.31640625
+      ],
+      "games": 1024,
+      "clusters": 512,
+      "evaluation_games_per_second": 6.661007540793311,
+      "action_adjustments": 0,
+      "initial_timeout_attempts": 0,
+      "unresolved_pairs": 0
+    },
+    {
+      "opponent": "Public Counterplay",
+      "score_percent": 45.99609375,
+      "cluster_bootstrap_95_pct": [
+        42.1875,
+        49.8046875
+      ],
+      "games": 1024,
+      "clusters": 512,
+      "evaluation_games_per_second": 5.790824246998495,
+      "action_adjustments": 0,
+      "initial_timeout_attempts": 0,
+      "unresolved_pairs": 0
+    },
+    {
+      "opponent": "PPO Round464",
+      "score_percent": 52.83203125,
+      "cluster_bootstrap_95_pct": [
+        49.0234375,
+        56.640625
+      ],
+      "games": 1024,
+      "clusters": 512,
+      "evaluation_games_per_second": 4.6497829031954785,
+      "action_adjustments": 0,
+      "initial_timeout_attempts": 1,
+      "unresolved_pairs": 0
+    },
+    {
+      "opponent": "PPO Round430",
+      "score_percent": 52.5390625,
+      "cluster_bootstrap_95_pct": [
+        48.73046875,
+        56.25
+      ],
+      "games": 1024,
+      "clusters": 512,
+      "evaluation_games_per_second": 5.569595939353132,
+      "action_adjustments": 0,
+      "initial_timeout_attempts": 0,
+      "unresolved_pairs": 0
+    }
+  ],
+  "matched_max_damage_controls": [
+    {
+      "control": "Round464",
+      "control_score_percent": 45.41015625,
+      "round465_score_percent": 45.5078125,
+      "paired_delta_percentage_points": 0.09765625,
+      "paired_delta_cluster_bootstrap_95_pp": [
+        -1.5625,
+        1.7578125
+      ],
+      "clusters": 512,
+      "clusters_tie": 455,
+      "clusters_candidate_better": 28,
+      "clusters_candidate_worse": 29,
+      "initial_timeout_attempts": 1
+    },
+    {
+      "control": "Round430",
+      "control_score_percent": 44.62890625,
+      "round465_score_percent": 45.5078125,
+      "paired_delta_percentage_points": 0.87890625,
+      "paired_delta_cluster_bootstrap_95_pp": [
+        -1.26953125,
+        3.02734375
+      ],
+      "clusters": 512,
+      "clusters_tie": 427,
+      "clusters_candidate_better": 45,
+      "clusters_candidate_worse": 40,
+      "initial_timeout_attempts": 0
+    }
+  ],
+  "recovery_note": "Four initial timeouts were replayed with a 120-second timeout and the exact same team, preview, and battle seeds: two Random, one PPO Round464, and one Round464 Max Damage control. All four replays completed; all seven final screens contain 512 complete clusters / 1,024 games each. No action adjustments and no unresolved pairs remain.",
+  "decision": "Round465 is not promoted. Scores against Max Damage (45.51% [41.70, 49.32]) and Public Counterplay (46.00% [42.19, 49.80]) remain below 50%. Matched Max Damage improvements over Round464 (+0.10 pp [-1.56, +1.76]) and Round430 (+0.88 pp [-1.27, +3.03]) are uncertain. Keep Round430 as validated incumbent.",
+  "cross_opponent_equal_weight_mean_percent": 58.3984375,
+  "cross_opponent_p10_percent": 45.703125,
+  "cross_opponent_median_percent": 52.5390625,
+  "worst_opponent_score_percent": 45.5078125,
+  "evaluation_summary": "round465_eval_summary.json",
+  "paired_delta_reports": [
+    "round465_vs_round464_control_paired_delta.json",
+    "round465_vs_round430_control_paired_delta.json"
+  ]
+}

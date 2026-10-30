@@ -16235,3 +16235,47 @@ team choice but does not change that conclusion.
   capped at 128 matches and five fresh-seed attempts per match; ambiguous or
   unexpected IDs stop with the original shards preserved. Syntax compilation
   passed; this recovery path has not yet been exercised by a later training run.
+
+### Round465 paired evaluation complete; candidate not promoted (2026-10-30)
+
+- The final paired screen contains 512 team-pair clusters / 1,024 side-swapped
+  games for each of five opponents, plus same-seed Max Damage controls for
+  Round464 and Round430. Four initial timeouts were replayed at 120 seconds on
+  the exact same team, preview, and battle seeds. All final screens are complete;
+  no invalid actions occurred.
+- **Scores with 20,000 cluster-bootstrap resamples:** Random 95.12%
+  [93.65, 96.48], Max Damage 45.51% [41.70, 49.32], Public Counterplay
+  46.00% [42.19, 49.80], Round464 52.83% [49.02, 56.64], and Round430 52.54%
+  [48.73, 56.25]. The equally weighted mean over these five opponents is
+  58.40%, p10 is 45.70%, and the worst score is 45.51%. The easy Random score
+  lifts the mean; the hard baselines remain below 50%.
+- On identical Max Damage team/preview seeds, Round464 scored 45.41% and
+  Round430 44.63%. Round465's paired deltas were +0.10 pp [-1.56, +1.76]
+  versus Round464 and +0.88 pp [-1.27, +3.03] versus Round430. Neither interval
+  supports a measurable improvement. Round465 scored 52.83% head-to-head with
+  Round464 and 52.54% with Round430; both intervals include 50%.
+- **Decision:** do not promote Round465. Keep Round430 as validated incumbent;
+  Round465 is a challenger without detected improvement. Do not treat the
+  58.40% equal-weight cross-opponent mean as evidence of robust strength because
+  Random is much easier than the hard baselines.
+- **Evaluation speed:** aggregate eight-worker rates were 4.92 games/s Random,
+  6.66 Max Damage, 5.79 Public Counterplay, 4.65 vs Round464, 5.57 vs Round430,
+  6.27 for the Round464 Max Damage control, and 5.35 for the Round430 control.
+  These rates exclude the four exact-seed recovery games. The Round465
+  snapshot-to-checkpoint interval was about 17m54s (**18.62 games/s**), including
+  recovery and manual continuation after the orchestrator's strict-audit exit;
+  a clean Round465 aggregate rollout rate was not retained. Round464 remains
+  the last measured clean rollout profile at 35.38 games/s.
+- Scorecard and raw summaries:
+  `training/outputs/phase12_headless/round465_round464_continue_pool430_464_lr5e5_20k_20261030/evaluation/paired_screen/final/round465_paired_scorecard.json`.
+- The training orchestrator now performs strict-audit repair before PPO and
+  records preflight/recovery wall time separately. The repair code and stricter
+  two-perspective audit passed syntax compilation, but the Round465 iteration
+  used manual recovery; validate the automatic recovery path on the next run
+  before relying on it operationally.
+- Next iteration should not repeat the same PPO settings with only another
+  historical-pool swap. First use the saved 512-cluster games to compare
+  turn-level choices on hard-opponent losses and wins, then build an
+  equilibrium-oriented update that trains against a mixture selected from a
+  payoff matrix over candidate policies/actions. Retain paired held-out screens
+  and promote only on intervals that support broader gains.
