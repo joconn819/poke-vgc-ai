@@ -1,0 +1,149 @@
+{
+  "repository": "joconn819/poke-vgc-ai",
+  "target_pct": null,
+  "objective": {
+    "status": "Active research",
+    "title": "Approach optimal play through robust self-play",
+    "summary": "The long-term goal is approximate optimal / equilibrium-oriented play in the closed-team-sheet VGC game. Measure progress across held-out teams and a varied opponent set; report average, lower-percentile, and worst-case results. No single opponent or fixed win-rate threshold defines completion."
+  },
+  "candidate": {
+    "round": 402,
+    "win_rate_pct": 77.15,
+    "ci95": "[74.90%, 79.35%]",
+    "games": 2048,
+    "status": "Best confirmed Max Damage reference"
+  },
+  "evaluation_scorecard": [
+    {
+      "opponent": "Max Damage \u00b7 reference Round402",
+      "score": "77.15%",
+      "games": "2,048",
+      "interval": "[74.90%, 79.35%]",
+      "status": "Confirmed reference"
+    },
+    {
+      "opponent": "Max Damage \u00b7 Round424 candidate",
+      "score": "46.88%",
+      "games": "512",
+      "interval": "[39.45%, 54.30%]",
+      "status": "Round424 \u00b7 128 clusters \u00b7 0 errors"
+    },
+    {
+      "opponent": "Public counterplay \u00b7 Round424",
+      "score": "43.16%",
+      "games": "512",
+      "interval": "[36.52%, 49.80%]",
+      "status": "Round424 \u00b7 128 clusters \u00b7 0 errors"
+    },
+    {
+      "opponent": "Random \u00b7 Round424",
+      "score": "94.92%",
+      "games": "512",
+      "interval": "[92.77%, 96.88%]",
+      "status": "Round424 \u00b7 128 clusters \u00b7 0 errors"
+    },
+    {
+      "opponent": "Historical PPO Round102 \u00b7 Round424",
+      "score": "45.90%",
+      "games": "512",
+      "interval": "[38.67%, 52.93%]",
+      "status": "Round424 vs Round102 \u00b7 128 clusters \u00b7 0 errors"
+    },
+    {
+      "opponent": "Round423 starting policy \u00b7 Round424",
+      "score": "51.46%",
+      "games": "1,020",
+      "interval": "[46.29%, 56.64%]",
+      "status": "Round424 vs start \u00b7 256 clusters \u00b7 2 timeouts/errors"
+    }
+  ],
+  "speed": {
+    "games_per_second": "16.89",
+    "context": "10,000-game Round424 training iteration, including rollout and PPO preparation/optimization; not raw simulator speed.",
+    "decision_latency": "See per-opponent breakdown",
+    "current_bottleneck": "Counterplay action scoring; then policy inference and observation encoding",
+    "gpu_status": "RTX 4060 used for PPO optimization; Showdown simulation and rollout inference remain CPU-side",
+    "profile_context": "Round424, 10,000 self-play matches on 8 rollout workers. End-to-end episode time includes setup, agent decisions, engine calls, and trajectory writes. Action selection contains policy inference; counterplay scoring is nested inside action selection, so the columns overlap.",
+    "profile": [
+      {
+        "opponent": "Random",
+        "matches_per_second": "6.99",
+        "end_to_end_ms": "141",
+        "action_ms": "48",
+        "encoding_ms": "29",
+        "engine_ms": "34",
+        "persistence_ms": "9",
+        "inference_ms": "36",
+        "baseline_ms": "0"
+      },
+      {
+        "opponent": "Max Damage",
+        "matches_per_second": "7.27",
+        "end_to_end_ms": "136",
+        "action_ms": "50",
+        "encoding_ms": "26",
+        "engine_ms": "29",
+        "persistence_ms": "9",
+        "inference_ms": "35",
+        "baseline_ms": "5"
+      },
+      {
+        "opponent": "Historical policy pool",
+        "matches_per_second": "5.10",
+        "end_to_end_ms": "193",
+        "action_ms": "84",
+        "encoding_ms": "27",
+        "engine_ms": "34",
+        "persistence_ms": "12",
+        "inference_ms": "72",
+        "baseline_ms": "0"
+      },
+      {
+        "opponent": "Public counterplay",
+        "matches_per_second": "2.89",
+        "end_to_end_ms": "344",
+        "action_ms": "269",
+        "encoding_ms": "22",
+        "engine_ms": "27",
+        "persistence_ms": "7",
+        "inference_ms": "32",
+        "baseline_ms": "228"
+      }
+    ],
+    "opportunities": [
+      {
+        "title": "1 \u00b7 Reduce counterplay scorer cost",
+        "detail": "Its baseline scorer used about 228 ms per match (66% of end-to-end time) and the class ran at 2.89 games/s. Profile its inner loops, cache invariant move/type data, and batch score calculations while preserving candidate diversity."
+      },
+      {
+        "title": "2 \u00b7 Batch policy inference across games",
+        "detail": "Historical-policy rollouts spent about 72 ms/match in inference. Rollout workers currently infer independently on CPU. Benchmark a shared batched inference queue on GPU against CPU at the actual batch sizes, measuring both throughput and action latency."
+      },
+      {
+        "title": "3 \u00b7 Reduce observation encoding work",
+        "detail": "Encoding used about 22\u201329 ms/match. Cache static dex lookups and repeated derived features; encode directly into compact arrays. Keep the closed-team-sheet observation audit in the loop."
+      },
+      {
+        "title": "4 \u00b7 Tune rollout worker count",
+        "detail": "Round424 used 8 workers on a 16-logical-CPU host. Benchmark 8, 12, and 16 workers with framework thread counts capped; track games/s, memory, and tail latency."
+      },
+      {
+        "title": "5 \u00b7 Trim trajectory persistence",
+        "detail": "Writes used 7\u201312 ms/match and Round424 stored about 1.8 GB for 10,000 games. Benchmark buffered compact records or chunk compression after the higher-cost action and inference paths."
+      }
+    ],
+    "jax_decision": "Showdown engine roundtrips were 27\u201334 ms per match in this profile (8\u201324% of end-to-end episode time by opponent class). A simulator-only port has a limited Amdahl ceiling, before state-transfer overhead. Keep the existing engine as the correctness reference; reconsider a JAX/GPU simulator only if an end-to-end prototype proves a substantial gain.",
+    "remaining_summary": "For the historical-policy pool, Showdown used 34 ms of 193 ms per match (~18%); the remaining ~82% is about 159 ms: 84 ms action selection (including 72 ms model inference), 27 ms observation encoding, 12 ms trajectory writes, 12 ms setup, and about 22 ms other overhead. For public counterplay, the engine used only 27 ms of 344 ms (~8%); its scorer alone used 228 ms."
+  },
+  "latest_run": {
+    "round": 424,
+    "status": "completed \u00b7 evaluation in progress",
+    "summary": "Self-play PPO with terminal outcome rewards and auxiliary win-probability plus hidden-set prediction losses. The 10,000 matches produced 80,079 transitions; auxiliary heads trained on isolated targets that are excluded from model observations.",
+    "games": "10,000",
+    "epochs": "4 PPO passes \u00b7 628 optimizer steps",
+    "evaluation": "Not promoted; multi-opponent screens pending"
+  },
+  "method": "Native self-play PPO for in-battle decisions. Terminal win/loss remains the main objective; win-probability and hidden-set prediction are auxiliary tasks. Search comes after a stronger policy.",
+  "jax_decision": "The current measured bottleneck lies outside the Showdown engine: counterplay scoring, policy inference, and observation encoding. The website profiles these paths and lists the next benchmarkable improvements.",
+  "evaluation_note": "Score rates include wins and half credit for draws. Use paired held-out teams, side swaps, repeated outcomes, and cluster intervals. Track results across public counterplay, random, historical PPO, and Max Damage; no one matchup percentage is the finish line."
+}

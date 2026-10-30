@@ -17,8 +17,8 @@
     .eyebrow { color:var(--blue); font-size:.78rem; font-weight:700; letter-spacing:.13em; text-transform:uppercase; margin-bottom:10px; }
     .grid { display:grid; grid-template-columns:repeat(12,1fr); gap:14px; }
     .card { background:linear-gradient(145deg,rgba(23,36,58,.98),rgba(17,28,46,.98)); border:1px solid var(--line); border-radius:16px; padding:22px; }
-    .hero { grid-column:span 7; min-height:230px; }
-    .rate { grid-column:span 5; }
+    .hero { grid-column:span 5; min-height:230px; }
+    .rate { grid-column:span 7; }
     .wide { grid-column:span 12; }
     .half { grid-column:span 6; }
     .metric { font-size:clamp(2.5rem,8vw,4.8rem); line-height:1; font-weight:750; letter-spacing:-.055em; margin:14px 0 10px; }
@@ -30,6 +30,15 @@
     .fact { padding:14px; background:#0d1728; border-radius:12px; border:1px solid #22334e; }
     .fact b { display:block; color:var(--text); font-size:1.05rem; margin-bottom:3px; }
     .tag { display:inline-block; border:1px solid #37634f; color:var(--green); border-radius:99px; padding:3px 10px; font-size:.78rem; font-weight:700; }
+    .table-wrap { overflow-x:auto; }
+    table { width:100%; min-width:760px; border-collapse:collapse; margin-top:12px; font-size:.92rem; }
+    th,td { padding:11px 9px; text-align:left; border-bottom:1px solid var(--line); vertical-align:top; }
+    th { color:var(--muted); font-size:.78rem; text-transform:uppercase; letter-spacing:.06em; }
+    td:last-child,th:last-child { text-align:right; }
+    .opportunities { display:grid; grid-template-columns:repeat(2,1fr); gap:12px; margin-top:14px; }
+    .opportunity { padding:14px; background:#0d1728; border-radius:12px; border:1px solid #22334e; }
+    .opportunity b { display:block; margin-bottom:5px; }
+    .note { margin-top:12px; font-size:.84rem; }
     a { color:var(--blue); }
     footer { color:var(--muted); font-size:.85rem; margin-top:18px; }
     .error { color:#ffc5a8; }
@@ -41,7 +50,7 @@
     <header>
       <div class="eyebrow">Pokémon Showdown · VGC · Closed Team Sheet</div>
       <h1>Agent training progress</h1>
-      <p>Reproducible progress toward stronger play, measured on held-out matches.</p>
+      <p>Progress toward robust VGC play, measured across held-out teams and varied opponent policies.</p>
     </header>
     <section class="grid" aria-live="polite" id="dashboard">
       <article class="card wide"><p>Loading the latest committed training summary…</p></article>
@@ -51,20 +60,24 @@
   <script>
     const esc = value => String(value ?? "—").replace(/[&<>"']/g, ch => ({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[ch]));
     fetch("progress.json", {cache:"no-store"}).then(r => { if (!r.ok) throw new Error(`HTTP ${r.status}`); return r.json(); }).then(d => {
+      const rows = (d.evaluation_scorecard ?? []).map(x => `<tr><td>${esc(x.opponent)}</td><td>${esc(x.score)}</td><td>${esc(x.games)}</td><td>${esc(x.interval)}</td><td>${esc(x.status)}</td></tr>`).join("");
+      const profiles = (d.speed?.profile ?? []).map(x => `<tr><td>${esc(x.opponent)}</td><td>${esc(x.matches_per_second)}</td><td>${esc(x.end_to_end_ms)} ms</td><td>${esc(x.action_ms)} ms</td><td>${esc(x.inference_ms)} ms</td><td>${esc(x.baseline_ms)} ms</td><td>${esc(x.encoding_ms)} ms</td><td>${esc(x.engine_ms)} ms</td><td>${esc(x.persistence_ms)} ms</td></tr>`).join("");
+      const opportunities = (d.speed?.opportunities ?? []).map(x => `<div class="opportunity"><b>${esc(x.title)}</b><span class="sub">${esc(x.detail)}</span></div>`).join("");
       const pct = Math.max(0, Math.min(100, Number(d.candidate?.win_rate_pct ?? 0)));
       document.querySelector("#dashboard").innerHTML = `
         <article class="card hero">
-          <span class="tag">${esc(d.candidate?.status)}</span>
-          <div class="eyebrow" style="margin-top:18px">Best measured candidate vs Max Damage</div>
-          <div class="metric">${pct.toFixed(2)}<small>% win rate</small></div>
-          <p class="sub">Round ${esc(d.candidate?.round)} · ${esc(d.candidate?.games)} matches · 95% cluster interval ${esc(d.candidate?.ci95)}</p>
-          <div class="track" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${pct}"><span style="width:${pct}%"></span></div>
-          <p class="sub">Target: ${esc(d.target_pct)}% on held-out team pairs</p>
+          <span class="tag">${esc(d.objective?.status ?? "Active research")}</span>
+          <div class="eyebrow" style="margin-top:18px">Project objective</div>
+          <h2>${esc(d.objective?.title ?? "Improve robust play across opponents")}</h2>
+          <p>${esc(d.objective?.summary ?? "No single matchup percentage is treated as the finish line. Compare the agent across opponents, teams, sides, and repeated outcomes.")}</p>
+          <p class="sub" style="margin-top:14px">Best confirmed Max Damage result: Round ${esc(d.candidate?.round)} · ${pct.toFixed(2)}% · ${esc(d.candidate?.games)} games · ${esc(d.candidate?.ci95)} cluster interval.</p>
         </article>
         <article class="card rate"><div class="eyebrow">Runtime</div><h2>Measured match speed</h2><div class="metric">${esc(d.speed?.games_per_second)}<small> games/sec</small></div><p class="sub">${esc(d.speed?.context)}</p><div class="facts"><div class="fact"><b>${esc(d.speed?.decision_latency)}</b><span class="sub">decision latency</span></div><div class="fact"><b>${esc(d.speed?.current_bottleneck)}</b><span class="sub">current bottleneck</span></div><div class="fact"><b>${esc(d.speed?.gpu_status)}</b><span class="sub">GPU path</span></div></div></article>
-        <article class="card half"><div class="eyebrow">Latest training run</div><h2>Round ${esc(d.latest_run?.round)} · ${esc(d.latest_run?.status)}</h2><p>${esc(d.latest_run?.summary)}</p><div class="facts"><div class="fact"><b>${esc(d.latest_run?.games)}</b><span class="sub">self-play games</span></div><div class="fact"><b>${esc(d.latest_run?.epochs)}</b><span class="sub">epochs</span></div><div class="fact"><b>${esc(d.latest_run?.evaluation)}</b><span class="sub">evaluation</span></div></div></article>
+        <article class="card half"><div class="eyebrow">Latest training run</div><h2>Round ${esc(d.latest_run?.round)} · ${esc(d.latest_run?.status)}</h2><p>${esc(d.latest_run?.summary)}</p><div class="facts"><div class="fact"><b>${esc(d.latest_run?.games)}</b><span class="sub">self-play games</span></div><div class="fact"><b>${esc(d.latest_run?.epochs)}</b><span class="sub">PPO passes</span></div><div class="fact"><b>${esc(d.latest_run?.evaluation)}</b><span class="sub">evaluation</span></div></div></article>
         <article class="card half"><div class="eyebrow">Method</div><h2>What is being improved</h2><p>${esc(d.method)}</p><p style="margin-top:14px">${esc(d.jax_decision)}</p></article>
-        <article class="card wide"><div class="eyebrow">Evaluation discipline</div><h2>How to read these numbers</h2><p>${esc(d.evaluation_note)}</p><p style="margin-top:12px"><a href="https://github.com/${esc(d.repository)}/blob/main/PLAN.md">Full training plan and experiment log</a> · <a href="https://github.com/${esc(d.repository)}">Source repository</a></p></article>`;
+        <article class="card wide"><div class="eyebrow">Held-out evaluation</div><h2>Opponent scorecard</h2><p>Win/draw score rates use paired team clusters and side swaps where available. Historical PPO identifies the fixed checkpoint used for comparison.</p><div class="table-wrap"><table><thead><tr><th>Opponent</th><th>Score</th><th>Games</th><th>95% cluster interval</th><th>Status</th></tr></thead><tbody>${rows || '<tr><td colspan="5">New evaluation rows are being collected.</td></tr>'}</tbody></table></div><p class="note">${esc(d.evaluation_note)}</p></article>
+        <article class="card wide"><div class="eyebrow">Runtime profiling</div><h2>Where rollout time goes</h2><p>${esc(d.speed?.profile_context)}</p><div class="table-wrap"><table><thead><tr><th>Opponent mix</th><th>Games/s</th><th>End-to-end</th><th>Action selection</th><th>Policy inference¹</th><th>Counterplay scoring¹</th><th>Observation encoding</th><th>Showdown engine</th><th>Trajectory write</th></tr></thead><tbody>${profiles}</tbody></table></div><p class="note">¹ Nested inside action selection; do not add these columns to the end-to-end total.</p><p style="margin-top:14px">${esc(d.speed?.remaining_summary)}</p><div class="opportunities">${opportunities}</div><p class="note">${esc(d.speed?.gpu_status)} · ${esc(d.speed?.jax_decision)}</p></article>
+        <article class="card wide"><div class="eyebrow">Evaluation discipline</div><h2>How to read these numbers</h2><p>${esc(d.evaluation_note)}</p><p style="margin-top:12px"><a href="https://github.com/${esc(d.repository)}/blob/master/PLAN.md">Full training plan and experiment log</a> · <a href="https://github.com/${esc(d.repository)}">Source repository</a></p></article>`;
       document.querySelector("#updated").textContent = `Summary built from PLAN.md · ${d.generated_at}`;
     }).catch(e => { document.querySelector("#dashboard").innerHTML = `<article class="card wide"><p class="error">Could not load progress data (${esc(e.message)}).</p></article>`; });
   </script>
