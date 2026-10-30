@@ -1,0 +1,145 @@
+{
+  "round": 465,
+  "method": "Exploratory matched opening-action counterfactuals on 32 generated team-pair clusters, four chance repeats per candidate against each hard baseline. Candidate actions were policy, Max Damage, two slot-wise hybrids, and sampled legal joint actions. Bootstrap resampling was at the team-pair cluster. Not a promotion evaluation.",
+  "matches": 1188,
+  "elapsed_seconds": 144.16,
+  "games_per_second": 8.24,
+  "seed": 2026103051,
+  "opponents": {
+    "max_damage": {
+      "policy": {
+        "clusters": 32,
+        "mean_win_rate": 0.5546875,
+        "cluster_bootstrap_95_ci": [
+          0.40625,
+          0.6953125
+        ],
+        "paired_delta_vs_policy": 0.0,
+        "paired_cluster_bootstrap_95_ci": [
+          0.0,
+          0.0
+        ]
+      },
+      "max_damage": {
+        "clusters": 32,
+        "mean_win_rate": 0.5546875,
+        "cluster_bootstrap_95_ci": [
+          0.40625,
+          0.703125
+        ],
+        "paired_delta_vs_policy": 0.0,
+        "paired_cluster_bootstrap_95_ci": [
+          -0.109375,
+          0.109375
+        ]
+      },
+      "hybrid_policy0_damage1": {
+        "clusters": 32,
+        "mean_win_rate": 0.578125,
+        "cluster_bootstrap_95_ci": [
+          0.4296875,
+          0.71875
+        ],
+        "paired_delta_vs_policy": 0.0234375,
+        "paired_cluster_bootstrap_95_ci": [
+          -0.0859375,
+          0.140625
+        ]
+      },
+      "hybrid_damage0_policy1": {
+        "clusters": 32,
+        "mean_win_rate": 0.546875,
+        "cluster_bootstrap_95_ci": [
+          0.40625,
+          0.6875
+        ],
+        "paired_delta_vs_policy": -0.0078125,
+        "paired_cluster_bootstrap_95_ci": [
+          -0.09375,
+          0.0859375
+        ]
+      },
+      "random_legal": {
+        "clusters": 32,
+        "mean_win_rate": 0.3515625,
+        "cluster_bootstrap_95_ci": [
+          0.21875,
+          0.484375
+        ],
+        "paired_delta_vs_policy": -0.203125,
+        "paired_cluster_bootstrap_95_ci": [
+          -0.3359375,
+          -0.0703125
+        ]
+      }
+    },
+    "public_counterplay": {
+      "policy": {
+        "clusters": 32,
+        "mean_win_rate": 0.4453125,
+        "cluster_bootstrap_95_ci": [
+          0.3046875,
+          0.5859375
+        ],
+        "paired_delta_vs_policy": 0.0,
+        "paired_cluster_bootstrap_95_ci": [
+          0.0,
+          0.0
+        ]
+      },
+      "max_damage": {
+        "clusters": 32,
+        "mean_win_rate": 0.5234375,
+        "cluster_bootstrap_95_ci": [
+          0.3828125,
+          0.6640625
+        ],
+        "paired_delta_vs_policy": 0.078125,
+        "paired_cluster_bootstrap_95_ci": [
+          -0.0703125,
+          0.2265625
+        ]
+      },
+      "hybrid_policy0_damage1": {
+        "clusters": 32,
+        "mean_win_rate": 0.484375,
+        "cluster_bootstrap_95_ci": [
+          0.34375,
+          0.6328125
+        ],
+        "paired_delta_vs_policy": 0.0390625,
+        "paired_cluster_bootstrap_95_ci": [
+          -0.09375,
+          0.171875
+        ]
+      },
+      "hybrid_damage0_policy1": {
+        "clusters": 32,
+        "mean_win_rate": 0.4921875,
+        "cluster_bootstrap_95_ci": [
+          0.3515625,
+          0.6328125
+        ],
+        "paired_delta_vs_policy": 0.046875,
+        "paired_cluster_bootstrap_95_ci": [
+          -0.015625,
+          0.11738281249999716
+        ]
+      },
+      "random_legal": {
+        "clusters": 32,
+        "mean_win_rate": 0.359375,
+        "cluster_bootstrap_95_ci": [
+          0.21875,
+          0.5
+        ],
+        "paired_delta_vs_policy": -0.0859375,
+        "paired_cluster_bootstrap_95_ci": [
+          -0.21875,
+          0.0546875
+        ]
+      }
+    }
+  },
+  "limitations": "Small sample; all confidence intervals are wide. Actions were evaluated from newly generated openings, not specifically from held-out loss states. Do not choose the best action from these same outcomes and report it as unbiased performance."
+}

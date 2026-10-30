@@ -16313,3 +16313,27 @@ team choice but does not change that conclusion.
   multiple legal opponent actions. Use the measured payoff matrix to choose
   regret-matched or equilibrium-oriented training exposure. Do not change PPO
   weights again based only on these outcome-stratified traces.
+
+### Round465 opening action counterfactual pilot (2026-10-30)
+
+- Collected 32 generated team-pair openings, with four matched chance repeats
+  for each candidate against Max Damage and Public Counterplay (1,188 complete
+  games, 144.2 s, 8.24 games/s). Candidates were the policy joint action, the
+  Max Damage joint action, two slot-wise hybrids, and sampled legal joint
+  actions. The frozen Round465 checkpoint and team selector generated the
+  policy choices and previews.
+- Against Max Damage, the policy opening scored 55.5%; using the Max Damage
+  opening action also scored 55.5%, while the policy-slot-0 / Max-Damage-slot-1
+  hybrid scored 57.8% (paired delta +2.3 percentage points, 95% cluster
+  interval −8.6 to +14.1). Against Public Counterplay, the policy opening
+  scored 44.5%, while the Max Damage opening scored 52.3% (paired delta +7.8
+  points, interval −7.0 to +22.7). Every interval is wide and includes zero.
+  Sampled random legal actions were materially weaker, but this pilot is too
+  small for selecting an action rule or claiming a strength gain.
+- The pilot runs counterfactuals from newly generated opening states; it does
+  not yet explain specific held-out losses. The next useful measurement is a
+  larger held-out cluster sample with action-selection repeats separated from
+  outcome repeats, followed by late-game states from trace losses. Never select
+  the best candidate and report its same-sample score as unbiased performance.
+- Output:
+  `training/outputs/phase12_headless/round465_round464_continue_pool430_464_lr5e5_20k_20261030/evaluation/opening_counterfactuals_32pairs_20261030.json`

@@ -1619,6 +1619,8 @@
     "recovery_note": "Four initial timeouts were replayed with a 120-second timeout and the exact same team, preview, and battle seeds: two Random, one PPO Round464, and one Round464 Max Damage control. All four replays completed; all seven final screens contain 512 complete clusters / 1,024 games each. No action adjustments and no unresolved pairs remain.",
     "report": "round465_eval_scorecard.json",
     "trace_diagnostic": "64-cluster exploratory traces against Max Damage and Public Counterplay: first actions were moves in every game; losses were behind by about 0.4 active Pokémon and 0.3–0.4 team HP at the first post-action snapshot. Median decision counts matched between wins and losses. Long-match outliers distort total action counts; these associations are not causal.",
-    "trace_report": "round465_trace_diagnostic.json"
+    "trace_report": "round465_trace_diagnostic.json",
+    "opening_counterfactual_diagnostic": "A 32-cluster opening counterfactual pilot ran 1,188 games at 8.24 games/s. Against Max Damage, the policy opening scored 55.5%; the Max Damage opening also scored 55.5%. Against Public Counterplay, policy scored 44.5% and the Max Damage opening 52.3% (+7.8 pp paired, 95% interval −7.0 to +22.7). Intervals are wide and include zero; no action change is justified yet.",
+    "opening_counterfactual_report": "round465_opening_counterfactuals.json"
   }
 }
