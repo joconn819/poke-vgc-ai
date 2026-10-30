@@ -1,0 +1,39 @@
+{
+  "estimated_seconds_saved_at_full_transition_count": 0.9007581279366692,
+  "exact_transition_parity": true,
+  "full_transition_count": 162366,
+  "numpy_version": "2.5.4",
+  "records": 256,
+  "reduction_pct": 4.204937320358758,
+  "repeats": 7,
+  "results": {
+    "per_transition_hidden_targets": {
+      "all_seconds": [
+        0.398777339985827,
+        0.27044324099551886,
+        0.2728246629994828,
+        0.2599267849873286,
+        0.2595219810027629,
+        0.2601532609842252,
+        0.25940866698510945
+      ],
+      "median_seconds_excluding_first": 0.2600400229857769
+    },
+    "precomputed_hidden_targets": {
+      "all_seconds": [
+        0.2502702399797272,
+        0.24573962402064353,
+        0.2619391100015491,
+        0.25017524100258015,
+        0.24836896400665864,
+        0.2486697610002011,
+        0.2495412450225558
+      ],
+      "median_seconds_excluding_first": 0.24910550301137846
+    }
+  },
+  "rollout": "training/outputs/phase12_headless/round435_equilibrium_mixture_response_20k_20261030/rollouts/round_0001_max_damage_p1_shard000.jsonl",
+  "scope": "transition extraction only; file parsing, input building, and PPO optimization excluded",
+  "torch_version": "2.15.0+cu132",
+  "transitions": 1971
+}
