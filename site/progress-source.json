@@ -132,7 +132,7 @@
     "games_per_second": "16.49",
     "context": "Round430, 20,000-game full training iteration including rollout and PPO preparation/optimization; not raw simulator speed.",
     "decision_latency": "~85 ms action selection per policy-pool match",
-    "current_bottleneck": "CPU policy inference and observation throughput are shared costs; public Counterplay scoring adds ~79 ms/match, policy-pool inference ~73 ms/match, and PPO record preparation took 153 s for the Round431 update.",
+    "current_bottleneck": "Rollout costs still shift by opponent (about 79 ms Public Counterplay scoring; about 73 ms policy-pool inference). PPO record preparation took 155.7 s for the Round432 update, versus 51.1 s for optimization.",
     "gpu_status": "RTX 4060 used for PPO optimization; rollout inference and Showdown simulation remain CPU-side",
     "profile_context": "Round430, 20,000 self-play matches on 8 rollout workers. End-to-end episode time includes setup, agent decisions, engine calls, and trajectory writes. Per-opponent rates are per worker shard, not aggregate. Total rollout throughput was 22.55 games/s; the complete training iteration was 16.49 games/s. Action selection contains policy inference; Public Counterplay scoring is nested inside action selection.",
     "active_training_profile": {
@@ -177,7 +177,7 @@
           "persistence_ms": "13"
         }
       ],
-      "finding": "The bottleneck shifts by opponent: Public Counterplay scoring took about 79 ms/match, while policy-pool inference took about 73 ms/match; both exceed the 29\u201334 ms Showdown engine time. For the 20,000-game training update, PPO record preparation took 153.2 s, tensor aggregation 6.2 s, and optimization 51.0 s. Prioritize batching inference across rollout workers and speeding audited record parsing/tensor preparation; preserve the best checkpoint when an iteration shows no measured gain."
+      "finding": "The bottleneck shifts by opponent: Public Counterplay scoring took about 79 ms/match, while policy-pool inference took about 73 ms/match; both exceed the 29\u201334 ms Showdown engine time. PPO record preparation took 153.2 s in Round431 and 155.7 s in Round432 for 20,000-game updates; tensor aggregation was 6\u20137 s and optimization about 51 s. Prioritize batching inference across rollout workers and speeding audited record parsing/tensor preparation; preserve the best checkpoint when an iteration shows no measured gain."
     },
     "profile": [
       {
@@ -421,11 +421,11 @@
   },
   "latest_run": {
     "round": 432,
-    "status": "rollout collection running \u00b7 Round430 remains starting candidate",
-    "summary": "A 20,000-game PPO iteration has started from Round430 at learning rate 5e-5, using 30% Max Damage, 30% public Counterplay, and 40% policy pool. The pool now includes Round431, Round424, Round190, and Round176; the Round402 team selector is fixed.",
-    "games": "20,000 planned",
-    "epochs": "4 PPO passes \u00b7 pending",
-    "evaluation": "Round431 showed no measurable lift over Round430. Round432 will be evaluated before any promotion."
+    "status": "PPO complete \u00b7 paired held-out validation running",
+    "summary": "From Round430, 20,000 games with 30% Max Damage, 30% public Counterplay, and 40% policy pool (Round431, Round424, Round190, Round176). The audited set has 162,965 transitions; four PPO passes completed at learning rate 5e-5 in 1,276 steps. Checkpoint validated and atomically published.",
+    "games": "20,000",
+    "epochs": "4 PPO passes \u00b7 1,276 optimizer steps",
+    "evaluation": "512-cluster paired comparison vs Round430 is running; Round430 remains the candidate pending results."
   },
   "method": "Native self-play PPO for in-battle decisions. Terminal win/loss remains the main objective; win-probability and hidden-set prediction are auxiliary tasks. Search comes after a stronger policy.",
   "jax_decision": "Round430 has a confirmed self-play head-to-head lift over Round424, but external-opponent screens remain inconclusive. Prioritize measured inference batching, observation throughput, and rollouts; keep equilibrium-oriented opponent coverage and defer a JAX/GPU engine rewrite until its end-to-end payoff is measured.",
