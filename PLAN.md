@@ -15624,3 +15624,26 @@ team choice but does not change that conclusion.
   public-mechanics/team facts and the remaining transition-extraction and
   tensor-assembly work. Do not report isolated inference or state-encoding
   rates as complete-game throughput.
+
+### Static team-token signature reuse (Round454, 2026-10-30)
+
+- The PPO builder reused static token tensors, but rebuilt their own/opponent
+  team signatures for every state. It now constructs that signature key once
+  per player-view trajectory record and passes the key into `build_model_inputs`.
+  Opponent keys use the already validated public species roster only.
+- On 1,026 audited Round435 states (135 records), the warmed full-input median
+  fell from 111.11 ms to 99.17 ms (10.75%) with exact tensor parity. Key
+  construction is excluded from the timed loop and happens once per record in
+  the trainer. Linear extrapolation estimates about 1.89 s saved over 162,366
+  states; report:
+  `training/outputs/phase12_headless/round454_static_team_key_cache_20261030/benchmark.json`.
+- A full matched PPO replay on the exact Round447 data/config preserved all
+  30 numeric training metrics and all 82 checkpoint tensors. Sample collection
+  took 163.68 s vs Round453's 163.07 s, so there was no additional detectable
+  sample-preparation gain; full update wall time was also unchanged (228.62 s
+  vs 228.64 s). The 10.75% microbenchmark is a local input-builder reduction,
+  not a proven full-update speedup. Compared with Round447, combined changes
+  reduce preparation by 3.22%, but that includes multiple optimizations and
+  timing variation. Current complete-iteration rate remains 16.49 games/s.
+- Repeated full replay report:
+  `training/outputs/phase12_headless/round454_static_team_key_cache_20261030/full_ppo_replay/profile.json`.

@@ -1,0 +1,34 @@
+{
+  "benchmark": "per-state vs per-record static team-token cache key",
+  "audit": "training/outputs/phase12_headless/round445_offset_indexed_replay_20k_20261030/preflight/round_0001_indexed.json",
+  "states": 1026,
+  "records_with_precomputed_keys": 135,
+  "repeats": 8,
+  "warmup_excluded": true,
+  "per_state_key_seconds": [
+    0.13628990898723714,
+    0.11719143099617213,
+    0.1107346249918919,
+    0.11098247100017034,
+    0.1111099919944536,
+    0.11501416499959305,
+    0.1096429550088942,
+    0.1710475079889875
+  ],
+  "per_record_key_seconds": [
+    0.1146023079927545,
+    0.10668260298552923,
+    0.09863761099404655,
+    0.09784435402252711,
+    0.099162120022811,
+    0.09936822898453102,
+    0.09916893200716004,
+    0.16486485899076797
+  ],
+  "per_state_key_median_seconds": 0.1111099919944536,
+  "per_record_key_median_seconds": 0.09916893200716004,
+  "full_model_input_speedup": 1.1204112996440398,
+  "full_model_input_reduction_pct": 10.747062233511485,
+  "exact_input_parity": true,
+  "scope_note": "Input construction with cached static token tensors; key construction is done once per record as in NativePPOTrainer. Record parsing, transition extraction and PPO optimization are excluded."
+}
