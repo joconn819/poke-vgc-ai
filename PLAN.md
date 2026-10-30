@@ -134,15 +134,15 @@ percentage alone.
 - **Round430 policy batching benchmark (2026-10-30):** measured 256
   perspective-safe rollout states with one CPU thread, 5 warmup batches, and
   30 timed model-forward repeats. State/model-input preparation averaged
-  0.436 ms/state. Native action-feature generation took 45.4 ms on its first
-  call because it initializes the Gen 9 dex; the warm mean was 0.154 ms/state.
+  0.429 ms/state. Native action-feature generation took 46.4 ms on its first
+  call because it initializes the Gen 9 dex; the warm mean was 0.156 ms/state.
   For model inference plus device transfer and separately measured collation,
-  CPU reached 2,478 states/s at batch 8 and 3,669 at batch 32; CUDA reached
-  2,662 at batch 8 and 9,706 at batch 32. CUDA was about 7% faster at batch 8,
-  59% faster at batch 16, and 2.6x faster at batch 32, before queue wait. These
-  are isolated model-forward results, not rollout throughput; queueing and
-  inference-service overhead are excluded. The eight-worker arrangement may
-  not supply large batches without keeping multiple games in flight.
+  CPU reached 2,522 states/s at batch 8 and 3,666 at batch 32; CUDA reached
+  2,545 at batch 8 and 9,596 at batch 32. CUDA is roughly tied at batch 8,
+  about 51% faster at batch 16, and 2.6x faster at batch 32, before queue wait.
+  These are isolated model-forward results, not rollout throughput; queueing
+  and inference-service overhead are excluded. The eight-worker arrangement
+  may not supply large batches without keeping multiple games in flight.
 - **Measured action-feature micro-optimization (2026-10-30):** profiling 128
   saved states found thousands of scalar NumPy clamp calls in native action
   feature generation. Replaced scalar `np.clip` dispatches with a finite-float
@@ -160,23 +160,20 @@ percentage alone.
   `training/outputs/phase12_headless/round430_policy_inference_batching_20261030/report.json`.
   Keep CPU batching as the first rollout target and investigate multi-game
   in-flight scheduling across existing workers before a shared GPU service.
-- **Historical feature replay audit (2026-10-30; unresolved):** recomputed the
-  Round430 action features for 1,024 saved policy states using the stored
-  observation, legal mask, team metadata, visible opponent species, and the
-  checkpoint's feature variant. 788 states differed, with 9,764 differing
-  scalars; 9,597 were on currently legal actions and most were damage/KO
-  values. This is not explained by the scalar-clamp optimization, which was
-  output-identical to the previous NumPy clamps. PPO currently consumes the
-  feature arrays saved during rollout, so existing training labels are not
-  silently replaced by these reconstructions. The mismatch means saved
-  records do not yet provide enough provenance to reproduce feature inputs
-  exactly. Before using recomputed historical features as a correctness oracle,
-  identify whether the cause is code-version drift, roster/form ordering, or
-  state/mask mutation during logging. New rollout records now include feature
-  encoder version 1, and the rollout preflight reports the feature-encoder
-  version distribution (including `unknown` for legacy shards). The root cause
-  remains open; add a state-level parity audit to fresh records before claiming
-  exact historical replay.
+- **Action-feature replay parity audit (2026-10-30; resolved):** the original
+  Round430 audit reconstructed the visible opponent from the initial team list
+  rather than each step's `opponent_species` preview order, causing apparent
+  damage/KO mismatches on legal actions. It also used `action_masks`, which
+  PPO narrows for the conditional second action, while the feature encoder sees
+  the raw mask. The headless rollout now preserves both `raw_action_masks`
+  (feature generation) and `action_masks` (PPO behavior replay); perspective
+  projection retains both and the per-turn public species order. New records
+  include encoder version 1, and preflight reports version counts. A fresh
+  64-game Round430-checkpoint rollout produced 128 perspective records and 481
+  feature states; recomputation using the saved public order and raw mask
+  matched all feature tensors exactly (0 differing values, max absolute
+  difference 0). Artifact:
+  `training/outputs/phase12_headless/round430_feature_parity_smoke_v2_64_20261030/`.
 - **Progress site:** `site/index.html` presents held-out results, the current
   speed snapshot, and training status. `.github/workflows/pages.yml` rebuilds
   its JSON from this plan and deploys through GitHub Pages on pushes to `main`.

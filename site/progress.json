@@ -230,83 +230,83 @@
     ],
     "policy_inference_benchmark": {
       "context": "Round430 checkpoint on 256 perspective-safe rollout states; 1 CPU thread, 5 warmups, 30 timed repeats. Timings include host-to-device transfer and action/value synchronization; collation is reported separately. Queue wait is excluded.",
-      "feature_preparation_ms_per_state": "0.436",
-      "native_action_feature_estimation_ms_per_state": "0.154",
-      "native_action_feature_first_call_ms": "45.4",
+      "feature_preparation_ms_per_state": "0.429",
+      "native_action_feature_estimation_ms_per_state": "0.156",
+      "native_action_feature_first_call_ms": "46.4",
       "results": [
         {
           "device": "CPU",
           "batch_states": "1",
-          "states_per_second": "659",
-          "median_ms": "1.484",
-          "p95_ms": "1.624"
+          "states_per_second": "638",
+          "median_ms": "1.532",
+          "p95_ms": "1.645"
         },
         {
           "device": "CPU",
           "batch_states": "4",
-          "states_per_second": "1,885",
-          "median_ms": "2.068",
-          "p95_ms": "2.374"
+          "states_per_second": "1,789",
+          "median_ms": "2.179",
+          "p95_ms": "2.435"
         },
         {
           "device": "CPU",
           "batch_states": "8",
-          "states_per_second": "2,478",
-          "median_ms": "3.145",
-          "p95_ms": "3.448"
+          "states_per_second": "2,522",
+          "median_ms": "3.089",
+          "p95_ms": "3.345"
         },
         {
           "device": "CPU",
           "batch_states": "16",
-          "states_per_second": "3,235",
-          "median_ms": "4.810",
-          "p95_ms": "5.126"
+          "states_per_second": "3,339",
+          "median_ms": "4.652",
+          "p95_ms": "5.129"
         },
         {
           "device": "CPU",
           "batch_states": "32",
-          "states_per_second": "3,669",
-          "median_ms": "8.487",
-          "p95_ms": "8.866"
+          "states_per_second": "3,666",
+          "median_ms": "8.488",
+          "p95_ms": "9.034"
         },
         {
           "device": "CUDA",
           "batch_states": "1",
-          "states_per_second": "363",
-          "median_ms": "2.726",
-          "p95_ms": "3.250"
+          "states_per_second": "364",
+          "median_ms": "2.720",
+          "p95_ms": "3.201"
         },
         {
           "device": "CUDA",
           "batch_states": "4",
-          "states_per_second": "1,359",
-          "median_ms": "2.883",
-          "p95_ms": "3.439"
+          "states_per_second": "1,319",
+          "median_ms": "2.968",
+          "p95_ms": "3.957"
         },
         {
           "device": "CUDA",
           "batch_states": "8",
-          "states_per_second": "2,662",
-          "median_ms": "2.905",
-          "p95_ms": "3.376"
+          "states_per_second": "2,545",
+          "median_ms": "3.046",
+          "p95_ms": "3.335"
         },
         {
           "device": "CUDA",
           "batch_states": "16",
-          "states_per_second": "5,141",
-          "median_ms": "2.941",
-          "p95_ms": "3.392"
+          "states_per_second": "5,049",
+          "median_ms": "2.999",
+          "p95_ms": "3.626"
         },
         {
           "device": "CUDA",
           "batch_states": "32",
-          "states_per_second": "9,706",
-          "median_ms": "2.990",
-          "p95_ms": "3.653"
+          "states_per_second": "9,596",
+          "median_ms": "3.030",
+          "p95_ms": "3.577"
         }
       ],
-      "interpretation": "CUDA is slower for single states, about 7% faster at batch 8, and 59% faster at batch 16. At batch 32 it is 2.6x the CPU throughput. Queue wait is excluded. A scalar-clamp optimization reduced warm native action-feature time 41.3% (0.1983 to 0.1165 ms/state) with exact outputs against the prior NumPy-clamp implementation on 256 inputs; whole-match speed impact is not yet measured.",
-      "feature_replay_caveat": "A parity audit of 1,024 saved Round430 states found recomputed native-action features differed in 788 states (9,764 scalar values; 9,597 on currently legal actions). PPO consumes the feature arrays saved at rollout time, but these legacy records lack enough encoder/input provenance to reproduce them. New rollout records now include encoder version 1, and preflight reports version counts; the root cause remains under investigation.",
+      "interpretation": "CUDA is slower for single states and roughly tied with CPU at batch 8, about 51% faster at batch 16, and 2.6x faster at batch 32. Queue wait is excluded. A scalar-clamp optimization reduced warm native action-feature time 41.3% (0.1983 to 0.1165 ms/state) with exact outputs against the prior NumPy-clamp implementation on 256 inputs; whole-match speed impact is not yet measured.",
+      "feature_replay_caveat": "The initial Round430 parity audit used initial-team opponent ordering and PPO's conditionally narrowed action mask, unlike live feature generation. New rollout data now saves per-step opponent preview order, the raw feature mask, the PPO conditional mask, and encoder version. On a fresh 64-game rollout (128 perspective records, 481 feature states), recomputation matched every saved feature value exactly. Legacy Round430 records remain missing the raw action mask, but PPO continues to train from the saved feature arrays.",
       "report": "training/outputs/phase12_headless/round430_policy_inference_batching_20261030/report.json"
     }
   },
@@ -321,5 +321,5 @@
   "method": "Native self-play PPO for in-battle decisions. Terminal win/loss remains the main objective; win-probability and hidden-set prediction are auxiliary tasks. Search comes after a stronger policy.",
   "jax_decision": "Round430 did not establish a strength improvement. Prioritize measured inference batching, observation throughput, and rollouts; keep equilibrium-oriented opponent coverage and defer a JAX/GPU engine rewrite until its end-to-end payoff is measured.",
   "evaluation_note": "Score rates include wins and half credit for draws. Use paired held-out teams, side swaps, repeated outcomes, and cluster intervals. Track results across public counterplay, random, historical PPO, and Max Damage; no one matchup percentage is the finish line.",
-  "generated_at": "2026-10-30 10:11 UTC"
+  "generated_at": "2026-10-30 10:17 UTC"
 }
