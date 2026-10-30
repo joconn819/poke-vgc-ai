@@ -1,0 +1,99 @@
+{
+  "experiment": "Round430 deterministic versus stochastic PPO action selection",
+  "bootstrap": {
+    "unit": "team-pair cluster",
+    "replicates": 20000,
+    "seed": 2026103068
+  },
+  "opponents": {
+    "max_damage": {
+      "matched_complete_clusters": 128,
+      "deterministic_score_pct": 36.523,
+      "deterministic_cluster_bootstrap_95_pct": [
+        29.688,
+        43.359
+      ],
+      "stochastic_score_pct": 35.156,
+      "stochastic_cluster_bootstrap_95_pct": [
+        29.297,
+        41.211
+      ],
+      "paired_delta_stochastic_minus_deterministic_pp": -1.367,
+      "paired_delta_cluster_bootstrap_95_pp": [
+        -6.841,
+        4.102
+      ],
+      "deterministic_timeouts_or_errors": 0,
+      "stochastic_timeouts_or_errors": 0,
+      "deterministic_action_adjustments": 0,
+      "stochastic_action_adjustments": 0,
+      "deterministic_games_per_second": 7.061,
+      "stochastic_games_per_second": 6.288
+    },
+    "public_counterplay": {
+      "matched_complete_clusters": 128,
+      "deterministic_score_pct": 42.383,
+      "deterministic_cluster_bootstrap_95_pct": [
+        35.352,
+        49.609
+      ],
+      "stochastic_score_pct": 38.086,
+      "stochastic_cluster_bootstrap_95_pct": [
+        31.836,
+        44.531
+      ],
+      "paired_delta_stochastic_minus_deterministic_pp": -4.297,
+      "paired_delta_cluster_bootstrap_95_pp": [
+        -9.961,
+        1.172
+      ],
+      "deterministic_timeouts_or_errors": 0,
+      "stochastic_timeouts_or_errors": 0,
+      "deterministic_action_adjustments": 0,
+      "stochastic_action_adjustments": 0,
+      "deterministic_games_per_second": 4.277,
+      "stochastic_games_per_second": 3.669
+    },
+    "random": {
+      "matched_complete_clusters": 127,
+      "deterministic_score_pct": 95.669,
+      "deterministic_cluster_bootstrap_95_pct": [
+        93.11,
+        97.835
+      ],
+      "stochastic_score_pct": 94.488,
+      "stochastic_cluster_bootstrap_95_pct": [
+        91.929,
+        96.654
+      ],
+      "paired_delta_stochastic_minus_deterministic_pp": -1.181,
+      "paired_delta_cluster_bootstrap_95_pp": [
+        -3.543,
+        1.181
+      ],
+      "deterministic_timeouts_or_errors": 1,
+      "stochastic_timeouts_or_errors": 0,
+      "deterministic_action_adjustments": 0,
+      "stochastic_action_adjustments": 0,
+      "deterministic_games_per_second": 2.666,
+      "stochastic_games_per_second": 5.491
+    }
+  },
+  "primary_equal_weight_adversarial_composite": {
+    "opponents": [
+      "max_damage",
+      "public_counterplay"
+    ],
+    "matched_complete_clusters": 128,
+    "deterministic_score_pct": 39.453,
+    "stochastic_score_pct": 36.621,
+    "paired_delta_stochastic_minus_deterministic_pp": -2.832,
+    "paired_delta_cluster_bootstrap_95_pp": [
+      -7.52,
+      1.855
+    ]
+  },
+  "same_rosters_and_preview_actions_verified": true,
+  "source_artifact": "training/outputs/phase12_headless/round430_stochastic_action_eval_128x2_20261030_retry1/comparison.json",
+  "interpretation": "All paired intervals include zero. No action-selection mode is promoted based on this diagnostic."
+}
