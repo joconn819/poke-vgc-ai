@@ -16479,18 +16479,17 @@ team choice but does not change that conclusion.
   pp vs Max Damage (95% CI +5.00 to +12.19; 640 clusters) and +7.85 pp vs
   Counterplay (+4.34 to +11.45; 640 clusters).
 - The repeated positive differences across Max Damage, public Counterplay,
-  Round464, and Round465 suggest a general first-five-action weakness in
-  Round430, not an effect limited to a single opponent. Independent team-seed
-  replications confirm it against Max Damage, Counterplay, and Round464.
+  Round464, Round465, and historical Round102 suggest a general first-five-
+  action weakness in Round430, not an effect limited to a single opponent.
+  Independent team-seed replications confirm it against all five.
   However, older Round173 hybrid tests sometimes regressed against PPO, so the
   present evidence is checkpoint-specific and the override is still a
   heuristic, not a learned policy or a guarantee against novel responses.
-- Next: test the hybrid against additional frozen PPO / held-out response
-  policies and an independent Round465 seed set. Preserve raw Round430 and
-  the intervention as separate controls. Only then decide whether to expose a
-  deployment hybrid; defer teacher-label PPO until a training method improves
-  on the earlier failed imitation/continuation attempts and passes the same
-  multi-opponent held-out gate.
+- Next: quantify the individual contribution of opening decisions 0–4 with
+  repeated paired ablations; the first one-repeat attribution screen was
+  inconclusive. Preserve raw Round430 and the intervention as separate
+  controls. Defer teacher-label PPO until attribution is stable and a training
+  method can reproduce the gain under multi-opponent held-out evaluation.
 - Outputs:
   `training/outputs/phase12_headless/round430_464_465_common_preview_league_512x1_20261030/league_comparison.json`
   `training/outputs/phase12_headless/round430_464_465_common_preview_league_512x1_20261030/league_matrix.json`
@@ -16504,3 +16503,23 @@ team choice but does not change that conclusion.
   `training/outputs/phase12_headless/round430_opening0to4_maxdamage_intervention_vs_public_counterplay_128x2_seed2026103068_selector_both/paired_summary.json`
   `training/outputs/phase12_headless/round430_raw_vs_public_counterplay_128x2_seed2026103068_selector_both/paired_summary.json`
   `training/outputs/phase12_headless/round430_opening0to4_maxdamage_intervention_vs_round465_512x1_20261030/paired_summary.json`
+
+### Round102 PPO transfer replication and decision attribution (2026-10-30)
+
+- On a fresh 128-team-cluster × 2-repeat set, replacing Round430 decisions
+  0–4 with public Max Damage actions improved its score versus historical PPO
+  Round102 from 48.24% to 55.86%, +7.62 pp (95% cluster interval +1.37 to
+  +14.06). A second disjoint set improved from 51.56% to 60.35%, +8.79 pp
+  (+1.37 to +16.41). Pooling both sets (256 clusters) gives 49.90% raw vs
+  58.11% intervention, +8.20 pp (+3.32 to +13.09). Each arm used 512 matches
+  per set, side-swapped, matched teams/previews/battle seeds, and had zero
+  errors, timeouts, or action corrections.
+- An isolated one-repeat screen on 128 matched clusters replaced only one
+  decision index at a time. Paired deltas for indices 0–4 were −3.13, −0.39,
+  −1.95, −1.17, and +1.17 pp, with all 95% cluster intervals crossing zero.
+  The all-five intervention was +7.03 pp on this subset, also inconclusive
+  (95% interval −1.17 to +15.23); the disjoint two-repeat all-five screen
+  remained +8.79 pp with its interval above zero. These data do not identify
+  an individually beneficial action; a sequence interaction is possible but
+  unproven. This remains a diagnostic heuristic, not a learned or promoted
+  policy. Repeat the ablations before shaping PPO training around them.
