@@ -230,7 +230,7 @@
     "games_per_second": "16.49",
     "context": "Round430 20,000-game complete training iteration including rollout and PPO preparation/optimization; Round435 full aggregate rollout telemetry was not captured. Not raw simulator speed.",
     "decision_latency": "~85 ms action selection per policy-pool match",
-    "current_bottleneck": "Rollouts: policy inference/action selection, observation encoding, and public-counterplay scoring. PPO update: audited record-to-transition preparation, 169.1 s for 20k games (Round447); Round453 trimmed full model-input construction 7.1%, estimating 1.28 s saved per update, not yet replay-validated.",
+    "current_bottleneck": "PPO update sample preparation remains the main bottleneck: 158.25 s in Round456 and 161.40 s in Round457 for 20,000 games, followed by roughly 60 s of optimization. Reader/extraction microbenchmarks improved, but matched replays do not establish a stable full-update speed gain. Complete-iteration games/s remains the 16.49 Round430 baseline; these PPO-only replays exclude rollouts.",
     "gpu_status": "RTX 4060 used for PPO optimization; rollout inference and Showdown simulation remain CPU-side",
     "profile_context": "Round430 remains the latest complete end-to-end 20,000-game profile: eight-worker rollout 22.55 games/s and full iteration 16.49 games/s. Round435 offers newer per-shard timings but no valid aggregate rate after preflight recovery. Per-opponent shard rates are not aggregate rates. Action selection contains policy inference; Public Counterplay scoring is nested inside action selection.",
     "active_training_profile": {
@@ -347,7 +347,7 @@
       },
       {
         "title": "9 · Profile public-mechanics and transition extraction",
-        "detail": "Current preparation still uses about 163–169 s for 20k games. Measure repeated public-mechanics encoding, per-transition NumPy conversions, and sample-object assembly against the exact audited rollout set. Retain full row validation and closed-sheet checks; require exact model-input/checkpoint parity before accepting a change."
+        "detail": "Rounds455–457 cached public-mechanics facts, optimized encoder loops, and reduced repeated validation work. The reader benchmark improved 5.99% on 1,024 audited rows and extraction 4.19% on 1,971 transitions, both with exact output parity. Matched PPO replays ranged 158.25–161.40 s for preparation and 223.76–226.59 s wall, so small end-to-end speed gains remain unresolved. Next profile complete sample-preparation chunks to separate JSON validation, transition extraction, and model-input construction."
       }
     ],
     "jax_decision": "Round430 confirms the Showdown engine used about 18% of policy-pool match time and 8% against Public Counterplay; a simulator-only port would leave the larger measured policy, observation, and baseline-scoring costs intact. Keep Showdown as the correctness reference and require an end-to-end measured gain before a JAX/GPU engine prototype.",
@@ -755,12 +755,45 @@
       "finding": "The public-mechanics static-facts cache reduced its isolated encoder median by 11.56% (48.27 to 42.69 ms) with exact feature parity. In the matched PPO replay, preparation took 161.79 s, 1.89 s lower than Round454 and 7.32 s below Round447. This is the fastest of the recent replay samples, but a single replay per code state cannot establish a stable speedup. Full update wall time from UTC start/completion timestamps rounded to seconds was about 224 s versus 228.6 s in Rounds453/454; do not treat this as a reliable end-to-end improvement. All 30 numeric metrics and all 82 model tensors matched Round447 exactly. Complete-iteration games/s remains 16.49 from Round430 because rollout generation was not measured here.",
       "scope_note": "PPO update only; self-play rollout generation excluded. Wall time is rounded to whole UTC seconds from run-start and completion telemetry. Repeat matched replays to separate savings from run variation. Isolated public-mechanics timing excludes JSON parsing and other transition extraction.",
       "report": "round455_full_ppo_replay.json"
+    },
+    "audited_reader_validation_fastpath": {
+      "context": "Round457 uses NumPy finite checks for rectangular action-feature arrays and validates only agent-map fields present in each trajectory step.",
+      "records": 1024,
+      "legacy_median_seconds": 1.614,
+      "optimized_median_seconds": 1.518,
+      "reduction_pct": 5.99,
+      "accepted_row_signature_parity": true,
+      "scope_note": "Includes offset reads, orjson decoding, and full row validation for a fixed prefix of audited records. Does not include transition extraction, model-input construction, or PPO optimization.",
+      "report": "round456_reader_validation.json"
+    },
+    "round456_public_mechanics_encoder": {
+      "context": "Public-mechanics encoder avoids repeated own-team Fake Out normalization and temporary padded row lists.",
+      "states": 1026,
+      "reference_median_ms": 43.15,
+      "optimized_median_ms": 40.74,
+      "reduction_pct": 5.58,
+      "exact_feature_parity": true,
+      "transition_extraction_reduction_pct": 4.19,
+      "estimated_seconds_saved_162366": 0.83,
+      "report": "round456_public_mechanics_encoder.json"
+    },
+    "round457_replay": {
+      "sample_preparation_seconds": 161.4,
+      "round456_sample_preparation_seconds": 158.25,
+      "external_wall_seconds": 226.59393458798877,
+      "round456_external_wall_seconds": 223.75975243997527,
+      "checkpoint_bit_identical": true,
+      "metrics_exact_match": true,
+      "numeric_metrics": 28,
+      "checkpoint_tensors": 82,
+      "finding": "Round457 sample preparation took 161.40 s, 3.15 s slower than Round456; full wall time was 226.59 s vs 223.76 s. These single-run comparisons do not show an end-to-end speed improvement from the map-field traversal change, despite a 6.0% audited reader microbenchmark reduction. All 28 numeric training metrics and all 82 model tensors matched Round447 bit-for-bit. Keep the simple validator fast paths as measured local reductions, but do not report a stable full-update speed gain; sample preparation remains the dominant cost. Complete-iteration throughput is still the historical 16.49 games/s Round430 result because no rollout occurred here.",
+      "report": "round457_full_ppo_replay.json"
     }
   },
   "latest_run": {
-    "round": 455,
+    "round": 457,
     "status": "matched PPO replay · exact output parity",
-    "summary": "Round455 replayed the exact audited Round447 20,000-game data (162,366 transitions, 1,272 optimizer steps). All 28 numeric training metrics and all 82 model tensors matched Round447. Sample preparation was 161.79 s vs 163.68 s in Round454 and 169.12 s in Round447. Whole-second UTC wall time was about 224 s, but one run per code state cannot establish a stable full-update speed gain. Round430 remains the validated policy candidate.",
+    "summary": "Round457 replayed the same audited 20,000-game Round447 data/config. All 28 numeric training metrics and all 82 checkpoint tensors matched exactly. Sample preparation took 161.40 s vs 158.25 s in Round456; wall time was 226.59 s vs 223.76 s. These one-run differences show no stable whole-update speedup. A separate 1,024-row audited-reader benchmark was 5.99% faster with identical accepted rows. Round430 remains the validated policy candidate.",
     "games": "20,000 outcomes",
     "epochs": "1,272 optimizer steps",
     "evaluation": "Exact replay parity; no strength change"
@@ -768,5 +801,5 @@
   "method": "Native self-play PPO for in-battle decisions. Terminal win/loss remains the main objective; win-probability and hidden-set prediction are auxiliary tasks. Search comes after a stronger policy.",
   "jax_decision": "Round430 has a confirmed self-play head-to-head lift over Round424, but external-opponent screens remain inconclusive. Prioritize measured inference batching, observation throughput, and rollouts; keep equilibrium-oriented opponent coverage and defer a JAX/GPU engine rewrite until its end-to-end payoff is measured.",
   "evaluation_note": "Score rates include wins and half credit for draws. Use paired held-out teams, side swaps, repeated outcomes, and cluster intervals. Track results across public counterplay, random, historical PPO, and Max Damage; no one matchup percentage is the finish line. Round431's equal-weight four-opponent mean was 59.86%, but the median was 48.05%, p10 47.30%, and worst score 47.07%; the mean is lifted by random play. All paired differences vs Round430 included zero.",
-  "generated_at": "2026-10-30 15:44 UTC"
+  "generated_at": "2026-10-30 16:03 UTC"
 }

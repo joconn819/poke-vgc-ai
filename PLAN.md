@@ -15774,3 +15774,59 @@ team choice but does not change that conclusion.
   remaining extraction and assembly paths, then repeat matched update timings
   before attributing a durable speedup. Report:
   `training/outputs/phase12_headless/round455_public_mechanics_static_facts_20261030/full_ppo_replay/profile.json`.
+
+### Batched feature validation and public-mechanics extraction (Round456, 2026-10-30)
+
+- `_valid_native_action_features` now checks rectangular shape first, converts
+  the validated 2×126×feature-width tree once, and uses NumPy finite checking.
+  It still rejects booleans (including booleans mixed with numbers), strings,
+  nested/ragged vectors, NaN, and infinity. On the first 1,024 audited rows,
+  offset reading + JSON decoding + full validation fell from 1.591 s to 1.519 s
+  (4.56%), with identical accepted-row signatures. Both implementations
+  rejected the boolean, string, NaN, and ragged mutation probes. Reproduce with
+  `scripts/benchmark_perspective_validation_fastpath.py`; report:
+  `training/outputs/phase12_headless/round456_numpy_validation_fastpath_20261030/benchmark.json`.
+- The public-mechanics encoder caches own Fake Out capability by roster slot,
+  avoids constructing padded/concatenated row lists, and uses pairwise maximum
+  for active-slot detection (retaining NaN behavior). Against the prior encoder
+  with per-record static facts, 1,026 audited states improved from 43.15 ms to
+  40.74 ms (5.58%), exact feature parity. On 256 records / 1,971 transitions,
+  extraction improved 4.19% (239.76 ms to 229.72 ms), with exact transition
+  parity. Linear estimate is 0.83 s across 162,366 transitions. Detailed report:
+  `training/outputs/phase12_headless/round456_numpy_validation_fastpath_20261030/public_mechanics_encoder.json`.
+- Matched PPO replay on the same Round447 audited 20,000-game dataset, seed,
+  initialization, and 1,272 optimizer steps completed in 223.76 s. Sample
+  preparation was 158.25 s, 3.55 s (2.19%) below Round455's 161.79 s. The full
+  wall time was about 224 s in both runs, so this does not establish an
+  end-to-end speed gain. All 28 numeric training metrics and all 82 model
+  tensors matched Round447 exactly. Report:
+  `training/outputs/phase12_headless/round456_numpy_validation_fastpath_20261030/full_ppo_replay/profile.json`.
+- Current bottleneck remains PPO sample preparation (158.25 s of a 223.76 s
+  update), followed by roughly 60 s of optimization. The row-reader and
+  extraction improvements are individually small; profile the repeated
+  per-step validation/model-input builder path and use repeated matched replays
+  before claiming durable throughput gains. Complete-iteration games/s remains
+  16.49 from Round430 because this replay did not include rollout generation.
+
+### Perspective-validation loop specialization (Round457, 2026-10-30)
+
+- Profile-guided row validation now checks only agent-map fields actually
+  present in a trajectory step, using precomputed allowed-field sets and a
+  constant-time subset check for each one-agent map. A matched parser benchmark
+  on 1,024 audited rows, with JSON decode and offset reads included, fell from
+  1.614 s to 1.518 s (5.99%) with identical accepted-row signatures. See
+  `scripts/benchmark_perspective_validation_fastpath.py` and
+  `training/outputs/phase12_headless/round456_numpy_validation_fastpath_20261030/reader_validation_benchmark.json`.
+- The exact Round447 PPO replay configuration retained all 28 numeric training
+  metrics and all 82 checkpoint tensors. Round457 preparation was 161.40 s,
+  3.15 s slower than Round456's 158.25 s; wall time was 226.59 s vs 223.76 s.
+  The single-run timing spread exceeds the possible gain, so the reader-stage
+  benchmark has not demonstrated a reliable end-to-end improvement. Keep
+  complete-iteration throughput at 16.49 games/s (Round430); this PPO-only
+  replay does not include rollout generation. Report:
+  `training/outputs/phase12_headless/round457_validation_loop_replay_20261030/full_ppo_replay/profile.json`.
+- The measured bottleneck remains the 158–161 s PPO sample-preparation stage,
+  followed by about 60 s of PPO optimization. Next isolate per-record
+  validation/parsing from transition extraction and model-input construction
+  over complete representative chunks. Avoid treating per-state microbenchmarks
+  as whole-update speed gains.

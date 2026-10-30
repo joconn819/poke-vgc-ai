@@ -1,0 +1,32 @@
+{
+  "benchmark": "Round456 public-mechanics encoder fast path",
+  "date": "2026-10-30",
+  "audit": "training/outputs/phase12_headless/round445_offset_indexed_replay_20k_20261030/preflight/round_0001_indexed.json",
+  "encoder_comparison": {
+    "states": 1026,
+    "records": 135,
+    "repeats": 10,
+    "warmup_excluded": true,
+    "reference_per_record_fact_seconds": 0.04314833099488169,
+    "optimized_per_record_fact_seconds": 0.04073854899615981,
+    "reduction_pct": 5.584878819548627,
+    "exact_feature_parity": true
+  },
+  "full_transition_extraction_comparison": {
+    "records": 256,
+    "transitions": 1971,
+    "repeats": 7,
+    "warmup_excluded": true,
+    "reference_median_seconds": 0.2397605599835515,
+    "optimized_median_seconds": 0.22971760950167663,
+    "reduction_pct": 4.188741669006718,
+    "estimated_seconds_saved_at_162366_transitions": 0.826976376,
+    "exact_transition_parity": true
+  },
+  "changes": [
+    "Precompute own-team Fake Out slot capability once per trajectory record.",
+    "Avoid padded and concatenated row lists in the per-state encoder loop.",
+    "Use pairwise maximum for active-slot detection while preserving NaN behavior."
+  ],
+  "scope_note": "Feature/extraction microbenchmarks only; PPO replay result is reported separately."
+}

@@ -1,0 +1,27 @@
+{
+  "benchmark": "audited rollout parsing and perspective validation fast path",
+  "audit": "training/outputs/phase12_headless/round445_offset_indexed_replay_20k_20261030/preflight/round_0001_indexed.json",
+  "records": 1024,
+  "repeats": 5,
+  "warmup_excluded": true,
+  "legacy_validator_seconds": [
+    1.5576213599997573,
+    1.614459361997433,
+    1.6148213659762405,
+    1.6152682669926435,
+    1.6122660179971717
+  ],
+  "optimized_validator_seconds": [
+    1.5178190270089544,
+    1.5188494189933408,
+    1.4704156020015944,
+    1.5286183980060741,
+    1.46934111599694
+  ],
+  "legacy_validator_median_seconds": 1.614459361997433,
+  "optimized_validator_median_seconds": 1.5178190270089544,
+  "reader_validation_reduction_pct": 5.9859255217742815,
+  "accepted_row_signature_parity": true,
+  "accepted_rows": 1024,
+  "scope_note": "Includes offset reads, orjson decoding, and full row validation for a fixed prefix of audited records. Does not include transition extraction, model-input construction, or PPO optimization."
+}
