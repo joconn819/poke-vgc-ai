@@ -39,5 +39,49 @@
     "candidate_summary": "round465_opening_override_fullmatch_public_counterplay_candidate_256x2_20261030/paired_summary.json",
     "paired_comparison": "round465_opening_override_fullmatch_public_counterplay_comparison_256x2_20261030.json"
   },
-  "overall_conclusion": "No broad benefit has been demonstrated. Max Damage's +3.13 pp effect was inconclusive; Public Counterplay's paired effect was 0.00 pp with an interval spanning roughly ±4 pp. PPO logits remain the default action selector."
+  "historical_ppo_opponent": {
+    "opponent": "frozen_round464_ppo",
+    "method": "Round465 full-match control vs first-turn Max Damage action override, side-swapped; identical team seeds and preview selector per arm.",
+    "initial_screen": {
+      "matched_team_pair_clusters": 256,
+      "matched_case_repeats": 511,
+      "outcome_repeats_per_cluster": 2,
+      "control_score_rate": 0.4609375,
+      "first_action_override_score_rate": 0.533203125,
+      "paired_difference_percentage_points": 7.2265625,
+      "paired_cluster_bootstrap_95_interval_percentage_points": [2.9296875, 11.42578125],
+      "clusters_override_better": 85,
+      "clusters_control_better": 50,
+      "clusters_tied": 121,
+      "control_incomplete_cases_excluded": 1,
+      "candidate_incomplete_cases_excluded": 0,
+      "control_summary": "round465_opening_override_fullmatch_round464_control_256x2_20261030/paired_summary.json",
+      "candidate_summary": "round465_opening_override_fullmatch_round464_candidate_256x2_20261030/paired_summary.json",
+      "paired_comparison": "round465_opening_override_fullmatch_round464_comparison_256x2_20261030.json"
+    },
+    "fresh_seed_replication": {
+      "matched_team_pair_clusters": 128,
+      "matched_case_repeats": 256,
+      "outcome_repeats_per_cluster": 2,
+      "control_score_rate": 0.5625,
+      "first_action_override_score_rate": 0.599609375,
+      "paired_difference_percentage_points": 3.7109375,
+      "paired_cluster_bootstrap_95_interval_percentage_points": [-1.5625, 9.1796875],
+      "clusters_override_better": 39,
+      "clusters_control_better": 25,
+      "clusters_tied": 64,
+      "timeouts_or_errors": 0,
+      "control_summary": "round465_opening_override_fullmatch_round464_replication_control_128x2_20261030/paired_summary.json",
+      "candidate_summary": "round465_opening_override_fullmatch_round464_replication_candidate_128x2_20261030/paired_summary.json",
+      "paired_comparison": "round465_opening_override_fullmatch_round464_replication_comparison_128x2_20261030.json"
+    },
+    "pooled_exploratory_cluster_analysis": {
+      "clusters": 384,
+      "paired_difference_percentage_points": 6.0546875,
+      "cluster_bootstrap_95_interval_percentage_points": [2.6692708333, 9.4401041667],
+      "method": "Pool the two independent generated-team seeds and bootstrap team-seed clusters; average repeat differences within each team cluster. Treat as exploratory across the prespecified fresh-seed replication.",
+      "conclusion": "Promising opponent-specific opening signal, not evidence of a robust global policy improvement."
+    }
+  },
+  "overall_conclusion": "The Max Damage opening action showed a positive Round465-vs-Round464 signal in the initial screen and a smaller, inconclusive fresh-seed replication. The pooled exploratory estimate is +6.05 pp [2.67, 9.44]. The same override was inconclusive vs Max Damage and showed 0.00 pp vs Public Counterplay, so no broad benefit is established. PPO logits remain the default action selector; the auxiliary win-probability head is not used to rank moves."
 }
