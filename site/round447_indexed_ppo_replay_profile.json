@@ -1,0 +1,51 @@
+{
+  "run": "Round447 audited offset-index PPO replay",
+  "date": "2026-10-30",
+  "source": "Round435 20,000-game rollouts",
+  "environment": {
+    "device": "NVIDIA GeForce RTX 4060 Laptop GPU",
+    "torch": "2.15.0+cu132"
+  },
+  "audit": {
+    "sha256": "d74fbedf4d2b801885e228a221fc4fb513f5459f551a3318c2a6c9f3cdf3bd54",
+    "input_bytes": 4155849741,
+    "input_gib": 3.8704366805031896,
+    "player_view_rows": 40002,
+    "ppo_valid_rows": 28000,
+    "trainable_games": 20000,
+    "trainable_transitions": 162366,
+    "indexed_jsonl_files": 15
+  },
+  "matched_config": {
+    "reference_run": "Round437",
+    "seed": 20261046,
+    "optimizer_steps": 1272,
+    "initial_checkpoint": "Round435 start_round_0001.pt",
+    "hidden_set_loss_weight": 0.0,
+    "win_probability_loss_weight": 0.1,
+    "native_action_feature_variant": "damage_ko_friendly_fire"
+  },
+  "timing_seconds": {
+    "sample_preparation": 169.1197936599783,
+    "input_tensor_aggregation": 2.741560222,
+    "action_tensor_aggregation": 3.122270174,
+    "full_replay_wall_utc_rounded": 232,
+    "round441_sample_preparation": 226.26516649697442,
+    "round441_full_wall_utc_rounded": 290,
+    "round437_full_wall": 217.97542133700335
+  },
+  "parity": {
+    "transitions_match_audit": true,
+    "metrics_match_round437_exactly": true,
+    "checkpoint_tensor_count": 82,
+    "checkpoint_tensors_bit_identical_to_round437": true,
+    "max_parameter_absolute_difference": 0
+  },
+  "finding": "Offset-indexed training prepared the audited trainable rows in 169.12 s, 57.15 s (25.3%) below Round441. Full PPO replay took about 232 s, below Round441 but about 14 s slower than Round437. End-to-end speedup versus the fastest matched replay is not established; fresh strict audit time is also excluded.",
+  "data_integrity_note": "Round444 was excluded because its unsafe validation bypass admitted one incomplete trainable row (20,001 records / 162,374 transitions rather than the audited 20,000 / 162,366). Round447 uses audit-produced offsets and still validates every selected row.",
+  "artifacts": [
+    "training/outputs/phase12_headless/round445_offset_indexed_replay_20k_20261030/preflight/round_0001_indexed.json",
+    "training/outputs/phase12_headless/round447_indexed_matched_replay_20k_20261030/telemetry.jsonl",
+    "training/outputs/phase12_headless/round447_indexed_matched_replay_20k_20261030/checkpoints/latest.pt"
+  ]
+}
