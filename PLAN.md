@@ -15439,3 +15439,18 @@ team choice but does not change that conclusion.
   before claiming end-to-end improvement.
 - Profile:
   `site/round441_full_ppo_replay_profile.json`.
+
+### PPO transition extraction: reuse the converted observation array (Round442, 2026-10-30)
+
+- `extract_player_transitions` now converts each JSON observation to float32
+  once and passes that array to both public-mechanics encoding and the
+  `NativeTransition`, avoiding a repeated list-to-NumPy conversion.
+- On the same 256 Round435 records and 1,971 transitions, seven runs with the
+  first excluded measured 0.2790 s before and 0.2593 s after (7.1% lower
+  extraction time). Every `NativeTransition` field was exactly equal.
+- Linear extrapolation estimates 1.62 s saved at 162,366 transitions. This
+  optimization was added after Round441 and has not been included in a full PPO
+  replay; validate end-to-end before claiming a training speedup.
+- Benchmark script and report:
+  `scripts/benchmark_ppo_observation_array_reuse.py` and
+  `site/ppo_observation_array_reuse_benchmark.json`.
