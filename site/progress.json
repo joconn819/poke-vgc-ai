@@ -230,7 +230,7 @@
     "games_per_second": "16.49",
     "context": "Round430 20,000-game complete training iteration including rollout and PPO preparation/optimization; Round435 full aggregate rollout telemetry was not captured. Not raw simulator speed.",
     "decision_latency": "~85 ms action selection per policy-pool match",
-    "current_bottleneck": "Round435 shard profile: policy inference 65\u201373 ms/match vs historical policies; public counterplay scoring about 76 ms/match; observation encoding 25\u201328 ms; Showdown roundtrip 28\u201337 ms. PPO audit/record preparation plus tensor aggregation took 159.3 s for 20,000 games versus about 55 s optimization. Full aggregate Round435 rollout rate was not captured. A separate 3.87 GiB sample-count scan took 35.96 s before PPO; the preflight audit already had these counts. A matched same-data PPO replay used preflight counts/digest and took 218.0 s vs 260.7 s without reuse (42.8 s / 16.4% lower wall time); both produced bit-identical checkpoints. The isolated duplicate scan itself measured 35.96 s; this is PPO-update time, excluding rollout generation.",
+    "current_bottleneck": "Round435 shard profile: policy inference 65\u201373 ms/match vs historical policies; public counterplay scoring about 76 ms/match; observation encoding 25\u201328 ms; Showdown roundtrip 28\u201337 ms. PPO audit/record preparation plus tensor aggregation took 159.3 s for 20,000 games versus about 55 s optimization. Full aggregate Round435 rollout rate was not captured. A separate 3.87 GiB sample-count scan took 35.96 s before PPO; the preflight audit already had these counts. A matched same-data PPO replay used preflight counts/digest and took 218.0 s vs 260.7 s without reuse (42.8 s / 16.4% lower wall time); both produced bit-identical checkpoints. The isolated duplicate scan itself measured 35.96 s; this is PPO-update time, excluding rollout generation. New PPO microbenchmark: reuse of immutable cached static team tensors reduced input construction by 16.4% (0.2780 s to 0.2324 s for 1,971 real states), with exact output parity. Linear extrapolation suggests 3.76 s saved (2.5% of 151.5 s sample collection), not yet confirmed end to end.",
     "gpu_status": "RTX 4060 used for PPO optimization; rollout inference and Showdown simulation remain CPU-side",
     "profile_context": "Round430 remains the latest complete end-to-end 20,000-game profile: eight-worker rollout 22.55 games/s and full iteration 16.49 games/s. Round435 offers newer per-shard timings but no valid aggregate rate after preflight recovery. Per-opponent shard rates are not aggregate rates. Action selection contains policy inference; Public Counterplay scoring is nested inside action selection.",
     "active_training_profile": {
@@ -275,7 +275,7 @@
           "persistence_ms": "13"
         }
       ],
-      "finding": "Round435 measured about 76 ms/match of Public Counterplay scoring, 65\u201373 ms/match policy inference against pool opponents, and 28\u201337 ms/match Showdown engine time. PPO record preparation plus tensor aggregation took 159.3 s for 20,000 games, versus about 55 s optimization. Improve automatic duplicate-team recovery, then prioritize batched policy inference and audited record parsing/tensor preparation."
+      "finding": "Round435 measured about 76 ms/match of Public Counterplay scoring, 65\u201373 ms/match policy inference against pool opponents, and 28\u201337 ms/match Showdown engine time. PPO record preparation plus tensor aggregation took 159.3 s for 20,000 games, versus about 55 s optimization. Improve automatic duplicate-team recovery, then prioritize batched policy inference and audited record parsing/tensor preparation. A CPU microbenchmark of PPO model-input construction found 16.4% lower stage time by reusing cached static tensors rather than cloning them per state; linear extrapolation is 3.76 s over 162,366 transitions, still awaiting full-iteration confirmation."
     },
     "profile": [
       {
@@ -515,6 +515,20 @@
       "eight_worker_failures": "0 timeouts \u00b7 0 action corrections",
       "limitation": "The 32-game before/after is paired on identical seeds. The 8-worker rollout validates concurrent operation but has no pre-cache 8-worker control; full 20,000-game mixed PPO throughput has not yet been remeasured.",
       "report": "training/outputs/phase12_headless/round430_counterplay_cache_benchmark_20261030/report.json"
+    },
+    "ppo_input_preparation_benchmark": {
+      "context": "Round435 PPO input-preparation microbenchmark using 1,971 real transitions from 256 records. Six passes per mode; first pass excluded. CPU-only PyTorch 2.15, Python 3.12. Rollout parsing and PPO optimization excluded.",
+      "clone_median_seconds": 0.2779923469934147,
+      "reuse_median_seconds": 0.23240241399616934,
+      "reduction_pct": 16.399707938120077,
+      "exact_input_parity": true,
+      "transitions": 1971,
+      "round435_transitions": 162366,
+      "estimated_seconds_saved_full_preparation": 3.76,
+      "estimated_preparation_reduction_pct": 2.48,
+      "estimate_context": "Linear extrapolation from microbenchmark saving to 162,366 transitions, compared with 151.5 s PPO sample collection; not an end-to-end training measurement.",
+      "torch_version": "2.15.0+cpu",
+      "report": "ppo_input_preparation_benchmark.json"
     }
   },
   "latest_run": {

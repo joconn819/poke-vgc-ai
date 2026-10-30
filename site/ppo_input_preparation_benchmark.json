@@ -1,0 +1,30 @@
+{
+  "cache_entries": 256,
+  "clone_median_seconds": 0.2779923469934147,
+  "clone_static_cache_seconds": [
+    0.355769012006931,
+    0.2779923469934147,
+    0.3263524459907785,
+    0.25601385001209565,
+    0.3352330659981817,
+    0.2555577809980605
+  ],
+  "exact_input_parity": true,
+  "median_reduction_pct": 16.399707938120077,
+  "records_read": 256,
+  "repeats": 6,
+  "reuse_median_seconds": 0.23240241399616934,
+  "reuse_static_cache_seconds": [
+    0.254339022008935,
+    0.2382493129989598,
+    0.3147176599886734,
+    0.23109725199174136,
+    0.23240241399616934,
+    0.2275787950202357
+  ],
+  "rollout": "training/outputs/phase12_headless/round435_equilibrium_mixture_response_20k_20261030/rollouts/round_0001_max_damage_p1_shard000.jsonl",
+  "scope": "model-input construction only; rollout parsing and PPO optimization excluded",
+  "torch_version": "2.15.0+cpu",
+  "transitions": 1971,
+  "warmup_excluded": true
+}

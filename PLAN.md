@@ -15384,3 +15384,20 @@ team choice but does not change that conclusion.
   `round427_candidate_vs_random_128x2_20261030/`,
   `round428_candidate_vs_historical_round102_128x2_20261030/`, and
   `round429_candidate_vs_maxdamage_128x2_20261030/`.
+
+### PPO input preparation: reuse cached static tensors (2026-10-30)
+
+- PPO preparation now reads each match's immutable cached team-token tensors
+  directly rather than cloning seven small tensors for every state. Other
+  `build_model_inputs` callers retain clone behavior.
+- On 1,971 real Round435 transitions (256 records, Python 3.12, PyTorch 2.15
+  CPU; six passes with the first excluded), input construction took a median
+  0.2780 s with clones and 0.2324 s with reuse, a 16.4% reduction in that
+  stage. Every output tensor matched exactly.
+- Linear extrapolation to Round435's 162,366 trainable transitions estimates
+  3.76 seconds saved, about 2.5% of its 151.5-second PPO sample collection
+  time. This is not yet an end-to-end PPO timing; record extraction and tensor
+  aggregation remain larger costs.
+- Reproduction script and raw result:
+  `scripts/benchmark_ppo_static_cache_reuse.py` and
+  `site/ppo_input_preparation_benchmark.json`.
