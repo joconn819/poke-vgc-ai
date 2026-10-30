@@ -1,0 +1,173 @@
+{
+  "round": 462,
+  "checkpoint": "../checkpoints/round_0001/latest.pt",
+  "method": "paired local-Showdown head-to-head evaluation; fixed team pair and preview in two side-swapped legs; one battle seed per team pair",
+  "clusters_per_opponent": 512,
+  "evaluated_opponents": [
+    {
+      "opponent": "Random",
+      "opponent_key": "random",
+      "score_rate": 0.9697265625,
+      "score_percent": 96.97,
+      "cluster_bootstrap_95_pct": [
+        95.9,
+        97.95
+      ],
+      "clusters": 512,
+      "games": 1024,
+      "paired_team_outcomes": {
+        "sweep_win": 482,
+        "split": 29,
+        "sweep_loss": 1
+      },
+      "wins": 993,
+      "losses": 31,
+      "draws": 0,
+      "parallel_evaluation_games_per_second": 5.53,
+      "parallel_wall_seconds": 185.33,
+      "action_adjustments": 0,
+      "resolved_initial_incomplete_pairs": 0,
+      "recovery_result_points": null,
+      "team_seed_range": [
+        20261046,
+        20262068
+      ],
+      "seed": 20261046,
+      "format": "gen9championsdoubles2026mcclosed",
+      "team_selection_checkpoint": "training/outputs/phase12_headless/round402_selector_currentdata_8ep_20261030/selector_candidate.pt"
+    },
+    {
+      "opponent": "Max Damage",
+      "opponent_key": "max_damage",
+      "score_rate": 0.4482421875,
+      "score_percent": 44.82,
+      "cluster_bootstrap_95_pct": [
+        41.02,
+        48.54
+      ],
+      "clusters": 512,
+      "games": 1024,
+      "paired_team_outcomes": {
+        "sweep_win": 172,
+        "split": 115,
+        "sweep_loss": 225
+      },
+      "wins": 459,
+      "losses": 565,
+      "draws": 0,
+      "parallel_evaluation_games_per_second": 7.81,
+      "parallel_wall_seconds": 131.13,
+      "action_adjustments": 0,
+      "resolved_initial_incomplete_pairs": 0,
+      "recovery_result_points": null,
+      "team_seed_range": [
+        20261046,
+        20262068
+      ],
+      "seed": 20261046,
+      "format": "gen9championsdoubles2026mcclosed",
+      "team_selection_checkpoint": "training/outputs/phase12_headless/round402_selector_currentdata_8ep_20261030/selector_candidate.pt"
+    },
+    {
+      "opponent": "Public Counterplay",
+      "opponent_key": "public_counterplay",
+      "score_rate": 0.4853515625,
+      "score_percent": 48.54,
+      "cluster_bootstrap_95_pct": [
+        44.82,
+        52.34
+      ],
+      "clusters": 512,
+      "games": 1024,
+      "paired_team_outcomes": {
+        "sweep_win": 185,
+        "split": 127,
+        "sweep_loss": 200
+      },
+      "wins": 497,
+      "losses": 527,
+      "draws": 0,
+      "parallel_evaluation_games_per_second": 6.29,
+      "parallel_wall_seconds": 162.38,
+      "action_adjustments": 0,
+      "resolved_initial_incomplete_pairs": 1,
+      "recovery_result_points": 1.0,
+      "team_seed_range": [
+        20261046,
+        20262068
+      ],
+      "seed": 20261046,
+      "format": "gen9championsdoubles2026mcclosed",
+      "team_selection_checkpoint": "training/outputs/phase12_headless/round402_selector_currentdata_8ep_20261030/selector_candidate.pt"
+    },
+    {
+      "opponent": "Historical PPO \u00b7 Round432",
+      "opponent_key": "policy_round432",
+      "score_rate": 0.4833984375,
+      "score_percent": 48.34,
+      "cluster_bootstrap_95_pct": [
+        44.43,
+        52.25
+      ],
+      "clusters": 512,
+      "games": 1024,
+      "paired_team_outcomes": {
+        "sweep_win": 201,
+        "split": 93,
+        "sweep_loss": 218
+      },
+      "wins": 495,
+      "losses": 529,
+      "draws": 0,
+      "parallel_evaluation_games_per_second": 4.56,
+      "parallel_wall_seconds": 224.29,
+      "action_adjustments": 0,
+      "resolved_initial_incomplete_pairs": 1,
+      "recovery_result_points": 1.0,
+      "team_seed_range": [
+        20261046,
+        20262068
+      ],
+      "seed": 20261046,
+      "format": "gen9championsdoubles2026mcclosed",
+      "team_selection_checkpoint": "training/outputs/phase12_headless/round402_selector_currentdata_8ep_20261030/selector_candidate.pt"
+    },
+    {
+      "opponent": "Historical PPO \u00b7 Round430",
+      "opponent_key": "policy_round430",
+      "score_rate": 0.4794921875,
+      "score_percent": 47.95,
+      "cluster_bootstrap_95_pct": [
+        44.04,
+        51.76
+      ],
+      "clusters": 512,
+      "games": 1024,
+      "paired_team_outcomes": {
+        "sweep_win": 196,
+        "split": 99,
+        "sweep_loss": 217
+      },
+      "wins": 491,
+      "losses": 533,
+      "draws": 0,
+      "parallel_evaluation_games_per_second": 4.83,
+      "parallel_wall_seconds": 212.06,
+      "action_adjustments": 0,
+      "resolved_initial_incomplete_pairs": 0,
+      "recovery_result_points": null,
+      "team_seed_range": [
+        20261046,
+        20262068
+      ],
+      "seed": 20261046,
+      "format": "gen9championsdoubles2026mcclosed",
+      "team_selection_checkpoint": "training/outputs/phase12_headless/round402_selector_currentdata_8ep_20261030/selector_candidate.pt"
+    }
+  ],
+  "confidence_intervals": "Percentile bootstrap over side-swapped team-pair clusters (20,000 resamples, deterministic seed 20261046).",
+  "limitations": "Screening evaluation only; each team pair has one outcome per side. A single initial timed-out/incomplete pair for Public Counterplay and Round432 was replayed with the same team, preview, and battle seeds and included. No action adjustments occurred. Random is a weak baseline; its high score does not indicate robust play. The Max Damage interval is below 50%; the paired intervals against the two historical checkpoints include 50%.",
+  "outputs": {
+    "raw_report": "round462_eval_scorecard.json"
+  }
+}

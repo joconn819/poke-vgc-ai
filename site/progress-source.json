@@ -12,9 +12,44 @@
     "games": "2,042",
     "label": "Current in-battle policy vs Round424 start",
     "status": "Current validated candidate · Round436 ablation and external screens inconclusive",
-    "note": "Round431 scored 49.36% [45.85%, 52.93%] against Round430, and Round432 scored 47.90% [44.29%, 51.61%]; neither showed a clear gain. Round430 remains the validated in-battle candidate. Round402's 77.15% result is a separate team-preview selector benchmark. Round432 external screens also showed no clear lift: all paired 95% intervals vs Round430 and Round431 include zero. Round432 cross-opponent equal-weight mean/median/p10/worst were 60.35%/48.83%/47.64%/47.46%; the mean is buoyed by random play. Round435 used a Round434 restricted-game mixture (31.7% Round430 / 68.3% Round432 in the policy pool) and scored 52.98% [49.41%, 56.59%] head-to-head with Round430; all matched external deltas vs Round430/432 included zero. Round430 remains the candidate. Round436 removed hidden-set auxiliary loss on the identical Round435 data; it scored 53.42% [49.80%, 56.93%] vs Round435 over 512 clusters (one incomplete game), an inconclusive ablation. Round430 remains the validated candidate. Round436 external screens at 256 clusters found no supported paired gain vs Round435: deltas on 128 shared clusters were +0.20 pp vs Max Damage [-0.59,+0.98], +0.39 pp vs public Counterplay [-0.59,+1.37], 0.00 pp vs random [-0.78,+0.78], and -0.20 pp vs Round102 [-0.98,+0.39]. Round436 remains unpromoted; Round430 is still the validated candidate."
+    "note": "Round431 scored 49.36% [45.85%, 52.93%] against Round430, and Round432 scored 47.90% [44.29%, 51.61%]; neither showed a clear gain. Round430 remains the validated in-battle candidate. Round402's 77.15% result is a separate team-preview selector benchmark. Round432 external screens also showed no clear lift: all paired 95% intervals vs Round430 and Round431 include zero. Round432 cross-opponent equal-weight mean/median/p10/worst were 60.35%/48.83%/47.64%/47.46%; the mean is buoyed by random play. Round435 used a Round434 restricted-game mixture (31.7% Round430 / 68.3% Round432 in the policy pool) and scored 52.98% [49.41%, 56.59%] head-to-head with Round430; all matched external deltas vs Round430/432 included zero. Round430 remains the candidate. Round436 removed hidden-set auxiliary loss on the identical Round435 data; it scored 53.42% [49.80%, 56.93%] vs Round435 over 512 clusters (one incomplete game), an inconclusive ablation. Round430 remains the validated candidate. Round436 external screens at 256 clusters found no supported paired gain vs Round435: deltas on 128 shared clusters were +0.20 pp vs Max Damage [-0.59,+0.98], +0.39 pp vs public Counterplay [-0.59,+1.37], 0.00 pp vs random [-0.78,+0.78], and -0.20 pp vs Round102 [-0.98,+0.39]. Round436 remains unpromoted; Round430 is still the validated candidate. Round462’s latest full training run screened at 44.82% vs Max Damage [41.02%, 48.54%] and around 48% vs Public Counterplay/historical PPO. Do not promote it; the Max Damage interval is below 50% and performance vs stronger policy opponents is inconclusive."
   },
   "evaluation_scorecard": [
+    {
+      "opponent": "Round462 · Random",
+      "score": "96.97%",
+      "games": "1,024",
+      "interval": "[95.90%, 97.95%]",
+      "status": "512 team-pair clusters · 0 action adjustments · 5.53 games/s"
+    },
+    {
+      "opponent": "Round462 · Max Damage",
+      "score": "44.82%",
+      "games": "1,024",
+      "interval": "[41.02%, 48.54%]",
+      "status": "512 team-pair clusters · 0 action adjustments · 7.81 games/s"
+    },
+    {
+      "opponent": "Round462 · Public Counterplay",
+      "score": "48.54%",
+      "games": "1,024",
+      "interval": "[44.82%, 52.34%]",
+      "status": "512 team-pair clusters · 0 action adjustments · 6.29 games/s"
+    },
+    {
+      "opponent": "Round462 · Historical PPO · Round432",
+      "score": "48.34%",
+      "games": "1,024",
+      "interval": "[44.43%, 52.25%]",
+      "status": "512 team-pair clusters · 0 action adjustments · 4.56 games/s"
+    },
+    {
+      "opponent": "Round462 · Historical PPO · Round430",
+      "score": "47.95%",
+      "games": "1,024",
+      "interval": "[44.04%, 51.76%]",
+      "status": "512 team-pair clusters · 0 action adjustments · 4.83 games/s"
+    },
     {
       "opponent": "Max Damage · Round436",
       "score": "46.29%",
@@ -235,7 +270,7 @@
     "profile_context": "Round462 full run profile: 20,000 games across 8 workers; 31.22 aggregate rollout games/s based on the staged-input-to-last-shard timestamp span; 17.95 observed games/s from staged input checkpoint to saved PPO checkpoint, including recovery and repeated audit overhead. Per-opponent values below are per-worker episode rates. Inference and Public Counterplay scoring are nested inside action selection.",
     "active_training_profile": {
       "round": "462",
-      "status": "full 20k rollout and PPO iteration · strength evaluation pending",
+      "status": "full rollout and PPO iteration · paired strength screen complete",
       "context": "Per-opponent episode telemetry aggregated over the 20,000-game rollout. The total 31.22 games/s is the aggregate rollout rate across eight workers; rows show per-worker rates, not additive values.",
       "profile": [
         {
@@ -275,7 +310,7 @@
           "persistence_ms": "17"
         }
       ],
-      "finding": "Action selection accounts for 81.8 ms/match on the mixture; policy inference and baseline scoring are nested there. Public Counterplay scorer averages 79.0 ms/episode on its own shards; historical-policy inference averages 65.7 ms. Observation encoding is 27.2 ms and Showdown roundtrip 30.4 ms/match. The engine is about 15% of episode telemetry, so batching inference, scorer optimization, and encoding are higher-value next targets."
+      "finding": "Round462 did not establish robust improvement: the 512-cluster screen scored 44.82% vs Max Damage; intervals vs Public Counterplay and historical PPO include 50%. Rollout speed/profile are included above; see the separate evaluation card for opponent intervals."
     },
     "profile": [
       {
@@ -775,7 +810,7 @@
       "optimizer_seconds_approximate": "53",
       "transitions": "162,369",
       "peak_rss_gib": "7.32",
-      "timing_caveat": "The workflow timestamp span includes a failed first preflight, one recovered match, a second audit, and orchestration gaps. It is not a controlled comparison with Round430.",
+      "timing_caveat": "The workflow timestamp span includes a failed first preflight, one recovered match, a second audit, and orchestration gaps. It is not a controlled comparison with Round430. Strength screening is complete; Round462 is not promoted.",
       "ppo_stages": [
         {
           "stage": "Transition extraction",
@@ -865,13 +900,101 @@
   "latest_run": {
     "round": 462,
     "status": "20,000-game rollout and PPO update · held-out evaluation pending",
-    "summary": "Trained from the Round430 checkpoint on 20,000 audited outcomes (6k Max Damage, 8k policy pool, 6k Public Counterplay), producing 162,369 transitions. Rollout throughput was 31.22 aggregate games/s across eight workers. PPO took 153.19 s, including 87.69 s sample preparation. The strict audit passed after recovering one incomplete original match. Strength evaluation is pending; no play improvement is claimed.",
+    "summary": "Trained from the Round430 checkpoint on 20,000 audited outcomes (6k Max Damage, 8k policy pool, 6k Public Counterplay), producing 162,369 transitions. Rollout throughput was 31.22 aggregate games/s across eight workers. PPO took 153.19 s, including 87.69 s sample preparation. The strict audit passed after recovering one incomplete original match. Strength evaluation is pending; no play improvement is claimed. Paired screen: 44.82% vs Max Damage [41.02%, 48.54%], 48.54% vs Public Counterplay [44.82%, 52.34%], 48.34% vs Round432 PPO [44.43%, 52.25%], 47.95% vs Round430 PPO [44.04%, 51.76%], and 96.97% vs Random. Round430 remains the validated candidate.",
     "games": "20,000 outcomes",
     "epochs": "4 passes · 1,272 optimizer steps",
-    "evaluation": "Pending held-out paired evaluation"
+    "evaluation": "Not promoted: 44.82% vs Max Damage; other strong-opponent intervals include 50%"
   },
   "method": "Native self-play PPO for in-battle decisions. Terminal win/loss remains the main objective; win-probability and hidden-set prediction are auxiliary tasks. Search comes after a stronger policy.",
   "jax_decision": "Round430 has a confirmed self-play head-to-head lift over Round424, but external-opponent screens remain inconclusive. Prioritize measured inference batching, observation throughput, and rollouts; keep equilibrium-oriented opponent coverage and defer a JAX/GPU engine rewrite until its end-to-end payoff is measured.",
-  "evaluation_note": "Score rates include wins and half credit for draws. Use paired held-out teams, side swaps, repeated outcomes, and cluster intervals. Track results across public counterplay, random, historical PPO, and Max Damage; no one matchup percentage is the finish line. Round431's equal-weight four-opponent mean was 59.86%, but the median was 48.05%, p10 47.30%, and worst score 47.07%; the mean is lifted by random play. All paired differences vs Round430 included zero.",
-  "generated_at": "2026-10-30 17:10 UTC"
+  "evaluation_note": "Round462’s 512-cluster screen scored 44.82% vs Max Damage [41.02%, 48.54%], 48.54% vs Public Counterplay [44.82%, 52.34%], 96.97% vs Random [95.90%, 97.95%], 48.34% vs historical Round432 [44.43%, 52.25%], and 47.95% vs Round430 [44.04%, 51.76%]. Keep Round430 as the validated candidate; this screen does not show robust improvement. Confidence intervals are team-pair cluster bootstrap; random is a weak baseline and its high score does not imply strong play.",
+  "generated_at": "2026-10-30 17:10 UTC",
+  "round462_evaluation": {
+    "status": "Round462 not promoted · initial paired screen complete",
+    "summary": "Round462 remains below 50% against Max Damage on this screen. Results against Public Counterplay and historical PPO are statistically inconclusive; Random is an easy-baseline check.",
+    "method": "512 team-pair clusters per opponent; two side-swapped local Showdown games per cluster; cluster-bootstrap 95% intervals; one initially incomplete pair each for Public Counterplay and Round432 was replayed with the same seeds. Zero action adjustments in final screens.",
+    "opponents": [
+      {
+        "opponent": "Random",
+        "score_percent": 96.97,
+        "cluster_bootstrap_95_pct": [
+          95.9,
+          97.95
+        ],
+        "clusters": 512,
+        "games": 1024,
+        "wins": 993,
+        "losses": 31,
+        "draws": 0,
+        "parallel_evaluation_games_per_second": 5.53,
+        "action_adjustments": 0,
+        "resolved_initial_incomplete_pairs": 0
+      },
+      {
+        "opponent": "Max Damage",
+        "score_percent": 44.82,
+        "cluster_bootstrap_95_pct": [
+          41.02,
+          48.54
+        ],
+        "clusters": 512,
+        "games": 1024,
+        "wins": 459,
+        "losses": 565,
+        "draws": 0,
+        "parallel_evaluation_games_per_second": 7.81,
+        "action_adjustments": 0,
+        "resolved_initial_incomplete_pairs": 0
+      },
+      {
+        "opponent": "Public Counterplay",
+        "score_percent": 48.54,
+        "cluster_bootstrap_95_pct": [
+          44.82,
+          52.34
+        ],
+        "clusters": 512,
+        "games": 1024,
+        "wins": 497,
+        "losses": 527,
+        "draws": 0,
+        "parallel_evaluation_games_per_second": 6.29,
+        "action_adjustments": 0,
+        "resolved_initial_incomplete_pairs": 1
+      },
+      {
+        "opponent": "Historical PPO · Round432",
+        "score_percent": 48.34,
+        "cluster_bootstrap_95_pct": [
+          44.43,
+          52.25
+        ],
+        "clusters": 512,
+        "games": 1024,
+        "wins": 495,
+        "losses": 529,
+        "draws": 0,
+        "parallel_evaluation_games_per_second": 4.56,
+        "action_adjustments": 0,
+        "resolved_initial_incomplete_pairs": 1
+      },
+      {
+        "opponent": "Historical PPO · Round430",
+        "score_percent": 47.95,
+        "cluster_bootstrap_95_pct": [
+          44.04,
+          51.76
+        ],
+        "clusters": 512,
+        "games": 1024,
+        "wins": 491,
+        "losses": 533,
+        "draws": 0,
+        "parallel_evaluation_games_per_second": 4.83,
+        "action_adjustments": 0,
+        "resolved_initial_incomplete_pairs": 0
+      }
+    ],
+    "report": "round462_eval_scorecard.json"
+  }
 }

@@ -15961,3 +15961,31 @@ team choice but does not change that conclusion.
   Public Counterplay, random, Max Damage, and historical PPO opponents.
 - Full machine-readable report:
   `training/outputs/phase12_headless/round462_full_iteration_gc_default_20261030/profile.json`.
+
+### Round462 paired held-out screen (2026-10-30)
+
+- The Round462 policy was evaluated on 512 team-pair clusters per opponent,
+  with two side-swapped Showdown battles per cluster and one outcome seed per
+  fixed team pair. Intervals below are 20,000-resample percentile bootstrap
+  intervals over team-pair clusters. One initially incomplete pair each versus
+  Public Counterplay and Round432 was rerun with the same teams, previews, and
+  seeds; each screen ended with 512 complete clusters, 1,024 games, and zero
+  action adjustments.
+- Score results: Random 96.97% [95.90%, 97.95%]; Max Damage 44.82% [41.02%,
+  48.54%]; Public Counterplay 48.54% [44.82%, 52.34%]; historical Round432
+  PPO 48.34% [44.43%, 52.25%]; and historical Round430 PPO 47.95% [44.04%,
+  51.76%]. Random remains an easy-baseline check, not a strength signal. The
+  Max Damage interval is below 50%; all policy-opponent intervals include 50%.
+- **Decision:** do not promote Round462. This single PPO iteration from Round430
+  did not demonstrate robust improvement and loses to Max Damage on this
+  screen. Keep Round430 as the validated candidate, not as an optimal-play
+  claim. The data do not prove whether Round462 degraded versus the incumbent;
+  evaluate Round430 versus Max Damage on the exact same teams/seeds for that
+  causal comparison.
+- Next: run the same paired Max Damage screen with Round430 (then Round432 if
+  needed), using identical team/preview/battle seeds and selector checkpoints.
+  Compare cluster-level paired score deltas before changing PPO objectives.
+  If no positive delta is supported, inspect decision traces and behavior
+  coverage, then make a targeted PPO/data-mixture change and repeat the screen.
+- Report:
+  `training/outputs/phase12_headless/round462_full_iteration_gc_default_20261030/evaluation/paired_screen_report.json`.
