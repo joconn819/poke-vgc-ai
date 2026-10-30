@@ -172,9 +172,11 @@ percentage alone.
   records do not yet provide enough provenance to reproduce feature inputs
   exactly. Before using recomputed historical features as a correctness oracle,
   identify whether the cause is code-version drift, roster/form ordering, or
-  state/mask mutation during logging. Future rollout records should include a
-  feature-encoder version or source hash and audit against freshly captured
-  inputs.
+  state/mask mutation during logging. New rollout records now include feature
+  encoder version 1, and the rollout preflight reports the feature-encoder
+  version distribution (including `unknown` for legacy shards). The root cause
+  remains open; add a state-level parity audit to fresh records before claiming
+  exact historical replay.
 - **Progress site:** `site/index.html` presents held-out results, the current
   speed snapshot, and training status. `.github/workflows/pages.yml` rebuilds
   its JSON from this plan and deploys through GitHub Pages on pushes to `main`.
