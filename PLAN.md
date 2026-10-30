@@ -276,9 +276,17 @@ percentage alone.
   completed preflight report's valid-record count, transition count, and
   SHA-256 digest into PPO to skip the duplicate scan. The digest matched an
   independent recomputation over all 4,155,849,741 nonblank bytes, and the
-  counts matched exactly. Expected saving is about 36 seconds per 20,000-game
-  PPO update; confirm with the next full iteration before claiming an
-  end-to-end speed gain.
+  counts matched exactly. Matched same-data PPO replays using the same initial
+  checkpoint, settings, seed, and CUDA device took 217.98 seconds with
+  preflight reuse and 260.74 seconds with the old scan (42.77 seconds / 16.4%
+  lower wall time). Both produced bit-identical model parameters and identical
+  losses, KL, transition count, and 1,272 optimizer steps. The separately
+  measured scan took 35.96 seconds; treat that as the repeatable direct
+  saving, with the remaining wall-time difference attributed to run variation.
+  This measures the PPO update only, excluding rollout generation. Artifacts:
+  `training/outputs/phase12_headless/round437_input_scan_reuse_speedbench_20k_20261030/`
+  and
+  `training/outputs/phase12_headless/round438_input_scan_control_20k_20261030/`.
 - **Round430 held-out screens (2026-10-30):** each used 128 held-out team
   clusters and two outcome repeats (512 side-swapped games); intervals are
   seeded 10,000-resample cluster bootstraps. Round430 scored 49.02% vs Max
