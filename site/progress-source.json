@@ -132,7 +132,14 @@
       }
     ],
     "jax_decision": "Showdown engine roundtrips were 27\u201334 ms per match in this profile (8\u201324% of end-to-end episode time by opponent class). A simulator-only port has a limited Amdahl ceiling, before state-transfer overhead. Keep the existing engine as the correctness reference; reconsider a JAX/GPU simulator only if an end-to-end prototype proves a substantial gain.",
-    "remaining_summary": "For the historical-policy pool, Showdown used 34 ms of 193 ms per match (~18%); the remaining ~82% is about 159 ms: 84 ms action selection (including 72 ms model inference), 27 ms observation encoding, 12 ms trajectory writes, 12 ms setup, and about 22 ms other overhead. For public counterplay, the engine used only 27 ms of 344 ms (~8%); its scorer alone used 228 ms."
+    "remaining_summary": "For the historical-policy pool, Showdown used 34 ms of 193 ms per match (~18%); the remaining ~82% is about 159 ms. It breaks down as 84 ms action selection (53% of the remainder, including 72 ms inference), 27 ms observation encoding (17%), 12 ms trajectory writes (8%), 12 ms setup (8%), and about 22 ms other overhead (14%). For public counterplay, the engine used only 27 ms of 344 ms (~8%); its scorer alone used 228 ms.",
+    "remaining_components": [
+      {"component": "Action selection", "ms": "84", "share": "53%", "note": "Includes 72 ms policy inference; do not add inference again."},
+      {"component": "Observation encoding", "ms": "27", "share": "17%", "note": "Repeated feature and static lookup work."},
+      {"component": "Trajectory writes", "ms": "12", "share": "8%", "note": "Per-match persistence overhead."},
+      {"component": "Match setup", "ms": "12", "share": "8%", "note": "Team and battle initialization."},
+      {"component": "Other overhead", "ms": "22", "share": "14%", "note": "Remaining measured episode time after named stages."}
+    ]
   },
   "latest_run": {
     "round": 424,
