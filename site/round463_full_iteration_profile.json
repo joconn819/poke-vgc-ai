@@ -1,7 +1,7 @@
 {
   "round": 463,
   "date": "2026-10-30",
-  "status": "training complete; held-out evaluation in progress",
+  "status": "training complete; held-out evaluation complete; not promoted",
   "configuration": {
     "games": 20000,
     "opponents": {
@@ -108,5 +108,7 @@
       "evidence": "88.0 s total; per-stage timers were not emitted for Round463.",
       "next": "Enable the exact preparation-stage profile in orchestrated updates, then optimize full-chunk transforms with parity."
     }
-  ]
+  ],
+  "evaluation_report": "evaluation/round463_paired_scorecard.json",
+  "promotion_status": "not promoted; matched Max Damage intervals include zero"
 }

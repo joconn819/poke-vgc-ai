@@ -1,0 +1,170 @@
+{
+  "round": 463,
+  "date": "2026-10-30",
+  "status": "complete; not promoted",
+  "checkpoint": "training/outputs/phase12_headless/round463_lr5e5_20k_20261030/checkpoints/round_0001/latest.pt",
+  "opponent": "Max Damage",
+  "evaluation_format": "gen9championsdoubles2026mcclosed",
+  "team_selection_checkpoint": "training/outputs/phase12_headless/round402_selector_currentdata_8ep_20261030/selector_candidate.pt",
+  "seed": 20262046,
+  "method": "512 team-pair clusters per matchup, two side-swapped local Showdown games per cluster; percentile bootstrap over clusters, 20,000 resamples. All raw rounds used the same held-out team/preview/battle seed range.",
+  "opponents": [
+    {
+      "opponent": "Random",
+      "score_percent": 96.29,
+      "cluster_bootstrap_95_pct": [
+        95.02,
+        97.36
+      ],
+      "clusters": 512,
+      "games": 1024,
+      "wins": 986,
+      "losses": 38,
+      "draws": 0,
+      "parallel_evaluation_games_per_second": 4.11,
+      "parallel_wall_seconds": 249.32,
+      "action_adjustments": 0,
+      "initial_timeouts_or_errors": 0,
+      "recovered_pairs": 0,
+      "team_seed_range": [
+        20262046,
+        20263068
+      ]
+    },
+    {
+      "opponent": "Max Damage",
+      "score_percent": 45.02,
+      "cluster_bootstrap_95_pct": [
+        41.21,
+        48.93
+      ],
+      "clusters": 512,
+      "games": 1024,
+      "wins": 461,
+      "losses": 563,
+      "draws": 0,
+      "parallel_evaluation_games_per_second": 6.79,
+      "parallel_wall_seconds": 150.73,
+      "action_adjustments": 0,
+      "initial_timeouts_or_errors": 0,
+      "recovered_pairs": 0,
+      "team_seed_range": [
+        20262046,
+        20263068
+      ]
+    },
+    {
+      "opponent": "Public Counterplay",
+      "score_percent": 46.19,
+      "cluster_bootstrap_95_pct": [
+        42.48,
+        50.0
+      ],
+      "clusters": 512,
+      "games": 1024,
+      "wins": 473,
+      "losses": 551,
+      "draws": 0,
+      "parallel_evaluation_games_per_second": 5.54,
+      "parallel_wall_seconds": 184.85,
+      "action_adjustments": 0,
+      "initial_timeouts_or_errors": 0,
+      "recovered_pairs": 0,
+      "team_seed_range": [
+        20262046,
+        20263068
+      ]
+    },
+    {
+      "opponent": "Historical PPO Round432",
+      "score_percent": 54.0,
+      "cluster_bootstrap_95_pct": [
+        50.2,
+        57.91
+      ],
+      "clusters": 512,
+      "games": 1024,
+      "wins": 553,
+      "losses": 471,
+      "draws": 0,
+      "parallel_evaluation_games_per_second": 4.79,
+      "parallel_wall_seconds": 213.71,
+      "action_adjustments": 0,
+      "initial_timeouts_or_errors": 0,
+      "recovered_pairs": 0,
+      "team_seed_range": [
+        20262046,
+        20263068
+      ]
+    },
+    {
+      "opponent": "PPO parent Round462",
+      "score_percent": 54.0,
+      "cluster_bootstrap_95_pct": [
+        50.2,
+        57.81
+      ],
+      "clusters": 512,
+      "games": 1024,
+      "wins": 553,
+      "losses": 471,
+      "draws": 0,
+      "parallel_evaluation_games_per_second": 4.13,
+      "parallel_wall_seconds": 247.26,
+      "action_adjustments": 0,
+      "initial_timeouts_or_errors": 1,
+      "recovered_pairs": 1,
+      "team_seed_range": [
+        20262046,
+        20263068
+      ],
+      "timeouts_or_errors_resolved": 1
+    }
+  ],
+  "matched_max_damage_controls": [
+    {
+      "control": "Round430",
+      "control_score_percent": 43.95,
+      "round463_score_percent": 45.02,
+      "paired_delta_percentage_points": 1.07,
+      "paired_delta_cluster_bootstrap_95_pp": [
+        -0.68,
+        2.83
+      ],
+      "clusters": 512,
+      "clusters_tie": 452,
+      "parallel_evaluation_games_per_second": 7.91,
+      "parallel_wall_seconds": 129.46,
+      "action_adjustments": 0,
+      "timeouts_or_errors": 0
+    },
+    {
+      "control": "Round462",
+      "control_score_percent": 43.55,
+      "round463_score_percent": 45.02,
+      "paired_delta_percentage_points": 1.46,
+      "paired_delta_cluster_bootstrap_95_pp": [
+        -0.1,
+        3.12
+      ],
+      "clusters": 512,
+      "clusters_tie": 465,
+      "parallel_evaluation_games_per_second": 8.08,
+      "parallel_wall_seconds": 126.66,
+      "action_adjustments": 0,
+      "timeouts_or_errors": 0
+    }
+  ],
+  "recovery": {
+    "matchup": "Round463 vs Round462 policy",
+    "pair": 246,
+    "team_seed": 20262538,
+    "initially_incomplete": true,
+    "replay_complete": true,
+    "replay_checkpoint_points": 0.0,
+    "action_adjustments": 0,
+    "timeouts_or_errors": 0,
+    "report_path": "policy_round462_recovery_pair246/paired_summary.json"
+  },
+  "conclusion": "Round463 improved direct head-to-head results against Round432 and Round462, but its Max Damage and Public Counterplay scores remain below 50%. Matched Max Damage gains over Round430 and Round462 are small and their paired intervals include zero. Keep Round430 as the validated robust candidate; do not claim Round463 is stronger overall."
+}

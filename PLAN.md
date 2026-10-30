@@ -16074,3 +16074,50 @@ team choice but does not change that conclusion.
   cluster-level deltas against its parent and strong opponents are reviewed.
 - Raw profile:
   `training/outputs/phase12_headless/round463_lr5e5_20k_20261030/profile.json`.
+
+### Round463 held-out screen and matched controls (2026-10-30)
+
+- Completed the fresh 512-cluster screen on seed 20262046 against Random, Max
+  Damage, Public Counterplay, Round432, and the Round462 parent. Each matchup
+  used two side-swapped local Showdown games per team pair. The one incomplete
+  Round462-parent pair (team seed 20262538) was replayed with the exact seeds;
+  the final screen has 512 complete clusters in every matchup. There were no
+  final action corrections.
+- Cluster-bootstrap score intervals (20,000 resamples): Random 96.29%
+  [95.02, 97.36], Max Damage 45.02% [41.21, 48.93], Public Counterplay
+  46.19% [42.48, 50.00], Round432 54.00% [50.20, 57.91], and Round462
+  54.00% [50.20, 57.81]. Round463 beats its prior PPO versions directly, but
+  remains below 50% against Max Damage and does not establish a Public
+  Counterplay win.
+- Ran Round430 and Round462 controls against Max Damage on those same 512
+  teams/seeds. Round430 scored 43.95%; Round462 scored 43.55%. Paired
+  Round463-minus-control deltas were +1.07 pp [-0.68, +2.83] vs Round430
+  (452 tied clusters) and +1.46 pp [-0.10, +3.12] vs Round462 (465 ties).
+  Both intervals include zero, so the larger learning rate has not shown a
+  reliable hard-opponent improvement. Keep Round430 as the validated robust
+  candidate; Round463 remains a challenger with a direct historical-policy
+  lift, not a demonstrated overall strength gain.
+- Evaluation actions required zero corrections. One initially incomplete
+  Round462-parent pair was successfully replayed. Round463's complete paired
+  scorecard is at
+  `training/outputs/phase12_headless/round463_lr5e5_20k_20261030/evaluation/round463_paired_scorecard.json`.
+- Next: continue from Round463 with another 20,000-game PPO iteration and
+  retain 30% Max Damage / 30% Public Counterplay coverage plus a 40% pool
+  split between Round463 and Round462. Keep LR 5e-5 for this iteration so
+  that only the pool composition and fresh outcomes change. Continue to gate
+  promotion on paired gains across strong opponents, not the historical
+  head-to-head alone.
+
+### Round464 training in progress (2026-10-30)
+
+- Started a fresh 20,000-game iteration from Round463 at learning rate 5e-5,
+  four PPO passes, minibatch 512, and terminal win/loss reward. The training
+  mixture is 30% Max Damage, 30% Public Counterplay, and 40% historical
+  policy opponents split evenly between Round463 and Round462. It preserves
+  the state-conditioned joint-action head and frozen Round402 team selector.
+- Seed: 20263047. Run directory:
+  `training/outputs/phase12_headless/round464_round463_continue_pool463_462_lr5e5_20k_20261030/`.
+- This continuation holds PPO settings fixed after Round463's low, stable KL
+  and its uncertain but positive matched Max Damage deltas. The changed pool
+  moves one slot from Round432 to the current Round463 checkpoint. Evaluate
+  against the same hard-opponent and historical-policy set before promotion.
