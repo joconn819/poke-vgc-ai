@@ -16122,7 +16122,7 @@ team choice but does not change that conclusion.
   moves one slot from Round432 to the current Round463 checkpoint. Evaluate
   against the same hard-opponent and historical-policy set before promotion.
 
-### Round464 training complete; held-out evaluation pending (2026-10-30)
+### Round464 training complete; held-out evaluation complete (2026-10-30)
 
 - The 20,000-game Round464 rollout finished with 6,000 Max Damage, 6,000
   Public Counterplay, and 8,000 policy-pool episodes (Round463/Round462 split
@@ -16150,12 +16150,55 @@ team choice but does not change that conclusion.
   The initial failed audit, rejected rows, replacement record, strict passing
   audit, PPO replay, and atomic checkpoint publication are all retained under
   that round's output directory.
-- Held-out evaluation is now running on 512 side-swapped clusters per matchup
-  against Random, Max Damage, Public Counterplay, Round463, and Round430; the
-  Max Damage matchup also has same-seed Round463 and Round430 controls. Do not
-  promote Round464 until the cluster-bootstrap intervals and paired Max Damage
-  deltas are reviewed.
+- Held-out evaluation completed on 512 side-swapped clusters per matchup
+  against Random, Max Damage, Public Counterplay, Round463, and Round430. The
+  Max Damage matchup also has same-seed Round463 and Round430 controls. All
+  five incomplete clusters across the screens were rerun on their exact team
+  and preview seeds with a longer timeout; final matchups contain 512 complete
+  clusters / 1,024 games each.
 - The audit failure exposed a process gap: `train_headless_ppo.py` currently
   stops instead of topping up when a rare team collision makes one episode
   untrainable. Future iterations should add a targeted top-up path while
   preserving the strict perspective and completeness gate.
+
+### Round464 held-out evaluation and decision-trace diagnosis (2026-10-30)
+
+- The 20,000-game Round464 update was not promoted. Its 20,000-resample
+  cluster-bootstrap scores were Random 95.90% [94.63, 97.07], Max Damage
+  45.41% [41.60, 49.22], Public Counterplay 46.19% [42.38, 50.00], Round463
+  52.64% [48.93, 56.35], and Round430 52.15% [48.34, 55.96]. Each matchup
+  used 512 team-pair clusters and two side-swapped games per cluster. Intervals
+  for the hard baselines still include 50%; the policy matchups do not establish
+  a reliable strength improvement over prior versions.
+- Same-seed Max Damage controls scored 45.22% for Round463 and 44.63% for
+  Round430. Round464's paired gain was +0.20 pp [-1.27, +1.66] over Round463
+  and +0.78 pp [-1.17, +2.83] over Round430. The intervals include zero, so
+  there is no detected hard-opponent gain. Keep Round430 as the validated
+  incumbent; Round464 remains a challenger.
+- Final per-opponent scores, cluster intervals, raw summaries, exact-seed
+  recovery summaries, and matched-control bootstrap reports are in
+  `training/outputs/phase12_headless/round464_round463_continue_pool463_462_lr5e5_20k_20261030/evaluation/paired_screen/final/round464_paired_scorecard.json`.
+- **Evaluation speed:** the seven 1,024-game screens ran at 4.53–7.11
+  aggregate games/s with eight workers. The Max Damage screen ran at 5.50
+  games/s. These rates are separate from training rollout speed: Round464
+  rollouts measured 35.38 games/s; full snapshot-to-checkpoint time was
+  17.66 games/s only because it includes the failed audit and manual recovery.
+- Collected 32 fresh paired clusters each against Max Damage and Public
+  Counterplay with action traces. This small diagnostic sample showed attacks
+  dominating both winning and losing trajectories; in losses the policy used
+  at least one protect/setup/status action in only 3/31 games in each matchup.
+  The result is descriptive, not proof that defensive moves are underused; it
+  motivates state-level counterfactual analysis rather than another unexamined
+  PPO continuation. Traces are under `evaluation/decision_traces_*`.
+- **Round465 experiment started:** continue from Round464 with the stable
+  learning rate 5e-5, four passes, batch 512, 20,000 new games, and the same
+  30% Max Damage / 30% Public Counterplay exposure. The 40% historical-policy
+  mixture now splits evenly between Round430 (validated incumbent) and Round464
+  (latest policy), replacing Round462. The team selector and state-conditioned
+  joint-action head are frozen/retained. Seed 20266047; run directory:
+  `training/outputs/phase12_headless/round465_round464_continue_pool430_464_lr5e5_20k_20261030/`.
+  This isolates the policy-pool change while keeping PPO settings and hard
+  baseline exposure fixed. Do not promote without a matched held-out screen.
+- Training-process priority: automate strict-audit top-up and re-audit for
+  rejected/incomplete games. Preserve the strict data and information-boundary
+  gate; never silently relax audit criteria to keep PPO moving.

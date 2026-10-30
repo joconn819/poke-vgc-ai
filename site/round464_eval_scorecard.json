@@ -1,0 +1,142 @@
+{
+  "matched_max_damage_control_deltas": {
+    "max_damage_vs_round430_control_delta": {
+      "candidate_better": 39,
+      "candidate_minus_control_percentage_points": 0.781,
+      "candidate_worse": 34,
+      "matched_clusters": 512,
+      "paired_cluster_bootstrap_95_percentage_points": [
+        -1.174,
+        2.832
+      ],
+      "tied": 439
+    },
+    "max_damage_vs_round463_control_delta": {
+      "candidate_better": 21,
+      "candidate_minus_control_percentage_points": 0.195,
+      "candidate_worse": 19,
+      "matched_clusters": 512,
+      "paired_cluster_bootstrap_95_percentage_points": [
+        -1.27,
+        1.66
+      ],
+      "tied": 472
+    }
+  },
+  "method": "512 side-swapped team-pair clusters per matchup; 20,000 cluster-bootstrap resamples; exact-seed reruns completed incomplete clusters; Showdown server RNG remains uncontrolled",
+  "opponents": {
+    "max_damage": {
+      "cluster_bootstrap_95_percent": [
+        41.602,
+        49.219
+      ],
+      "clusters": 512,
+      "draws": 0,
+      "evaluation_games_per_second": 5.497636482937533,
+      "games": 1024,
+      "losses": 559,
+      "recovery_replicates": [],
+      "score_percent": 45.41,
+      "wins": 465
+    },
+    "policy_round430": {
+      "cluster_bootstrap_95_percent": [
+        48.34,
+        55.957
+      ],
+      "clusters": 512,
+      "draws": 0,
+      "evaluation_games_per_second": 4.53403224229292,
+      "games": 1024,
+      "losses": 490,
+      "recovery_replicates": [
+        "training/outputs/phase12_headless/round464_round463_continue_pool463_462_lr5e5_20k_20261030/evaluation/paired_screen/policy_round430/paired_summary.json",
+        "training/outputs/phase12_headless/round464_round463_continue_pool463_462_lr5e5_20k_20261030/evaluation/paired_screen/recovery/policy_round430_270/paired_summary.json",
+        "training/outputs/phase12_headless/round464_round463_continue_pool463_462_lr5e5_20k_20261030/evaluation/paired_screen/recovery/policy_round430_353/paired_summary.json"
+      ],
+      "score_percent": 52.148,
+      "wins": 534
+    },
+    "policy_round463": {
+      "cluster_bootstrap_95_percent": [
+        48.926,
+        56.348
+      ],
+      "clusters": 512,
+      "draws": 0,
+      "evaluation_games_per_second": 5.775813094768729,
+      "games": 1024,
+      "losses": 485,
+      "recovery_replicates": [],
+      "score_percent": 52.637,
+      "wins": 539
+    },
+    "public_counterplay": {
+      "cluster_bootstrap_95_percent": [
+        42.383,
+        50.0
+      ],
+      "clusters": 512,
+      "draws": 0,
+      "evaluation_games_per_second": 5.515592719628629,
+      "games": 1024,
+      "losses": 551,
+      "recovery_replicates": [
+        "training/outputs/phase12_headless/round464_round463_continue_pool463_462_lr5e5_20k_20261030/evaluation/paired_screen/public_counterplay/paired_summary.json",
+        "training/outputs/phase12_headless/round464_round463_continue_pool463_462_lr5e5_20k_20261030/evaluation/paired_screen/recovery/public_counterplay/paired_summary.json"
+      ],
+      "score_percent": 46.191,
+      "wins": 473
+    },
+    "random": {
+      "cluster_bootstrap_95_percent": [
+        94.629,
+        97.07
+      ],
+      "clusters": 512,
+      "draws": 0,
+      "evaluation_games_per_second": 5.318423497929251,
+      "games": 1024,
+      "losses": 42,
+      "recovery_replicates": [
+        "training/outputs/phase12_headless/round464_round463_continue_pool463_462_lr5e5_20k_20261030/evaluation/paired_screen/random/paired_summary.json",
+        "training/outputs/phase12_headless/round464_round463_continue_pool463_462_lr5e5_20k_20261030/evaluation/paired_screen/recovery/random/paired_summary.json"
+      ],
+      "score_percent": 95.898,
+      "wins": 982
+    },
+    "round430_control": {
+      "cluster_bootstrap_95_percent": [
+        40.82,
+        48.438
+      ],
+      "clusters": 512,
+      "draws": 0,
+      "evaluation_games_per_second": 7.107719403710864,
+      "games": 1024,
+      "losses": 567,
+      "recovery_replicates": [],
+      "score_percent": 44.629,
+      "wins": 457
+    },
+    "round463_control": {
+      "cluster_bootstrap_95_percent": [
+        41.406,
+        49.023
+      ],
+      "clusters": 512,
+      "draws": 0,
+      "evaluation_games_per_second": 6.441492311489783,
+      "games": 1024,
+      "losses": 561,
+      "recovery_replicates": [
+        "training/outputs/phase12_headless/round464_round463_continue_pool463_462_lr5e5_20k_20261030/evaluation/paired_screen/round463_control/paired_summary.json",
+        "training/outputs/phase12_headless/round464_round463_continue_pool463_462_lr5e5_20k_20261030/evaluation/paired_screen/recovery/round463_control/paired_summary.json"
+      ],
+      "score_percent": 45.215,
+      "wins": 463
+    }
+  },
+  "round": 464,
+  "seed": 20264047
+}
