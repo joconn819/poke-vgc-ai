@@ -1,0 +1,39 @@
+{
+  "estimated_seconds_saved_at_full_transition_count": 6.655141017685982,
+  "exact_public_context_parity": true,
+  "full_transition_count": 162366,
+  "numpy_version": "2.5.4",
+  "records": 256,
+  "reduction_pct": 22.512028377168047,
+  "repeats": 7,
+  "results": {
+    "numpy_scalar_clip": {
+      "all_seconds": [
+        0.4991427269997075,
+        0.3673580110189505,
+        0.36922512302407995,
+        0.35546419699676335,
+        0.35736724600428715,
+        0.3587115920090582,
+        0.35902347101364285
+      ],
+      "median_seconds_excluding_first": 0.35886753151135053
+    },
+    "python_scalar_bounds": {
+      "all_seconds": [
+        0.2745331429759972,
+        0.273040136002237,
+        0.28920388501137495,
+        0.27851306900265627,
+        0.27594889301690273,
+        0.2778558399877511,
+        0.27830250197439454
+      ],
+      "median_seconds_excluding_first": 0.2780791709810728
+    }
+  },
+  "rollout": "training/outputs/phase12_headless/round435_equilibrium_mixture_response_20k_20261030/rollouts/round_0001_max_damage_p1_shard000.jsonl",
+  "scope": "player transition extraction only; PPO input building and optimization excluded",
+  "torch_version": "2.15.0+cpu",
+  "transitions": 1971
+}
