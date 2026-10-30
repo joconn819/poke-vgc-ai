@@ -1,43 +1,92 @@
 {
-  "experiment": "Round430 first-five Max Damage action intervention across two opponents",
-  "method": "Paired baseline vs intervention on matched teams/previews. Max Damage evaluation alternates Round430 across both player seats. Public Counterplay evaluation keeps Round430 as Player 1. Do not pool effects across opponents or treat this as a trained-policy result.",
-  "max_damage": {
-    "clusters": 512,
+  "experiment": "Round430 first-five Max Damage intervention, three-opponent common-seed evaluation",
+  "method": "Within each team-pair cluster, intervention minus baseline side-swapped score; 20,000 cluster bootstrap resamples.",
+  "team_pair_clusters": 512,
+  "side_swapped": true,
+  "opponents": {
+    "max_damage": {
+      "clusters": 512,
+      "baseline_score_pct": 36.62109375,
+      "intervention_score_pct": 45.01953125,
+      "paired_delta_pp": 8.3984375,
+      "paired_cluster_bootstrap_95_pp": [
+        4.296875,
+        12.59765625
+      ],
+      "timeouts_or_errors": 0,
+      "action_adjustments": 0,
+      "actions_overridden": 5076,
+      "games_per_second": 5.666455916706115,
+      "baseline_artifact": "training/outputs/phase12_headless/round430_464_465_common_preview_league_512x1_20261030/round430_vs_max_damage/paired_summary.json",
+      "intervention_artifact": "training/outputs/phase12_headless/round430_opening5_maxdamage_intervention_512x1_20261030/evaluation/paired_summary.json",
+      "bootstrap_seed": 2026103067
+    },
+    "public_counterplay": {
+      "clusters": 512,
+      "baseline_score_pct": 38.57421875,
+      "intervention_score_pct": 45.703125,
+      "paired_delta_pp": 7.12890625,
+      "paired_cluster_bootstrap_95_pp": [
+        3.122558593750002,
+        11.23046875
+      ],
+      "timeouts_or_errors": 0,
+      "action_adjustments": 0,
+      "actions_overridden": 5080,
+      "games_per_second": 7.225948284427007,
+      "baseline_artifact": "training/outputs/phase12_headless/round430_464_465_common_preview_league_512x1_20261030/round430_vs_public_counterplay/paired_summary.json",
+      "intervention_artifact": "training/outputs/phase12_headless/round430_opening0to4_maxdamage_intervention_vs_public_counterplay_sideswapped_512x1_20261030/paired_summary.json",
+      "bootstrap_seed": 2026103068
+    },
+    "round464": {
+      "clusters": 512,
+      "baseline_score_pct": 52.05078125,
+      "intervention_score_pct": 60.546875,
+      "paired_delta_pp": 8.49609375,
+      "paired_cluster_bootstrap_95_pp": [
+        4.39453125,
+        12.59765625
+      ],
+      "timeouts_or_errors": 0,
+      "action_adjustments": 0,
+      "actions_overridden": 5062,
+      "games_per_second": 4.737016954562894,
+      "baseline_artifact": "training/outputs/phase12_headless/round430_vs_round464_common_selector_512x1_20261030/paired_summary.json",
+      "intervention_artifact": "training/outputs/phase12_headless/round430_opening0to4_maxdamage_intervention_vs_round464_512x1_20261030_retry2/paired_summary.json",
+      "bootstrap_seed": 2026103069
+    }
+  },
+  "independent_round464_replication": {
+    "team_pair_clusters": 128,
+    "outcome_repeats_per_cluster": 2,
+    "games_per_arm": 512,
     "side_swapped": true,
-    "baseline_score_pct": 36.62109375,
-    "intervention_score_pct": 45.01953125,
-    "paired_delta_pp": 8.3984375,
+    "baseline_score_pct": 42.578125,
+    "intervention_score_pct": 52.34375,
+    "paired_delta_pp": 9.765625,
     "paired_cluster_bootstrap_95_pp": [
-      4.296875,
-      12.59765625
+      2.734375,
+      16.796875
     ],
-    "action_overrides": 5076,
-    "errors": 0,
-    "matches_per_second": 5.67,
-    "source_artifact": "training/outputs/phase12_headless/round430_opening5_maxdamage_intervention_512x1_20261030/report.json"
+    "bootstrap_seed": 2026103066,
+    "same_team_preview_battle_seed_control_verified": true,
+    "timeouts_or_errors": 0,
+    "action_adjustments": 0,
+    "baseline_artifact": "training/outputs/phase12_headless/round430_vs_round464_common_selector_128x2_20261030/paired_summary.json",
+    "intervention_artifact": "training/outputs/phase12_headless/round430_opening0to4_maxdamage_intervention_vs_round464_128x2_seed2026103066/paired_summary.json"
   },
-  "public_counterplay": {
-    "clusters": 512,
-    "side_swapped": false,
-    "policy_seat": "Player 1",
-    "decision_indices_overridden": [
-      0,
-      1,
-      2,
-      3,
-      4
-    ],
-    "baseline_score_pct": 42.96875,
-    "intervention_score_pct": 53.515625,
-    "paired_delta_pp": 10.546875,
+  "round464_pooled_across_seed_sets": {
+    "team_pair_clusters": 640,
+    "baseline_score_pct": 50.15625,
+    "intervention_score_pct": 58.90625,
+    "paired_delta_pp": 8.75,
     "paired_cluster_bootstrap_95_pp": [
-      5.6640625,
-      15.234375
+      5.1953125,
+      12.34375
     ],
-    "decision_zero_reached_clusters": 512,
-    "action_fallbacks": 0,
-    "matches_per_second": 6.89,
-    "source_artifact": "training/outputs/phase12_headless/round430_opening0to4_maxdamage_intervention_vs_public_counterplay_512x1_20261030/evaluation/paired_summary.json"
+    "bootstrap_seed": 2026103070
   },
-  "interpretation": "The intervention improves both paired samples, but seat setup differs: Max Damage is side-swapped; Public Counterplay is fixed-seat. The opponent actions are supplied by the heuristic and are not learned policy outputs. Validate with seat-swapped and independent-seed evaluations before using this to justify policy changes."
+  "historical_context": "Earlier Round173 first-five Max Damage hybrid experiments sometimes regressed against learned PPO opponents. This evidence is checkpoint-specific to Round430 vs Round464 and the tested team prior; retain raw and hybrid controls.",
+  "limitations": "This is an intervention that substitutes public Max Damage actions for the policy at decision indices 0\u20134. It does not show that PPO learned those choices or establish robustness to all legal teams and policies.",
+  "source_artifact": "training/outputs/phase12_headless/round430_first5_maxdamage_intervention_three_opponent_commonseed_512_20261030/report.json"
 }
