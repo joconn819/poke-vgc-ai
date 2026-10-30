@@ -230,7 +230,7 @@
     "games_per_second": "16.49",
     "context": "Round430 20,000-game complete training iteration including rollout and PPO preparation/optimization; Round435 full aggregate rollout telemetry was not captured. Not raw simulator speed.",
     "decision_latency": "~85 ms action selection per policy-pool match",
-    "current_bottleneck": "Round460 reduced a matched PPO-only update to 152.46 s from 227.17 s (32.9%) by disabling cyclic GC around the update; sample preparation fell to 87.25 s from 162.08 s (46.2%). All 28 numeric metrics and 82 model tensors remained bit-identical; peak RSS was 7.32 GiB. This is one PPO-only run, not a rollout-inclusive speed measurement. Complete-iteration throughput remains 16.49 games/s (Round430). Current preparation costs: transition extraction 27.26 s, model-input building 20.46 s, and load/parse/validation 20.24 s; PPO optimization takes about 52 s.",
+    "current_bottleneck": "Two matched GC-disabled PPO-only replays averaged 151.56 s wall time (150.66–152.46), 33.3% below Round458’s 227.17 s; sample preparation averaged 86.35 s (85.45–87.25), 46.7% below 162.08 s. All 28 numeric metrics and all 82 model tensors matched exactly in both runs; peak RSS was 7.32 GiB. The CLI now disables cyclic GC during PPO updates by default and restores it afterward, with --enable-gc-during-ppo-update as an opt-out. This is not a rollout-inclusive speed result: complete-iteration throughput remains 16.49 games/s. Current preparation stages average about 27.2 s for transition extraction, 20.4 s for model-input building, and 19.7 s for record load/parse/validation; PPO optimization is about 52 s.",
     "gpu_status": "RTX 4060 used for PPO optimization; rollout inference and Showdown simulation remain CPU-side",
     "profile_context": "Round430 remains the latest complete end-to-end 20,000-game profile: eight-worker rollout 22.55 games/s and full iteration 16.49 games/s. Round435 offers newer per-shard timings but no valid aggregate rate after preflight recovery. Per-opponent shard rates are not aggregate rates. Action selection contains policy inference; Public Counterplay scoring is nested inside action selection.",
     "active_training_profile": {
@@ -718,16 +718,16 @@
       "full_update_wall_seconds": 152.46,
       "round458_sample_preparation_seconds": 162.07568677299423,
       "round458_full_update_wall_seconds": 227.17013671601308,
-      "sample_preparation_reduction_pct": 46.17,
-      "full_update_wall_reduction_pct": 32.89,
-      "update_only_outcomes_per_second": 131.18,
+      "sample_preparation_reduction_pct": 46.72,
+      "full_update_wall_reduction_pct": 33.28,
+      "update_only_outcomes_per_second": 131.9609395618897,
       "peak_rss_gib": 7.32,
       "numeric_metrics_exact": true,
       "numeric_metrics_count": 28,
       "checkpoint_tensors_bit_identical": true,
       "checkpoint_tensor_count": 82,
-      "status": "Promising single matched PPO-only run; opt-in mode, pending repeat and rollout-inclusive benchmark.",
-      "finding": "Disabling cyclic GC for the whole PPO update reduced sample preparation by 46.2% and full update wall time by 32.9%, with exact metric/checkpoint parity. Peak RSS was 7.32 GiB. The complete-iteration rate remains 16.49 games/s because no rollout was included.",
+      "status": "Two matched PPO-only runs reproduced the speed and exact parity; GC suppression is now default in the local CLI. Rollout-inclusive throughput remains unmeasured.",
+      "finding": "Across two matched GC-disabled PPO-only runs, mean wall time was 151.56 s (150.66–152.46) vs 227.17 s in Round458; mean preparation was 86.35 s (85.45–87.25) vs 162.08 s. Both runs matched all 28 numeric metrics and 82 tensors; peak RSS was about 7.32 GiB.",
       "rejected_round459": "Disabling GC only during per-chunk record loading reduced the loader timer but total preparation increased to 171.74 s; GC work shifted into later feature-building stages.",
       "next_bottlenecks": [
         {
@@ -747,13 +747,25 @@
           "detail": "Repeat the GC-off PPO update and benchmark rollout plus PPO with peak memory before enabling it by default or revising complete-iteration throughput."
         }
       ],
-      "report": "round460_gc_profile.json"
+      "report": "round460_gc_profile.json",
+      "mean_sample_preparation_seconds": 86.35088629400707,
+      "sample_preparation_range_seconds": [
+        85.45305395900505,
+        87.24871862900909
+      ],
+      "mean_full_update_wall_seconds": 151.56,
+      "full_update_wall_range_seconds": [
+        150.66,
+        152.46
+      ],
+      "mean_peak_rss_gib": 7.317848205566406,
+      "repeated_run_report": "round461_gc_repeat.json"
     }
   },
   "latest_run": {
-    "round": 460,
-    "status": "matched PPO-only speed replay · exact outputs · experimental GC mode",
-    "summary": "Round460 disabled cyclic GC around the whole PPO update on the exact audited Round447 dataset/config. Sample preparation fell 46.2% (162.08 to 87.25 s), and full PPO-only wall time fell 32.9% (227.17 to 152.46 s). All 28 numeric metrics and 82 checkpoint tensors were identical; peak RSS was 7.32 GiB. Round459 per-chunk GC suppression was slower and rejected. Round460 omits rollouts; complete-iteration throughput remains 16.49 games/s.",
+    "round": 461,
+    "status": "repeated matched PPO speed replay · exact outputs · GC disabled by default",
+    "summary": "Rounds460–461 repeated the matched 20,000-game PPO-only update with GC disabled for the whole update. Mean wall time was 151.56 s (range 150.66–152.46), 33.3% below Round458; mean sample preparation was 86.35 s (range 85.45–87.25), 46.7% lower. All 28 metrics and 82 tensors matched exactly in both runs; peak RSS was 7.32 GiB. The CLI now uses this mode by default with an opt-out. Rollouts were omitted, so complete-iteration games/sec remains 16.49.",
     "games": "20,000 outcomes",
     "epochs": "1,272 optimizer steps",
     "evaluation": "Exact replay parity; strength unchanged"
@@ -761,5 +773,5 @@
   "method": "Native self-play PPO for in-battle decisions. Terminal win/loss remains the main objective; win-probability and hidden-set prediction are auxiliary tasks. Search comes after a stronger policy.",
   "jax_decision": "Round430 has a confirmed self-play head-to-head lift over Round424, but external-opponent screens remain inconclusive. Prioritize measured inference batching, observation throughput, and rollouts; keep equilibrium-oriented opponent coverage and defer a JAX/GPU engine rewrite until its end-to-end payoff is measured.",
   "evaluation_note": "Score rates include wins and half credit for draws. Use paired held-out teams, side swaps, repeated outcomes, and cluster intervals. Track results across public counterplay, random, historical PPO, and Max Damage; no one matchup percentage is the finish line. Round431's equal-weight four-opponent mean was 59.86%, but the median was 48.05%, p10 47.30%, and worst score 47.07%; the mean is lifted by random play. All paired differences vs Round430 included zero.",
-  "generated_at": "2026-10-30 16:39 UTC"
+  "generated_at": "2026-10-30 16:44 UTC"
 }

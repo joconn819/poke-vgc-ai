@@ -81,7 +81,7 @@
     "round458_sample_preparation_seconds": 162.07568677299423,
     "finding": "Rejected: per-chunk GC suppression shifted collection costs into extraction, model-input building, and packaging; total preparation was 6.0% slower than Round458."
   },
-  "finding": "Disabling cyclic GC for the full PPO update reduced matched PPO-only wall time by 32.9% and sample preparation by 46.2%, with exact parity across 28 numeric training metrics and all 82 model tensors. Peak RSS was 7.67 GiB. This remains a single measured run; rollout generation was not included, so complete-iteration throughput remains 16.49 games/s from Round430.",
+  "finding": "Across two matched GC-disabled PPO-only runs, mean wall time was 151.56 s (150.66\u2013152.46) versus Round458\u2019s 227.17 s; mean sample preparation was 86.35 s (85.45\u201387.25) versus 162.08 s. Both runs matched all 28 numeric metrics and all 82 checkpoint tensors; peak RSS was about 7.32 GiB. Cyclic GC is now disabled by default around CLI PPO updates and restored afterward. Full rollout-plus-update throughput remains to be measured.",
   "limitations": "Single run of the new GC mode. Needs a repeated matched replay and a complete rollout-plus-PPO measurement before default adoption. Strength is unchanged because the trained checkpoint is bit-identical.",
   "next_bottlenecks": [
     "transition_extraction",
@@ -94,5 +94,53 @@
     "training/outputs/phase12_headless/round460_gc_disabled_update_20261030/telemetry.jsonl",
     "training/outputs/phase12_headless/round460_gc_disabled_update_20261030/time.log",
     "training/outputs/phase12_headless/round460_gc_disabled_update_20261030/checkpoints/update_000001.pt"
-  ]
+  ],
+  "repeat_run": {
+    "round": 461,
+    "date": "2026-10-30",
+    "benchmark": "Repeat matched PPO update with cyclic GC disabled for the entire update",
+    "audit_sha256": "d74fbedf4d2b801885e228a221fc4fb513f5459f551a3318c2a6c9f3cdf3bd54",
+    "trainable_games": 20000,
+    "valid_records": 28000,
+    "transitions": 162366,
+    "optimizer_steps": 1272,
+    "seed": 20261046,
+    "initial_checkpoint": "Round435 start_round_0001.pt",
+    "sample_preparation_seconds": 85.45305395900505,
+    "full_update_wall_seconds": 150.66,
+    "peak_rss_kib": 7673696,
+    "peak_rss_gib": 7.318206787109375,
+    "numeric_metrics_exact": true,
+    "numeric_metrics_compared": 28,
+    "checkpoint_tensors_bit_identical": true,
+    "checkpoint_tensor_count": 82,
+    "comparison_round460": {
+      "sample_preparation_seconds": 87.24871862900909,
+      "full_update_wall_seconds": 152.46,
+      "peak_rss_gib": 7.3174896240234375
+    },
+    "finding": "The repeat reproduced Round460 closely. Preparation took 85.45 s vs 87.25 s; PPO-only wall time was 150.66 s vs 152.46 s; peak RSS was 7.32 GiB in both. All 28 numeric metrics and 82 tensors matched Round447 exactly.",
+    "limitations": "Matched PPO update only; no rollout generation. Complete iteration throughput remains unmeasured for this mode.",
+    "artifacts": [
+      "training/outputs/phase12_headless/round461_gc_disabled_repeat_20261030/stdout.log",
+      "training/outputs/phase12_headless/round461_gc_disabled_repeat_20261030/telemetry.jsonl",
+      "training/outputs/phase12_headless/round461_gc_disabled_repeat_20261030/time.log",
+      "training/outputs/phase12_headless/round461_gc_disabled_repeat_20261030/checkpoints/update_000001.pt"
+    ]
+  },
+  "two_run_summary": {
+    "mean_sample_preparation_seconds": 86.35088629400707,
+    "sample_preparation_range_seconds": [
+      85.45305395900505,
+      87.24871862900909
+    ],
+    "mean_full_update_wall_seconds": 151.56,
+    "full_update_wall_range_seconds": [
+      150.66,
+      152.46
+    ],
+    "mean_peak_rss_gib": 7.317848205566406,
+    "sample_preparation_reduction_vs_round458_pct": 46.72187543159914,
+    "full_update_wall_reduction_vs_round458_pct": 33.2834842682398
+  }
 }
