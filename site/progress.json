@@ -6,19 +6,21 @@
     "summary": "The long-term goal is approximate optimal / equilibrium-oriented play in the closed-team-sheet VGC game. Measure progress across held-out teams and a varied opponent set; report average, lower-percentile, and worst-case results. No single opponent or fixed win-rate threshold defines completion."
   },
   "candidate": {
-    "round": 402,
-    "win_rate_pct": 77.15,
-    "ci95": "[74.90%, 79.35%]",
-    "games": 2048,
-    "status": "Best confirmed Max Damage reference"
+    "round": 430,
+    "win_rate_pct": 55.32,
+    "ci95": "[51.86%, 58.79%]",
+    "games": "2,042",
+    "label": "Current in-battle policy vs Round424 start",
+    "status": "Confirmed self-play lift \u00b7 external-opponent screens inconclusive",
+    "note": "Round402's 77.15% result is a separate team-preview selector benchmark, not the current in-battle policy's overall win rate."
   },
   "evaluation_scorecard": [
     {
-      "opponent": "Max Damage \u00b7 reference Round402",
+      "opponent": "Team preview benchmark \u00b7 Round402 selector",
       "score": "77.15%",
       "games": "2,048",
       "interval": "[74.90%, 79.35%]",
-      "status": "Confirmed reference"
+      "status": "Team-selection benchmark; separate from in-battle policy strength"
     },
     {
       "opponent": "Max Damage \u00b7 Round430",
@@ -50,10 +52,10 @@
     },
     {
       "opponent": "Round424 starting policy \u00b7 Round430",
-      "score": "53.52%",
-      "games": "512",
-      "interval": "[46.68%, 60.35%]",
-      "status": "Round430 vs start \u00b7 128 clusters \u00b7 0 errors"
+      "score": "55.32%",
+      "games": "2,042",
+      "interval": "[51.86%, 58.79%]",
+      "status": "Round430 vs start \u00b7 512 clusters \u00b7 3 incomplete repeats \u00b7 0 corrections"
     },
     {
       "opponent": "Max Damage \u00b7 Round424 candidate",
@@ -336,14 +338,14 @@
   },
   "latest_run": {
     "round": 430,
-    "status": "completed \u00b7 held-out evaluation complete",
+    "status": "current candidate \u00b7 self-play lift confirmed",
     "summary": "Hard-opponent self-play PPO from Round424: 30% Max Damage, 30% public Counterplay, 40% policy pool, no random-play share. 20,000 games produced 163,224 transitions; preflight had no errors.",
     "games": "20,000",
     "epochs": "4 PPO passes \u00b7 1,276 optimizer steps",
-    "evaluation": "Not promoted; hard-opponent screens remain inconclusive at 512 games each."
+    "evaluation": "55.32% vs Round424 over 512 clusters (95% CI 51.86%-58.79%); Max Damage, public Counterplay, and Round102 screens remain inconclusive."
   },
   "method": "Native self-play PPO for in-battle decisions. Terminal win/loss remains the main objective; win-probability and hidden-set prediction are auxiliary tasks. Search comes after a stronger policy.",
-  "jax_decision": "Round430 did not establish a strength improvement. Prioritize measured inference batching, observation throughput, and rollouts; keep equilibrium-oriented opponent coverage and defer a JAX/GPU engine rewrite until its end-to-end payoff is measured.",
+  "jax_decision": "Round430 has a confirmed self-play head-to-head lift over Round424, but external-opponent screens remain inconclusive. Prioritize measured inference batching, observation throughput, and rollouts; keep equilibrium-oriented opponent coverage and defer a JAX/GPU engine rewrite until its end-to-end payoff is measured.",
   "evaluation_note": "Score rates include wins and half credit for draws. Use paired held-out teams, side swaps, repeated outcomes, and cluster intervals. Track results across public counterplay, random, historical PPO, and Max Damage; no one matchup percentage is the finish line.",
-  "generated_at": "2026-10-30 10:24 UTC"
+  "generated_at": "2026-10-30 10:40 UTC"
 }

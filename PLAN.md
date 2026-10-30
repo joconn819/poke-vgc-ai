@@ -10,8 +10,12 @@ dated entries remain the experiment ledger. Direct-policy self-play PPO with
 auxiliary win-probability and hidden-set prediction is active. Round424's
 multi-opponent screen showed no clear improvement, so the checkpoint was not
 promoted. Round430 completed a 20,000-game stronger-opponent iteration, but its
-512-game screens do not establish an improvement over its Round424 start or
-support promotion. Search remains conditional on a stronger base policy.
+512-game screens did not resolve its external-opponent strength. A fresh
+512-cluster side-swapped confirmation now shows a significant self-play lift
+over Round424, so Round430 is the current in-battle continuation candidate:
+55.32% cluster-weighted score (95% CI [51.86%, 58.79%]) across 512 clusters.
+This head-to-head result alone does not establish robust strength against
+external policies. Search remains conditional on stronger held-out performance.
 Preserve existing workspace changes while implementing and evaluating this
 direction.
 
@@ -111,6 +115,22 @@ percentage alone.
   These are early screening estimates; the hard-opponent intervals include
   50%, so Round430 is not promoted. Raw reports are under the Round430 output
   directory in its `eval_*_128x2` folders.
+- **Round430 fresh confirmation vs Round424 (2026-10-30):** a new side-swapped
+  evaluation used 512 held-out team clusters, two repeated outcomes per
+  cluster, and 2,048 scheduled games, with the same Round402 preview selector
+  used in the earlier Round430 screens. Round430 scored 55.34% over the 2,042
+  games in 1,021 complete paired repeats; the cluster-weighted score was
+  55.32%, with a seeded 10,000-resample 95% cluster-bootstrap interval of
+  [51.86%, 58.79%]. This is a +5.32 pp lift over Round424 and the interval
+  excludes 50%, confirming a self-play head-to-head improvement. Three paired
+  repeat cases were incomplete due to timeouts/errors, and zero actions were
+  corrected. This does not establish superiority against
+  external policies: Round430's separate 128-cluster screens against Max
+  Damage, public Counterplay, and Round102 still include 50%. Keep Round430 as
+  the continuation candidate, but require larger multi-opponent evaluation
+  before broader promotion. Report:
+  `training/outputs/phase12_headless/round430_vs_round424_fresh_confirm_512x2_20261030/paired_summary.json`; reproducible cluster aggregation:
+  `training/outputs/phase12_headless/round430_vs_round424_fresh_confirm_512x2_20261030/cluster_analysis.json`.
 - **Fresh Round430 component profile:** per-match end-to-end means were 134.4
   ms vs Max Damage, 359.5 ms vs public Counterplay, and 193.5 ms vs the policy
   pool. Engine roundtrip means were 29.1, 27.9, and 33.9 ms, respectively
