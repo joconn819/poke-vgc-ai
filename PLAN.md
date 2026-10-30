@@ -15025,17 +15025,20 @@ team choice but does not change that conclusion.
   (roughly 8-24% of end-to-end time depending on opponent), so optimizing the
   remaining time has more value than a simulator-only GPU port.
 - Ranked speed work:
-  1. Profile and accelerate Public Counterplay candidate scoring; cache static
-     move/type data and batch score features while retaining switches, Protect,
-     setup and defensive responses. Recheck score parity and decision quality.
-  2. Benchmark batched policy inference across concurrently waiting rollouts.
-     Current PPO optimization uses CUDA, while rollout workers infer on CPU;
-     compare a shared GPU inference queue against CPU at real batch sizes,
-     including queue, transfer and action-latency costs.
-  3. Cache and fuse observation features / static lookups, then benchmark
-     direct compact-array encoding. Keep the player-view leakage audit.
-  4. Benchmark 8, 12, and 16 rollout workers with CPU math-library threads
-     capped; compare games/s, memory, and tail decision latency.
+  1. Batch policy inference across decisions from concurrent live rollouts.
+     Rollout workers currently infer independently on CPU; compare CPU batches
+     with a shared GPU inference service at actual batch sizes, including
+     queue/transfer time, games/s, and p95 action latency.
+  2. Cache and fuse observation features / static lookups, then benchmark
+     precomputed team features and reusable compact-array buffers. Keep the
+     player-view leakage audit.
+  3. Keep more independent matches in flight and benchmark 8, 12, and 16
+     workers with CPU math-library threads capped; compare aggregate games/s,
+     memory, and tail decision latency.
+  4. Profile and accelerate Public Counterplay candidate scoring; its scorer
+     accounts for 228 ms/match in that workload. Cache static move/type data
+     and batch score features while retaining switches, Protect, setup, and
+     defensive responses. Recheck score parity and decision quality.
   5. After higher-cost work, benchmark buffered compact trajectory writes or
      chunk compression; the run stored about 1.8 GB and used 7-12 ms/match in
      writes.

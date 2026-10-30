@@ -111,20 +111,20 @@
     ],
     "opportunities": [
       {
-        "title": "1 \u00b7 Reduce counterplay scorer cost",
-        "detail": "Its baseline scorer used about 228 ms per match (66% of end-to-end time) and the class ran at 2.89 games/s. Profile its inner loops, cache invariant move/type data, and batch score calculations while preserving candidate diversity."
+        "title": "1 \u00b7 Batch policy inference across live rollouts",
+        "detail": "Historical-policy rollouts spent about 72 ms/match in inference. Workers currently infer independently on CPU. Gather ready decisions from concurrent matches into a shared batch, then compare CPU batching with a single GPU inference service at observed batch sizes. Measure games/s, queue delay, and p95 decision latency before adopting it."
       },
       {
-        "title": "2 \u00b7 Batch policy inference across games",
-        "detail": "Historical-policy rollouts spent about 72 ms/match in inference. Rollout workers currently infer independently on CPU. Benchmark a shared batched inference queue on GPU against CPU at the actual batch sizes, measuring both throughput and action latency."
+        "title": "2 \u00b7 Reduce observation encoding work",
+        "detail": "Encoding used about 22\u201329 ms/match. Precompute static dex/team features, cache repeated derived values, and reuse compact numeric buffers across decisions. Profile each stage and retain the closed-team-sheet leakage audit."
       },
       {
-        "title": "3 \u00b7 Reduce observation encoding work",
-        "detail": "Encoding used about 22\u201329 ms/match. Cache static dex lookups and repeated derived features; encode directly into compact arrays. Keep the closed-team-sheet observation audit in the loop."
+        "title": "3 \u00b7 Batch rollouts and tune worker count",
+        "detail": "Keep multiple independent battles in flight and batch their policy requests to reduce per-match overhead. Then benchmark 8, 12, and 16 workers on the 16-logical-CPU host with math-library threads capped; track aggregate games/s, memory, and tail latency."
       },
       {
-        "title": "4 \u00b7 Tune rollout worker count",
-        "detail": "Round424 used 8 workers on a 16-logical-CPU host. Benchmark 8, 12, and 16 workers with framework thread counts capped; track games/s, memory, and tail latency."
+        "title": "4 \u00b7 Reduce counterplay scorer cost",
+        "detail": "The Public Counterplay scorer used about 228 ms/match (66% of its end-to-end time); this is a major workload-specific hotspot. Cache invariant move/type data and batch score features while preserving switches, Protect, setup, and defensive responses."
       },
       {
         "title": "5 \u00b7 Trim trajectory persistence",
@@ -134,11 +134,36 @@
     "jax_decision": "Showdown engine roundtrips were 27\u201334 ms per match in this profile (8\u201324% of end-to-end episode time by opponent class). A simulator-only port has a limited Amdahl ceiling, before state-transfer overhead. Keep the existing engine as the correctness reference; reconsider a JAX/GPU simulator only if an end-to-end prototype proves a substantial gain.",
     "remaining_summary": "For the historical-policy pool, Showdown used 34 ms of 193 ms per match (~18%); the remaining ~82% is about 159 ms. It breaks down as 84 ms action selection (53% of the remainder, including 72 ms inference), 27 ms observation encoding (17%), 12 ms trajectory writes (8%), 12 ms setup (8%), and about 22 ms other overhead (14%). For public counterplay, the engine used only 27 ms of 344 ms (~8%); its scorer alone used 228 ms.",
     "remaining_components": [
-      {"component": "Action selection", "ms": "84", "share": "53%", "note": "Includes 72 ms policy inference; do not add inference again."},
-      {"component": "Observation encoding", "ms": "27", "share": "17%", "note": "Repeated feature and static lookup work."},
-      {"component": "Trajectory writes", "ms": "12", "share": "8%", "note": "Per-match persistence overhead."},
-      {"component": "Match setup", "ms": "12", "share": "8%", "note": "Team and battle initialization."},
-      {"component": "Other overhead", "ms": "22", "share": "14%", "note": "Remaining measured episode time after named stages."}
+      {
+        "component": "Action selection",
+        "ms": "84",
+        "share": "53%",
+        "note": "Includes 72 ms policy inference; do not add inference again."
+      },
+      {
+        "component": "Observation encoding",
+        "ms": "27",
+        "share": "17%",
+        "note": "Repeated feature and static lookup work."
+      },
+      {
+        "component": "Trajectory writes",
+        "ms": "12",
+        "share": "8%",
+        "note": "Per-match persistence overhead."
+      },
+      {
+        "component": "Match setup",
+        "ms": "12",
+        "share": "8%",
+        "note": "Team and battle initialization."
+      },
+      {
+        "component": "Other overhead",
+        "ms": "22",
+        "share": "14%",
+        "note": "Remaining measured episode time after named stages."
+      }
     ]
   },
   "latest_run": {

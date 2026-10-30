@@ -111,20 +111,20 @@
     ],
     "opportunities": [
       {
-        "title": "1 \u00b7 Reduce counterplay scorer cost",
-        "detail": "Its baseline scorer used about 228 ms per match (66% of end-to-end time) and the class ran at 2.89 games/s. Profile its inner loops, cache invariant move/type data, and batch score calculations while preserving candidate diversity."
+        "title": "1 \u00b7 Batch policy inference across live rollouts",
+        "detail": "Historical-policy rollouts spent about 72 ms/match in inference. Workers currently infer independently on CPU. Gather ready decisions from concurrent matches into a shared batch, then compare CPU batching with a single GPU inference service at observed batch sizes. Measure games/s, queue delay, and p95 decision latency before adopting it."
       },
       {
-        "title": "2 \u00b7 Batch policy inference across games",
-        "detail": "Historical-policy rollouts spent about 72 ms/match in inference. Rollout workers currently infer independently on CPU. Benchmark a shared batched inference queue on GPU against CPU at the actual batch sizes, measuring both throughput and action latency."
+        "title": "2 \u00b7 Reduce observation encoding work",
+        "detail": "Encoding used about 22\u201329 ms/match. Precompute static dex/team features, cache repeated derived values, and reuse compact numeric buffers across decisions. Profile each stage and retain the closed-team-sheet leakage audit."
       },
       {
-        "title": "3 \u00b7 Reduce observation encoding work",
-        "detail": "Encoding used about 22\u201329 ms/match. Cache static dex lookups and repeated derived features; encode directly into compact arrays. Keep the closed-team-sheet observation audit in the loop."
+        "title": "3 \u00b7 Batch rollouts and tune worker count",
+        "detail": "Keep multiple independent battles in flight and batch their policy requests to reduce per-match overhead. Then benchmark 8, 12, and 16 workers on the 16-logical-CPU host with math-library threads capped; track aggregate games/s, memory, and tail latency."
       },
       {
-        "title": "4 \u00b7 Tune rollout worker count",
-        "detail": "Round424 used 8 workers on a 16-logical-CPU host. Benchmark 8, 12, and 16 workers with framework thread counts capped; track games/s, memory, and tail latency."
+        "title": "4 \u00b7 Reduce counterplay scorer cost",
+        "detail": "The Public Counterplay scorer used about 228 ms/match (66% of its end-to-end time); this is a major workload-specific hotspot. Cache invariant move/type data and batch score features while preserving switches, Protect, setup, and defensive responses."
       },
       {
         "title": "5 \u00b7 Trim trajectory persistence",
@@ -177,5 +177,5 @@
   "method": "Native self-play PPO for in-battle decisions. Terminal win/loss remains the main objective; win-probability and hidden-set prediction are auxiliary tasks. Search comes after a stronger policy.",
   "jax_decision": "The current measured bottleneck lies outside the Showdown engine: counterplay scoring, policy inference, and observation encoding. The website profiles these paths and lists the next benchmarkable improvements.",
   "evaluation_note": "Score rates include wins and half credit for draws. Use paired held-out teams, side swaps, repeated outcomes, and cluster intervals. Track results across public counterplay, random, historical PPO, and Max Damage; no one matchup percentage is the finish line.",
-  "generated_at": "2026-10-30 09:27 UTC"
+  "generated_at": "2026-10-30 09:29 UTC"
 }
