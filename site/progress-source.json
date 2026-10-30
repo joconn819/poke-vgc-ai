@@ -980,7 +980,24 @@
         }
       ],
       "report": "round463_full_iteration_profile.json",
-      "summary": "Round463: 20,000 audited games from Round462; 35.06 aggregate rollout games/s and 24.88 end-to-end games/s in one run. PPO took 152.9 s (88.0 s preparation). Held-out paired evaluation is in progress; Round430 remains the validated candidate."
+      "summary": "Round463: 20,000 audited games from Round462; 35.06 aggregate rollout games/s and 24.88 end-to-end games/s in one run. PPO took 152.9 s (88.0 s preparation). Held-out paired evaluation is in progress; Round430 remains the validated candidate.",
+      "iteration_stages": [
+        {
+          "stage": "Rollout generation",
+          "seconds": "570.5",
+          "share": "71.0%"
+        },
+        {
+          "stage": "PPO update",
+          "seconds": "152.9",
+          "share": "19.0%"
+        },
+        {
+          "stage": "Audit, setup, and remaining orchestration",
+          "seconds": "80.5",
+          "share": "10.0%"
+        }
+      ]
     }
   },
   "latest_run": {
