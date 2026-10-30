@@ -131,6 +131,24 @@ percentage alone.
   batching inference/features across the existing workers, not increasing
   worker count. Report:
   `training/outputs/phase12_headless/round430_scaling_benchmark_240_20261030/scaling_report.json`.
+- **Round430 policy batching benchmark (2026-10-30):** measured 256
+  perspective-safe states from actual rollout records with the Round430 model,
+  one CPU thread, 5 warmup batches, and 30 timed repeats. Public observation
+  and model-input construction averaged 0.422 ms/state; recomputing native
+  action features averaged 0.412 ms/state. For inference plus device transfer,
+  CPU reached 2,624 states/s at batch 8 and 3,760 at batch 32 (including
+  separate collation); CUDA reached 2,712 at batch 8 and 9,882 at batch 32.
+  Thus CUDA is only marginally faster at batch 8 and substantially faster at
+  batches 16–32, before queue wait. At batch 16, CUDA reached 5,209 states/s
+  versus CPU 3,392; at batch 32, 9,882 versus 3,760. These are isolated
+  model-forward measurements, not rollout throughput; queueing, live feature
+  extraction, and inference-service overhead are excluded. With eight workers
+  and one decision per live game, the attainable batch may be too small for a
+  major GPU gain. Keep CPU batching as the initial target; investigate
+  multi-game in-flight scheduling across existing workers before building a
+  shared GPU service. Reproduce with
+  `scripts/benchmark_policy_inference_batching.py`; raw report:
+  `training/outputs/phase12_headless/round430_policy_inference_batching_20261030/report.json`.
 - **Progress site:** `site/index.html` presents held-out results, the current
   speed snapshot, and training status. `.github/workflows/pages.yml` rebuilds
   its JSON from this plan and deploys through GitHub Pages on pushes to `main`.
