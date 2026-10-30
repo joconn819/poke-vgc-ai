@@ -19,5 +19,25 @@
   "conclusion": "Suggestive but inconclusive. This is a single-opponent intervention diagnostic, not a robust policy improvement. No checkpoint or default move selection changed; the PPO win-probability head remains auxiliary and is not used to rank actions.",
   "control_summary": "round465_opening_override_fullmatch_maxdamage_control_256x2_20261030_retry1/paired_summary.json",
   "candidate_summary": "round465_opening_override_fullmatch_maxdamage_candidate_256x2_20261030/paired_summary.json",
-  "paired_comparison": "round465_opening_override_fullmatch_maxdamage_comparison_256x2_20261030.json"
+  "paired_comparison": "round465_opening_override_fullmatch_maxdamage_comparison_256x2_20261030.json",
+  "additional_opponent": {
+    "opponent": "public_counterplay",
+    "matched_team_pair_clusters": 256,
+    "matched_case_repeats": 511,
+    "control_completed_matches": 1022,
+    "candidate_completed_matches": 1024,
+    "control_timeouts_or_errors": 1,
+    "candidate_timeouts_or_errors": 0,
+    "control_score_rate": 0.451171875,
+    "first_action_override_score_rate": 0.451171875,
+    "paired_difference_percentage_points": 0.0,
+    "paired_cluster_bootstrap_95_interval_percentage_points": [-3.80859375, 3.90625],
+    "clusters_override_better": 53,
+    "clusters_control_better": 61,
+    "clusters_tied": 142,
+    "control_summary": "round465_opening_override_fullmatch_public_counterplay_control_256x2_20261030/paired_summary.json",
+    "candidate_summary": "round465_opening_override_fullmatch_public_counterplay_candidate_256x2_20261030/paired_summary.json",
+    "paired_comparison": "round465_opening_override_fullmatch_public_counterplay_comparison_256x2_20261030.json"
+  },
+  "overall_conclusion": "No broad benefit has been demonstrated. Max Damage's +3.13 pp effect was inconclusive; Public Counterplay's paired effect was 0.00 pp with an interval spanning roughly ±4 pp. PPO logits remain the default action selector."
 }
