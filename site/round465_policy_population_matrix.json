@@ -1,62 +1,87 @@
 {
-  "title": "Three-checkpoint restricted population matrix",
+  "title": "Matched three-checkpoint PPO payoff matrix",
   "format": "gen9championsdoubles2026mcclosed",
-  "method": "Local Showdown full matches, side-swapped paired evaluation, generated teams from each checkpoint's saved preview selector, two outcomes per team-pair cluster. Each off-diagonal cell was bootstrap-resampled by team-seed cluster. Diagonal 50% entries are symmetry assumptions, not self-play measurements.",
-  "policies": [
-    "Round430",
-    "Round464",
-    "Round465"
+  "method": "All three matchups used the same Round402 team-preview selector and identical generated team seeds/previews within each seed set. The primary fresh set had 512 team-pair clusters and one side-swapped repeat (1,024 matches per edge); an independent earlier set had 128 clusters and two repeats. Showdown battle RNG is server-side, so the same teams/previews do not guarantee identical random battle outcomes.",
+  "policies": ["Round430", "Round464", "Round465"],
+  "shared_selector": "training/outputs/phase12_headless/round402_selector_currentdata_8ep_20261030/selector_candidate.pt",
+  "team_seed_sets": [
+    {
+      "seed": 2026103066,
+      "clusters_per_edge": 128,
+      "outcome_repeats_per_cluster": 2,
+      "purpose": "independent pilot set; results showed substantial seed-set variation"
+    },
+    {
+      "seed": 2026103067,
+      "clusters_per_edge": 512,
+      "outcome_repeats_per_cluster": 1,
+      "purpose": "larger fresh common-seed matrix"
+    }
   ],
+  "combined_team_clusters_per_edge": 640,
   "payoff_matrix_mean_score": [
-    [0.5, 0.5498046875, 0.548828125],
-    [0.4501953125, 0.5, 0.5400390625],
-    [0.451171875, 0.4599609375, 0.5]
+    [0.5, 0.5015625, 0.4921875],
+    [0.4984375, 0.5, 0.495703125],
+    [0.5078125, 0.504296875, 0.5]
   ],
-  "cells": [
+  "off_diagonal_cells": [
     {
       "row": "Round430",
       "column": "Round464",
-      "score": 0.5498046875,
-      "cluster_bootstrap_95_interval": [0.5009765625, 0.59765625],
-      "clusters": 256,
-      "matches": 1024,
-      "timeouts_or_errors": 0,
-      "local_run_artifact": "training/outputs/phase12_headless/round430_vs_round464_crossplay_256x2_20261030/paired_summary.json"
+      "score": 0.5015625,
+      "cluster_bootstrap_95_interval": [0.46796875, 0.535546875],
+      "clusters": 640,
+      "sets": [
+        {"seed": 2026103066, "clusters": 128, "score": 0.42578125},
+        {"seed": 2026103067, "clusters": 512, "score": 0.5205078125}
+      ],
+      "artifacts": [
+        "training/outputs/phase12_headless/round430_vs_round464_common_selector_128x2_20261030/paired_summary.json",
+        "training/outputs/phase12_headless/round430_vs_round464_common_selector_512x1_20261030/paired_summary.json"
+      ]
     },
     {
       "row": "Round465",
       "column": "Round430",
-      "score": 0.451171875,
-      "cluster_bootstrap_95_interval": [0.380859375, 0.5234375],
-      "clusters": 128,
-      "matches": 510,
-      "timeouts_or_errors": 1,
-      "local_run_artifact": "training/outputs/phase12_headless/round465_opening_override_fullmatch_round430_control_128x2_20261030/paired_summary.json"
+      "score": 0.5078125,
+      "cluster_bootstrap_95_interval": [0.4734375, 0.54140625],
+      "clusters": 640,
+      "sets": [
+        {"seed": 2026103066, "clusters": 128, "score": 0.453125},
+        {"seed": 2026103067, "clusters": 512, "score": 0.521484375}
+      ],
+      "artifacts": [
+        "training/outputs/phase12_headless/round465_vs_round430_common_selector_128x2_20261030/paired_summary.json",
+        "training/outputs/phase12_headless/round465_vs_round430_common_selector_512x1_20261030/paired_summary.json"
+      ]
     },
     {
       "row": "Round465",
       "column": "Round464",
-      "score": 0.4599609375,
-      "cluster_bootstrap_95_interval": [0.4111328125, 0.5087890625],
-      "clusters": 256,
-      "matches": 1024,
-      "timeouts_or_errors": 0,
-      "local_run_artifact": "training/outputs/phase12_headless/round465_opening_override_fullmatch_round464_control_256x2_20261030/paired_summary.json"
+      "score": 0.504296875,
+      "cluster_bootstrap_95_interval": [0.47109375, 0.53828125],
+      "clusters": 640,
+      "sets": [
+        {"seed": 2026103066, "clusters": 128, "score": 0.423828125},
+        {"seed": 2026103067, "clusters": 512, "score": 0.5244140625}
+      ],
+      "artifacts": [
+        "training/outputs/phase12_headless/round465_vs_round464_common_selector_128x2_20261030/paired_summary.json",
+        "training/outputs/phase12_headless/round465_vs_round464_common_selector_512x1_20261030/paired_summary.json"
+      ]
     }
   ],
-  "restricted_game_solution": {
-    "point_estimate_equilibrium_support": [
-      "Round430"
-    ],
-    "point_estimate_game_value": 0.5,
-    "interpretation": "Among these three policies, the Round430 row point-estimate scores at least 50% against every column policy; the corresponding empirical restricted-game solution is pure Round430. This estimate inherits sampling uncertainty and does not cover unmeasured policies or hidden-team responses.",
-    "promotion_decision": "No new checkpoint is promoted. Round430 remains the measured incumbent."
+  "point_estimate_restricted_solution": {
+    "support": ["Round465"],
+    "value": 0.5,
+    "interpretation": "Round465 has the highest point estimates against the other two PPO checkpoints, but the gains are below one percentage point and every cluster-bootstrap interval includes 50%. Treat this support as noise-sensitive, not as a training mixture or promotion signal."
   },
+  "seed_set_variability": "The 128-cluster pilot favored Round464 strongly, while the 512-cluster set put all matchups near 52% for the row policy. Pooling clusters centers all edges near 50%. This makes the policy ranking sensitive to sampled teams; keep future payoff cells on shared held-out seeds and include independent seed sets.",
+  "decision": "No supported difference among the three PPO checkpoints. Keep Round430 as the validated incumbent; do not claim a Nash equilibrium for VGC.",
   "limitations": [
-    "This is a three-checkpoint restricted game, not an equilibrium certificate for VGC.",
-    "Only one of the three off-diagonal matchups is a fresh 256-cluster run; the other cells reuse separate recent Round465 screens with 128 or 256 clusters.",
-    "The opponent population contains only related PPO versions and does not include newly trained responses.",
-    "The Round465-vs-Round430 screen had one incomplete game; the published interval uses completed records and clusters.",
-    "Round430-vs-Round464's lower 95% endpoint is only 0.10 percentage points above 50%; this ranking is fragile."
+    "This is a restricted game with only three related PPO policies, not a full-game equilibrium certificate.",
+    "The interval resamples team-pair clusters and does not remove all variation between generated-team seed sets.",
+    "The matrix omits legal heuristic opponents and newly trained response policies.",
+    "Diagonal 50% entries are symmetry assumptions, not measured self-play results."
   ]
 }
