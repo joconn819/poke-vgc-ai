@@ -11,16 +11,37 @@
     "ci95": "[51.86%, 58.79%]",
     "games": "2,042",
     "label": "Current in-battle policy vs Round424 start",
-    "status": "Current validated candidate \u00b7 Round436 ablation inconclusive",
-    "note": "Round431 scored 49.36% [45.85%, 52.93%] against Round430, and Round432 scored 47.90% [44.29%, 51.61%]; neither showed a clear gain. Round430 remains the validated in-battle candidate. Round402's 77.15% result is a separate team-preview selector benchmark. Round432 external screens also showed no clear lift: all paired 95% intervals vs Round430 and Round431 include zero. Round432 cross-opponent equal-weight mean/median/p10/worst were 60.35%/48.83%/47.64%/47.46%; the mean is buoyed by random play. Round435 used a Round434 restricted-game mixture (31.7% Round430 / 68.3% Round432 in the policy pool) and scored 52.98% [49.41%, 56.59%] head-to-head with Round430; all matched external deltas vs Round430/432 included zero. Round430 remains the candidate. Round436 removed hidden-set auxiliary loss on the identical Round435 data; it scored 53.42% [49.80%, 56.93%] vs Round435 over 512 clusters (one incomplete game), an inconclusive ablation. Round430 remains the validated candidate."
+    "status": "Current validated candidate \u00b7 Round436 ablation and external screens inconclusive",
+    "note": "Round431 scored 49.36% [45.85%, 52.93%] against Round430, and Round432 scored 47.90% [44.29%, 51.61%]; neither showed a clear gain. Round430 remains the validated in-battle candidate. Round402's 77.15% result is a separate team-preview selector benchmark. Round432 external screens also showed no clear lift: all paired 95% intervals vs Round430 and Round431 include zero. Round432 cross-opponent equal-weight mean/median/p10/worst were 60.35%/48.83%/47.64%/47.46%; the mean is buoyed by random play. Round435 used a Round434 restricted-game mixture (31.7% Round430 / 68.3% Round432 in the policy pool) and scored 52.98% [49.41%, 56.59%] head-to-head with Round430; all matched external deltas vs Round430/432 included zero. Round430 remains the candidate. Round436 removed hidden-set auxiliary loss on the identical Round435 data; it scored 53.42% [49.80%, 56.93%] vs Round435 over 512 clusters (one incomplete game), an inconclusive ablation. Round430 remains the validated candidate. Round436 external screens at 256 clusters found no supported paired gain vs Round435: deltas on 128 shared clusters were +0.20 pp vs Max Damage [-0.59,+0.98], +0.39 pp vs public Counterplay [-0.59,+1.37], 0.00 pp vs random [-0.78,+0.78], and -0.20 pp vs Round102 [-0.98,+0.39]. Round436 remains unpromoted; Round430 is still the validated candidate."
   },
   "evaluation_scorecard": [
     {
-      "opponent": "Team preview benchmark \u00b7 Round402 selector",
-      "score": "77.15%",
-      "games": "2,048",
-      "interval": "[74.90%, 79.35%]",
-      "status": "Team-selection benchmark; separate from in-battle policy strength"
+      "opponent": "Max Damage \u00b7 Round436",
+      "score": "46.29%",
+      "games": "1,024",
+      "interval": "[41.31%, 51.37%]",
+      "status": "256 clusters \u00b7 paired delta vs Round435 +0.20 pp [-0.59, +0.98] on 128 shared clusters \u00b7 0 errors/corrections"
+    },
+    {
+      "opponent": "Public counterplay \u00b7 Round436",
+      "score": "47.17%",
+      "games": "1,024",
+      "interval": "[42.19%, 52.05%]",
+      "status": "256 clusters \u00b7 paired delta vs Round435 +0.39 pp [-0.59, +1.37] on 128 shared clusters \u00b7 0 errors/corrections"
+    },
+    {
+      "opponent": "Random \u00b7 Round436",
+      "score": "95.51%",
+      "games": "1,024",
+      "interval": "[94.14%, 96.78%]",
+      "status": "256 clusters \u00b7 paired delta vs Round435 0.00 pp [-0.78, +0.78] on 128 shared clusters \u00b7 0 errors/corrections"
+    },
+    {
+      "opponent": "Historical PPO Round102 \u00b7 Round436",
+      "score": "50.68%",
+      "games": "1,024",
+      "interval": "[45.61%, 55.86%]",
+      "status": "256 clusters \u00b7 paired delta vs Round435 -0.20 pp [-0.98, +0.39] on 128 shared clusters \u00b7 0 errors/corrections"
     },
     {
       "opponent": "Round435 policy \u00b7 Round436 hidden-set ablation",
@@ -28,6 +49,13 @@
       "games": "2,046",
       "interval": "[49.80%, 56.93%]",
       "status": "512 matched team-pair clusters \u00b7 1 incomplete repeat \u00b7 0 action corrections \u00b7 interval includes 50%"
+    },
+    {
+      "opponent": "Team preview benchmark \u00b7 Round402 selector",
+      "score": "77.15%",
+      "games": "2,048",
+      "interval": "[74.90%, 79.35%]",
+      "status": "Team-selection benchmark; separate from in-battle policy strength"
     },
     {
       "opponent": "Max Damage \u00b7 Round435",
@@ -491,14 +519,14 @@
   },
   "latest_run": {
     "round": 436,
-    "status": "completed \u00b7 ablation inconclusive",
-    "summary": "Round436 repeated Round435 PPO training on the same 20,000 games and Round430 initialization, with hidden-set auxiliary loss weight set to zero. It scored 53.42% [49.80%, 56.93%] against Round435 over 512 side-swapped team-pair clusters; one game was incomplete. No supported lift; Round430 remains the validated candidate.",
-    "games": "20,000 reused outcomes",
+    "status": "completed \u00b7 no supported lift",
+    "summary": "Round436 removed hidden-set auxiliary loss from a same-data PPO ablation and was then screened against four held-out opponents at 256 clusters each. Paired deltas vs Round435 on 128 shared clusters all had 95% intervals covering zero; Round430 remains the validated candidate.",
+    "games": "20,000 reused outcomes \u00b7 4,096 external games",
     "epochs": "4 PPO passes \u00b7 1,272 optimizer steps",
-    "evaluation": "53.42% vs Round435 \u00b7 2,046 games \u00b7 512 clusters \u00b7 inconclusive"
+    "evaluation": "No supported paired gain vs Round435 across Max Damage, public counterplay, random, and Round102"
   },
   "method": "Native self-play PPO for in-battle decisions. Terminal win/loss remains the main objective; win-probability and hidden-set prediction are auxiliary tasks. Search comes after a stronger policy.",
   "jax_decision": "Round430 has a confirmed self-play head-to-head lift over Round424, but external-opponent screens remain inconclusive. Prioritize measured inference batching, observation throughput, and rollouts; keep equilibrium-oriented opponent coverage and defer a JAX/GPU engine rewrite until its end-to-end payoff is measured.",
   "evaluation_note": "Score rates include wins and half credit for draws. Use paired held-out teams, side swaps, repeated outcomes, and cluster intervals. Track results across public counterplay, random, historical PPO, and Max Damage; no one matchup percentage is the finish line. Round431's equal-weight four-opponent mean was 59.86%, but the median was 48.05%, p10 47.30%, and worst score 47.07%; the mean is lifted by random play. All paired differences vs Round430 included zero.",
-  "generated_at": "2026-10-30 Round436"
+  "generated_at": "2026-10-30 Round436 external screens"
 }

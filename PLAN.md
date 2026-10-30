@@ -255,6 +255,19 @@ percentage alone.
   `training/outputs/phase12_headless/round436_hidden_set_ablation_same_data_20k_20261030/`
   and
   `training/outputs/phase12_headless/round436_vs_round435_same_data_ablation_512x2_20261030/`.
+- **Round436 external-opponent screens (2026-10-30; not promoted):**
+  evaluated 256 held-out team-pair clusters with two outcome repeats (1,024
+  games per opponent), matching the first 128 clusters to Round435 and adding
+  128 more. Round436 scored 46.29% vs Max Damage [41.31%, 51.37%], 47.17% vs
+  public Counterplay [42.19%, 52.05%], 95.51% vs random [94.14%, 96.78%], and
+  50.68% vs historical Round102 [45.61%, 55.86%]. Paired changes vs Round435
+  on 128 shared clusters were +0.20 pp [-0.59, +0.98], +0.39 pp [-0.59,
+  +1.37], 0.00 pp [-0.78, +0.78], and -0.20 pp [-0.98, +0.39], respectively.
+  All intervals include zero; there were zero action adjustments, timeouts,
+  or errors. Cross-opponent mean/median/p10/worst were
+  59.91%/48.93%/46.55%/46.29%; the mean is lifted by random play. Keep Round430
+  as the validated candidate. Scorecard:
+  `training/outputs/phase12_headless/round436_external_matched128x2_retry1_20261030/external_scorecard.json`.
 - **Round430 held-out screens (2026-10-30):** each used 128 held-out team
   clusters and two outcome repeats (512 side-swapped games); intervals are
   seeded 10,000-resample cluster bootstraps. Round430 scored 49.02% vs Max
