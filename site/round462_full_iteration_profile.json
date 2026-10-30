@@ -1,0 +1,109 @@
+{
+  "round": 462,
+  "date": "2026-10-30",
+  "status": "trained; held-out strength evaluation pending",
+  "configuration": {
+    "games": 20000,
+    "opponents": {
+      "max_damage": 6000,
+      "historical_policy_pool": 8000,
+      "public_counterplay": 6000
+    },
+    "rollout_workers": 8,
+    "trainable_transitions": 162369,
+    "ppo_epochs": 4,
+    "optimizer_steps": 1272,
+    "device": "RTX 4060 Laptop GPU",
+    "gc_disabled_during_ppo_update": true
+  },
+  "speed": {
+    "rollout_parallel_elapsed_seconds_file_timestamp_span": 640.63,
+    "rollout_aggregate_games_per_second_file_timestamp_span": 31.22,
+    "rollout_shard_elapsed_seconds_sum": 3981.31,
+    "rollout_shard_summary_count": 14,
+    "ppo_wall_seconds": 153.19,
+    "ppo_sample_preparation_seconds": 87.69,
+    "ppo_stage_seconds": {
+      "record_load_parse_validation": 20.2,
+      "transition_extraction": 27.78,
+      "gae": 4.85,
+      "model_input_build": 20.38,
+      "sample_packaging": 5.6,
+      "unattributed": 8.54,
+      "tensor_aggregation": 5.95,
+      "optimization_approx": 53.0
+    },
+    "observed_input_staging_to_checkpoint_seconds_file_timestamp_span": 1114.24,
+    "observed_end_to_end_games_per_second_file_timestamp_span": 17.95,
+    "measurement_caveat": "Filesystem timestamp interval includes a failed first preflight, one recovered Counterplay episode, a second full preflight, and orchestration gaps. Treat this as observed workflow throughput, not a clean controlled comparison with Round430.",
+    "peak_rss_gib": 7.32,
+    "full_rollout_mean_per_episode_seconds": 0.1966,
+    "full_rollout_mean_timing_seconds_per_episode": {
+      "action_selection_seconds": 0.08184,
+      "baseline_action_seconds": 0.02538,
+      "policy_inference_seconds": 0.04623,
+      "observation_encoding_seconds": 0.02719,
+      "headless_engine_roundtrip_seconds": 0.03037,
+      "trajectory_persist_seconds": 0.0201,
+      "pre_match_setup_seconds": 0.0089,
+      "end_to_end_episode_seconds": 0.1966
+    },
+    "timing_semantics": "Action-selection includes policy inference and baseline opponent scoring; nested fields must not be summed. Timings are measured worker episode telemetry, not wall-clock critical-path fractions."
+  },
+  "training": {
+    "loss": 0.8262880221946435,
+    "policy_loss": -0.0033004577698130394,
+    "value_loss": 0.21183404730597757,
+    "approx_kl": 0.003368566350550038,
+    "win_probability_loss": 0.4735554476860184,
+    "hidden_move_loss": 4.5377297064043445,
+    "hidden_item_loss": 2.944107537936864,
+    "hidden_ability_loss": 4.259936737189503,
+    "initial_log_prob_max_error": 2.384185791015625e-06,
+    "stop_reason": "step_budget"
+  },
+  "preflight": {
+    "ready_for_ppo": true,
+    "trainable_games": 20000,
+    "player_view_rows": 40002,
+    "incomplete_rows_ignored": 2,
+    "errors": [],
+    "report": "preflight/round_0001.json"
+  },
+  "checkpoint": "checkpoints/round_0001/latest.pt",
+  "latest_checkpoint": "checkpoints/round_0001/latest.pt",
+  "rollout_telemetry": "stdout.log",
+  "ppo_telemetry": "checkpoints/round_0001/telemetry.jsonl",
+  "opportunities": [
+    {
+      "rank": 1,
+      "name": "Training record parsing and transition preparation",
+      "evidence": "87.7 s of PPO sample preparation; extraction 27.8 s, input building 20.4 s, JSON row load/validation 20.2 s.",
+      "next": "Profile and optimize extraction/input building while preserving audited transition and tensor parity."
+    },
+    {
+      "rank": 2,
+      "name": "Policy inference and action scoring during rollouts",
+      "evidence": "81.8 ms mean action-selection time per episode; 46.2 ms is nested policy inference. Public Counterplay baseline scoring is 25.4 ms mixed average.",
+      "next": "Batch requests across rollout workers; profile public counterplay scoring/cache effectiveness and p95 decision latency."
+    },
+    {
+      "rank": 3,
+      "name": "Observation encoding",
+      "evidence": "27.2 ms mean per episode.",
+      "next": "Reuse compact arrays and cache static team/dex features; preserve closed-sheet leakage checks."
+    },
+    {
+      "rank": 4,
+      "name": "Trajectory persistence and repeat audits",
+      "evidence": "20.1 ms mean persistence per episode; rollout files total about 4.16 GB before recovery. This run required a recovered episode and a second audit.",
+      "next": "Buffer writes and avoid redundant full scans through a verifiable incremental manifest; do not weaken the row-level integrity gate."
+    },
+    {
+      "rank": 5,
+      "name": "Showdown engine",
+      "evidence": "30.4 ms mean per episode, approximately 15.4% of measured episode time.",
+      "next": "Retain Showdown as reference; optimize only after profiling full rollout critical path shows an engine hotspot."
+    }
+  ]
+}

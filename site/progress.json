@@ -227,89 +227,92 @@
     }
   ],
   "speed": {
-    "games_per_second": "16.49",
-    "context": "Round430 20,000-game complete training iteration including rollout and PPO preparation/optimization; Round435 full aggregate rollout telemetry was not captured. Not raw simulator speed.",
-    "decision_latency": "~85 ms action selection per policy-pool match",
-    "current_bottleneck": "Two matched GC-disabled PPO-only replays averaged 151.56 s wall time (150.66–152.46), 33.3% below Round458’s 227.17 s; sample preparation averaged 86.35 s (85.45–87.25), 46.7% below 162.08 s. All 28 numeric metrics and all 82 model tensors matched exactly in both runs; peak RSS was 7.32 GiB. The CLI now disables cyclic GC during PPO updates by default and restores it afterward, with --enable-gc-during-ppo-update as an opt-out. This is not a rollout-inclusive speed result: complete-iteration throughput remains 16.49 games/s. Current preparation stages average about 27.2 s for transition extraction, 20.4 s for model-input building, and 19.7 s for record load/parse/validation; PPO optimization is about 52 s.",
-    "gpu_status": "RTX 4060 used for PPO optimization; rollout inference and Showdown simulation remain CPU-side",
-    "profile_context": "Round430 remains the latest complete end-to-end 20,000-game profile: eight-worker rollout 22.55 games/s and full iteration 16.49 games/s. Round435 offers newer per-shard timings but no valid aggregate rate after preflight recovery. Per-opponent shard rates are not aggregate rates. Action selection contains policy inference; Public Counterplay scoring is nested inside action selection.",
+    "games_per_second": "17.95",
+    "context": "Round462 completed a 20,000-game rollout and PPO update. The observed input-staging-to-checkpoint interval was 17.95 games/s; it includes recovery/audit/orchestration overhead and is not a controlled comparison with Round430. The rollout shard span itself was 31.22 aggregate games/s across eight workers.",
+    "decision_latency": "~82 ms action selection per mixed-policy match",
+    "current_bottleneck": "Round462 PPO took 153.2 s, including 87.7 s sample preparation. Preparation was led by transition extraction (27.8 s), model-input construction (20.4 s), and row load/parse/validation (20.2 s). During rollouts, action selection averaged 81.8 ms/match and observation encoding 27.2 ms; the Showdown engine was 30.4 ms (~15% of episode telemetry). Inference and baseline scoring are nested inside action selection.",
+    "gpu_status": "RTX 4060 used for PPO optimization; rollout policy inference and Showdown simulation remain CPU-side",
+    "profile_context": "Round462 full run profile: 20,000 games across 8 workers; 31.22 aggregate rollout games/s based on the staged-input-to-last-shard timestamp span; 17.95 observed games/s from staged input checkpoint to saved PPO checkpoint, including recovery and repeated audit overhead. Per-opponent values below are per-worker episode rates. Inference and Public Counterplay scoring are nested inside action selection.",
     "active_training_profile": {
-      "round": "435",
-      "status": "Round435 per-worker profile · Round430 retained as candidate",
-      "context": "Round435 single-shard timing samples from 20,000-game PPO update, after seat-balanced recovery from one duplicate-team record. The wrapper did not capture full-run aggregate rollout telemetry. Do not sum per-shard rates as aggregate.",
+      "round": "462",
+      "status": "full 20k rollout and PPO iteration · strength evaluation pending",
+      "context": "Per-opponent episode telemetry aggregated over the 20,000-game rollout. The total 31.22 games/s is the aggregate rollout rate across eight workers; rows show per-worker rates, not additive values.",
       "profile": [
         {
           "opponent": "Max Damage",
-          "completed_episodes": "2,500",
-          "matches_per_second": "7.2",
-          "end_to_end_ms": "136",
-          "action_ms": "50",
-          "inference_ms": "35",
-          "baseline_ms": "5",
-          "encoding_ms": "26",
+          "completed_episodes": "6,000",
+          "matches_per_second": "6.75",
+          "end_to_end_ms": "148",
+          "action_ms": "48",
+          "inference_ms": "33",
+          "baseline_ms": "6",
+          "encoding_ms": "27",
           "engine_ms": "29",
-          "persistence_ms": "9"
-        },
-        {
-          "opponent": "Public Counterplay",
-          "completed_episodes": "2,500",
-          "matches_per_second": "4.7",
-          "end_to_end_ms": "209",
-          "action_ms": "124",
-          "inference_ms": "35",
-          "baseline_ms": "79",
-          "encoding_ms": "25",
-          "engine_ms": "30",
-          "persistence_ms": "9"
+          "persistence_ms": "17"
         },
         {
           "opponent": "Historical policy pool",
-          "completed_episodes": "800 per pool shard",
-          "matches_per_second": "5.0",
-          "end_to_end_ms": "196",
-          "action_ms": "85",
-          "inference_ms": "73",
+          "completed_episodes": "8,000",
+          "matches_per_second": "4.68",
+          "end_to_end_ms": "214",
+          "action_ms": "77",
+          "inference_ms": "66",
           "baseline_ms": "0",
           "encoding_ms": "28",
-          "engine_ms": "34",
-          "persistence_ms": "13"
+          "engine_ms": "32",
+          "persistence_ms": "25"
+        },
+        {
+          "opponent": "Public Counterplay",
+          "completed_episodes": "6,000",
+          "matches_per_second": "4.51",
+          "end_to_end_ms": "222",
+          "action_ms": "122",
+          "inference_ms": "34",
+          "baseline_ms": "79",
+          "encoding_ms": "26",
+          "engine_ms": "30",
+          "persistence_ms": "17"
         }
       ],
-      "finding": "Round435 measured about 76 ms/match of Public Counterplay scoring, 65–73 ms/match policy inference against pool opponents, and 28–37 ms/match Showdown engine time. PPO record preparation plus tensor aggregation took 159.3 s for 20,000 games, versus about 55 s optimization. Improve automatic duplicate-team recovery, then prioritize batched policy inference and audited record parsing/tensor preparation."
+      "finding": "Action selection accounts for 81.8 ms/match on the mixture; policy inference and baseline scoring are nested there. Public Counterplay scorer averages 79.0 ms/episode on its own shards; historical-policy inference averages 65.7 ms. Observation encoding is 27.2 ms and Showdown roundtrip 30.4 ms/match. The engine is about 15% of episode telemetry, so batching inference, scorer optimization, and encoding are higher-value next targets."
     },
     "profile": [
       {
         "opponent": "Max Damage",
-        "matches_per_second": "7.31",
-        "end_to_end_ms": "134",
-        "action_ms": "50",
-        "encoding_ms": "26",
+        "completed_episodes": "6,000",
+        "matches_per_second": "6.75",
+        "end_to_end_ms": "148",
+        "action_ms": "48",
+        "inference_ms": "33",
+        "baseline_ms": "6",
+        "encoding_ms": "27",
         "engine_ms": "29",
-        "persistence_ms": "9",
-        "inference_ms": "35",
-        "baseline_ms": "5"
+        "persistence_ms": "17"
       },
       {
         "opponent": "Historical policy pool",
-        "matches_per_second": "5.10",
-        "end_to_end_ms": "194",
-        "action_ms": "85",
-        "encoding_ms": "27",
-        "engine_ms": "34",
-        "persistence_ms": "13",
-        "inference_ms": "73",
-        "baseline_ms": "0"
+        "completed_episodes": "8,000",
+        "matches_per_second": "4.68",
+        "end_to_end_ms": "214",
+        "action_ms": "77",
+        "inference_ms": "66",
+        "baseline_ms": "0",
+        "encoding_ms": "28",
+        "engine_ms": "32",
+        "persistence_ms": "25"
       },
       {
-        "opponent": "Public counterplay",
-        "matches_per_second": "2.62",
-        "end_to_end_ms": "360",
-        "action_ms": "281",
-        "encoding_ms": "24",
-        "engine_ms": "28",
-        "persistence_ms": "8",
-        "inference_ms": "33",
-        "baseline_ms": "239"
+        "opponent": "Public Counterplay",
+        "completed_episodes": "6,000",
+        "matches_per_second": "4.51",
+        "end_to_end_ms": "222",
+        "action_ms": "122",
+        "inference_ms": "34",
+        "baseline_ms": "79",
+        "encoding_ms": "26",
+        "engine_ms": "30",
+        "persistence_ms": "17"
       }
     ],
     "opportunities": [
@@ -351,7 +354,7 @@
       }
     ],
     "jax_decision": "Round430 confirms the Showdown engine used about 18% of policy-pool match time and 8% against Public Counterplay; a simulator-only port would leave the larger measured policy, observation, and baseline-scoring costs intact. Keep Showdown as the correctness reference and require an end-to-end measured gain before a JAX/GPU engine prototype.",
-    "remaining_summary": "For the historical-policy pool, Showdown used about 34 ms of 193.5 ms per match (~17.5%); the remaining ~82.5% is about 159.6 ms: 84.8 ms action selection (53% of the remainder, including 73.1 ms inference), 27.4 ms observation encoding (17%), 12.6 ms trajectory writes (8%), about 10.5 ms setup (7%), 2 ms preview/first step (1%), and about 22.3 ms other overhead (14%). For Public Counterplay, the engine used about 28 ms of 359.5 ms (~8%); its scorer alone used 239 ms (67%).",
+    "remaining_summary": "Round462 attributes 30.4 ms/episode telemetry to the Showdown roundtrip (~15%); the remaining time is dominated by action selection (81.8 ms), observation encoding (27.2 ms), trajectory persistence (20.1 ms), and setup/other work. Policy inference and baseline scoring are already included inside action selection.",
     "remaining_components": [
       {
         "component": "Action selection",
@@ -760,18 +763,115 @@
       ],
       "mean_peak_rss_gib": 7.317848205566406,
       "repeated_run_report": "round461_gc_repeat.json"
+    },
+    "round462_full_iteration_profile": {
+      "round": 462,
+      "observed_rollout_games_per_second": "31.22",
+      "observed_workflow_games_per_second": "17.95",
+      "observed_rollout_wall_seconds": "640.6",
+      "observed_workflow_wall_seconds": "1,114.2",
+      "ppo_wall_seconds": "153.19",
+      "ppo_sample_preparation_seconds": "87.69",
+      "optimizer_seconds_approximate": "53",
+      "transitions": "162,369",
+      "peak_rss_gib": "7.32",
+      "timing_caveat": "The workflow timestamp span includes a failed first preflight, one recovered match, a second audit, and orchestration gaps. It is not a controlled comparison with Round430.",
+      "ppo_stages": [
+        {
+          "stage": "Transition extraction",
+          "seconds": "27.78"
+        },
+        {
+          "stage": "Model-input construction",
+          "seconds": "20.38"
+        },
+        {
+          "stage": "Record load / JSON parse / validation",
+          "seconds": "20.20"
+        },
+        {
+          "stage": "GAE",
+          "seconds": "4.85"
+        },
+        {
+          "stage": "Sample packaging",
+          "seconds": "5.60"
+        },
+        {
+          "stage": "Tensor aggregation",
+          "seconds": "5.95"
+        },
+        {
+          "stage": "PPO optimization",
+          "seconds": "~53"
+        }
+      ],
+      "rollout_stages": [
+        {
+          "stage": "Action selection (includes nested inference/scoring)",
+          "ms": "81.8"
+        },
+        {
+          "stage": "Policy inference (nested)",
+          "ms": "46.2"
+        },
+        {
+          "stage": "Baseline scoring (nested)",
+          "ms": "25.4"
+        },
+        {
+          "stage": "Observation encoding",
+          "ms": "27.2"
+        },
+        {
+          "stage": "Showdown engine roundtrip",
+          "ms": "30.4",
+          "share": "15.4%"
+        },
+        {
+          "stage": "Trajectory persistence",
+          "ms": "20.1"
+        },
+        {
+          "stage": "Pre-match setup",
+          "ms": "8.9"
+        }
+      ],
+      "opportunities": [
+        {
+          "title": "Batch policy inference across rollout workers",
+          "detail": "Inference averages 46 ms/match across the mixture, and about 66 ms against policy-pool opponents. Batch ready decisions; measure throughput, queue delay, and p95 latency."
+        },
+        {
+          "title": "Profile public counterplay scoring",
+          "detail": "Scoring averages 79 ms per Counterplay episode (25 ms across the mixed training set). Improve scorer reuse/cache paths and verify on matched throughput runs."
+        },
+        {
+          "title": "Speed up observation encoding",
+          "detail": "Encoding averages 27 ms/match. Reuse numeric buffers and static team/dex features while preserving closed-sheet checks."
+        },
+        {
+          "title": "Reduce PPO preparation and repeated audits",
+          "detail": "Transition extraction, input construction, and JSON row validation are the largest PPO preparation stages. Use chunk-level profiling and a verifiable incremental manifest without weakening validation."
+        },
+        {
+          "title": "Keep the Showdown engine as the reference",
+          "detail": "The engine is roughly 15% of per-episode telemetry. Defer a GPU simulator until end-to-end profiling shows that engine work dominates."
+        }
+      ],
+      "report": "round462_full_iteration_profile.json"
     }
   },
   "latest_run": {
-    "round": 461,
-    "status": "repeated matched PPO speed replay · exact outputs · GC disabled by default",
-    "summary": "Rounds460–461 repeated the matched 20,000-game PPO-only update with GC disabled for the whole update. Mean wall time was 151.56 s (range 150.66–152.46), 33.3% below Round458; mean sample preparation was 86.35 s (range 85.45–87.25), 46.7% lower. All 28 metrics and 82 tensors matched exactly in both runs; peak RSS was 7.32 GiB. The CLI now uses this mode by default with an opt-out. Rollouts were omitted, so complete-iteration games/sec remains 16.49.",
+    "round": 462,
+    "status": "20,000-game rollout and PPO update · held-out evaluation pending",
+    "summary": "Trained from the Round430 checkpoint on 20,000 audited outcomes (6k Max Damage, 8k policy pool, 6k Public Counterplay), producing 162,369 transitions. Rollout throughput was 31.22 aggregate games/s across eight workers. PPO took 153.19 s, including 87.69 s sample preparation. The strict audit passed after recovering one incomplete original match. Strength evaluation is pending; no play improvement is claimed.",
     "games": "20,000 outcomes",
-    "epochs": "1,272 optimizer steps",
-    "evaluation": "Exact replay parity; strength unchanged"
+    "epochs": "4 passes · 1,272 optimizer steps",
+    "evaluation": "Pending held-out paired evaluation"
   },
   "method": "Native self-play PPO for in-battle decisions. Terminal win/loss remains the main objective; win-probability and hidden-set prediction are auxiliary tasks. Search comes after a stronger policy.",
   "jax_decision": "Round430 has a confirmed self-play head-to-head lift over Round424, but external-opponent screens remain inconclusive. Prioritize measured inference batching, observation throughput, and rollouts; keep equilibrium-oriented opponent coverage and defer a JAX/GPU engine rewrite until its end-to-end payoff is measured.",
   "evaluation_note": "Score rates include wins and half credit for draws. Use paired held-out teams, side swaps, repeated outcomes, and cluster intervals. Track results across public counterplay, random, historical PPO, and Max Damage; no one matchup percentage is the finish line. Round431's equal-weight four-opponent mean was 59.86%, but the median was 48.05%, p10 47.30%, and worst score 47.07%; the mean is lifted by random play. All paired differences vs Round430 included zero.",
-  "generated_at": "2026-10-30 16:44 UTC"
+  "generated_at": "2026-10-30 17:10 UTC"
 }

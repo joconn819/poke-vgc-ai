@@ -15911,3 +15911,53 @@ team choice but does not change that conclusion.
   extraction and input-array construction, then measure the end-to-end
   training iteration after validating the GC mode's memory behavior.
 - Reports: `training/outputs/phase12_headless/round460_gc_disabled_update_20261030/profile.json` and `training/outputs/phase12_headless/round461_gc_disabled_repeat_20261030/profile.json`.
+
+### Full 20,000-game PPO iteration and speed profile (Round462, 2026-10-30)
+
+- Round462 completed a 20,000-game headless rollout and one PPO update from the
+  Round430 checkpoint using eight workers, CUDA, and the default full-update
+  cyclic-GC disable. The audited mixture was 6,000 Max Damage, 8,000 historical
+  policy-pool, and 6,000 Public Counterplay games. The strict final preflight
+  passed with 20,000 trainable games, 40,002 player-view rows, and 162,369
+  trainable transitions. It ignored the two perspectives from one incomplete
+  original match; a replacement Public Counterplay player2 match restored the
+  expected 20,000-game count. No audit errors remained.
+- **Current measured rate:** completed rollout artifacts span 640.6 seconds
+  from staged input checkpoint to the final rollout shard, or **31.22 aggregate
+  rollout games/s** across eight workers. PPO took 153.19 seconds: 87.69 seconds
+  sample preparation, 5.95 seconds tensor aggregation, and about 53 seconds
+  optimization. The input-to-checkpoint filesystem timestamp interval was
+  1,114.2 seconds (**17.95 complete games/s**), including the failed first
+  preflight, recovery match, second audit, and orchestration gaps. Treat this
+  as observed workflow throughput, not a controlled comparison with Round430's
+  16.49 games/s.
+- **PPO preparation bottleneck:** transition extraction took 27.78 seconds;
+  model-input construction 20.38 seconds; record loading, JSON parsing, and
+  validation 20.20 seconds; GAE 4.85 seconds; packaging 5.60 seconds; and
+  8.54 seconds were not attributed. The 1,272 PPO optimizer steps completed
+  with approximate KL 0.00337 and exact initial log-probability replay
+  (maximum error 2.38e-6). Peak RSS was 7.32 GiB. The complete checkpoint is
+  `training/outputs/phase12_headless/round462_full_iteration_gc_default_20261030/checkpoints/round_0001/latest.pt`.
+- **Rollout profile:** across the mixture, mean episode telemetry was 196.6 ms
+  end to end: 81.8 ms action selection, 27.2 ms observation encoding, 30.4 ms
+  Showdown roundtrip, 20.1 ms trajectory persistence, and 8.9 ms match setup.
+  Policy inference (46.2 ms mixed average) and baseline scoring (25.4 ms)
+  are nested within action selection; do not add them again. Public Counterplay
+  alone used 79.0 ms per episode on its baseline scorer; historical-pool
+  inference averaged 65.7 ms. The engine was 15.4% of mean episode telemetry,
+  so inference/scoring, observation encoding, and record handling are larger
+  near-term speed opportunities than a simulator rewrite.
+- **Next speed work:** (1) profile full-chunk PPO transition extraction and
+  input construction, preserving audited transition and tensor parity; (2)
+  batch policy requests across rollout workers and benchmark queue delay and
+  p95 decision latency; (3) profile/cut Public Counterplay scorer cost; (4)
+  cache static observation features and reuse numeric buffers; (5) reduce
+  trajectory write and repeated full-audit overhead using a verifiable
+  incremental manifest without weakening integrity checks. Keep Showdown as
+  the correctness reference and do not prioritize a GPU simulator unless
+  measured end-to-end throughput supports that investment.
+- Strength evaluation of the Round462 checkpoint is pending. Do not claim a
+  play improvement until it completes held-out, paired evaluation versus
+  Public Counterplay, random, Max Damage, and historical PPO opponents.
+- Full machine-readable report:
+  `training/outputs/phase12_headless/round462_full_iteration_gc_default_20261030/profile.json`.
