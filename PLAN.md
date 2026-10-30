@@ -132,23 +132,34 @@ percentage alone.
   worker count. Report:
   `training/outputs/phase12_headless/round430_scaling_benchmark_240_20261030/scaling_report.json`.
 - **Round430 policy batching benchmark (2026-10-30):** measured 256
-  perspective-safe states from actual rollout records with the Round430 model,
-  one CPU thread, 5 warmup batches, and 30 timed repeats. Public observation
-  and model-input construction averaged 0.422 ms/state; recomputing native
-  action features averaged 0.412 ms/state. For inference plus device transfer,
-  CPU reached 2,624 states/s at batch 8 and 3,760 at batch 32 (including
-  separate collation); CUDA reached 2,712 at batch 8 and 9,882 at batch 32.
-  Thus CUDA is only marginally faster at batch 8 and substantially faster at
-  batches 16–32, before queue wait. At batch 16, CUDA reached 5,209 states/s
-  versus CPU 3,392; at batch 32, 9,882 versus 3,760. These are isolated
-  model-forward measurements, not rollout throughput; queueing, live feature
-  extraction, and inference-service overhead are excluded. With eight workers
-  and one decision per live game, the attainable batch may be too small for a
-  major GPU gain. Keep CPU batching as the initial target; investigate
-  multi-game in-flight scheduling across existing workers before building a
-  shared GPU service. Reproduce with
-  `scripts/benchmark_policy_inference_batching.py`; raw report:
+  perspective-safe rollout states with one CPU thread, 5 warmup batches, and
+  30 timed model-forward repeats. State/model-input preparation averaged
+  0.436 ms/state. Native action-feature generation took 45.4 ms on its first
+  call because it initializes the Gen 9 dex; the warm mean was 0.154 ms/state.
+  For model inference plus device transfer and separately measured collation,
+  CPU reached 2,478 states/s at batch 8 and 3,669 at batch 32; CUDA reached
+  2,662 at batch 8 and 9,706 at batch 32. CUDA was about 7% faster at batch 8,
+  59% faster at batch 16, and 2.6x faster at batch 32, before queue wait. These
+  are isolated model-forward results, not rollout throughput; queueing and
+  inference-service overhead are excluded. The eight-worker arrangement may
+  not supply large batches without keeping multiple games in flight.
+- **Measured action-feature micro-optimization (2026-10-30):** profiling 128
+  saved states found thousands of scalar NumPy clamp calls in native action
+  feature generation. Replaced scalar `np.clip` dispatches with a finite-float
+  clamp helper while leaving vector clamps unchanged. On 256 rollout inputs,
+  warm median calculation time fell from 0.1983 to 0.1165 ms/state (41.3%);
+  all output arrays matched exactly when the new helper and the previous NumPy
+  clamp implementation were run on the same inputs. This is a small per-state
+  saving, not a demonstrated whole-match throughput gain. A separate comparison
+  against stored rollout features found some switch-value differences when
+  reconstructing features from the record's team metadata; the implementation
+  comparison is exact, but record/team ordering must be audited before treating
+  recomputed historical tensors as a correctness oracle. Benchmark code now
+  separates one-time dex initialization from warm per-state cost. Reproduce
+  with `scripts/benchmark_policy_inference_batching.py`; raw report:
   `training/outputs/phase12_headless/round430_policy_inference_batching_20261030/report.json`.
+  Keep CPU batching as the first rollout target and investigate multi-game
+  in-flight scheduling across existing workers before a shared GPU service.
 - **Progress site:** `site/index.html` presents held-out results, the current
   speed snapshot, and training status. `.github/workflows/pages.yml` rebuilds
   its JSON from this plan and deploys through GitHub Pages on pushes to `main`.
