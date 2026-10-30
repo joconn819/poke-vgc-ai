@@ -155,6 +155,14 @@ percentage alone.
   driven by random play and should not mask the hard-opponent scores. Reports
   and paired comparisons are under
   `training/outputs/phase12_headless/round431_eval_*_matched128x2_20261030/`.
+- **Round432 (2026-10-30; rollout collection running):** a fresh 20,000-game
+  iteration starts from the validated Round430 checkpoint at learning rate
+  5e-5 (twice Round431's rate), with 4 PPO passes. Keep the 30% Max Damage,
+  30% public Counterplay, and 40% policy-pool mixture; update the pool to
+  Round431, Round424, Round190, and Round176 plus the Round430 learner snapshot.
+  The Round402 team selector remains fixed. This tests whether a larger PPO
+  update improves on Round430 while retaining opponent diversity; no promotion
+  decision will be made before matched held-out evaluation.
 - **Round430 held-out screens (2026-10-30):** each used 128 held-out team
   clusters and two outcome repeats (512 side-swapped games); intervals are
   seeded 10,000-resample cluster bootstraps. Round430 scored 49.02% vs Max

@@ -420,12 +420,12 @@
     }
   },
   "latest_run": {
-    "round": 431,
-    "status": "not promoted \u00b7 no measured strength gain",
-    "summary": "Continued Round430 with 20,000 games: 30% Max Damage, 30% public Counterplay, 40% policy pool. Preflight accepted 20,000 games and 163,751 transitions with balanced seats; PPO completed four passes in 1,280 optimizer steps. The checkpoint is valid and atomically published.",
-    "games": "20,000",
-    "epochs": "4 PPO passes \u00b7 1,280 optimizer steps",
-    "evaluation": "49.36% vs Round430 over 512 clusters [45.85%, 52.93%]. Matched external screens showed no clear change; Round430 remains candidate."
+    "round": 432,
+    "status": "rollout collection running \u00b7 Round430 remains starting candidate",
+    "summary": "A 20,000-game PPO iteration has started from Round430 at learning rate 5e-5, using 30% Max Damage, 30% public Counterplay, and 40% policy pool. The pool now includes Round431, Round424, Round190, and Round176; the Round402 team selector is fixed.",
+    "games": "20,000 planned",
+    "epochs": "4 PPO passes \u00b7 pending",
+    "evaluation": "Round431 showed no measurable lift over Round430. Round432 will be evaluated before any promotion."
   },
   "method": "Native self-play PPO for in-battle decisions. Terminal win/loss remains the main objective; win-probability and hidden-set prediction are auxiliary tasks. Search comes after a stronger policy.",
   "jax_decision": "Round430 has a confirmed self-play head-to-head lift over Round424, but external-opponent screens remain inconclusive. Prioritize measured inference batching, observation throughput, and rollouts; keep equilibrium-oriented opponent coverage and defer a JAX/GPU engine rewrite until its end-to-end payoff is measured.",
