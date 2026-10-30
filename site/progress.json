@@ -230,7 +230,7 @@
     "games_per_second": "16.49",
     "context": "Round430 20,000-game complete training iteration including rollout and PPO preparation/optimization; Round435 full aggregate rollout telemetry was not captured. Not raw simulator speed.",
     "decision_latency": "~85 ms action selection per policy-pool match",
-    "current_bottleneck": "Policy inference / action selection, observation encoding, and public-counterplay scoring still dominate rollout time; Showdown is about 17.5% of historical-policy episode time. Round449 measured a shared GPU queue against independent CPU worker processes: at 8 workers CPU delivered 2,850 states/s vs GPU 1,606; at 16 CPU delivered 3,530 vs GPU 2,912, with lower CPU p95 latency. A central GPU inference service is therefore not a speedup at current concurrency. Round448 static team-token caching reduced model-input construction 26.8% with exact parity, but whole-match throughput is still unmeasured.",
+    "current_bottleneck": "CPU policy/action inference and feature preparation; public-counterplay scoring is an additional dominant cost for that opponent. Full-iteration throughput remains 16.49 games/s (Round430). Round451 torch.compile improved full native action-selection microbenchmark 1.47x with exact actions, but complete-match impact is not yet measured.",
     "gpu_status": "RTX 4060 used for PPO optimization; rollout inference and Showdown simulation remain CPU-side",
     "profile_context": "Round430 remains the latest complete end-to-end 20,000-game profile: eight-worker rollout 22.55 games/s and full iteration 16.49 games/s. Round435 offers newer per-shard timings but no valid aggregate rate after preflight recovery. Per-opponent shard rates are not aggregate rates. Action selection contains policy inference; Public Counterplay scoring is nested inside action selection.",
     "active_training_profile": {
@@ -336,6 +336,10 @@
       {
         "title": "6 \u00b7 Trim trajectory persistence",
         "detail": "Writes used 7\u201312 ms/match and Round424 stored about 1.8 GB for 10,000 games. Benchmark buffered compact records or chunk compression after the higher-cost action and inference paths."
+      },
+      {
+        "title": "7 \u00b7 Validate compiled CPU policy inference in complete rollouts",
+        "detail": "Round451 torch.compile cut full native action-selection median from 2.219 ms to 1.510 ms (1.47\u00d7) across 256 real states, with zero action disagreements; compile/warmup took 4.92 s. Add an opt-in worker mode and measure paired eight-worker full-match games/s, p95 decisions, and outcomes before adoption. Dynamic int8 was slower (0.91\u00d7) and changed 5/256 actions, so it is rejected. Raw Round450/451 reports are linked in the CPU inference follow-up panel."
       }
     ],
     "jax_decision": "Round430 confirms the Showdown engine used about 18% of policy-pool match time and 8% against Public Counterplay; a simulator-only port would leave the larger measured policy, observation, and baseline-scoring costs intact. Keep Showdown as the correctness reference and require an end-to-end measured gain before a JAX/GPU engine prototype.",
@@ -632,6 +636,31 @@
       "finding": "At both 8 and 16 producers, the shared GPU queue was slower and had higher p95 latency than independent CPU processes. Waiting 3 ms for batches reduced GPU throughput further. Do not implement a shared GPU broker at the current worker counts; its actual performance would also include IPC and live feature preparation.",
       "scope_note": "Inputs were already in memory. The shared queue includes batch collation, H2D transfer, model forward, output synchronization and queue latency, but excludes IPC serialization and rollout think time; results are an upper bound for production service throughput.",
       "report": "round449_shared_inference_queue.json"
+    },
+    "cpu_inference_followups": {
+      "context": "Round450 and Round451 used the Round447 checkpoint and 256 real closed-sheet Round435 states; measurements cover full native action selection but are microbenchmarks, not complete matches.",
+      "compiled_policy": {
+        "median_ms_fp32": 2.2193,
+        "median_ms_compiled": 1.5105,
+        "speedup": 1.469,
+        "p95_ms_fp32": 2.6909,
+        "p95_ms_compiled": 2.0537,
+        "action_disagreements": 0,
+        "states": 256,
+        "compile_warmup_seconds": 4.9179,
+        "status": "Promising; hold for matched complete-match throughput and outcome evaluation.",
+        "report": "round451_cpu_compiled_policy.json"
+      },
+      "dynamic_int8": {
+        "median_ms_fp32": 2.2954,
+        "median_ms_int8": 2.5108,
+        "speedup": 0.914,
+        "action_disagreements": 5,
+        "states": 256,
+        "status": "Rejected for now: slower and 1.95% action disagreement.",
+        "report": "round450_cpu_dynamic_quantization.json"
+      },
+      "next_step": "Add an opt-in compile mode to rollout workers and compare eight-worker complete matches against eager inference on paired seeds; report aggregate games/s, p95 decision latency, compile warmup cost, and outcome deltas before enabling it in training."
     }
   },
   "latest_run": {

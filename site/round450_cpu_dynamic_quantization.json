@@ -1,0 +1,25 @@
+{
+  "benchmark": "FP32 versus dynamic-int8 full native action selection",
+  "checkpoint": "training/outputs/phase12_headless/round447_indexed_matched_replay_20k_20261030/checkpoints/latest.pt",
+  "rollout": "training/outputs/phase12_headless/round435_equilibrium_mixture_response_20k_20261030/rollouts/round_0001_max_damage_p1_shard000.jsonl",
+  "records_read": 34,
+  "states": 256,
+  "repeats": 4,
+  "cpu_threads": 1,
+  "quantized_module_types": [
+    "torch.nn.Linear outside MultiheadAttention"
+  ],
+  "quantized_linear_module_count": 22,
+  "backend": "x86",
+  "fp32_median_ms": 2.295414509717375,
+  "dynamic_int8_median_ms": 2.5107904948526993,
+  "speedup": 0.9142198500524593,
+  "action_disagreements": 5,
+  "action_disagreement_pct": 1.953125,
+  "log_prob_abs_delta_median": 0.01541118323802948,
+  "log_prob_abs_delta_p95": 0.07605576515197754,
+  "value_abs_delta_median": 0.011115074157714844,
+  "value_abs_delta_p95": 0.04049108922481537,
+  "exact_action_parity": false,
+  "scope_note": "Includes static input encoding, public mechanics/action feature construction, model forward, and native two-slot action selection. It is a microbenchmark; quantized policy quality still requires paired complete-match evaluation before use."
+}
