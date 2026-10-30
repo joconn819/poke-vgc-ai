@@ -19,6 +19,15 @@ external policies. Search remains conditional on stronger held-out performance.
 Preserve existing workspace changes while implementing and evaluating this
 direction.
 
+**Speed status (Round458, 2026-10-30):** the latest complete rollout-plus-PPO
+reference remains 16.49 games/s (Round430). Round458 was PPO-only and took
+227.17 s for a matched 20,000-game update, so it does not change the complete
+iteration rate. Its in-loop profile attributes 48.4% of the 162.08 s sample
+preparation to record loading/parse/validation, 22.3% to transition extraction,
+and 15.4% to model-input construction; 5.4% is unattributed. The next speed
+work is to profile in-loop reads/validation/allocation, reduce decoded-record
+lifetime, and batch transition/input construction while checking exact parity.
+
 **Current objective (2026-10-30):** move toward optimal, equilibrium-oriented
 play in closed-team-sheet VGC. The earlier 80% goal against Max Damage is a
 historical experiment milestone, not the project completion criterion. Measure
