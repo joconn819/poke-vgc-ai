@@ -230,7 +230,7 @@
     "games_per_second": "16.49",
     "context": "Round430 20,000-game complete training iteration including rollout and PPO preparation/optimization; Round435 full aggregate rollout telemetry was not captured. Not raw simulator speed.",
     "decision_latency": "~85 ms action selection per policy-pool match",
-    "current_bottleneck": "Rollout throughput remains dominated by policy inference and observation/action feature work, with public-counterplay scoring especially costly; the Showdown engine is only about 17.5% of the historical-policy episode time. On PPO replay, Round447 reduced audited trainable-record sample preparation to 169.12 s for 20,000 games / 162,366 transitions (25.3% below Round441), but its ~232 s full replay was still ~14 s slower than the best matched Round437 run. Round447 matched Round437 metrics and all 82 model tensors exactly. The fresh strict audit scans the full 3.87 GiB dataset and is outside that replay time.",
+    "current_bottleneck": "Rollout throughput remains dominated by policy inference / action selection, observation encoding, and public-counterplay scoring; Showdown is about 17.5% of historical-policy episode time. Round448 now caches static team-token tensors per live PolicyAgent: model-input construction fell 26.8% on 1,971 real states with exact inputs and action/value parity, estimated 10.34 s saved per 162,366-state PPO sample. Whole-match games/sec and decision latency have not yet been measured for this change. PPO Round447 preparation was 25.3% faster than Round441, but its full replay remained ~14 s slower than Round437.",
     "gpu_status": "RTX 4060 used for PPO optimization; rollout inference and Showdown simulation remain CPU-side",
     "profile_context": "Round430 remains the latest complete end-to-end 20,000-game profile: eight-worker rollout 22.55 games/s and full iteration 16.49 games/s. Round435 offers newer per-shard timings but no valid aggregate rate after preflight recovery. Per-opponent shard rates are not aggregate rates. Action selection contains policy inference; Public Counterplay scoring is nested inside action selection.",
     "active_training_profile": {
@@ -318,8 +318,8 @@
         "detail": "Historical-policy rollouts spent about 72 ms/match in inference. Workers currently infer independently on CPU. Gather ready decisions from concurrent matches into a shared batch, then compare CPU batching with a single GPU inference service at observed batch sizes. Measure games/s, queue delay, and p95 decision latency before adopting it."
       },
       {
-        "title": "2 \u00b7 Reduce observation encoding work",
-        "detail": "Encoding used about 22\u201329 ms/match. Precompute static dex/team features, cache repeated derived values, and reuse compact numeric buffers across decisions. Profile each stage and retain the closed-team-sheet leakage audit."
+        "title": "2 \u00b7 Cache static team tokens and trim observation encoding",
+        "detail": "Round448 added a per-match PolicyAgent cache for static species/move/item/ability tensors. On 1,971 real states, live model-input construction fell 26.8% (0.4680 s to 0.3424 s) with exact input parity; a deterministic policy action, log probability, and value also matched. Linear extrapolation is 10.34 s per 162,366 PPO states, not whole-match evidence. Next measure games/s and p95 decision time, then profile remaining dynamic observation and public-mechanics encoding."
       },
       {
         "title": "3 \u00b7 Batch rollouts and tune worker count",
@@ -599,6 +599,21 @@
       "finding": "Sample preparation was 57.15 s faster than Round441, but Round447 full replay was about 14 s slower than Round437. This is a promising reduction against Round441, not a confirmed end-to-end speedup against the fastest matched baseline; the strict audit pass is also excluded from the replay total.",
       "integrity_note": "Round444 was excluded: skipping validation admitted one incomplete row, producing 20,001 records and 162,374 transitions. Round447 used audited offsets and full row validation; future training now checks actual prepared transitions against the audited count before checkpoint save.",
       "report": "round447_indexed_ppo_replay_profile.json"
+    },
+    "live_team_cache_benchmark": {
+      "context": "Round448 compared the live input encoder with and without the per-agent static team-token cache on 1,971 real Round435 transitions from 256 match records. The cached path is now wired into both ordinary and paired PolicyAgent inference.",
+      "uncached_median_seconds": 0.46796893450664356,
+      "cached_median_seconds": 0.3424380524957087,
+      "reduction_pct": 26.824618634840764,
+      "transitions": 1971,
+      "records": 256,
+      "estimated_seconds_saved_162366_states": 10.340916889186937,
+      "exact_input_parity": true,
+      "live_action_parity": true,
+      "action": "[24, 45]",
+      "log_probability_and_value_parity": true,
+      "scope_note": "Model-input construction only; no full-match games/sec or p95 decision-latency comparison yet.",
+      "report": "round448_live_team_feature_cache.json"
     }
   },
   "latest_run": {
@@ -612,5 +627,5 @@
   "method": "Native self-play PPO for in-battle decisions. Terminal win/loss remains the main objective; win-probability and hidden-set prediction are auxiliary tasks. Search comes after a stronger policy.",
   "jax_decision": "Round430 has a confirmed self-play head-to-head lift over Round424, but external-opponent screens remain inconclusive. Prioritize measured inference batching, observation throughput, and rollouts; keep equilibrium-oriented opponent coverage and defer a JAX/GPU engine rewrite until its end-to-end payoff is measured.",
   "evaluation_note": "Score rates include wins and half credit for draws. Use paired held-out teams, side swaps, repeated outcomes, and cluster intervals. Track results across public counterplay, random, historical PPO, and Max Damage; no one matchup percentage is the finish line. Round431's equal-weight four-opponent mean was 59.86%, but the median was 48.05%, p10 47.30%, and worst score 47.07%; the mean is lifted by random play. All paired differences vs Round430 included zero.",
-  "generated_at": "2026-10-30 Round447 audited offset-index PPO profile"
+  "generated_at": "2026-10-30 Round448 live team-token cache benchmark"
 }

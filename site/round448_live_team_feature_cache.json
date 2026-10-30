@@ -1,0 +1,48 @@
+{
+  "cached_median_seconds": 0.3424380524957087,
+  "cached_seconds": [
+    0.35710250202100724,
+    0.3121497349929996,
+    0.3727263699984178,
+    0.2838378449960146,
+    0.38690649598720483,
+    0.28244186198571697,
+    0.38931085998774506
+  ],
+  "estimated_seconds_saved_162366_states": 10.340916889186937,
+  "exact_input_parity": true,
+  "live_deterministic_policy_check": {
+    "action_cached": [
+      24,
+      45
+    ],
+    "action_equal": true,
+    "action_uncached": [
+      24,
+      45
+    ],
+    "checkpoint": "Round447 latest.pt",
+    "log_probability_equal": true,
+    "scope": "one saved rollout state; same model, player-visible input and CPU device",
+    "value_equal": true
+  },
+  "records_read": 256,
+  "reduction_pct": 26.824618634840764,
+  "repeats": 7,
+  "rollout": "training/outputs/phase12_headless/round435_equilibrium_mixture_response_20k_20261030/rollouts/round_0001_max_damage_p1_shard000.jsonl",
+  "scope": "model-input construction only; battle rollout and model forward excluded",
+  "static_team_cache_entries": 256,
+  "torch_version": "2.15.0+cu132",
+  "transitions": 1971,
+  "uncached_median_seconds": 0.46796893450664356,
+  "uncached_seconds": [
+    0.4828917660051957,
+    0.47877900901949033,
+    0.5220367989968508,
+    0.4533008139987942,
+    0.5340061349852476,
+    0.456854966992978,
+    0.4571588599937968
+  ],
+  "warmup_excluded": true
+}
