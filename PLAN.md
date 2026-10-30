@@ -15454,3 +15454,18 @@ team choice but does not change that conclusion.
 - Benchmark script and report:
   `scripts/benchmark_ppo_observation_array_reuse.py` and
   `site/ppo_observation_array_reuse_benchmark.json`.
+
+### PPO transition extraction: precompute hidden-set targets per record (Round443, 2026-10-30)
+
+- Hidden opponent moves, items, and abilities are constant within a trajectory
+  record. `extract_player_transitions` now prepares those targets once per
+  record and only builds the turn-dependent revealed-move masks per step.
+- On the same 256 Round435 records and 1,971 transitions, seven runs with the
+  first excluded measured 0.2600 s before and 0.2491 s after (4.2% lower
+  extraction time). Every `NativeTransition` field was exactly equal.
+- Linear extrapolation estimates 0.90 s saved over 162,366 transitions. This
+  change postdates Round441 and has not been included in a full PPO replay.
+  The next major target remains JSON record parsing and sample preparation.
+- Benchmark script and report:
+  `scripts/benchmark_ppo_hidden_target_precompute.py` and
+  `site/ppo_hidden_target_precompute_benchmark.json`.
