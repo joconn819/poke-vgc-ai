@@ -16,6 +16,16 @@ over Round424, so Round430 is the current in-battle continuation candidate:
 55.32% cluster-weighted score (95% CI [51.86%, 58.79%]) across 512 clusters.
 This head-to-head result alone does not establish robust strength against
 external policies. Search remains conditional on stronger held-out performance.
+
+**Action-selection diagnostic (Round430, 2026-10-30):** paired deterministic
+argmax and sampled PPO actions on identical teams, previews, and battle seeds
+(128 team-pair clusters, two repeated outcomes per pair). The equal-weight
+Max Damage/Public Counterplay score moved from 39.45% deterministic to 36.62%
+sampled; paired change -2.83 percentage points (95% cluster interval
+[-7.52, +1.86]). Individual intervals also included zero. Keep deterministic
+action selection as the default; this one seed set does not establish that
+randomization is generally harmful. The [full summary](site/round430_stochastic_action_selection.json)
+includes per-opponent results, paired intervals, and timeout handling.
 Preserve existing workspace changes while implementing and evaluating this
 direction.
 
