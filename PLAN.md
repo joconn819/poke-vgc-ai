@@ -16442,15 +16442,27 @@ team choice but does not change that conclusion.
   those decisions with the public Max Damage actions changed score from
   36.62% to 45.02%, a paired gain of +8.40 pp (95% cluster bootstrap
   interval +4.30 to +12.60). There were 1,024 completed matches, 5,076
-  overridden actions, no errors, and 5.67 matches/s. This is a diagnostic
-  intervention, not a learned policy, and has not established transfer to
-  other opponents.
-- Next: repeat the exact opening intervention on the same roster/preview set
-  against public Counterplay and frozen PPO opponents. Analyze by seat and
-  decision, then train a direct PPO candidate with a match-level diverse
-  response mixture. Keep the Round430 incumbent unless a fresh, held-out
-  cross-opponent screen supports promotion.
+  overridden actions, no errors, and 5.67 matches/s. This comparison is
+  side-swapped across P1/P2; it is a diagnostic intervention, not a learned
+  policy.
+- A first Counterplay probe that replaced only decision index 5 was not the
+  same intervention and is kept separate; do not use it as a first-five
+  replication. The corrected run replaced decision indices 0–4 against
+  public Counterplay on the same 512 team/preview clusters. With Round430
+  fixed as Player 1, the baseline scored 42.97%; the intervention scored
+  53.52%, a paired gain of +10.55 pp (95% cluster interval +5.66 to +15.23).
+  All 512 clusters reached decision 0; the run completed 1,024 matches with
+  no invalid-action fallbacks at 6.89 matches/s. This is strong evidence of
+  a fixed-seat, one-seed intervention benefit against Counterplay. It is not
+  side-swapped and does not show that the direct policy has learned the
+  improved actions. Do not deploy the opponent-specific override as policy.
+- Next: run the same indices 0–4 intervention against a frozen PPO opponent,
+  then test seat-swapped and independent team-seed replications. If the gain
+  persists, use the decision-level state/action pairs for a targeted
+  diverse-response PPO update and evaluate the learned candidate on untouched
+  held-out teams. Keep Round430 as incumbent until that candidate wins.
 - Outputs:
   `training/outputs/phase12_headless/round430_464_465_common_preview_league_512x1_20261030/league_comparison.json`
   `training/outputs/phase12_headless/round430_464_465_common_preview_league_512x1_20261030/league_matrix.json`
   `training/outputs/phase12_headless/round430_opening5_maxdamage_intervention_512x1_20261030/report.json`
+  `training/outputs/phase12_headless/round430_opening0to4_maxdamage_intervention_vs_public_counterplay_512x1_20261030/evaluation/paired_summary.json`

@@ -1110,7 +1110,7 @@
   "method": "Native self-play PPO for in-battle decisions. Terminal win/loss remains the main objective; win-probability and hidden-set prediction are auxiliary tasks. Search comes after a stronger policy.",
   "jax_decision": "Round430 has a confirmed self-play head-to-head lift over Round424, but external-opponent screens remain inconclusive. Prioritize measured inference batching, observation throughput, and rollouts; keep equilibrium-oriented opponent coverage and defer a JAX/GPU engine rewrite until its end-to-end payoff is measured.",
   "evaluation_note": "Round465 scored 45.51% against Max Damage [41.70%, 49.32%] and 46.00% against Public Counterplay [42.19%, 49.80%]. Same-seed Max Damage deltas over Round464 (+0.10 pp [-1.56, +1.76]) and Round430 (+0.88 pp [-1.27, +3.03]) include zero, so Round430 remains the validated incumbent. The 58.40% five-opponent mean is pulled upward by the 95.12% Random result; the p10 is 45.70% and the worst opponent score is 45.51%. Use paired team-cluster intervals and hard-opponent results to judge changes, not one overall mean.",
-  "generated_at": "2026-10-30 22:47 UTC",
+  "generated_at": "2026-10-30 22:55 UTC",
   "round462_evaluation": {
     "status": "Round462 not promoted \u00b7 initial paired screen complete",
     "summary": "Round462 scored 44.82% against Max Damage [41.02%, 48.54%]. On the same teams and seeds, Round430 scored 44.73% and Round432 scored 44.43%; paired deltas were +0.10 pp [-1.37, +1.56] and +0.39 pp [-1.37, +2.05]. The update did not measurably change this weakness. Results against Public Counterplay and historical PPO are inconclusive; Random is an easy-baseline check.",
@@ -1726,17 +1726,30 @@
     "interpretation": "All paired intervals include zero. No action-selection mode is promoted based on this diagnostic."
   },
   "round430_opening_intervention": {
-    "summary": "Replacing Round430's first five decisions with Max Damage actions raised its score vs Max Damage from 36.62% to 45.02% on 512 matched team-pair clusters: +8.40 pp (95% cluster interval +4.30 to +12.60). This is an opponent-specific intervention, not a trained policy; cross-opponent transfer is untested.",
-    "clusters": 512,
-    "base_score_pct": 36.62109375,
-    "intervention_score_pct": 45.01953125,
-    "paired_delta_pp": 8.3984375,
-    "paired_cluster_bootstrap_95_pp": [
-      4.296875,
-      12.59765625
-    ],
-    "games_per_second": 5.67,
-    "report": "round430_opening5_maxdamage_intervention.json"
+    "summary": "Replacing Round430's first five decisions with Max Damage actions raised its score from 36.62% to 45.02% against Max Damage (+8.40 pp; 95% cluster interval +4.30 to +12.60, 512 side-swapped clusters). Against public Counterplay, the same indices 0\u20134 override raised the fixed-Player-1 score from 42.97% to 53.52% (+10.55 pp; 95% interval +5.66 to +15.23, 512 clusters). The second result is fixed-seat, unlike the side-swapped Max Damage screen; both are interventions, not trained-policy gains.",
+    "report": "round430_opening_interventions.json",
+    "max_damage": {
+      "baseline_score_pct": 36.62109375,
+      "intervention_score_pct": 45.01953125,
+      "paired_delta_pp": 8.3984375,
+      "paired_cluster_bootstrap_95_pp": [
+        4.296875,
+        12.59765625
+      ],
+      "clusters": 512,
+      "seat_setup": "side-swapped"
+    },
+    "public_counterplay": {
+      "baseline_score_pct": 42.96875,
+      "intervention_score_pct": 53.515625,
+      "paired_delta_pp": 10.546875,
+      "paired_cluster_bootstrap_95_pp": [
+        5.6640625,
+        15.234375
+      ],
+      "clusters": 512,
+      "seat_setup": "Round430 fixed as Player 1"
+    }
   },
   "round430_common_preview_matrix": {
     "summary": "Matched 512 team-pair clusters across Round430, Round464, and Round465 with the same Round402 preview selector and side-swapped matches. Round430 scored 36.62% vs Max Damage / 38.57% vs public Counterplay; Round464 35.84% / 38.67%; Round465 36.99% / 37.67%. Round465\u2019s paired equal-weight baseline delta vs Round430 was \u22120.24 pp (95% CI \u22121.91 to +1.42), so no checkpoint promotion is supported.",

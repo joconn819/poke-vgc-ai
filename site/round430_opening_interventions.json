@@ -1,0 +1,43 @@
+{
+  "experiment": "Round430 first-five Max Damage action intervention across two opponents",
+  "method": "Paired baseline vs intervention on matched teams/previews. Max Damage evaluation alternates Round430 across both player seats. Public Counterplay evaluation keeps Round430 as Player 1. Do not pool effects across opponents or treat this as a trained-policy result.",
+  "max_damage": {
+    "clusters": 512,
+    "side_swapped": true,
+    "baseline_score_pct": 36.62109375,
+    "intervention_score_pct": 45.01953125,
+    "paired_delta_pp": 8.3984375,
+    "paired_cluster_bootstrap_95_pp": [
+      4.296875,
+      12.59765625
+    ],
+    "action_overrides": 5076,
+    "errors": 0,
+    "matches_per_second": 5.67,
+    "source_artifact": "training/outputs/phase12_headless/round430_opening5_maxdamage_intervention_512x1_20261030/report.json"
+  },
+  "public_counterplay": {
+    "clusters": 512,
+    "side_swapped": false,
+    "policy_seat": "Player 1",
+    "decision_indices_overridden": [
+      0,
+      1,
+      2,
+      3,
+      4
+    ],
+    "baseline_score_pct": 42.96875,
+    "intervention_score_pct": 53.515625,
+    "paired_delta_pp": 10.546875,
+    "paired_cluster_bootstrap_95_pp": [
+      5.6640625,
+      15.234375
+    ],
+    "decision_zero_reached_clusters": 512,
+    "action_fallbacks": 0,
+    "matches_per_second": 6.89,
+    "source_artifact": "training/outputs/phase12_headless/round430_opening0to4_maxdamage_intervention_vs_public_counterplay_512x1_20261030/evaluation/paired_summary.json"
+  },
+  "interpretation": "The intervention improves both paired samples, but seat setup differs: Max Damage is side-swapped; Public Counterplay is fixed-seat. The opponent actions are supplied by the heuristic and are not learned policy outputs. Validate with seat-swapped and independent-seed evaluations before using this to justify policy changes."
+}
