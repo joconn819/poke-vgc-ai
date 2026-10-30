@@ -1,0 +1,30 @@
+{
+  "repository": "joconn819/poke-vgc-ai",
+  "generated_at": "2026-10-30 08:41 UTC",
+  "target_pct": 80,
+  "candidate": {
+    "round": 402,
+    "win_rate_pct": 77.15,
+    "ci95": "[74.90%, 79.35%]",
+    "games": 2048,
+    "status": "below target"
+  },
+  "speed": {
+    "games_per_second": "9.36",
+    "context": "Latest 256-match traced local headless evaluation; not a raw simulator benchmark.",
+    "decision_latency": "Re-profile pending",
+    "current_bottleneck": "Policy inference / feature prep",
+    "gpu_status": "PPO training; simulator CPU"
+  },
+  "latest_run": {
+    "round": 420,
+    "status": "completed \u00b7 inconclusive",
+    "summary": "Round420 trained 20,000 outcomes for 16 epochs. On a fresh paired screen it scored 73.54% vs Round402's 71.88%; paired change +1.66 pp (95% CI [-2.25,+5.66]). Not a confirmed improvement.",
+    "games": "20,000 outcomes",
+    "epochs": "16",
+    "evaluation": "No significant gain"
+  },
+  "method": "Native self-play PPO for in-battle decisions, with terminal win/loss as the objective and auxiliary win-probability plus hidden-set prediction losses. Search is a later add-on after the base policy improves.",
+  "jax_decision": "A full JAX battle-engine rewrite is gated on fresh profiling. Existing measurements put policy inference and feature preparation at least level with Showdown advancement, limiting the likely gain from simulator-only acceleration.",
+  "evaluation_note": "The headline result is the best confirmed paired result against Max Damage on held-out team-pair clusters. Round402 remains below the 80% target; training-set results and small screens are not presented as confirmed strength."
+}

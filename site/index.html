@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#101a2c">
+  <title>VGC Agent Training Progress</title>
+  <style>
+    :root { color-scheme: dark; --bg:#0b1220; --panel:#131e31; --line:#263650; --muted:#a7b5c9; --text:#eef4ff; --blue:#72b7ff; --green:#72dfb1; }
+    * { box-sizing:border-box; }
+    body { margin:0; background:radial-gradient(ellipse at 15% 0%,#172846 0,transparent 45%),var(--bg); color:var(--text); font:16px/1.55 system-ui,-apple-system,Segoe UI,sans-serif; }
+    main { width:min(1050px,calc(100% - 32px)); margin:48px auto 72px; }
+    header { margin-bottom:28px; }
+    h1 { margin:0 0 8px; font-size:clamp(2rem,6vw,3.5rem); line-height:1.05; letter-spacing:-.04em; }
+    h2 { margin:0 0 14px; font-size:1.15rem; }
+    p { margin:0; color:var(--muted); }
+    .eyebrow { color:var(--blue); font-size:.78rem; font-weight:700; letter-spacing:.13em; text-transform:uppercase; margin-bottom:10px; }
+    .grid { display:grid; grid-template-columns:repeat(12,1fr); gap:14px; }
+    .card { background:linear-gradient(145deg,rgba(23,36,58,.98),rgba(17,28,46,.98)); border:1px solid var(--line); border-radius:16px; padding:22px; }
+    .hero { grid-column:span 7; min-height:230px; }
+    .rate { grid-column:span 5; }
+    .wide { grid-column:span 12; }
+    .half { grid-column:span 6; }
+    .metric { font-size:clamp(2.5rem,8vw,4.8rem); line-height:1; font-weight:750; letter-spacing:-.055em; margin:14px 0 10px; }
+    .metric small { font-size:.28em; color:var(--muted); letter-spacing:0; font-weight:600; }
+    .track { height:10px; border-radius:9px; background:#263650; overflow:hidden; margin:18px 0 9px; }
+    .track span { display:block; height:100%; background:linear-gradient(90deg,#4a91ff,#61ddb0); border-radius:9px; }
+    .sub { font-size:.9rem; }
+    .facts { display:grid; grid-template-columns:repeat(3,1fr); gap:12px; margin-top:16px; }
+    .fact { padding:14px; background:#0d1728; border-radius:12px; border:1px solid #22334e; }
+    .fact b { display:block; color:var(--text); font-size:1.05rem; margin-bottom:3px; }
+    .tag { display:inline-block; border:1px solid #37634f; color:var(--green); border-radius:99px; padding:3px 10px; font-size:.78rem; font-weight:700; }
+    a { color:var(--blue); }
+    footer { color:var(--muted); font-size:.85rem; margin-top:18px; }
+    .error { color:#ffc5a8; }
+    @media(max-width:700px) { main{margin-top:28px}.hero,.rate,.half{grid-column:span 12}.facts{grid-template-columns:1fr} }
+  </style>
+</head>
+<body>
+  <main>
+    <header>
+      <div class="eyebrow">Pokémon Showdown · VGC · Closed Team Sheet</div>
+      <h1>Agent training progress</h1>
+      <p>Reproducible progress toward stronger play, measured on held-out matches.</p>
+    </header>
+    <section class="grid" aria-live="polite" id="dashboard">
+      <article class="card wide"><p>Loading the latest committed training summary…</p></article>
+    </section>
+    <footer id="updated"></footer>
+  </main>
+  <script>
+    const esc = value => String(value ?? "—").replace(/[&<>"']/g, ch => ({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[ch]));
+    fetch("progress.json", {cache:"no-store"}).then(r => { if (!r.ok) throw new Error(`HTTP ${r.status}`); return r.json(); }).then(d => {
+      const pct = Math.max(0, Math.min(100, Number(d.candidate?.win_rate_pct ?? 0)));
+      document.querySelector("#dashboard").innerHTML = `
+        <article class="card hero">
+          <span class="tag">${esc(d.candidate?.status)}</span>
+          <div class="eyebrow" style="margin-top:18px">Best measured candidate vs Max Damage</div>
+          <div class="metric">${pct.toFixed(2)}<small>% win rate</small></div>
+          <p class="sub">Round ${esc(d.candidate?.round)} · ${esc(d.candidate?.games)} matches · 95% cluster interval ${esc(d.candidate?.ci95)}</p>
+          <div class="track" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${pct}"><span style="width:${pct}%"></span></div>
+          <p class="sub">Target: ${esc(d.target_pct)}% on held-out team pairs</p>
+        </article>
+        <article class="card rate"><div class="eyebrow">Runtime</div><h2>Measured match speed</h2><div class="metric">${esc(d.speed?.games_per_second)}<small> games/sec</small></div><p class="sub">${esc(d.speed?.context)}</p><div class="facts"><div class="fact"><b>${esc(d.speed?.decision_latency)}</b><span class="sub">decision latency</span></div><div class="fact"><b>${esc(d.speed?.current_bottleneck)}</b><span class="sub">current bottleneck</span></div><div class="fact"><b>${esc(d.speed?.gpu_status)}</b><span class="sub">GPU path</span></div></div></article>
+        <article class="card half"><div class="eyebrow">Latest training run</div><h2>Round ${esc(d.latest_run?.round)} · ${esc(d.latest_run?.status)}</h2><p>${esc(d.latest_run?.summary)}</p><div class="facts"><div class="fact"><b>${esc(d.latest_run?.games)}</b><span class="sub">self-play games</span></div><div class="fact"><b>${esc(d.latest_run?.epochs)}</b><span class="sub">epochs</span></div><div class="fact"><b>${esc(d.latest_run?.evaluation)}</b><span class="sub">evaluation</span></div></div></article>
+        <article class="card half"><div class="eyebrow">Method</div><h2>What is being improved</h2><p>${esc(d.method)}</p><p style="margin-top:14px">${esc(d.jax_decision)}</p></article>
+        <article class="card wide"><div class="eyebrow">Evaluation discipline</div><h2>How to read these numbers</h2><p>${esc(d.evaluation_note)}</p><p style="margin-top:12px"><a href="https://github.com/${esc(d.repository)}/blob/main/PLAN.md">Full training plan and experiment log</a> · <a href="https://github.com/${esc(d.repository)}">Source repository</a></p></article>`;
+      document.querySelector("#updated").textContent = `Summary built from PLAN.md · ${d.generated_at}`;
+    }).catch(e => { document.querySelector("#dashboard").innerHTML = `<article class="card wide"><p class="error">Could not load progress data (${esc(e.message)}).</p></article>`; });
+  </script>
+</body>
+</html>
