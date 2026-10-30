@@ -286,7 +286,9 @@ percentage alone.
   This measures the PPO update only, excluding rollout generation. Artifacts:
   `training/outputs/phase12_headless/round437_input_scan_reuse_speedbench_20k_20261030/`
   and
-  `training/outputs/phase12_headless/round438_input_scan_control_20k_20261030/`.
+  `training/outputs/phase12_headless/round438_input_scan_control_20k_20261030/`;
+  comparison summary:
+  `training/outputs/phase12_headless/round437_input_scan_reuse_speedbench_20k_20261030/comparison.json`.
 - **Round430 held-out screens (2026-10-30):** each used 128 held-out team
   clusters and two outcome repeats (512 side-swapped games); intervals are
   seeded 10,000-resample cluster bootstraps. Round430 scored 49.02% vs Max
