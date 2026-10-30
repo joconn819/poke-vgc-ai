@@ -1,0 +1,307 @@
+{
+  "round": 465,
+  "format": "gen9championsdoubles2026mcclosed",
+  "method": "64 held-out team-pair clusters per opponent; two side-swapped games per cluster. Per-game normalized action fractions; bootstrap at the team-pair cluster. These trace samples are exploratory, not a causal or promotion evaluation.",
+  "opponents": [
+    {
+      "opponent": "Max Damage",
+      "games": 128,
+      "clusters": 64,
+      "score_percent": 45.3125,
+      "cluster_bootstrap_95_pct": [
+        34.375,
+        56.25
+      ],
+      "action_adjustments": 0,
+      "outcomes": {
+        "win": {
+          "games": 58,
+          "decision_count": {
+            "count": 58,
+            "median": 7.0,
+            "p10": 4.0,
+            "p90": 9.0,
+            "max": 2641
+          },
+          "trace_steps": {
+            "count": 58,
+            "median": 8.0,
+            "p10": 6.0,
+            "p90": 11.0,
+            "max": 2642
+          },
+          "matches_over_200_trace_steps": 2,
+          "per_game_action_kind_fractions": {
+            "move": 0.7826727894559926,
+            "pass": 0.1142687640021624,
+            "switch": 0.10305844654184494
+          },
+          "first_decision_action_kind_fractions": {
+            "move": 1.0
+          },
+          "top_moves_by_mean_per_game_fraction": [
+            [
+              "rockslide",
+              0.11322642874367012
+            ],
+            [
+              "heatwave",
+              0.08064698711250436
+            ],
+            [
+              "muddywater",
+              0.055773249738766975
+            ],
+            [
+              "dazzlinggleam",
+              0.04976862218241528
+            ],
+            [
+              "liquidation",
+              0.040097091605712294
+            ],
+            [
+              "closecombat",
+              0.03547544409613375
+            ],
+            [
+              "bravebird",
+              0.03395297231504128
+            ],
+            [
+              "psychic",
+              0.032915360501567396
+            ]
+          ],
+          "post_action_snapshot_1": {
+            "joint_snapshot": 1,
+            "games_observed": 58,
+            "mean_policy_alive": 5.672413793103448,
+            "mean_opponent_alive": 5.482758620689655,
+            "mean_policy_team_hp_sum": 5.155342362492447,
+            "mean_opponent_team_hp_sum": 4.837460351939794
+          }
+        },
+        "loss": {
+          "games": 70,
+          "decision_count": {
+            "count": 70,
+            "median": 7.0,
+            "p10": 6.0,
+            "p90": 10.0,
+            "max": 3968
+          },
+          "trace_steps": {
+            "count": 70,
+            "median": 9.0,
+            "p10": 6.0,
+            "p90": 12.0,
+            "max": 3969
+          },
+          "matches_over_200_trace_steps": 2,
+          "per_game_action_kind_fractions": {
+            "move": 0.6878857122603281,
+            "pass": 0.1780899827205099,
+            "switch": 0.13402430501916193
+          },
+          "first_decision_action_kind_fractions": {
+            "move": 1.0
+          },
+          "top_moves_by_mean_per_game_fraction": [
+            [
+              "heatwave",
+              0.06642366677785069
+            ],
+            [
+              "closecombat",
+              0.04307011382641635
+            ],
+            [
+              "psychic",
+              0.036011052439623874
+            ],
+            [
+              "muddywater",
+              0.0356884385455814
+            ],
+            [
+              "dazzlinggleam",
+              0.03511805654662798
+            ],
+            [
+              "knockoff",
+              0.03291409570821335
+            ],
+            [
+              "alluringvoice",
+              0.028664192949907238
+            ],
+            [
+              "scald",
+              0.027553081838796123
+            ]
+          ],
+          "post_action_snapshot_1": {
+            "joint_snapshot": 1,
+            "games_observed": 70,
+            "mean_policy_alive": 5.385714285714286,
+            "mean_opponent_alive": 5.8,
+            "mean_policy_team_hp_sum": 4.819192563954108,
+            "mean_opponent_team_hp_sum": 5.2137989181350415
+          }
+        }
+      },
+      "interpretation_limit": "Outcome-stratified actions and states are descriptive associations, not causal action values. The policy's side is recovered from the checkpoint_p1/p2 filename because the raw trace result is Player 1's result."
+    },
+    {
+      "opponent": "Public Counterplay",
+      "games": 128,
+      "clusters": 64,
+      "score_percent": 38.28125,
+      "cluster_bootstrap_95_pct": [
+        27.34375,
+        49.21875
+      ],
+      "action_adjustments": 0,
+      "outcomes": {
+        "win": {
+          "games": 49,
+          "decision_count": {
+            "count": 49,
+            "median": 8.0,
+            "p10": 5.0,
+            "p90": 12.0,
+            "max": 4835
+          },
+          "trace_steps": {
+            "count": 49,
+            "median": 9.0,
+            "p10": 6.800000000000001,
+            "p90": 14.0,
+            "max": 4836
+          },
+          "matches_over_200_trace_steps": 3,
+          "per_game_action_kind_fractions": {
+            "move": 0.7915702983981998,
+            "pass": 0.1131237807921916,
+            "switch": 0.09530592080960858
+          },
+          "first_decision_action_kind_fractions": {
+            "move": 1.0
+          },
+          "top_moves_by_mean_per_game_fraction": [
+            [
+              "rockslide",
+              0.1211602173336867
+            ],
+            [
+              "heatwave",
+              0.08644314868804667
+            ],
+            [
+              "dazzlinggleam",
+              0.05746974114321052
+            ],
+            [
+              "psychic",
+              0.05440557175251053
+            ],
+            [
+              "muddywater",
+              0.048051948051948054
+            ],
+            [
+              "closecombat",
+              0.04490590266637527
+            ],
+            [
+              "outrage",
+              0.030606558060712677
+            ],
+            [
+              "fireblast",
+              0.02829177308424144
+            ]
+          ],
+          "post_action_snapshot_1": {
+            "joint_snapshot": 1,
+            "games_observed": 49,
+            "mean_policy_alive": 5.816326530612245,
+            "mean_opponent_alive": 5.571428571428571,
+            "mean_policy_team_hp_sum": 5.317536356081737,
+            "mean_opponent_team_hp_sum": 4.934228176606466
+          }
+        },
+        "loss": {
+          "games": 79,
+          "decision_count": {
+            "count": 79,
+            "median": 8.0,
+            "p10": 6.0,
+            "p90": 10.0,
+            "max": 1016
+          },
+          "trace_steps": {
+            "count": 79,
+            "median": 9.0,
+            "p10": 7.0,
+            "p90": 12.0,
+            "max": 1017
+          },
+          "matches_over_200_trace_steps": 1,
+          "per_game_action_kind_fractions": {
+            "move": 0.6827246851169223,
+            "pass": 0.18600547155047567,
+            "switch": 0.13126984333260203
+          },
+          "first_decision_action_kind_fractions": {
+            "move": 1.0
+          },
+          "top_moves_by_mean_per_game_fraction": [
+            [
+              "heatwave",
+              0.05521299305372544
+            ],
+            [
+              "knockoff",
+              0.04981922086352465
+            ],
+            [
+              "closecombat",
+              0.04435072456293603
+            ],
+            [
+              "dazzlinggleam",
+              0.0344996072844174
+            ],
+            [
+              "muddywater",
+              0.03030927560897777
+            ],
+            [
+              "liquidation",
+              0.02915887031653301
+            ],
+            [
+              "scald",
+              0.02812160537402533
+            ],
+            [
+              "poltergeist",
+              0.026675855789779844
+            ]
+          ],
+          "post_action_snapshot_1": {
+            "joint_snapshot": 1,
+            "games_observed": 79,
+            "mean_policy_alive": 5.417721518987341,
+            "mean_opponent_alive": 5.810126582278481,
+            "mean_policy_team_hp_sum": 4.9224958972431425,
+            "mean_opponent_team_hp_sum": 5.232102131297418
+          }
+        }
+      },
+      "interpretation_limit": "Outcome-stratified actions and states are descriptive associations, not causal action values. The policy's side is recovered from the checkpoint_p1/p2 filename because the raw trace result is Player 1's result."
+    }
+  ]
+}

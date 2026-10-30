@@ -16279,3 +16279,37 @@ team choice but does not change that conclusion.
   equilibrium-oriented update that trains against a mixture selected from a
   payoff matrix over candidate policies/actions. Retain paired held-out screens
   and promote only on intervals that support broader gains.
+
+### Round465 hard-opponent decision-trace diagnostic (2026-10-30)
+
+- Collected 64 additional side-swapped team-pair clusters against each of Max
+  Damage and Public Counterplay using new held-out seeds. Each set includes 128
+  matches. The score intervals are broad and are diagnostic only: 45.31%
+  [34.38, 56.25] against Max Damage, 38.28% [27.34, 49.22] against Public
+  Counterplay. Both are consistent with the larger 512-cluster screens.
+- The first resolved joint action was a move for every traced game side. After
+  the first post-action snapshot, losing games averaged about 0.4 fewer active
+  Pokémon and 0.3–0.4 less team HP than the opponent in both matchups. Winning
+  games had the reverse lead. This association points to opening/team-selection
+  and first-turn response counterfactuals for investigation; it does not show
+  that choosing a switch or a different move would have caused a win.
+- In the small trace samples, median decision counts were nearly identical
+  between wins and losses (7 vs 7 against Max Damage; 8 vs 8 against Public
+  Counterplay). A handful of very long games (more than 200 trace steps) made
+  average action counts misleading. `scripts/analyze_action_loss_traces.py` now
+  reports per-game mean action fractions and median/p10/p90 decision and trace
+  lengths so long matches cannot dominate the comparison. These diagnostics
+  remain descriptive.
+- Reports:
+  `training/outputs/phase12_headless/round465_round464_continue_pool430_464_lr5e5_20k_20261030/evaluation/decision_traces_round465_max_damage_64pairs_20261030/loss_analysis.md`
+  and the matching Public Counterplay report. A compact combined report is
+  published as `site/round465_trace_diagnostic.json`.
+- Corrected `scripts/summarize_paired_eval.py` to compute incomplete clusters
+  from `pairs_requested`; `cases_requested` counts side-swapped legs and caused
+  negative incomplete counts after recovered summaries were merged.
+- **Next experiment:** gather controlled first-turn counterfactuals over the
+  largest hard-opponent evaluation-loss states, including alternative legal
+  moves, targets, Protect, and switches, and score each response pair across
+  multiple legal opponent actions. Use the measured payoff matrix to choose
+  regret-matched or equilibrium-oriented training exposure. Do not change PPO
+  weights again based only on these outcome-stratified traces.

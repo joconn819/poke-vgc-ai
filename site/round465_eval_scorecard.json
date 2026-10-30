@@ -119,5 +119,7 @@
   "paired_delta_reports": [
     "round465_vs_round464_control_paired_delta.json",
     "round465_vs_round430_control_paired_delta.json"
-  ]
+  ],
+  "decision_trace_report": "round465_trace_diagnostic.json",
+  "trace_diagnostic": "64-cluster exploratory traces against Max Damage and Public Counterplay: first actions were moves in every game; losses were behind by about 0.4 active Pokémon and 0.3–0.4 team HP at the first post-action snapshot. Median decision counts matched between wins and losses. Long-match outliers distort total action counts; these associations are not causal."
 }
