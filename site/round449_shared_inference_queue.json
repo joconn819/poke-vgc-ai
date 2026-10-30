@@ -1,0 +1,110 @@
+{
+  "benchmark": "shared GPU inference queue versus concurrent CPU forwards",
+  "checkpoint": "training/outputs/phase12_headless/round447_indexed_matched_replay_20k_20261030/checkpoints/latest.pt",
+  "rollout_dir": "training/outputs/phase12_headless/round435_equilibrium_mixture_response_20k_20261030/rollouts",
+  "states_prepared": 256,
+  "feature_preparation_mean_ms_per_state": 0.3193663392266899,
+  "native_action_feature_mean_ms_per_state": 0.15838663352951698,
+  "native_action_feature_first_call_ms": 54.82398500316776,
+  "requests_per_worker": 64,
+  "cpu_threads": 1,
+  "results": [
+    {
+      "device": "cpu",
+      "execution": "independent processes",
+      "workers": 8,
+      "requests": 512,
+      "elapsed_seconds": 0.17966218601213768,
+      "states_per_second": 2849.792777014358,
+      "request_p50_ms": 2.531174002797343,
+      "request_p95_ms": 3.2536759972572327,
+      "request_p99_ms": 3.7196159828454256
+    },
+    {
+      "device": "cuda_shared_queue",
+      "workers": 8,
+      "requests": 512,
+      "elapsed_seconds": 0.3189014589879662,
+      "states_per_second": 1605.5116261456817,
+      "request_p50_ms": 4.341860010754317,
+      "request_p95_ms": 5.2916500135324895,
+      "request_p99_ms": 18.985728995176032,
+      "max_batch": 32,
+      "max_wait_ms": 1.0,
+      "mean_actual_batch_size": 7.876923076923077,
+      "batch_size_histogram": {
+        "2": 1,
+        "6": 1,
+        "8": 63
+      },
+      "mean_queue_wait_ms": 1.0875347609271557
+    },
+    {
+      "device": "cuda_shared_queue",
+      "workers": 8,
+      "requests": 512,
+      "elapsed_seconds": 0.4705553889798466,
+      "states_per_second": 1088.0759459795038,
+      "request_p50_ms": 6.969390495214611,
+      "request_p95_ms": 7.818707003025338,
+      "request_p99_ms": 8.199865987990052,
+      "max_batch": 32,
+      "max_wait_ms": 3.0,
+      "mean_actual_batch_size": 8,
+      "batch_size_histogram": {
+        "8": 64
+      },
+      "mean_queue_wait_ms": 2.951880459079348
+    },
+    {
+      "device": "cpu",
+      "execution": "independent processes",
+      "workers": 16,
+      "requests": 1024,
+      "elapsed_seconds": 0.2900904380076099,
+      "states_per_second": 3529.9336545975275,
+      "request_p50_ms": 3.970028003095649,
+      "request_p95_ms": 5.719598004361615,
+      "request_p99_ms": 7.84536698483862
+    },
+    {
+      "device": "cuda_shared_queue",
+      "workers": 16,
+      "requests": 1024,
+      "elapsed_seconds": 0.3516393869940657,
+      "states_per_second": 2912.0742381947134,
+      "request_p50_ms": 4.762793498230167,
+      "request_p95_ms": 6.268402998102829,
+      "request_p99_ms": 8.935123012633994,
+      "max_batch": 32,
+      "max_wait_ms": 1.0,
+      "mean_actual_batch_size": 15.283582089552239,
+      "batch_size_histogram": {
+        "5": 2,
+        "6": 2,
+        "11": 1,
+        "15": 1,
+        "16": 61
+      },
+      "mean_queue_wait_ms": 1.347480196898232
+    },
+    {
+      "device": "cuda_shared_queue",
+      "workers": 16,
+      "requests": 1024,
+      "elapsed_seconds": 0.4902988570102025,
+      "states_per_second": 2088.5221031194283,
+      "request_p50_ms": 7.284259016159922,
+      "request_p95_ms": 8.08993901591748,
+      "request_p99_ms": 8.546038996428251,
+      "max_batch": 32,
+      "max_wait_ms": 3.0,
+      "mean_actual_batch_size": 16,
+      "batch_size_histogram": {
+        "16": 64
+      },
+      "mean_queue_wait_ms": 3.1916297552072592
+    }
+  ],
+  "scope_note": "Inputs were already in memory. The shared queue includes batch collation, H2D transfer, model forward, output synchronization and queue latency, but excludes IPC serialization and rollout think time; results are an upper bound for production service throughput."
+}

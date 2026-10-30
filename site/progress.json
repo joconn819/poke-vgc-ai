@@ -230,7 +230,7 @@
     "games_per_second": "16.49",
     "context": "Round430 20,000-game complete training iteration including rollout and PPO preparation/optimization; Round435 full aggregate rollout telemetry was not captured. Not raw simulator speed.",
     "decision_latency": "~85 ms action selection per policy-pool match",
-    "current_bottleneck": "Rollout throughput remains dominated by policy inference / action selection, observation encoding, and public-counterplay scoring; Showdown is about 17.5% of historical-policy episode time. Round448 now caches static team-token tensors per live PolicyAgent: model-input construction fell 26.8% on 1,971 real states with exact inputs and action/value parity, estimated 10.34 s saved per 162,366-state PPO sample. Whole-match games/sec and decision latency have not yet been measured for this change. PPO Round447 preparation was 25.3% faster than Round441, but its full replay remained ~14 s slower than Round437.",
+    "current_bottleneck": "Policy inference / action selection, observation encoding, and public-counterplay scoring still dominate rollout time; Showdown is about 17.5% of historical-policy episode time. Round449 measured a shared GPU queue against independent CPU worker processes: at 8 workers CPU delivered 2,850 states/s vs GPU 1,606; at 16 CPU delivered 3,530 vs GPU 2,912, with lower CPU p95 latency. A central GPU inference service is therefore not a speedup at current concurrency. Round448 static team-token caching reduced model-input construction 26.8% with exact parity, but whole-match throughput is still unmeasured.",
     "gpu_status": "RTX 4060 used for PPO optimization; rollout inference and Showdown simulation remain CPU-side",
     "profile_context": "Round430 remains the latest complete end-to-end 20,000-game profile: eight-worker rollout 22.55 games/s and full iteration 16.49 games/s. Round435 offers newer per-shard timings but no valid aggregate rate after preflight recovery. Per-opponent shard rates are not aggregate rates. Action selection contains policy inference; Public Counterplay scoring is nested inside action selection.",
     "active_training_profile": {
@@ -314,8 +314,8 @@
     ],
     "opportunities": [
       {
-        "title": "1 \u00b7 Batch policy inference across live rollouts",
-        "detail": "Historical-policy rollouts spent about 72 ms/match in inference. Workers currently infer independently on CPU. Gather ready decisions from concurrent matches into a shared batch, then compare CPU batching with a single GPU inference service at observed batch sizes. Measure games/s, queue delay, and p95 decision latency before adopting it."
+        "title": "1 \u00b7 Keep per-worker CPU inference at current concurrency",
+        "detail": "Round449 tested a shared CUDA inference queue against independent CPU model processes at 8 and 16 producers. With a 1 ms batch window, CPU reached 2,850 / 3,530 states/s and GPU reached 1,606 / 2,912; CPU also had lower p95 latency. A 3 ms GPU wait made throughput worse. Do not add a GPU broker at these worker counts. Reconsider only if real rollouts can sustain larger batches and the memory budget supports more concurrent matches; the prototype excludes IPC and live feature preparation."
       },
       {
         "title": "2 \u00b7 Cache static team tokens and trim observation encoding",
@@ -614,6 +614,24 @@
       "log_probability_and_value_parity": true,
       "scope_note": "Model-input construction only; no full-match games/sec or p95 decision-latency comparison yet.",
       "report": "round448_live_team_feature_cache.json"
+    },
+    "shared_inference_queue_benchmark": {
+      "context": "Round449 queue-aware prototype using 256 real closed-sheet inputs from Round435, 64 requests per concurrent producer, and the Round447 checkpoint. CPU baseline used independent processes (one Torch thread each); GPU used one shared CUDA queue. Inputs were prebuilt, so these are upper bounds for production throughput.",
+      "cpu_8_workers_states_per_second": 2849.8,
+      "cpu_8_workers_p95_ms": 3.254,
+      "gpu_8_workers_states_per_second": 1605.5,
+      "gpu_8_workers_p95_ms": 5.292,
+      "gpu_8_workers_mean_batch_1ms": 7.88,
+      "cpu_16_workers_states_per_second": 3529.9,
+      "cpu_16_workers_p95_ms": 5.72,
+      "gpu_16_workers_states_per_second": 2912.1,
+      "gpu_16_workers_p95_ms": 6.268,
+      "gpu_16_workers_mean_batch_1ms": 15.28,
+      "gpu_8_workers_3ms_wait_states_per_second": 1088.1,
+      "gpu_16_workers_3ms_wait_states_per_second": 2088.5,
+      "finding": "At both 8 and 16 producers, the shared GPU queue was slower and had higher p95 latency than independent CPU processes. Waiting 3 ms for batches reduced GPU throughput further. Do not implement a shared GPU broker at the current worker counts; its actual performance would also include IPC and live feature preparation.",
+      "scope_note": "Inputs were already in memory. The shared queue includes batch collation, H2D transfer, model forward, output synchronization and queue latency, but excludes IPC serialization and rollout think time; results are an upper bound for production service throughput.",
+      "report": "round449_shared_inference_queue.json"
     }
   },
   "latest_run": {
@@ -627,5 +645,5 @@
   "method": "Native self-play PPO for in-battle decisions. Terminal win/loss remains the main objective; win-probability and hidden-set prediction are auxiliary tasks. Search comes after a stronger policy.",
   "jax_decision": "Round430 has a confirmed self-play head-to-head lift over Round424, but external-opponent screens remain inconclusive. Prioritize measured inference batching, observation throughput, and rollouts; keep equilibrium-oriented opponent coverage and defer a JAX/GPU engine rewrite until its end-to-end payoff is measured.",
   "evaluation_note": "Score rates include wins and half credit for draws. Use paired held-out teams, side swaps, repeated outcomes, and cluster intervals. Track results across public counterplay, random, historical PPO, and Max Damage; no one matchup percentage is the finish line. Round431's equal-weight four-opponent mean was 59.86%, but the median was 48.05%, p10 47.30%, and worst score 47.07%; the mean is lifted by random play. All paired differences vs Round430 included zero.",
-  "generated_at": "2026-10-30 Round448 live team-token cache benchmark"
+  "generated_at": "2026-10-30 Round449 shared inference queue profile"
 }
