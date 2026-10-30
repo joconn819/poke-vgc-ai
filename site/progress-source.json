@@ -100,6 +100,50 @@
     "current_bottleneck": "CPU policy inference and observation throughput remain shared bottlenecks; a cached Counterplay scorer sustained an 80 ms mean in a 240-game, 8-worker rollout",
     "gpu_status": "RTX 4060 used for PPO optimization; rollout inference and Showdown simulation remain CPU-side",
     "profile_context": "Round430, 20,000 self-play matches on 8 rollout workers. End-to-end episode time includes setup, agent decisions, engine calls, and trajectory writes. Per-opponent rates are per worker shard, not aggregate. Total rollout throughput was 22.55 games/s; the complete training iteration was 16.49 games/s. Action selection contains policy inference; Public Counterplay scoring is nested inside action selection.",
+    "active_training_profile": {
+      "round": "431",
+      "status": "In progress · first rollout shard batches",
+      "context": "Round431 continues from Round430 with 20,000 planned episodes on 8 rollout workers and a 30% Max Damage / 30% Public Counterplay / 40% policy-pool mixture. These are completed shard-batch means so far, not full-run aggregate throughput. Shard rates are per worker and must not be summed.",
+      "profile": [
+        {
+          "opponent": "Max Damage",
+          "completed_episodes": "2,500",
+          "matches_per_second": "7.2",
+          "end_to_end_ms": "136",
+          "action_ms": "50",
+          "inference_ms": "35",
+          "baseline_ms": "5",
+          "encoding_ms": "26",
+          "engine_ms": "29",
+          "persistence_ms": "9"
+        },
+        {
+          "opponent": "Public Counterplay",
+          "completed_episodes": "2,500",
+          "matches_per_second": "4.7",
+          "end_to_end_ms": "209",
+          "action_ms": "124",
+          "inference_ms": "35",
+          "baseline_ms": "79",
+          "encoding_ms": "25",
+          "engine_ms": "30",
+          "persistence_ms": "9"
+        },
+        {
+          "opponent": "Historical policy pool",
+          "completed_episodes": "800 per pool shard",
+          "matches_per_second": "5.0",
+          "end_to_end_ms": "196",
+          "action_ms": "85",
+          "inference_ms": "73",
+          "baseline_ms": "0",
+          "encoding_ms": "28",
+          "engine_ms": "34",
+          "persistence_ms": "13"
+        }
+      ],
+      "finding": "The measured bottleneck shifts with the opponent: Public Counterplay scoring takes about 79 ms/match, while policy-pool inference takes about 73 ms/match. Both exceed the roughly 29–34 ms Showdown engine time. Next speed work should batch policy inference across concurrent rollout workers and continue reducing repeated counterplay scoring/feature work."
+    },
     "profile": [
       {
         "opponent": "Max Damage",
