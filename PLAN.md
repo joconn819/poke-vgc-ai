@@ -16388,3 +16388,24 @@ team choice but does not change that conclusion.
   cannot obscure aggregate or worst-case performance.
 - Output:
   `training/outputs/phase12_headless/round465_round464_continue_pool430_464_lr5e5_20k_20261030/evaluation/opening_counterfactuals_64pairs_8repeats_3opponents_20261030.json`
+
+### Decision flow: win probability is not currently an action selector
+
+- The Round465 PPO network emits policy action logits and a separate scalar
+  win-probability prediction. Training uses the probability output as an
+  auxiliary loss (weight 0.1); it does not evaluate candidate actions or rank
+  them by estimated win chance. The default local runner calls the direct
+  policy and leaves search disabled.
+- A state-value estimate cannot by itself distinguish two actions from the
+  same state. To use win odds for action choice, simulate each candidate joint
+  action pair across legal opposing responses and chance outcomes, evaluate
+  the resulting player-view states, then select a robust or equilibrium action
+  from that payoff matrix. Existing search does this with a separate learned
+  value model, but earlier tests found large strength losses, so it remains
+  disabled and must pass equal-budget paired evaluation before becoming part
+  of default play.
+- Current implication: lower auxiliary win-probability loss is not evidence of
+  better move choice. Report prediction calibration and action-selection
+  strength separately. The Round465 action counterfactuals above are complete
+  game outcome diagnostics; they did not feed the probability head into move
+  selection or alter a checkpoint.
