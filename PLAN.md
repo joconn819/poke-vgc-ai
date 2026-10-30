@@ -16419,3 +16419,38 @@ team choice but does not change that conclusion.
   strength separately. The Round465 action counterfactuals above are complete
   game outcome diagnostics; they did not feed the probability head into move
   selection or alter a checkpoint.
+
+### Round430 common-preview response matrix and opening intervention (2026-10-30)
+
+- Completed a common-preview comparison for Round430, Round464, and Round465
+  against Max Damage and public Counterplay. Every matchup used the same 512
+  team-pair clusters, the Round402 preview selector on both seats, and 1,024
+  side-swapped matches. All team/preview signatures matched; no action
+  adjustments occurred. Each complete edge ran at 5.70–8.20 matches/s; the
+  two Round465 baseline edges each had one timeout (511 complete clusters).
+- Round430 scored 36.62% vs Max Damage and 38.57% vs public Counterplay;
+  Round464 scored 35.84% and 38.67%; Round465 scored 36.99% and 37.67%. On
+  the 511 matched clusters with Round430, Round465's equal-weight baseline
+  composite was 37.33% vs Round430's 37.57%, paired delta −0.24 pp (95%
+  cluster interval −1.91 to +1.42). Do not promote Round465.
+- A restricted matrix over these three policies plus the two named baselines
+  yields a near-pure Round465 point response and near-pure Max Damage opponent
+  response. This is a small, noisy empirical game; it is not a global Nash
+  result and must not by itself set the training mixture.
+- Tested whether Round430's first five joint decisions are an opening weakness
+  against Max Damage. On identical 512 team/preview clusters, replacing only
+  those decisions with the public Max Damage actions changed score from
+  36.62% to 45.02%, a paired gain of +8.40 pp (95% cluster bootstrap
+  interval +4.30 to +12.60). There were 1,024 completed matches, 5,076
+  overridden actions, no errors, and 5.67 matches/s. This is a diagnostic
+  intervention, not a learned policy, and has not established transfer to
+  other opponents.
+- Next: repeat the exact opening intervention on the same roster/preview set
+  against public Counterplay and frozen PPO opponents. Analyze by seat and
+  decision, then train a direct PPO candidate with a match-level diverse
+  response mixture. Keep the Round430 incumbent unless a fresh, held-out
+  cross-opponent screen supports promotion.
+- Outputs:
+  `training/outputs/phase12_headless/round430_464_465_common_preview_league_512x1_20261030/league_comparison.json`
+  `training/outputs/phase12_headless/round430_464_465_common_preview_league_512x1_20261030/league_matrix.json`
+  `training/outputs/phase12_headless/round430_opening5_maxdamage_intervention_512x1_20261030/report.json`

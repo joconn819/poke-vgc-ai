@@ -1,0 +1,33 @@
+{
+  "format": "gen9championsdoubles2026mcclosed",
+  "team_pair_clusters": 512,
+  "outcome_repeats_per_cluster": 1,
+  "shared_preview_selector": "Round402 on both seats",
+  "team_and_preview_signature_match": true,
+  "policy_scores": {
+    "round430": {
+      "max_damage_pct": 36.62109375,
+      "public_counterplay_pct": 38.57421875
+    },
+    "round464": {
+      "max_damage_pct": 35.83984375,
+      "public_counterplay_pct": 38.671875
+    },
+    "round465": {
+      "max_damage_pct": 36.986301369863014,
+      "public_counterplay_pct": 37.67123287671233
+    }
+  },
+  "round465_vs_round430_equal_weight_composite": {
+    "paired_clusters": 511,
+    "round430_pct": 37.573385518590996,
+    "round465_pct": 37.32876712328767,
+    "delta_pp": -0.2446183953033268,
+    "cluster_bootstrap_95_pp": [
+      -1.908023483365949,
+      1.4187866927592954
+    ]
+  },
+  "decision": "No supported promotion. Keep Round430 as validated incumbent. The restricted matrix is not a global equilibrium certificate.",
+  "source_artifact": "training/outputs/phase12_headless/round430_464_465_common_preview_league_512x1_20261030/league_comparison.json"
+}

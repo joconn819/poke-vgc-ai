@@ -1,0 +1,20 @@
+{
+  "experiment": "Round430 first-five-decision Max Damage intervention vs Max Damage",
+  "clusters": 512,
+  "team_and_preview_match": true,
+  "base_score_pct": 36.62109375,
+  "intervention_score_pct": 45.01953125,
+  "paired_delta_pp": 8.3984375,
+  "paired_cluster_bootstrap_95_pp": [
+    4.296875,
+    12.59765625
+  ],
+  "errors": {
+    "base": 0,
+    "intervention": 0
+  },
+  "action_overrides": 5076,
+  "games_per_second": 5.67,
+  "interpretation": "An intervention diagnostic only. Replacing the first five Round430 decisions with Max Damage actions raises performance against Max Damage, but this is not a trained policy or evidence of transfer to other opponents.",
+  "source_artifact": "training/outputs/phase12_headless/round430_opening5_maxdamage_intervention_512x1_20261030/report.json"
+}
