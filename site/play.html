@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#101a2c">
-  <title>Play against the latest VGC bot</title>
+  <title>Random VGC battle vs the latest bot</title>
   <style>
     :root { color-scheme:dark; --bg:#0b1220; --panel:#131e31; --line:#263650; --muted:#a7b5c9; --text:#eef4ff; --blue:#72b7ff; --green:#72dfb1; }
     * { box-sizing:border-box; }
@@ -37,35 +37,35 @@
   <main>
     <header>
       <div class="eyebrow">Local Pokémon Showdown · VGC · Closed Team Sheet</div>
-      <h1>Play the latest bot</h1>
-      <p>Challenge the current completed policy checkpoint in a full best-of-one VGC match. The bot generates a fresh legal team for each match.</p>
+      <h1>Play a random VGC battle</h1>
+      <p>Challenge the latest completed bot in a full best-of-one match. The bot brings a newly generated legal team and selects four Pokémon for battle.</p>
     </header>
 
     <section class="card" aria-labelledby="checkpoint-title">
-      <span class="badge">Latest completed policy: Round464</span>
+      <span class="badge">Latest completed policy: Round465</span>
       <h2 id="checkpoint-title">Checkpoint used for matches</h2>
-      <p>Round464 finished training from 20,000 audited games. Its held-out evaluation is still running, so Round430 remains the validated strength candidate. This page uses Round464 because it is the newest completed policy checkpoint.</p>
+      <p>Round465 is the newest completed checkpoint and is being evaluated. The bot loads a checkpoint only between matches, so a match keeps the policy version it started with. The page targets Round465 while its evaluation runs; Round430 remains the validated strength incumbent.</p>
     </section>
 
     <section class="card" aria-labelledby="connect-title">
-      <h2 id="connect-title">Connect to the local battle server</h2>
-      <p>Enter the address of the machine running the local Showdown server. The server must be reachable from this device, and the checkpoint bot must be running there.</p>
+      <h2 id="connect-title">Start your match</h2>
+      <p>Enter the private address of the machine running the local Showdown server and Round465 bot. This page opens that server and prepares the challenge command.</p>
       <label for="server">Showdown server address</label>
       <input id="server" inputmode="url" autocomplete="url" placeholder="192.168.1.153:8001" aria-describedby="server-help">
       <p class="note" id="server-help">Use the host IP and port, for example <code>192.168.1.153:8001</code>. This connection stays on your configured server; this page does not connect to public Pokémon Showdown.</p>
       <div class="actions">
-        <button id="open-server" type="button">Open local Showdown</button>
-        <button id="copy-challenge" class="secondary" type="button">Copy challenge command</button>
+        <button id="open-server" type="button">Open battle server</button>
+        <button id="copy-challenge" class="secondary" type="button">Copy random VGC challenge</button>
       </div>
       <div class="status" id="status" role="status" aria-live="polite"></div>
     </section>
 
     <section class="card" aria-labelledby="steps-title">
-      <h2 id="steps-title">Start a match</h2>
+      <h2 id="steps-title">Play a random team matchup</h2>
       <ol>
-        <li>Start the local Showdown server and the bot service on the same machine. The bot must use the completed Round464 checkpoint and Round402 team selector.</li>
-        <li>Open the server above, sign in or choose a username, then create or select a legal team for <code>gen9championsdoubles2026mcclosed</code>.</li>
-        <li>In the Showdown lobby, issue this challenge to the bot:</li>
+        <li>Start the local Showdown server and bot once (commands below). The bot uses Round465 and the Round402 team selector.</li>
+        <li>Open the server, sign in, and choose a legal team for <code>gen9championsdoubles2026mcclosed</code>. To vary your side between games, select or build a different legal team in Showdown.</li>
+        <li>Use the copied challenge command in the Showdown lobby. The bot prepares a fresh team for each match and selects four Pokémon.</li>
       </ol>
       <pre id="challenge">/challenge VGCCheckpointBot, gen9championsdoubles2026mcclosed</pre>
       <p class="note">The bot picks four from a newly generated six-Pokémon team. Your own team is selected in Showdown. The match runs entirely on the local server.</p>
@@ -81,9 +81,9 @@ scripts/run_local_showdown_lan.sh "$HOST_IP" 8001</pre>
   venv/bin/python scripts/run_lan_bot.py \
   --server-host "$HOST_IP" --port 8001 \
   --username VGCCheckpointBot \
-  --checkpoint training/outputs/phase12_headless/round464_round463_continue_pool463_462_lr5e5_20k_20261030/checkpoints/latest.pt \
+  --checkpoint training/outputs/phase12_headless/round465_round464_continue_pool430_464_lr5e5_20k_20261030/checkpoints/latest.pt \
   --team-selection-checkpoint training/outputs/phase12_headless/round402_selector_currentdata_8ep_20261030/selector_candidate.pt</pre>
-      <p class="note">The published progress site cannot host the Showdown battle process or access checkpoint files on the training machine, so the server and bot need to be running on a machine you control. These commands use the Round464 checkpoint shown above.</p>
+      <p class="note">The published progress site cannot host the Showdown battle process or access checkpoint files on the training machine, so the server and bot need to be running on a machine you control. These commands use the Round465 checkpoint shown above.</p>
     </section>
     <footer><a href="./">← Back to training progress</a></footer>
   </main>
@@ -91,6 +91,8 @@ scripts/run_local_showdown_lan.sh "$HOST_IP" 8001</pre>
     const serverInput = document.querySelector("#server");
     const status = document.querySelector("#status");
     const challenge = "/challenge VGCCheckpointBot, gen9championsdoubles2026mcclosed";
+    const savedHost = localStorage.getItem("vgc-showdown-host");
+    if (savedHost) serverInput.value = savedHost;
     document.querySelector("#open-server").addEventListener("click", () => {
       let host = serverInput.value.trim().replace(/^https?:\/\//i, "").replace(/\/$/, "");
       if (!host || /[/?#\s]/.test(host)) {
@@ -98,7 +100,8 @@ scripts/run_local_showdown_lan.sh "$HOST_IP" 8001</pre>
         serverInput.focus();
         return;
       }
-      status.textContent = "Opening your configured local Showdown server in a new tab.";
+      localStorage.setItem("vgc-showdown-host", host);
+      status.textContent = "Opening your configured local Showdown server. Sign in, then paste the challenge command below.";
       window.open(`http://${host}`, "_blank", "noopener,noreferrer");
     });
     document.querySelector("#copy-challenge").addEventListener("click", async () => {
