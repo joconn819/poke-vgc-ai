@@ -18189,3 +18189,9 @@ coverage, not another blind teacher-weight sweep.
   rejected. This is the first throughput measurement with seven response
   classes; compare later phases by response count and decision step before
   interpreting rate changes.
+- Decision step 3 under the Showdown prior completed with 34/48 usable states,
+  136 worlds, and 16,266 branches in 328.12 seconds (49.573 matches/s). The 14
+  skipped states were 11 forced switches, two possible-Illusion previews, and
+  one unreached decision; no candidate actions were rejected. Across the first
+  two phases, 58/96 states were usable and 28,154 branches ran in 592.23
+  seconds (47.54 aggregate matches/s).

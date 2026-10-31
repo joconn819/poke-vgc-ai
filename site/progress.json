@@ -5957,15 +5957,33 @@
             "public_transform_state": 1
           },
           "rejected_actions": 0
+        },
+        {
+          "decision_step": 3,
+          "hidden_set_prior": "showdown_random_champions",
+          "states_captured": 34,
+          "states_requested": 48,
+          "hidden_worlds_prepared": 136,
+          "branch_matches": 16266,
+          "matches_per_second": 49.573,
+          "elapsed_seconds": 328.125,
+          "world_preparation_seconds": 17.287,
+          "missing_states": 14,
+          "missing_reasons": {
+            "decision_not_reached": 1,
+            "possible_illusion_preview": 2,
+            "forced_switch": 11
+          },
+          "rejected_actions": 0
         }
       ],
-      "completed_states_total": 24,
-      "requested_states_total": 48,
-      "branch_matches_total": 11888,
-      "elapsed_seconds_total": 264.108,
-      "aggregate_matches_per_second": 45.012,
-      "hidden_worlds_prepared_total": 96,
-      "progress_note": "Decision step 1 under the Showdown prior is complete; the remaining five phases are running."
+      "completed_states_total": 58,
+      "requested_states_total": 96,
+      "branch_matches_total": 28154,
+      "elapsed_seconds_total": 592.232,
+      "aggregate_matches_per_second": 47.539,
+      "hidden_worlds_prepared_total": 232,
+      "progress_note": "Decision steps 1 and 3 under the Showdown prior are complete; decision step 5 and the three uniform-prior phases remain."
     },
     "interpretation": "Round497 used only Round476 as a learned PPO response; Round498 adds Round430 and Round102 separately. Round430 remains the active policy pending held-out full-match improvement across varied opponents.",
     "plan": "https://github.com/joconn819/poke-vgc-ai/blob/master/PLAN.md"
