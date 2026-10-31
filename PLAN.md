@@ -16571,6 +16571,15 @@ team choice but does not change that conclusion.
   Counterplay 38.32% vs 42.58%, +4.26 pp (+1.56 to +6.95); Round465 PPO
   50.94% vs 58.79%, +7.85 pp (+5.20 to +10.59). These pool 640 independent
   team clusters, averaging repeated outcomes within the fresh clusters before
-  bootstrap. Round464 has only the initial 512-cluster result. Both seed sets
+  bootstrap. Round464 was also replicated independently, so all four opponents now have pooled 640-cluster estimates. Both seed sets
   use the Round402 team selector and public random-team source; this remains
   targeted evidence for an opening heuristic, not broad optimal-play proof.
+
+
+- Fresh Round464 replication: on 128 new team clusters × two side-swapped
+  repeats, the [1,4] hybrid scored 58.79% vs 49.80% raw (+8.98 pp; 95%
+  interval +4.49 to +13.48). Pooled with the first seed set, Round464 is
+  +7.03 pp over 640 clusters (+4.41 to +9.65). The timeout in the raw arm was
+  replayed exactly. All four opponent classes now have a second seed set and
+  pooled confidence interval; this remains a heuristic comparison, not learned
+  PPO improvement or proof of optimal play.
