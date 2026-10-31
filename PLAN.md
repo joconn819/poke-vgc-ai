@@ -18,9 +18,9 @@ This head-to-head result alone does not establish robust strength against
 external policies. Rounds468–471 tested mixed-opponent PPO, balanced loss,
 undiscounted terminal returns, and a larger update budget. None showed a
 statistically supported gain over Round430 against Max Damage or either
-Counterplay policy, so Round430 remains the validated incumbent. Round472 is
-collecting a fresh 20,000-game mixed-opponent batch from Round430 with a
-refreshed frozen policy pool; evaluation is pending. Search remains conditional
+Counterplay policy, so Round430 remains the validated incumbent. Round472 completed a fresh 20,000-game mixed-opponent batch and four-pass PPO
+update from Round430; a new-seed, five-opponent evaluation is underway. Search
+remains conditional
 on stronger held-out performance.
 At inference, legal actions are selected from masked PPO policy logits; the
 win-probability head is an auxiliary training target and does not rank moves.
@@ -17167,20 +17167,35 @@ coverage, not another blind teacher-weight sweep.
 - Published report: `site/round471_matched_ppo_trial.json`.
 
 
-### Round472: fresh robust mixed-opponent PPO (in progress; 2026-10-31)
+### Round472: fresh robust mixed-opponent PPO (training complete; evaluation underway; 2026-10-31)
 
-- Started a new 20,000-game rollout batch from the validated Round430 policy.
-  Opponents: 10% random, 20% Max Damage, 25% legacy Counterplay, 25% Public
-  Counterplay, and 20% frozen policy pool. The pool now samples Round430,
+- Collected 20,000 fresh games from the validated Round430 policy. Opponents:
+  10% random, 20% Max Damage, 25% legacy Counterplay, 25% Public Counterplay,
+  and 20% policy pool. The four equally sampled pool members were Round430,
   Round465, Round468, and Round471.
-- Keep Round468's PPO settings (four passes, learning rate 5e-5, minibatch 512,
-  terminal win/loss reward) to focus this iteration on fresh experience and
-  refreshed opponent coverage. Use the Round402 team selector on both sides.
-- Rollouts are running on eight CPU workers; PPO optimization will use CUDA.
-  The Round468 37.94 games/s rollout rate remains the latest completed profile;
-  Round472 throughput and peak memory will be recorded after completion.
-- After strict trajectory audit and PPO update, evaluate against Round430 on a
-  fresh held-out seed set across Max Damage, legacy Counterplay, and Public
-  Counterplay. Round430 remains the play default pending paired results.
-- Reproducible command: `scripts/train_round472_fresh_robust_mixed_ppo_20k.sh`.
-- Output: `training/outputs/phase12_headless/round472_fresh_robust_mixed_ppo_20k_20261031/`.
+- Strict audit passed after one incomplete Max Damage game was replaced with a
+  fresh-seed match. Final dataset: 20,000 valid trainable games, 167,000
+  decision transitions, 10,000 trainable seats per player, no audit errors.
+- The PPO update used the planned baseline settings: four passes, learning
+  rate 5e-5, minibatch 512, terminal win/loss rewards. It completed all 1,308
+  optimizer steps; final approximate KL was 0.00489. Candidate checkpoint:
+  `training/outputs/phase12_headless/round472_fresh_robust_mixed_ppo_20k_20261031/checkpoints/latest.pt`.
+- Speed: rollouts took 519.37 s for 20,000 games (38.51 games/s aggregate on
+  eight workers); input-to-checkpoint elapsed 932.35 s (21.45 games/s); peak
+  aggregate rollout RSS was 9.18 GiB. Record preparation took 91.29 s and PPO
+  optimization 56 s. Automatic audit/recovery took 253.78 s, including the
+  replaced match. No rollout action corrections occurred.
+- Per-opponent profiling found action selection / inference at 74–120 / 33–69
+  ms per episode. Public Counterplay scoring took 77.3 ms, legacy Counterplay
+  scoring 46.1 ms, and historical-policy inference 69.4 ms. Observation
+  encoding took 25–29 ms and the Showdown engine 29–35 ms; inference, opponent
+  scoring, and observation work remain the strongest speed targets.
+- Paired held-out evaluation is running on a fresh seed (`20680472`), 256
+  team-pair clusters and two side-swapped outcomes per cluster, against Max
+  Damage, legacy Counterplay, Public Counterplay, random, and historical PPO
+  Round102. Round430 is the matched control and remains the play default until
+  results support a change.
+- Reproducible commands: `scripts/train_round472_fresh_robust_mixed_ppo_20k.sh`
+  and `scripts/evaluate_round472_fresh_seed_league_256x2.sh`.
+- Training output: `training/outputs/phase12_headless/round472_fresh_robust_mixed_ppo_20k_20261031/`.
+- Evaluation output: `training/outputs/phase12_headless/round472_fresh_seed_league_256x2_20261031/`.
