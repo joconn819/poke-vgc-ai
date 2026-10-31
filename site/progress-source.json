@@ -3877,6 +3877,23 @@
     "evaluation_launcher": "scripts/evaluate_round476_fresh_seed_league_256x2.sh",
     "output": "training/outputs/phase12_headless/round476_refreshed_population_ppo_20k_20261031/"
   },
+  "round476_action_audit": {
+    "status": "Descriptive first-turn audit · no supported tactical diagnosis",
+    "games": 20000,
+    "games_per_opponent": 5000,
+    "default_move_selection": "Masked PPO action logits; the auxiliary win-probability head does not rank moves.",
+    "max_damage": {
+      "games_with_action_features": 5000,
+      "selected_damage_mean_win": 0.227,
+      "selected_damage_mean_loss": 0.211,
+      "best_legal_damage_mean_win": 0.344,
+      "best_legal_damage_mean_loss": 0.334,
+      "top_damage_action_rate_win_percent": 34.7,
+      "top_damage_action_rate_loss_percent": 32.4
+    },
+    "interpretation": "Approximate damage features are not game-state win values. The small outcome-stratified differences are descriptive, not causal, and do not establish a policy failure.",
+    "next_step": "Compare complete legal joint actions on sampled states using controlled outcome sampling or an evaluated teacher before changing the learning objective."
+  },
   "round476_evaluation": {
     "status": "Complete · no statistically supported gain; keep Round430",
     "summary": "Round476 was trained against a refreshed frozen policy pool and five-opponent held-out evaluation showed no significant overall improvement. The aggregate strategic-opponent change was slightly negative; do not promote.",

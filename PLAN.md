@@ -17397,3 +17397,35 @@ coverage, not another blind teacher-weight sweep.
 - Launcher: `scripts/train_round476_refreshed_population_ppo_20k.sh`.
   Evaluation launcher: `scripts/evaluate_round476_fresh_seed_league_256x2.sh`.
   Output: `training/outputs/phase12_headless/round476_refreshed_population_ppo_20k_20261031/`.
+
+### Round476 action-pattern audit (complete; descriptive only; 2026-10-31)
+
+- Corrected the rollout analyzer to use only the 16 preflight-approved compressed
+  shards and terminal-outcome labels. This excludes duplicate compressed/plain
+  views, rejected records, and recovery attempts. The audit covers exactly
+  20,000 completed training games, 5,000 per opponent class.
+- The policy chose masked PPO action logits in battle. The predicted win
+  probability remains an auxiliary training target, not an action-ranking
+  score. The optional opening-search experiment may use a win-probability head
+  at frontier leaves; that behavior does not apply to the default checkpoint.
+- Descriptive first-action counts by eventual outcome are available in
+  `training/outputs/phase12_headless/round476_refreshed_population_ppo_20k_20261031/action_patterns.json`.
+  The action-type fractions vary between wins and losses, but terminal-state
+  stratification cannot tell whether an action caused the result.
+- A separate first-turn audit of the 5,000 Max Damage games with native action
+  features found that the selected action's estimated damage averaged 0.227 in
+  wins versus 0.211 in losses (feature scale 0–1); the best legal damage
+  estimate averaged 0.344 versus 0.334. The selected move tied the best legal
+  damage estimate in 34.7% of winning action slots and 32.4% of losing slots.
+  These are approximate damage features, not game-state win odds or causal
+  action values; they do not identify a tactical failure or justify changing
+  training weights.
+- Conclusion: action frequencies and approximate single-move damage rankings
+  are insufficient to diagnose the plateau. Before another same-recipe PPO
+  run, build a counterfactual audit on sampled decision states that compares
+  complete legal joint actions under controlled outcome sampling (or an
+  evaluated teacher), with matched random seeds and cluster-level uncertainty.
+  Separate policy quality from team-preview selection and report where the
+  current action's estimated return ranks among alternatives. Change the
+  learning objective only if this audit finds a repeatable failure mode.
+- Analyzer: `scripts/analyze_round476_action_patterns.py`.

@@ -1360,7 +1360,7 @@
   "method": "Native self-play PPO for in-battle decisions. Terminal win/loss remains the main objective; win-probability and hidden-set prediction are auxiliary tasks. Search comes after a stronger policy.",
   "jax_decision": "Round430 has a confirmed self-play head-to-head lift over Round424, but external-opponent screens remain inconclusive. Prioritize measured inference batching, observation throughput, and rollouts; keep equilibrium-oriented opponent coverage and defer a JAX/GPU engine rewrite until its end-to-end payoff is measured.",
   "evaluation_note": "Round465 scored 45.51% against Max Damage [41.70%, 49.32%] and 46.00% against Public Counterplay [42.19%, 49.80%]. Same-seed Max Damage deltas over Round464 (+0.10 pp [-1.56, +1.76]) and Round430 (+0.88 pp [-1.27, +3.03]) include zero, so Round430 remains the validated incumbent. The 58.40% five-opponent mean is pulled upward by the 95.12% Random result; the p10 is 45.70% and the worst opponent score is 45.51%. Use paired team-cluster intervals and hard-opponent results to judge changes, not one overall mean.",
-  "generated_at": "2026-10-31 09:33 UTC",
+  "generated_at": "2026-10-31 09:41 UTC",
   "round462_evaluation": {
     "status": "Round462 not promoted · initial paired screen complete",
     "summary": "Round462 scored 44.82% against Max Damage [41.02%, 48.54%]. On the same teams and seeds, Round430 scored 44.73% and Round432 scored 44.43%; paired deltas were +0.10 pp [-1.37, +1.56] and +0.39 pp [-1.37, +2.05]. The update did not measurably change this weakness. Results against Public Counterplay and historical PPO are inconclusive; Random is an easy-baseline check.",
@@ -3876,6 +3876,23 @@
     "launcher": "scripts/train_round476_refreshed_population_ppo_20k.sh",
     "evaluation_launcher": "scripts/evaluate_round476_fresh_seed_league_256x2.sh",
     "output": "training/outputs/phase12_headless/round476_refreshed_population_ppo_20k_20261031/"
+  },
+  "round476_action_audit": {
+    "status": "Descriptive first-turn audit · no supported tactical diagnosis",
+    "games": 20000,
+    "games_per_opponent": 5000,
+    "default_move_selection": "Masked PPO action logits; the auxiliary win-probability head does not rank moves.",
+    "max_damage": {
+      "games_with_action_features": 5000,
+      "selected_damage_mean_win": 0.227,
+      "selected_damage_mean_loss": 0.211,
+      "best_legal_damage_mean_win": 0.344,
+      "best_legal_damage_mean_loss": 0.334,
+      "top_damage_action_rate_win_percent": 34.7,
+      "top_damage_action_rate_loss_percent": 32.4
+    },
+    "interpretation": "Approximate damage features are not game-state win values. The small outcome-stratified differences are descriptive, not causal, and do not establish a policy failure.",
+    "next_step": "Compare complete legal joint actions on sampled states using controlled outcome sampling or an evaluated teacher before changing the learning objective."
   },
   "round476_evaluation": {
     "status": "Complete · no statistically supported gain; keep Round430",
