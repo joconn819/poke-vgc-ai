@@ -18078,6 +18078,14 @@ coverage, not another blind teacher-weight sweep.
   requests. This is the first full-collection throughput remeasurement after
   the Round496 parser repair and is essentially unchanged from Round495's
   38.412 branch matches/s; Showdown branch resolution remains the bottleneck.
+- Decision step 3 under the same prior also completed: 25/48 usable states,
+  100 worlds, and 8,913 branches in 180.09 seconds (49.492 matches/s); world
+  preparation took 12.49 seconds and no candidate action was rejected. The
+  23 skipped states were 21 forced-switch requests, one decision point not
+  reached, and one possible-Illusion preview. Across the first two phases,
+  59/96 requested states were usable and 20,995 branches ran in 496.22
+  seconds, an aggregate 42.31 matches/s. Continue reporting skipped-state
+  causes instead of counting only successfully captured states.
 - Promotion remains gated on a fresh, side-swapped full-match league across
   varied opponents and held-out teams. Report per-opponent win rates and
   confidence intervals, mean and lower-tail performance, invalid actions, and
