@@ -6905,5 +6905,95 @@
     "throughput": "8 workers; end-to-end local Showdown evaluation. Not the headless rollout simulator benchmark.",
     "report": "round515_maxdamage_confirmation.json",
     "plan_run": "OUTPUT_ROOT=training/outputs/phase12_headless/round515_fixed_maxdamage_256x2_20261031 SEED=202611515 bash scripts/evaluate_round513_fixed_maxdamage_256x2.sh"
+  },
+  "round516_round430_maxdamage_loss_traces": {
+    "status": "Descriptive trace analysis complete",
+    "games": 128,
+    "team_pair_clusters": 64,
+    "score_pct": 41.406,
+    "cluster_ci95_pct": [
+      30.469,
+      52.344
+    ],
+    "errors": 0,
+    "action_adjustments": 0,
+    "finding": "In checkpoint losses, the Max Damage opponent led by about 0.5 living Pokémon and 0.35 normalized team HP after the second joint snapshot. Outcome-stratified traces are descriptive, not causal.",
+    "artifact": "round516_loss_trace_analysis.json"
+  },
+  "round517_opening_action_intervention": {
+    "status": "Fresh paired test supports first-five opening improvement; Round518 training active",
+    "method": "128 fresh team-pair clusters, two outcome repeats, side-swapped; Round430 raw policy vs targeted Max Damage-action overrides.",
+    "raw": {
+      "score_pct": 28.516,
+      "cluster_ci95_pct": [
+        22.461,
+        34.766
+      ],
+      "games": 512,
+      "games_per_second": 9.085,
+      "errors": 0,
+      "action_adjustments": 0
+    },
+    "opening5": {
+      "score_pct": 41.406,
+      "cluster_ci95_pct": [
+        34.766,
+        48.047
+      ],
+      "paired_delta_pp": 12.891,
+      "paired_ci95_pp": [
+        6.836,
+        19.141
+      ],
+      "games": 512,
+      "games_per_second": 7.684,
+      "errors": 0,
+      "action_adjustments": 3,
+      "actions_overridden": 2452
+    },
+    "opening14": {
+      "score_pct": 29.883,
+      "cluster_ci95_pct": [
+        24.023,
+        35.938
+      ],
+      "paired_delta_pp": 1.367,
+      "paired_ci95_pp": [
+        -2.734,
+        5.469
+      ],
+      "games": 512,
+      "games_per_second": 7.926,
+      "errors": 0,
+      "action_adjustments": 2,
+      "actions_overridden": 1005
+    },
+    "interpretation": "The full first-five intervention materially improves this Max Damage sample but remains below 50%. The first-and-fourth override did not show a clear lift on this sample. Prior multi-opponent results support transfer of the broader intervention; the next step is limited teacher labeling inside a broad PPO mixture, followed by fresh multi-opponent evaluation.",
+    "report": "round517_opening_intervention.json"
+  },
+  "round518_training": {
+    "status": "Running",
+    "run": "round518_opening5_teacher_population_20k_20261031",
+    "games_planned": 20000,
+    "start_checkpoint": "Round430",
+    "opponent_mix": {
+      "random": 0.1,
+      "max_damage": 0.2,
+      "legacy_counterplay": 0.25,
+      "public_counterplay": 0.25,
+      "frozen_policy_pool": 0.2
+    },
+    "max_damage_teacher_fraction": 0.5,
+    "teacher_action_steps": [
+      1,
+      2,
+      3,
+      4,
+      5
+    ],
+    "teacher_fraction_of_all_games": 0.1,
+    "ppo_loss_on_teacher_forced_actions": false,
+    "command": "scripts/train_round518_opening5_teacher_population_20k.sh",
+    "output": "training/outputs/phase12_headless/round518_opening5_teacher_population_20k_20261031/"
   }
 }

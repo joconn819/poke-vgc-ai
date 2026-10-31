@@ -18837,3 +18837,48 @@ coverage, not another blind teacher-weight sweep.
   evaluation rate; continue measuring simulator/rollout throughput separately.
 - Run: `OUTPUT_ROOT=training/outputs/phase12_headless/round515_fixed_maxdamage_256x2_20261031 SEED=202611515 bash scripts/evaluate_round513_fixed_maxdamage_256x2.sh`.
   Report: `training/outputs/phase12_headless/round515_fixed_maxdamage_256x2_20261031/report.json`.
+
+### Round516: Round430 Max Damage loss traces (complete; descriptive only)
+
+- Traced 128 side-swapped matches on 64 fresh team-pair clusters. Score was
+  41.41% [30.47%, 52.34%], with zero action corrections, protocol errors, or
+  timeouts. The small sample is descriptive and too wide to revise Round515.
+- In losses, the opponent led after joint snapshot 2 by about 0.5 living
+  Pokémon and 0.35 normalized team HP; losses and wins had similar action-count
+  distributions. This suggests early tempo/position loss, but the trace is
+  outcome-stratified and cannot establish which decisions caused it.
+- Trace analysis: `training/outputs/phase12_headless/round516_round430_maxdamage_loss_traces_64_20261031/analysis.md`.
+
+### Round517: fresh Max Damage opening-action intervention (complete)
+
+- On the same 128 team-pair clusters, two repeats, and side swaps, Round430 raw
+  scored 28.52% [22.46%, 34.77%]. Replacing policy decisions 1–5 with the legal
+  Max Damage action scored 41.41% [34.77%, 48.05%], a paired gain of +12.89 pp
+  [+6.84, +19.14] over 128 clusters. There were zero errors/timeouts and three
+  action corrections across 512 outcomes. The intervention still scored below
+  50%; it points to substantial opening weakness but does not solve the matchup.
+- A matched intervention at decisions 1 and 4 scored 29.88%, paired +1.37 pp
+  [-2.73, +5.47], inconclusive on this fresh sample. Prior cross-opponent
+  replications of the narrower hybrid remain evidence of transfer, but this
+  result cautions against assuming it improves every team sample.
+- First-five teacher performance is consistent with earlier held-out evidence
+  that the full opening intervention transfers across Max Damage, Public
+  Counterplay, and multiple PPOs. To limit overfitting, use its labels on only
+  half of Max Damage training games within a broad opponent mixture, then require
+  fresh multi-opponent evaluation before promotion.
+- Raw, first-five, and 1+4 results: `training/outputs/phase12_headless/round517_round430_maxdamage_{raw,opening5,opening14}_128x2_20261031/`.
+
+### Round518: robust PPO with limited first-five teacher data (running)
+
+- Start from Round430. Train 20,000 games with 10% random, 20% Max Damage,
+  25% legacy Counterplay, 25% Public Counterplay, and a 20% frozen policy pool
+  (Rounds430/465/472/473/102). Half of the Max Damage games receive teacher
+  labels for decisions 1–5; these teacher-forced decisions are excluded from
+  PPO policy-gradient loss. This yields labels for about 10% of all games while
+  keeping learning against a mixed population.
+- Run: `scripts/train_round518_opening5_teacher_population_20k.sh`; output:
+  `training/outputs/phase12_headless/round518_opening5_teacher_population_20k_20261031/`.
+- Gate promotion on a fresh matched evaluation against Max Damage, both
+  Counterplay baselines, Random, and a held-out PPO, using multiple team-pair
+  clusters and side swaps. Report worst/mean/lower-tail performance and runtime;
+  keep Round430 as default unless broad results support promotion.

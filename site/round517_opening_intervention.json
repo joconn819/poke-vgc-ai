@@ -1,0 +1,50 @@
+{
+  "status": "Fresh paired test supports first-five opening improvement; Round518 training active",
+  "method": "128 fresh team-pair clusters, two outcome repeats, side-swapped; Round430 raw policy vs targeted Max Damage-action overrides.",
+  "raw": {
+    "score_pct": 28.516,
+    "cluster_ci95_pct": [
+      22.461,
+      34.766
+    ],
+    "games": 512,
+    "games_per_second": 9.085,
+    "errors": 0,
+    "action_adjustments": 0
+  },
+  "opening5": {
+    "score_pct": 41.406,
+    "cluster_ci95_pct": [
+      34.766,
+      48.047
+    ],
+    "paired_delta_pp": 12.891,
+    "paired_ci95_pp": [
+      6.836,
+      19.141
+    ],
+    "games": 512,
+    "games_per_second": 7.684,
+    "errors": 0,
+    "action_adjustments": 3,
+    "actions_overridden": 2452
+  },
+  "opening14": {
+    "score_pct": 29.883,
+    "cluster_ci95_pct": [
+      24.023,
+      35.938
+    ],
+    "paired_delta_pp": 1.367,
+    "paired_ci95_pp": [
+      -2.734,
+      5.469
+    ],
+    "games": 512,
+    "games_per_second": 7.926,
+    "errors": 0,
+    "action_adjustments": 2,
+    "actions_overridden": 1005
+  },
+  "interpretation": "The full first-five intervention materially improves this Max Damage sample but remains below 50%. The first-and-fourth override did not show a clear lift on this sample. Prior multi-opponent results support transfer of the broader intervention; the next step is limited teacher labeling inside a broad PPO mixture, followed by fresh multi-opponent evaluation."
+}
