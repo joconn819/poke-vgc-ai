@@ -17306,3 +17306,26 @@ coverage, not another blind teacher-weight sweep.
 - Use the result to guide future training-population weights, but validate any
   mixed policy on held-out teams and external opponents before changing the
   default.
+
+### Round475: larger checkpoint population replication (complete; 2026-10-31)
+
+- Repeated the Round474 direct checkpoint matchup screen on independent seed
+  `20680475`, increasing the sample to 512 team-pair clusters, two outcome
+  repeats per cluster, and side swaps. The Round402 preview selector was used
+  for both policies in each matchup.
+- Round430 scored 49.27% vs Round472 (95% cluster-bootstrap interval
+  45.90–52.73%; 2,048 complete games, 512 clusters); 49.51% vs Round473
+  (46.09–52.98%; 2,046 complete games, 511 complete clusters; one incomplete
+  cluster excluded); Round472 scored 50.24% vs Round473 (46.73–53.71%; 2,048
+  complete games, 512 clusters). Every interval includes parity. Action
+  adjustments were zero; the Round430–Round473 arm had one timeout/error.
+- The point estimates do not reproduce Round474's apparent R473 > R472 > R430
+  ordering. Round430 and Round472 are near even; Round472 and Round473 are
+  near even. The evidence does not identify a better policy or mixture, so
+  retain Round430 as the validated default. This three-checkpoint matrix is a
+  restricted empirical game, not a full-game Nash equilibrium.
+- Complete-match throughput was 5.29–6.16 games/s across eight workers. The
+  reproducible launcher and cluster-bootstrap summarizer are
+  `scripts/evaluate_round475_policy_population_512x2.sh` and
+  `scripts/summarize_round475_policy_population.py`. Summary:
+  `training/outputs/phase12_headless/round475_policy_population_512x2_20261031/policy_population_summary.json`.

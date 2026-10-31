@@ -1,0 +1,69 @@
+{
+  "method": "Direct local Showdown policy matchups, same fresh seed, same Round402 preview selector on both sides. Each cluster score averages two repeats and both side-swapped games; a cluster is retained only when both repeats are complete. Confidence intervals resample team-pair clusters.",
+  "seed": 20680475,
+  "requested_team_pair_clusters": 512,
+  "outcome_repeats_per_cluster": 2,
+  "bootstrap_replicates": 20000,
+  "payoff_matrix": {
+    "round430": {
+      "round430": 0.5,
+      "round472": 0.49267578125,
+      "round473": 0.49510763209393344
+    },
+    "round472": {
+      "round430": 0.50732421875,
+      "round472": 0.5,
+      "round473": 0.50244140625
+    },
+    "round473": {
+      "round430": 0.5048923679060666,
+      "round472": 0.49755859375,
+      "round473": 0.5
+    }
+  },
+  "matchups": {
+    "round430_vs_round472": {
+      "score": 0.49267578125,
+      "interval95_cluster_bootstrap": [
+        0.458984375,
+        0.52734375
+      ],
+      "complete_clusters": 512,
+      "excluded_clusters": 0,
+      "games_completed": 2048,
+      "timeouts_or_errors": 0,
+      "action_adjustments": 0,
+      "games_per_second": 6.161652452427984,
+      "source": "training/outputs/phase12_headless/round475_policy_population_512x2_20261031/round430_vs_round472/paired_summary.json"
+    },
+    "round430_vs_round473": {
+      "score": 0.49510763209393344,
+      "interval95_cluster_bootstrap": [
+        0.4608610567514677,
+        0.5298434442270059
+      ],
+      "complete_clusters": 511,
+      "excluded_clusters": 1,
+      "games_completed": 2046,
+      "timeouts_or_errors": 1,
+      "action_adjustments": 0,
+      "games_per_second": 5.524695663996425,
+      "source": "training/outputs/phase12_headless/round475_policy_population_512x2_20261031/round430_vs_round473/paired_summary.json"
+    },
+    "round472_vs_round473": {
+      "score": 0.50244140625,
+      "interval95_cluster_bootstrap": [
+        0.46727294921875,
+        0.537109375
+      ],
+      "complete_clusters": 512,
+      "excluded_clusters": 0,
+      "games_completed": 2048,
+      "timeouts_or_errors": 0,
+      "action_adjustments": 0,
+      "games_per_second": 5.288553734505782,
+      "source": "training/outputs/phase12_headless/round475_policy_population_512x2_20261031/round472_vs_round473/paired_summary.json"
+    }
+  },
+  "interpretation": "This is a finite three-checkpoint empirical game, not an equilibrium estimate for the full VGC game."
+}
