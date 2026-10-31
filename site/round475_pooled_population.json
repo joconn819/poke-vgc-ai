@@ -1,0 +1,67 @@
+{
+  "method": "Seed-stratified team-cluster bootstrap pooling Round474 and Round475 direct local Showdown matchups. Each retained cluster has both repeated outcomes complete and includes both side-swapped games. Two evaluation seed sets are represented; this is not a full VGC equilibrium estimate.",
+  "bootstrap_replicates": 20000,
+  "seed_strata": [
+    20680474,
+    20680475
+  ],
+  "payoff_matrix": {
+    "round430": {
+      "round430": 0.5,
+      "round472": 0.4781901041666667,
+      "round473": 0.4803921568627451
+    },
+    "round472": {
+      "round430": 0.5218098958333333,
+      "round472": 0.5,
+      "round473": 0.4911879895561358
+    },
+    "round473": {
+      "round430": 0.5196078431372548,
+      "round472": 0.5088120104438643,
+      "round473": 0.5
+    }
+  },
+  "matchups": {
+    "round430_vs_round472": {
+      "score": 0.4781901041666667,
+      "interval95_stratified_cluster_bootstrap": [
+        0.44986979166666663,
+        0.5068359375
+      ],
+      "clusters_by_seed": {
+        "20680474": 256,
+        "20680475": 512
+      },
+      "total_complete_clusters": 768
+    },
+    "round430_vs_round473": {
+      "score": 0.4803921568627451,
+      "interval95_stratified_cluster_bootstrap": [
+        0.4509803921568627,
+        0.5091503267973856
+      ],
+      "clusters_by_seed": {
+        "20680474": 254,
+        "20680475": 511
+      },
+      "total_complete_clusters": 765
+    },
+    "round472_vs_round473": {
+      "score": 0.4911879895561358,
+      "interval95_stratified_cluster_bootstrap": [
+        0.4624673629242819,
+        0.5202349869451697
+      ],
+      "clusters_by_seed": {
+        "20680474": 254,
+        "20680475": 512
+      },
+      "total_complete_clusters": 766
+    }
+  },
+  "source_roots": [
+    "round474_policy_population_256x2_20261031",
+    "round475_policy_population_512x2_20261031"
+  ]
+}

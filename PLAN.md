@@ -17329,3 +17329,13 @@ coverage, not another blind teacher-weight sweep.
   `scripts/evaluate_round475_policy_population_512x2.sh` and
   `scripts/summarize_round475_policy_population.py`. Summary:
   `training/outputs/phase12_headless/round475_policy_population_512x2_20261031/policy_population_summary.json`.
+- **Pooled Round474–475 evidence:** stratified bootstrap by evaluation seed and
+  resampled complete team-pair clusters within each seed. With 768 clusters,
+  Round430 scored 47.82% vs Round472 (95% CI 44.99–50.68%); with 765 clusters,
+  it scored 48.04% vs Round473 (45.10–50.92%); Round472 scored 49.12% vs
+  Round473 (46.25–52.02%; 766 clusters). The two rounds point in a consistent
+  direction after pooling, but all intervals still include 50%. This supports
+  retaining R472/R473 as useful league members, not promoting one as a
+  statistically established stronger checkpoint. Reproduce with
+  `scripts/summarize_round474_475_pooled_population.py`; output:
+  `training/outputs/phase12_headless/round475_policy_population_512x2_20261031/pooled_round474_475_summary.json`.

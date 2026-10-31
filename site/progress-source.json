@@ -3797,6 +3797,69 @@
     "artifact": "round475_policy_population.json",
     "launcher": "scripts/evaluate_round475_policy_population_512x2.sh",
     "summarizer": "scripts/summarize_round475_policy_population.py",
-    "output": "training/outputs/phase12_headless/round475_policy_population_512x2_20261031/"
+    "output": "training/outputs/phase12_headless/round475_policy_population_512x2_20261031/",
+    "pooled_payoff_matrix": [
+      {
+        "policy": "Round430",
+        "vs_round430": 50.0,
+        "vs_round472": 47.82,
+        "vs_round473": 48.04
+      },
+      {
+        "policy": "Round472",
+        "vs_round430": 52.18,
+        "vs_round472": 50.0,
+        "vs_round473": 49.12
+      },
+      {
+        "policy": "Round473",
+        "vs_round430": 51.96,
+        "vs_round472": 50.88,
+        "vs_round473": 50.0
+      }
+    ],
+    "pooled_matchups": [
+      {
+        "matchup": "Round430 vs Round472",
+        "first_policy_score_percent": 47.82,
+        "cluster_bootstrap_95_percent": [
+          44.99,
+          50.68
+        ],
+        "clusters": 768,
+        "clusters_by_seed": {
+          "20680474": 256,
+          "20680475": 512
+        }
+      },
+      {
+        "matchup": "Round430 vs Round473",
+        "first_policy_score_percent": 48.04,
+        "cluster_bootstrap_95_percent": [
+          45.1,
+          50.92
+        ],
+        "clusters": 765,
+        "clusters_by_seed": {
+          "20680474": 254,
+          "20680475": 511
+        }
+      },
+      {
+        "matchup": "Round472 vs Round473",
+        "first_policy_score_percent": 49.12,
+        "cluster_bootstrap_95_percent": [
+          46.25,
+          52.02
+        ],
+        "clusters": 766,
+        "clusters_by_seed": {
+          "20680474": 254,
+          "20680475": 512
+        }
+      }
+    ],
+    "pooled_method": "Seed-stratified team-cluster bootstrap pooling Round474 and Round475 direct local Showdown matchups. Each retained cluster has both repeated outcomes complete and includes both side-swapped games. Two evaluation seed sets are represented; this is not a full VGC equilibrium estimate.",
+    "pooled_artifact": "round475_pooled_population.json"
   }
 }
