@@ -44,7 +44,33 @@
       "legacy Counterplay"
     ],
     "workers": 8,
-    "device": "CPU"
+    "device": "CPU",
+    "completed_phases": [
+      {
+        "decision_step": 1,
+        "hidden_set_prior": "showdown_random_champions",
+        "states_captured": 24,
+        "states_requested": 48,
+        "hidden_worlds_prepared": 96,
+        "branch_matches": 11888,
+        "matches_per_second": 45.012,
+        "elapsed_seconds": 264.108,
+        "world_preparation_seconds": 12.417,
+        "missing_states": 24,
+        "missing_reasons": {
+          "forced_switch": 23,
+          "public_transform_state": 1
+        },
+        "rejected_actions": 0
+      }
+    ],
+    "completed_states_total": 24,
+    "requested_states_total": 48,
+    "branch_matches_total": 11888,
+    "elapsed_seconds_total": 264.108,
+    "aggregate_matches_per_second": 45.012,
+    "hidden_worlds_prepared_total": 96,
+    "progress_note": "Decision step 1 under the Showdown prior is complete; the remaining five phases are running."
   },
   "interpretation": "Round497 used only Round476 as a learned PPO response; Round498 adds Round430 and Round102 separately. Round430 remains the active policy pending held-out full-match improvement across varied opponents.",
   "plan": "https://github.com/joconn819/poke-vgc-ai/blob/master/PLAN.md"

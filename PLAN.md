@@ -18182,3 +18182,10 @@ coverage, not another blind teacher-weight sweep.
   separately. Keep Round430 as the active policy; do not use action-value
   selector results to promote without held-out full-match confirmation against
   the broad opponent league.
+- The first Round498 phase (decision step 1, Showdown prior) completed with
+  24/48 usable states, 96 worlds, and 11,888 branches in 264.11 seconds
+  (45.012 matches/s across eight workers). Twenty-four states were skipped:
+  23 forced switches and one public Transform state. No candidate action was
+  rejected. This is the first throughput measurement with seven response
+  classes; compare later phases by response count and decision step before
+  interpreting rate changes.
