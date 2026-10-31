@@ -6170,18 +6170,18 @@
     "completed_phases": 3,
     "total_phases": 6,
     "current_phase": "Uniform Unique Full Sets prior, decision step 1",
-    "progress_note": "Uniform Unique Full Sets decision step 1 is running. Five of eight workers have reported 48/144 cluster attempts, 14 usable states, and 7,398 branches. Two partial requests hit hidden-set support gaps. These are preliminary counts; no phase throughput is available yet.",
+    "progress_note": "Uniform Unique Full Sets decision step 1 is running. Two worker shards have finished and four more have reported partial checkpoints: 76/144 cluster attempts, 27 usable states, and 13,991 branches. Six requests had no support under the full-set prior in these progressed shards. These are partial counts; full-phase throughput is pending.",
     "reproduction": "scripts/collect_round499_policy_ensemble_144x4x2.sh",
     "plan": "https://github.com/joconn819/poke-vgc-ai/blob/master/PLAN.md",
     "partial_progress": {
-      "completed_worker_shards": 0,
-      "reported_worker_shards": 5,
+      "completed_worker_shards": 2,
+      "reported_worker_shards": 6,
       "total_worker_shards": 8,
-      "cluster_attempts_processed": 48,
-      "states_captured": 14,
-      "branch_matches": 7398,
+      "cluster_attempts_processed": 76,
+      "states_captured": 27,
+      "branch_matches": 13991,
       "is_phase_total": false,
-      "hidden_set_prior_support_gaps": 2
+      "hidden_set_prior_support_gaps": 6
     },
     "phase_results": [
       {
