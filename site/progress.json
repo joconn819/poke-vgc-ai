@@ -6170,16 +6170,16 @@
     "completed_phases": 2,
     "total_phases": 6,
     "current_phase": "Showdown Random Champions prior, decision step 5",
-    "progress_note": "Two of six phases are complete under the Showdown Random Champions prior. Step 1: 81/144 states, 41,777 branches in 1,052.34s (39.699 matches/s). Step 3: 84/144 states, 41,612 branches in 634.29s (65.604 matches/s). Zero rejected actions in both phases. Step 5 is running.",
+    "progress_note": "Decision step 5 under the Showdown Random Champions prior is running. Seven of eight workers have reported 56/144 cluster attempts, 34 usable states, and 14,258 branches; one worker has not reported. These are partial counts; step-1 and step-3 remain the only complete phase results.",
     "reproduction": "scripts/collect_round499_policy_ensemble_144x4x2.sh",
     "plan": "https://github.com/joconn819/poke-vgc-ai/blob/master/PLAN.md",
     "partial_progress": {
       "completed_worker_shards": 0,
-      "reported_worker_shards": 0,
+      "reported_worker_shards": 7,
       "total_worker_shards": 8,
-      "cluster_attempts_processed": 0,
-      "states_captured": 0,
-      "branch_matches": 0,
+      "cluster_attempts_processed": 56,
+      "states_captured": 34,
+      "branch_matches": 14258,
       "is_phase_total": false
     },
     "phase_results": [

@@ -18276,8 +18276,10 @@ coverage, not another blind teacher-weight sweep.
   same prior completed with 84/144 usable states, 336 hidden worlds, and 41,612
   branches in 634.29 seconds (65.604 matches/s across eight CPU workers). It
   skipped 57 forced-switch and three possible-Illusion states, with zero
-  rejected actions. Decision step 5 under the same prior is running. The larger
-  matched dataset will be fit jointly
+  rejected actions. Decision step 5 under the same prior is running; seven of
+  eight shards have reported 56/144 cluster attempts, 34 usable states, and
+  14,258 branches, while one shard has not reported. These are partial counts.
+  The larger matched dataset will be fit jointly
   across both priors and all 14 opponent/prior heads, then compared to Round430
   on team-disjoint clusters. Promotion still requires fresh paired,
   side-swapped full-match evaluation across opponents.
