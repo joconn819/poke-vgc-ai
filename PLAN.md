@@ -18281,8 +18281,8 @@ coverage, not another blind teacher-weight sweep.
   skipped and no actions were rejected. Across all three Showdown-prior phases,
   258/432 states were usable, 1,032 worlds were prepared, and 124,226 branches
   ran in 2,206.90 seconds (56.290 aggregate matches/s), with zero rejected
-  candidates. Uniform-prior decision step 1 is running. Four of eight worker
-  shards have reported 32 cluster attempts, nine usable states, and 4,521
+  candidates. Uniform-prior decision step 1 is running. Five of eight worker
+  shards have reported 48 cluster attempts, 14 usable states, and 7,398
   branches. Two partial requests had no support under the full-set prior; these
   are preliminary counts, not the phase total. The complete two-prior dataset will be fit jointly
   across both priors and all 14 opponent/prior heads, then compared to Round430
