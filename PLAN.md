@@ -37,7 +37,7 @@ Pokémon Showdown remains the correctness reference and required battle platform
   "evaluation_note": "Round402's historical 77.15% is a team-preview selector benchmark against damage-preview selection, not an in-battle policy score against Max Damage. The latest in-battle Max Damage result is Round430 policy-only at 39.84% on 256 clusters; optional search scored 42.38% but its paired interval includes zero. Round485's 70%-Max-Damage mix did not measurably improve that matchup or the broader league. Compare only matched tasks, selectors, teams, and seeds.",
   "round499_policy_ensemble": {
     "round": 499,
-    "status": "Uniform-prior step 3 complete; step 5 running",
+    "status": "Collection and held-out fits complete; selector not promoted",
     "candidate_policy": "Round430 incumbent",
     "requested_clusters_per_step_per_prior": 144,
     "decision_steps": [
@@ -63,20 +63,20 @@ Pokémon Showdown remains the correctness reference and required battle platform
     "chance_repeats_per_candidate": 2,
     "workers": 8,
     "device": "CPU",
-    "completed_phases": 5,
+    "completed_phases": 6,
     "total_phases": 6,
-    "current_phase": "Uniform Unique Full Sets prior, decision step 5",
-    "progress_note": "Uniform-prior decision step 1 complete: 75/144 states, 300 worlds, 38,803 branches in 1,040.33s (37.299 branch matches/s). Step 3 complete: 75/144 states, 300 worlds, 37,347 branches in 594.26s (62.846 branch matches/s); nine hidden-set support gaps and zero rejected actions. Step 5 is running.",
+    "current_phase": "Round430 remains active; wider independent full-match league evaluation needed",
+    "progress_note": "Both prior collections complete. Showdown Random Champions: 258/432 states, 1,032 worlds, 124,226 branches in 2,206.90s (56.290/s). Uniform Unique Full Sets: 229/432 states, 916 worlds, 110,477 branches in 2,112.83s (52.289/s). Across priors: 487 captures, 229 matched states, 234,703 branches, zero rejected actions. The joint fit and a Round476-held-out response fit are inconclusive; Round430 remains active.",
     "reproduction": "scripts/collect_round499_policy_ensemble_144x4x2.sh",
     "plan": "https://github.com/joconn819/poke-vgc-ai/blob/master/PLAN.md",
     "partial_progress": {
-      "completed_worker_shards": 0,
-      "reported_worker_shards": 0,
+      "completed_worker_shards": 8,
+      "reported_worker_shards": 8,
       "total_worker_shards": 8,
-      "cluster_attempts_processed": 0,
-      "states_captured": 0,
-      "branch_matches": 0,
-      "is_phase_total": false
+      "cluster_attempts_processed": 144,
+      "states_captured": 79,
+      "branch_matches": 34327,
+      "is_phase_total": true
     },
     "phase_results": [
       {
@@ -167,6 +167,26 @@ Pokémon Showdown remains the correctness reference and required battle platform
           "request_switch": 57
         },
         "rejected_actions": 0
+      },
+      {
+        "decision_step": 5,
+        "hidden_set_prior": "uniform_unique_full_sets",
+        "states_requested": 144,
+        "states_captured": 79,
+        "hidden_worlds_prepared": 316,
+        "branch_matches": 34327,
+        "elapsed_seconds": 478.237,
+        "matches_per_second": 71.778,
+        "world_preparation_seconds": 36.694,
+        "missing_states": 65,
+        "missing_reasons": {
+          "decision_not_reached": 20,
+          "hidden_set_prior_support_gap": 15,
+          "possible_illusion_preview": 3,
+          "public_transform_state": 1,
+          "request_switch": 26
+        },
+        "rejected_actions": 0
       }
     ],
     "showdown_prior_summary": {
@@ -180,16 +200,80 @@ Pokémon Showdown remains the correctness reference and required battle platform
       "interpretation": "All three step phases complete; this is action-counterfactual branch throughput, not full-match game throughput or a policy strength result."
     },
     "uniform_prior_summary": {
-      "phases_completed": 2,
+      "phases_completed": 3,
       "phases_total": 3,
       "states_requested": 144,
-      "states_captured": 150,
-      "hidden_worlds_prepared": 600,
-      "branch_matches": 76150,
-      "elapsed_seconds": 1634.591,
-      "aggregate_matches_per_second": 46.587,
-      "support_gaps": 15,
+      "states_captured": 229,
+      "hidden_worlds_prepared": 916,
+      "branch_matches": 110477,
+      "elapsed_seconds": 2112.828,
+      "aggregate_matches_per_second": 52.289,
+      "support_gaps": 30,
       "rejected_actions": 0
+    },
+    "collection_summary": {
+      "requested_states_across_both_priors": 864,
+      "captured_states_across_both_priors": 487,
+      "matched_states_for_joint_fit": 229,
+      "showdown_only_states": 29,
+      "uniform_only_states": 0,
+      "hidden_worlds_prepared": 1948,
+      "branch_matches": 234703,
+      "elapsed_seconds": 4319.727,
+      "aggregate_branch_matches_per_second": 54.333,
+      "rejected_candidates": 0
+    },
+    "fit_results": {
+      "full_14_head_fit": {
+        "team_split": {
+          "train": 146,
+          "validation": 37,
+          "test": 46,
+          "unit": "team_cluster"
+        },
+        "test_states": 46,
+        "action_rows": 406,
+        "best_epoch": 1,
+        "validation_action_outcome_brier": 0.2138,
+        "robust_action_changes": 31,
+        "robust_worst_response_delta_pp": 2.72,
+        "robust_worst_response_ci95_pp": [
+          -0.54,
+          6.52
+        ],
+        "equal_weight_delta_pp": 1.63,
+        "equal_weight_ci95_pp": [
+          -1.09,
+          4.89
+        ]
+      },
+      "round476_policy_held_out": {
+        "held_out_heads": [
+          "showdown__policy",
+          "uniform__policy"
+        ],
+        "team_split": {
+          "train": 146,
+          "validation": 37,
+          "test": 46,
+          "unit": "team_cluster"
+        },
+        "test_states": 46,
+        "best_epoch": 1,
+        "validation_action_outcome_brier": 0.1871,
+        "robust_action_changes": 34,
+        "robust_worst_response_delta_pp": -3.8,
+        "robust_worst_response_ci95_pp": [
+          -8.15,
+          0.0
+        ],
+        "equal_weight_delta_pp": -3.8,
+        "equal_weight_ci95_pp": [
+          -8.15,
+          0.0
+        ]
+      },
+      "promotion": "Not promoted: 46 test clusters, intervals include zero; holding out the Round476 PPO response did not show a robust gain. Round430 remains the deployed policy."
     }
   }
 }
@@ -18413,7 +18497,7 @@ coverage, not another blind teacher-weight sweep.
   hidden-set priors. Max Damage remains one diagnostic opponent, not the
   optimization objective.
 
-### Round499: expand held-out team coverage (5/6 collection phases complete)
+### Round499: two-prior collection and held-out action-value fits (complete; not promoted)
 
 - Round498's pooled-prior selector had only 17 held-out team clusters, so its
   confidence interval was too wide to establish a modest action-selection
@@ -18441,7 +18525,7 @@ coverage, not another blind teacher-weight sweep.
   candidates. Uniform-prior decision step 1 completed with 75/144 usable
   states, 300 worlds, and 38,803 branches in 1,040.33 seconds (37.299
   matches/s). It skipped 61 forced-switch states, two public Transform states,
-  and six full-set support gaps; no actions were rejected. Uniform-prior decision step 3 completed with 75/144 usable states, 300 hidden worlds, and 37,347 branches in 594.26 seconds (62.846 aggregate matches/s). It skipped 57 forced-switch states, nine full-set support gaps, and three possible-Illusion states; no actions were rejected. Step 5 under the uniform prior is now running. The complete two-prior dataset will be fit jointly
+  and six full-set support gaps; no actions were rejected. Uniform-prior decision step 3 completed with 75/144 usable states, 300 hidden worlds, and 37,347 branches in 594.26 seconds (62.846 aggregate matches/s). It skipped 57 forced-switch states, nine full-set support gaps, and three possible-Illusion states; no actions were rejected. Uniform-prior step 5 completed with 79/144 states, 316 worlds, and 34,327 branches in 478.24 seconds (71.778 matches/s); 65 states were unavailable (20 decision-not-reached, 26 forced-switch, 15 full-set support gaps, three possible-Illusion, one Transform), and no candidates were rejected. The complete uniform prior covers 229/432 requested states, 916 worlds, and 110,477 branches in 2,112.83 seconds (52.289/s). Across both priors, 487 states were captured (229 matched), 1,948 worlds and 234,703 branches were evaluated in 4,319.73 seconds (54.333/s), with no rejected candidates. The full 14-head fit used 146/37/46 team-cluster train/validation/test splits; on 46 test clusters it changed 31 actions and raised worst-response outcome by 2.72 pp (95% CI [-0.54,+6.52]); equal-weight change was +1.63 pp [-1.09,+4.89]. A second fit held out both Round476 response heads and had -3.80 pp worst-response change [-8.15,0.00]. Both are inconclusive and do not justify promotion. Round430 remains active; proceed to a larger independent team/opponent full-match league screen before changing the policy. The complete two-prior dataset will be fit jointly
   across both priors and all 14 opponent/prior heads, then compared to Round430
   on team-disjoint clusters. Promotion still requires fresh paired,
   side-swapped full-match evaluation across opponents.
