@@ -184,8 +184,8 @@ comparison should include multiple PPO generations and a checkpoint family
 held out from fitting, and should compare predicted-action ranking against a
 regret-matched action distribution before PPO distillation. Reports:
 `training/outputs/phase12_headless/round489_wide_response_action_value_128x8_20261031/`.
-**Round492 pairwise action-value pilot (2026-10-31; not promoted; Round493
-confirmation in progress):** Round491's fresh data showed the response-conditioned
+**Round492 pairwise action-value pilot (2026-10-31; not promoted; fresh
+confirmation inconclusive):** Round491's fresh data showed the response-conditioned
 win-probability model ranked worst-response action pairs correctly only 56.7% of
 the time. A split-repeat empirical selector, choosing on four chance repeats and
 scoring on the other four, gained +3.54 pp over the incumbent [+2.16,+5.05] on
@@ -202,13 +202,24 @@ for a matched BCE-only model. The paired gain over BCE-only was +0.52 pp
 58.4%. This is encouraging but still does not show an improvement over the
 incumbent or a full-match gain, so keep Round430 active.
 
-Round493 is collecting a new 128-state sample at each of decisions 1, 3, and 5,
-with eight chance repeats against the same seven responses, to confirm the
-pairwise-vs-BCE result on fresh states. The opening phase completed all 128
-states with zero missing, 46,120 branch matches, and 51.5 wall-clock matches/s;
-later phases are still running. If confirmation is positive, test a live-safe
-belief-world action selector and then full-match results; do not deploy the
-empirical oracle.
+Round493 evaluated both frozen selectors on fresh seeds: 128 states at
+decisions 1 and 3, 115/128 at decision 5 (13 battles ended before the target),
+eight chance repeats, seven responses, and 371 states total. It executed 135,211
+branch matches at 64.5 aggregate matches/s with zero rejected candidates. The
+pairwise selector scored +0.32 pp [-1.21,+1.89] versus the incumbent; BCE-only
+scored +0.01 pp [-1.46,+1.60]. Their paired difference was only +0.31 pp
+[-0.49,+1.15], so Round491's +0.52 pp pairwise-vs-BCE advantage did not
+replicate. Pairwise worst-response ranking accuracy was 58.54% versus 58.40%
+for BCE-only. Keep Round430 active; do not promote the pairwise selector.
+
+An empirical selector using four repeats to choose and four to score gained
++5.90 pp [4.08,+7.88] on Round493, which confirms candidate-set headroom but is
+still a hindsight diagnostic that cannot be deployed directly. Stop tuning this
+selector on these states. The next action-value work should use multiple
+public-compatible hidden worlds for each observation and evaluate ranking on
+whole hidden-world clusters. It must preserve the closed-team-sheet boundary
+and beat BCE-only on another fresh sample before any policy distillation or
+full-match test.
 
 Artifacts: `training/outputs/phase12_headless/round491_external_ppo_generation_eval_128x8_20261031/action_ranking_diagnostics.json`,
 `training/outputs/phase12_headless/round492_pairwise_response_ranker_20261031/`,

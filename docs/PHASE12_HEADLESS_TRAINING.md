@@ -544,13 +544,24 @@ pairwise accuracy increased from 56.7% to 58.4%. The gain is small and the
 selector still does not reliably beat the incumbent, so Round430 remains the
 active policy.
 
-Round493 is a pre-registered-style fresh confirmation using new seeds, 128
-states at each of decision indices 1, 3, and 5, eight chance repeats, and the
-same seven response types. Its opening phase captured all 128 states with no
-missing states, executing 46,120 branch matches at 51.5 wall-clock matches/s.
-The remaining phases are still collecting. The pairwise model and BCE-only
-control will be compared on these same new states before deciding whether to
-advance the action-value approach.
+Round493 compared both frozen selectors on fresh seeds, with 128 states at
+decisions 1 and 3, 115/128 reachable states at decision 5, eight chance repeats,
+and the same seven responses. Thirteen matches ended before decision 5. It
+executed 135,211 branch matches at 64.5 aggregate matches/s with zero rejected
+candidates. Pairwise selection scored +0.32 pp [-1.21, +1.89] versus the
+incumbent; the BCE-only control scored +0.01 pp [-1.46, +1.60]. The paired
+pairwise-vs-BCE difference was +0.31 pp [-0.49, +1.15], which does not confirm
+the +0.52 pp gain observed on Round491. Worst-response pairwise ranking
+accuracy was 58.54% for pairwise loss and 58.40% for BCE-only. Round430 remains
+active; neither selector is promoted.
+
+A selector choosing actions from four repeats and scoring on the disjoint four
+gained +5.90 pp [4.08, 7.88] on Round493. This is an oracle-style candidate-set
+headroom measure because it uses sampled outcomes to choose actions, so it
+cannot be used as a live policy. Stop tuning this selector on the same corpus.
+Next, build action-value data across multiple public-compatible hidden worlds
+per observation, preserve the closed-team-sheet boundary, and require a fresh
+held-out comparison before policy distillation or full-match evaluation.
 
 Artifacts:
 `outputs/phase12_headless/round491_external_ppo_generation_eval_128x8_20261031/action_ranking_diagnostics.json`,

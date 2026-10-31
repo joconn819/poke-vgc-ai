@@ -1,8 +1,8 @@
 {
   "schema_version": 1,
   "round": 492,
-  "status": "Pairwise ranking modestly improves transfer; Round493 fresh confirmation is two-thirds complete",
-  "summary": "The response-wise pairwise loss improved fresh action-selection results versus a matched BCE-only model and the earlier value selector, but did not reliably beat the incumbent. No selector is promoted.",
+  "status": "Fresh-seed confirmation did not establish a pairwise selector gain; Round430 remains the default",
+  "summary": "Round492\u2019s pairwise loss improved over BCE-only on the Round491 screening states, but the fresh Round493 paired difference was inconclusive. Neither selector reliably beat the incumbent.",
   "training": {
     "training_corpus": "Round490",
     "models": 5,
@@ -66,7 +66,7 @@
     }
   },
   "round493_confirmation": {
-    "status": "in_progress",
+    "status": "complete",
     "decision_steps": [
       1,
       3,
@@ -100,26 +100,66 @@
       },
       {
         "decision_step": 5,
-        "status": "running",
-        "states_captured": null,
-        "states_requested": 128
+        "status": "complete",
+        "states_captured": 115,
+        "states_requested": 128,
+        "branch_matches": 41235,
+        "wall_clock_seconds": 510.3,
+        "wall_clock_matches_per_second": 80.81,
+        "missing_states": 13,
+        "rejected_candidates": 0
       }
     ],
     "collection_script": "scripts/collect_round493_pairwise_confirmation.sh",
-    "note": "Round493 uses fresh seeds. The pairwise and BCE-only selectors will be compared on identical held-out branches before any promotion.",
-    "completed_states_captured": 256,
+    "note": "Pairwise ranking did not show a clear fresh-seed gain over BCE-only; neither selector has a conclusive improvement over the incumbent. The split-repeat oracle uses sampled outcomes and is not a deployable policy.",
+    "completed_states_captured": 371,
     "states_requested_total": 384,
     "completed_decision_steps": [
       1,
-      3
+      3,
+      5
     ],
-    "completed_branch_matches": 93976,
-    "completed_wall_clock_seconds": 1586.76,
-    "completed_wall_clock_matches_per_second": 59.23,
-    "current_decision_step": 5,
-    "summary": "Decision indices 1 and 3 are complete (256/384 requested states); decision 5 is running."
+    "completed_branch_matches": 135211,
+    "completed_wall_clock_seconds": 2097.05,
+    "completed_wall_clock_matches_per_second": 64.48,
+    "current_decision_step": null,
+    "summary": "Complete: 371/384 states were captured; 13 battles ended before decision 5. Fresh pairwise-vs-BCE comparison is inconclusive.",
+    "missing_states": 13,
+    "rejected_candidates": 0,
+    "pairwise_selector_vs_incumbent": {
+      "mean_delta_pp": 0.317,
+      "team_cluster_bootstrap_ci95_pp": [
+        -1.206,
+        1.887
+      ]
+    },
+    "bce_only_selector_vs_incumbent": {
+      "mean_delta_pp": 0.007,
+      "team_cluster_bootstrap_ci95_pp": [
+        -1.462,
+        1.597
+      ]
+    },
+    "paired_pairwise_minus_bce": {
+      "mean_delta_pp": 0.31,
+      "ci95_pp": [
+        -0.485,
+        1.152
+      ],
+      "team_clusters": 371
+    },
+    "worst_response_rank_accuracy_pairwise_pct": 58.54,
+    "worst_response_rank_accuracy_bce_only_pct": 58.4,
+    "empirical_split_repeat_oracle_gain": {
+      "mean_delta_vs_incumbent_pp": 5.896,
+      "team_cluster_bootstrap_ci95_pp": [
+        4.077,
+        7.884
+      ],
+      "team_clusters": 371
+    }
   },
-  "interpretation": "The pairwise loss is a promising but small transfer improvement. Its selector still does not have a positive, conclusive paired result versus the incumbent. The four-repeat empirical selector is an oracle-style diagnostic that uses sampled outcomes directly and is not deployable.",
+  "interpretation": "Pairwise loss did not confirm across fresh states. Current action-value selectors remain unpromoted. Empirical split-repeat selection shows candidate-set headroom but uses sampled outcomes directly and cannot be deployed; next work needs belief-world sampling and a fresh held-out improvement.",
   "artifacts": {
     "diagnostic": "round492_pairwise_ranker.json",
     "plan": "https://github.com/joconn819/poke-vgc-ai/blob/master/PLAN.md",
