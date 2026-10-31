@@ -1351,11 +1351,11 @@
   },
   "latest_run": {
     "round": 474,
-    "status": "Checkpoint population payoff screen · running",
-    "summary": "Measuring direct local-Showdown head-to-head payoffs among Round430, Round472, and Round473 on a fresh seed. The paired outcomes will form a small empirical policy game for an approximate mixed-strategy calculation; this is not a full-game Nash solution.",
+    "status": "Checkpoint population payoff screen · complete, no promotion",
+    "summary": "Direct local-Showdown head-to-heads among Round430, Round472, and Round473 produced a transitive point-estimate ranking, but every 95% cluster interval includes 50%. The result supports a finite-policy research direction, not a checkpoint promotion or a full-game Nash claim.",
     "games": "256 team-pair clusters × 2 repeats per pairing",
     "epochs": "3 checkpoint pairings",
-    "evaluation": "Round430 / Round472 / Round473 · in progress"
+    "evaluation": "Round430 / Round472 / Round473 · completed"
   },
   "method": "Native self-play PPO for in-battle decisions. Terminal win/loss remains the main objective; win-probability and hidden-set prediction are auxiliary tasks. Search comes after a stronger policy.",
   "jax_decision": "Round430 has a confirmed self-play head-to-head lift over Round424, but external-opponent screens remain inconclusive. Prioritize measured inference batching, observation throughput, and rollouts; keep equilibrium-oriented opponent coverage and defer a JAX/GPU engine rewrite until its end-to-end payoff is measured.",
@@ -3647,8 +3647,8 @@
     "artifact": "round473_evaluation.json"
   },
   "round474_policy_population": {
-    "status": "Direct checkpoint matchups in progress",
-    "summary": "Three pairwise checkpoint matchups use matched team pairs, Round402 preview selectors, side swaps, and two repeats. Results will be used to estimate a finite policy-population payoff matrix.",
+    "status": "Policy payoff screen complete · no promotion",
+    "summary": "The point-estimate payoff matrix ranks Round473 > Round472 > Round430. The estimated maximin policy in this restricted three-checkpoint game is pure Round473, but all pairwise 95% cluster intervals include 50%; keep Round430 as the validated default.",
     "policies": [
       "Round430",
       "Round472",
@@ -3659,11 +3659,68 @@
       "Round430 vs Round473",
       "Round472 vs Round473"
     ],
-    "seed": 20680474,
-    "clusters_per_pairing": 256,
-    "outcome_repeats": 2,
-    "artifact": "training/outputs/phase12_headless/round474_policy_population_256x2_20261031/",
+    "payoff_matrix": [
+      {
+        "policy": "Round430",
+        "vs_round430": 50.0,
+        "vs_round472": 44.92,
+        "vs_round473": 45.12
+      },
+      {
+        "policy": "Round472",
+        "vs_round430": 55.08,
+        "vs_round472": 50.0,
+        "vs_round473": 47.27
+      },
+      {
+        "policy": "Round473",
+        "vs_round430": 54.88,
+        "vs_round472": 52.73,
+        "vs_round473": 50.0
+      }
+    ],
+    "paired_matchups": [
+      {
+        "matchup": "Round430 vs Round472",
+        "first_policy_score_percent": 44.92,
+        "cluster_bootstrap_95_percent": [
+          39.84,
+          50.1
+        ],
+        "clusters": 256,
+        "completed_outcomes": 512,
+        "requested_outcomes": 512,
+        "games_per_second": 5.28
+      },
+      {
+        "matchup": "Round430 vs Round473",
+        "first_policy_score_percent": 45.12,
+        "cluster_bootstrap_95_percent": [
+          40.04,
+          50.2
+        ],
+        "clusters": 256,
+        "completed_outcomes": 510,
+        "requested_outcomes": 512,
+        "games_per_second": 5.03
+      },
+      {
+        "matchup": "Round472 vs Round473",
+        "first_policy_score_percent": 47.27,
+        "cluster_bootstrap_95_percent": [
+          42.19,
+          52.34
+        ],
+        "clusters": 256,
+        "completed_outcomes": 510,
+        "requested_outcomes": 512,
+        "games_per_second": 4.97
+      }
+    ],
+    "method": "Local Showdown head-to-head, seed 20680474; 256 team-pair clusters, two repeated outcomes, side swaps, Round402 preview selectors. Intervals bootstrap team clusters.",
+    "interpretation": "The point-estimate maximin policy is Round473 for this finite policy set, but every pairwise interval includes parity. This is not evidence to promote Round473 and is not a Nash equilibrium of the full VGC game.",
+    "artifact": "round474_policy_population.json",
     "launcher": "scripts/evaluate_round474_policy_population_256x2.sh",
-    "interpretation": "A finite checkpoint population game can guide a mixed policy; it is not a Nash equilibrium of the full VGC action/state game."
+    "output": "training/outputs/phase12_headless/round474_policy_population_256x2_20261031/"
   }
 }

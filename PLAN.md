@@ -17279,19 +17279,30 @@ coverage, not another blind teacher-weight sweep.
   `scripts/evaluate_round473_fresh_seed_league_256x2.sh`. Evaluation output:
   `training/outputs/phase12_headless/round473_fresh_seed_league_256x2_20261031/`.
 
-### Round474: checkpoint population payoff screen (in progress; 2026-10-31)
+### Round474: checkpoint population payoff screen (complete; 2026-10-31)
 
 - Round472 and Round473 showed complementary but uncertain external-opponent
   changes. Before training another checkpoint, measure direct head-to-head
   payoff among Round430, Round472, and Round473 to build a small empirical
   policy game and estimate a robust mixture over this finite population.
-- Evaluate the three unordered checkpoint pairs with the same local Showdown
+- Evaluated the three unordered checkpoint pairs with the same local Showdown
   format, Round402 preview selectors, fresh seed `20680474`, 256 team-pair
-  clusters, two repeats, and side swaps. This is a policy-level empirical game,
-  not a Nash equilibrium of the full VGC action/state game.
+  clusters, two repeats, and side swaps. Row-policy score rates were:
+  Round430 vs Round472 44.92% [39.84, 50.10]; Round430 vs Round473 45.12%
+  [40.04, 50.20]; Round472 vs Round473 47.27% [42.19, 52.34]. Each interval is
+  a 95% team-cluster bootstrap interval. There were no action corrections; two
+  repeats were incomplete in each pairing involving Round473, leaving 510 of
+  512 complete outcomes but all 256 team clusters represented.
+- The point-estimate payoff matrix is transitive (Round473 > Round472 >
+  Round430), so the maximin strategy in this restricted three-checkpoint game
+  is pure Round473. However, every pairwise confidence interval includes 50%.
+  This is too uncertain to promote Round473 and describes only the finite
+  checkpoint population, not a Nash equilibrium of the full VGC game. Keep
+  Round430 as the validated default.
+- Complete-match screen speed was 4.97–5.28 games/s on eight CPU workers,
+  taking 194–205 s per pairing.
 - Reproducible launcher: `scripts/evaluate_round474_policy_population_256x2.sh`.
   Output: `training/outputs/phase12_headless/round474_policy_population_256x2_20261031/`.
-- Use paired cluster bootstrap intervals for each pairwise payoff. Only derive
-  a checkpoint mixture if the payoff differences are stable enough; keep
-  Round430 as the validated default unless held-out robust evidence supports a
-  change.
+- Use the result to guide future training-population weights, but validate any
+  mixed policy on held-out teams and external opponents before changing the
+  default.
