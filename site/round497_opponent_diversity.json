@@ -70,14 +70,31 @@
           "possible_illusion_preview": 1
         },
         "rejected_actions": 0
+      },
+      {
+        "decision_step": 5,
+        "hidden_set_prior": "showdown_random_champions",
+        "states_captured": 31,
+        "states_requested": 48,
+        "hidden_worlds_prepared": 124,
+        "branch_matches": 9439,
+        "matches_per_second": 68.357,
+        "elapsed_seconds": 138.084,
+        "world_preparation_seconds": 15.123,
+        "missing_states": 17,
+        "missing_reasons": {
+          "forced_switch": 10,
+          "decision_not_reached": 7
+        },
+        "rejected_actions": 0
       }
     ],
-    "progress_note": "Decision steps 1 and 3 under Showdown Random Champions are complete; decision step 5 and all phases under the uniform full-set prior are running.",
-    "completed_states_total": 59,
-    "requested_states_total": 96,
-    "branch_matches_total": 20995,
-    "elapsed_seconds_total": 496.216,
-    "aggregate_matches_per_second": 42.313
+    "progress_note": "All three decision steps under Showdown Random Champions are complete. The uniform full-set prior is now running under the same cluster seeds.",
+    "completed_states_total": 90,
+    "requested_states_total": 144,
+    "branch_matches_total": 30434,
+    "elapsed_seconds_total": 634.3,
+    "aggregate_matches_per_second": 47.98
   },
   "interpretation": "Max Damage is one of five counterfactual response classes in this batch. Agent promotion still requires fresh side-swapped full-match evaluation over varied opponents; Max Damage-only gains cannot promote a candidate.",
   "plan": "https://github.com/joconn819/poke-vgc-ai/blob/master/PLAN.md"

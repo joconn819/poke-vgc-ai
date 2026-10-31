@@ -18086,6 +18086,14 @@ coverage, not another blind teacher-weight sweep.
   59/96 requested states were usable and 20,995 branches ran in 496.22
   seconds, an aggregate 42.31 matches/s. Continue reporting skipped-state
   causes instead of counting only successfully captured states.
+- Decision step 5 under the Showdown prior completed: 31/48 usable states,
+  124 worlds, and 9,439 branches in 138.08 seconds (68.357 matches/s), with
+  15.12 seconds of world preparation and zero rejected actions. The 17 skipped
+  states were ten forced-switch requests and seven where the target decision
+  was not reached. Across all three phases under this prior, 90/144 states
+  were usable, 360 worlds were prepared, and 30,434 branches ran in 634.30
+  seconds (47.98 aggregate matches/s); 54 states were skipped, with no
+  unexplained empty-mask failures after the parser fix.
 - Promotion remains gated on a fresh, side-swapped full-match league across
   varied opponents and held-out teams. Report per-opponent win rates and
   confidence intervals, mean and lower-tail performance, invalid actions, and
