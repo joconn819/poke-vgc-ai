@@ -4444,7 +4444,7 @@
   },
   "round485_opponent_exposure": {
     "status": "Higher Max Damage training share did not establish a strength gain; Round430 remains the default.",
-    "method": "Round485 and Round473 both started from Round430 and used 20,000 games, the same Round402 team selectors, 4 PPO epochs, learning rate 5e-5, minibatch 512, terminal win/loss rewards, and the same five policy-pool members. The planned change was opponent mix: Round485 used 70% Max Damage / 10% legacy Counterplay / 10% Public Counterplay / 10% policy pool; Round473 used 25% of each hard opponent and policy pool. Each evaluation used the same 256 team-pair clusters, Round402 preview selectors on both sides, two side-swapped outcomes per cluster, and 20,000 paired cluster-bootstrap resamples.",
+    "method": "Round485 and Round473 both started from Round430 and used 20,000 games, the same Round402 team selectors, 4 PPO epochs, learning rate 5e-5, minibatch 512, terminal win/loss rewards, and the same five policy-pool members. The planned change was opponent mix: Round485 used 70% Max Damage / 10% legacy Counterplay / 10% Public Counterplay / 10% total policy pool (five checkpoints at 2% of all games each); Round473 used 25% of each hard opponent and policy pool. Each evaluation used the same 256 team-pair clusters, Round402 preview selectors on both sides, two side-swapped outcomes per cluster, and 20,000 paired cluster-bootstrap resamples.",
     "training": {
       "games": 20000,
       "transitions": 159313,

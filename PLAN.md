@@ -4,6 +4,40 @@ Use this checklist to track implementation. Add dated notes under each phase as
 work progresses. Training may use a faster headless/local simulation path, but
 Pokémon Showdown remains the correctness reference and required battle platform.
 
+<!-- DASHBOARD_PROGRESS_JSON
+{
+  "target_pct": null,
+  "candidate": {
+    "round": 430,
+    "label": "Current validated in-battle default",
+    "win_rate_pct": 39.84,
+    "ci95": "[35.16%, 44.53%]",
+    "games": 512,
+    "clusters": 256,
+    "status": "Current default · search disabled",
+    "evaluation": "Latest full-match Max Damage screen: Round430 policy-only arm, 256 matched team-pair clusters, both seats, seed 202610480. The paired search arm scored 42.38% (+2.54 pp; 95% paired CI [-0.78,+6.05]), inconclusive and not enabled by default."
+  },
+  "speed": {
+    "games_per_second": "47.48 rollout / 24.70 full iteration",
+    "context": "Round485: 20,000 games in 421.24 s rollouts and 809.82 s input-to-checkpoint; includes strict audit/recovery and PPO, not comparable to search branch throughput.",
+    "decision_latency": "Median/p95 pending fresh profile",
+    "current_bottleneck": "Round485 strict preflight/recovery took 235.72 s; rollout 421.24 s; PPO 152.81 s",
+    "gpu_status": "CUDA PPO; battle simulation on CPU"
+  },
+  "latest_run": {
+    "round": 485,
+    "status": "Max Damage exposure ablation · not promoted",
+    "summary": "Round485 used 70% Max Damage, 10% each heuristic Counterplay class, and 10% total policy-pool exposure. The five pool checkpoints split that 10% evenly (2% of all games each). It scored 39.45% vs Max Damage, −0.68 pp vs balanced Round473 (95% CI −3.12 to +1.76); five-opponent equal-weight change −0.49 pp [−1.39,+0.39]. No supported gain; Round430 stays default.",
+    "games": "20,000 self-play outcomes",
+    "epochs": "4 PPO passes",
+    "evaluation": "No supported improvement across opponent pool"
+  },
+  "method": "Masked PPO action logits are the default move policy. Terminal win/loss is the primary PPO objective; win probability and hidden-set prediction are auxiliary targets. Optional search remains disabled unless a broader held-out league supports it.",
+  "jax_decision": "Recent throughput gains came from policy/observation and rollout work; a GPU battle-engine rewrite remains gated on representative end-to-end profiling and parity against local Showdown.",
+  "evaluation_note": "Round402's historical 77.15% is a team-preview selector benchmark against damage-preview selection, not an in-battle policy score against Max Damage. The latest in-battle Max Damage result is Round430 policy-only at 39.84% on 256 clusters; optional search scored 42.38% but its paired interval includes zero. Round485's 70%-Max-Damage mix did not measurably improve that matchup or the broader league. Compare only matched tasks, selectors, teams, and seeds."
+}
+DASHBOARD_PROGRESS_JSON -->
+
 **Active policy-improvement plan (updated 2026-10-31):** this section is the
 current source of truth and supersedes older recommendation sections below;
 dated entries remain the experiment ledger. Direct-policy self-play PPO with
@@ -23,16 +57,19 @@ At inference, legal actions are selected from masked PPO policy logits; the
 win-probability head is an auxiliary training target and does not rank moves.
 The optional one-turn search can consult a state-value evaluator only when
 explicitly enabled; the default play path leaves search disabled.
-**Round485 opponent-exposure ablation (2026-10-31; not promoted):** from the
-same Round430 start and PPO configuration as Round473, increased Max Damage
-training exposure from 25% to 70%, reducing the legacy Counterplay, Public
-Counterplay, and policy-pool shares to 10% each. On the same 256 held-out
-team-pair clusters, Round485 scored 39.45% against Max Damage, a paired
-−0.68 pp vs Round473 (95% CI [−3.12,+1.76]); its equal-weight five-opponent
-change was −0.49 pp [−1.39,+0.39]. No opponent interval excludes zero. Higher
-Max Damage exposure did not show a matchup or league gain; keep Round430 as
-the default and preserve the balanced Round473 mix as a useful pool member.
-Detailed results and speed are recorded below and in `site/round485_opponent_exposure.json`.
+**Round485 controlled opponent-exposure ablation (2026-10-31; not promoted):**
+matched Round473's Round430 start, PPO settings, Round402 selectors, and frozen
+policy pool while changing only opponent proportions to 70% Max Damage, 10%
+legacy Counterplay, 10% Public Counterplay, and 10% policy pool. Round485 scored
+39.45% against Max Damage, −0.68 pp vs Round473 (95% CI [−3.12,+1.76]); its
+equal-weight five-opponent change was −0.49 pp [−1.39,+0.39]. No per-opponent
+paired interval excludes zero. The higher Max Damage share did not measurably
+improve that matchup or the broader league; retain Round430 as default. The
+10% policy-pool share was split evenly across five checkpoint opponents, so
+each individual checkpoint supplied 2% of all games (400/20,000); the JSON
+mixture weights are conditional within the policy slice, not shares of all
+rollouts. Thus Round485 did not over-weight any single pool checkpoint. Full
+results and speed appear below and in `site/round485_opponent_exposure.json`.
 **Round482 equilibrium-target check (2026-10-31; reject both actor updates):**
 combined the independent Round479 256-team / 8-repeat and Round481 128-team /
 16-repeat counterfactual corpora (38,672 and 37,264 branch matches; 30.01 and
