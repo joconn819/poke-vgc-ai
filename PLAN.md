@@ -17219,7 +17219,7 @@ coverage, not another blind teacher-weight sweep.
 - Training output: `training/outputs/phase12_headless/round472_fresh_robust_mixed_ppo_20k_20261031/`.
 - Evaluation output: `training/outputs/phase12_headless/round472_fresh_seed_league_256x2_20261031/`.
 
-### Round473: hard-opponent mixed PPO (training in progress; 2026-10-31)
+### Round473: hard-opponent mixed PPO (training complete; evaluation in progress; 2026-10-31)
 
 - The Round472 league did not establish an overall gain, so keep Round430 as
   the learner start and current incumbent. Its Public Counterplay result is a
@@ -17238,14 +17238,28 @@ coverage, not another blind teacher-weight sweep.
   `202610473`.
 - Reproducible launcher: `scripts/train_round473_fresh_hard_mixed_ppo_20k.sh`.
   Output directory: `training/outputs/phase12_headless/round473_fresh_hard_mixed_ppo_20k_20261031/`.
-- After audit and PPO complete, evaluate against Round430 with the same five
-  opponent classes, a fresh team seed, paired side swaps, and two outcome
-  repeats across 256 team-pair clusters. Keep Round430 as default unless the
-  multi-opponent evidence supports promotion.
-- Speed/bottleneck tracking: record aggregate rollout games/s, complete
-  input-to-checkpoint games/s, peak aggregate RSS, and per-opponent decision
-  latency. Round472 rollout was 38.51 games/s but its full-match evaluation
-  was 3.51–5.78 games/s on eight workers; retain that distinction when sizing
-  the next evaluation. Inference, opponent scoring, and observation encoding
-  are the measured training-time targets; full-match worker scaling remains to
-  be profiled.
+- The strict audit passed after one incomplete Public Counterplay match was
+  replaced. Final data: 20,000 valid games, 167,439 transitions, no audit
+  errors. PPO completed four passes and 1,312 optimizer steps; final approximate
+  KL was 0.00487. Candidate checkpoint:
+  `training/outputs/phase12_headless/round473_fresh_hard_mixed_ppo_20k_20261031/checkpoints/latest.pt`.
+- Speed: rollout generation took 520.77 s (38.40 aggregate games/s on eight
+  workers); input-to-checkpoint elapsed 940.75 s (21.26 games/s); peak
+  aggregate rollout RSS was 9.60 GiB. PPO preparation and tensor aggregation
+  took 94.3 s, the complete PPO training command took 159.8 s, and audit plus
+  recovery took 260.1 s (128.0 s for the replacement match). The project stayed
+  below the 50% disk-use limit at 41–42% during the run.
+- Reproducible paired evaluation is now running against Round430, using fresh
+  seed `20680473`, 256 team-pair clusters, two side-swapped outcomes per
+  cluster, and five opponents: Max Damage, legacy Counterplay, Public
+  Counterplay, random, and historical PPO Round102. Round430 remains the play
+  default until multi-opponent results support a change.
+- Speed/bottleneck tracking: Round473 per-opponent rollout shards measured
+  5.0–7.5 games/s; full-match paired evaluation for Round472 measured
+  3.51–5.78 games/s with eight CPU workers. Rollout and evaluation games/s are
+  different workloads. Inference, opponent scoring, and observation encoding
+  remain training-time targets; full-match worker scaling still needs a
+  controlled profile.
+- Reproducible evaluation launcher:
+  `scripts/evaluate_round473_fresh_seed_league_256x2.sh`. Evaluation output:
+  `training/outputs/phase12_headless/round473_fresh_seed_league_256x2_20261031/`.

@@ -262,115 +262,115 @@
     }
   ],
   "speed": {
-    "games_per_second": "38.51 rollout · 21.45 end-to-checkpoint",
-    "context": "Round472: 20,000 fresh games in 519.37 s; input-to-checkpoint in 932.35 s; peak aggregate rollout RSS 9.18 GiB.",
-    "decision_latency": "130.8–203.4 ms per episode across opponent classes",
-    "current_bottleneck": "Public Counterplay scoring 77.3 ms; historical PPO inference 69.4 ms; observation encoding 25–29 ms; Showdown engine 29–35 ms per episode.",
+    "games_per_second": "38.40 rollout · 21.26 end-to-checkpoint",
+    "context": "Round473: 20,000 fresh hard-opponent games in 520.77 s; input-to-checkpoint in 940.75 s; peak aggregate rollout RSS 9.60 GiB.",
+    "decision_latency": "131–204 ms per episode across hard-opponent classes",
+    "current_bottleneck": "Public Counterplay scoring 77.8 ms; policy-pool inference 70.2 ms; observation encoding 25–29 ms; Showdown engine 29–35 ms per episode.",
     "gpu_status": "RTX 4060 used for PPO optimization; rollout decisions and headless simulator remain CPU-side",
     "profile_context": "Round467 completed 20,000 rollouts: per-worker speed 7.53/5.34/4.84 games/s for Max Damage/policy/Public Counterplay. PPO preparation took 89 s; the KL-stopped CUDA optimizer ran about 5 s. Aggregate rollout wall time was not retained.",
     "active_training_profile": {
-      "round": "472",
-      "status": "Round472 fresh mixed-opponent rollout profile",
-      "context": "Episode-weighted per-shard telemetry. Per-shard games/s is not aggregate workflow throughput; full-run aggregate was 38.51 games/s for rollouts.",
+      "round": "473",
+      "status": "Round473 fresh hard-opponent mixed PPO rollout profile",
+      "context": "Per-shard averages. Aggregate rollout was 38.40 games/s over 20,000 matches on eight CPU workers; do not sum per-shard rates.",
       "profile": [
         {
-          "opponent": "Random",
-          "completed_episodes": "2,000",
-          "matches_per_second": "7.11",
-          "end_to_end_ms": "138.6",
-          "action_ms": "45.0",
-          "inference_ms": "33.6",
-          "baseline_ms": "0.0",
-          "encoding_ms": "28.8",
-          "engine_ms": "33.8",
-          "persistence_ms": "9.4"
-        },
-        {
           "opponent": "Max Damage",
-          "completed_episodes": "4,000",
-          "matches_per_second": "7.53",
-          "end_to_end_ms": "130.8",
-          "action_ms": "47.4",
+          "completed_episodes": "5,000",
+          "matches_per_second": "7.50",
+          "end_to_end_ms": "131.2",
+          "action_ms": "47.2",
           "inference_ms": "32.3",
           "baseline_ms": "5.3",
-          "encoding_ms": "25.4",
-          "engine_ms": "28.6",
-          "persistence_ms": "8.8"
+          "encoding_ms": "25.6",
+          "engine_ms": "28.8",
+          "persistence_ms": "9.0"
         },
         {
           "opponent": "Legacy Counterplay",
           "completed_episodes": "5,000",
-          "matches_per_second": "5.31",
-          "end_to_end_ms": "186.1",
-          "action_ms": "93.7",
-          "inference_ms": "36.6",
-          "baseline_ms": "46.1",
-          "encoding_ms": "27.8",
-          "engine_ms": "33.4",
+          "matches_per_second": "5.18",
+          "end_to_end_ms": "191.0",
+          "action_ms": "95.8",
+          "inference_ms": "37.5",
+          "baseline_ms": "47.1",
+          "encoding_ms": "29.1",
+          "engine_ms": "34.4",
           "persistence_ms": "10.3"
         },
         {
           "opponent": "Public Counterplay",
           "completed_episodes": "5,000",
-          "matches_per_second": "4.87",
-          "end_to_end_ms": "203.4",
-          "action_ms": "120.0",
-          "inference_ms": "33.1",
-          "baseline_ms": "77.3",
-          "encoding_ms": "25.0",
-          "engine_ms": "29.4",
+          "matches_per_second": "4.86",
+          "end_to_end_ms": "203.7",
+          "action_ms": "120.3",
+          "inference_ms": "32.8",
+          "baseline_ms": "77.8",
+          "encoding_ms": "25.3",
+          "engine_ms": "29.2",
           "persistence_ms": "9.0"
         },
         {
           "opponent": "Historical policy pool",
-          "completed_episodes": "4,000",
-          "matches_per_second": "5.14",
-          "end_to_end_ms": "191.9",
-          "action_ms": "81.6",
-          "inference_ms": "69.4",
+          "completed_episodes": "5,000",
+          "matches_per_second": "5.05",
+          "end_to_end_ms": "194.8",
+          "action_ms": "82.7",
+          "inference_ms": "70.2",
           "baseline_ms": "0.0",
-          "encoding_ms": "27.5",
-          "engine_ms": "34.7",
-          "persistence_ms": "13.1"
+          "encoding_ms": "28.1",
+          "engine_ms": "34.9",
+          "persistence_ms": "13.5"
         }
       ]
     },
     "profile": [
       {
         "opponent": "Max Damage",
-        "completed_episodes": "6,000",
-        "matches_per_second": "6.75",
-        "end_to_end_ms": "148",
-        "action_ms": "48",
-        "inference_ms": "33",
-        "baseline_ms": "6",
-        "encoding_ms": "27",
-        "engine_ms": "29",
-        "persistence_ms": "17"
+        "completed_episodes": "5,000",
+        "matches_per_second": "7.50",
+        "end_to_end_ms": "131.2",
+        "action_ms": "47.2",
+        "inference_ms": "32.3",
+        "baseline_ms": "5.3",
+        "encoding_ms": "25.6",
+        "engine_ms": "28.8",
+        "persistence_ms": "9.0"
       },
       {
-        "opponent": "Historical policy pool",
-        "completed_episodes": "8,000",
-        "matches_per_second": "4.68",
-        "end_to_end_ms": "214",
-        "action_ms": "77",
-        "inference_ms": "66",
-        "baseline_ms": "0",
-        "encoding_ms": "28",
-        "engine_ms": "32",
-        "persistence_ms": "25"
+        "opponent": "Legacy Counterplay",
+        "completed_episodes": "5,000",
+        "matches_per_second": "5.18",
+        "end_to_end_ms": "191.0",
+        "action_ms": "95.8",
+        "inference_ms": "37.5",
+        "baseline_ms": "47.1",
+        "encoding_ms": "29.1",
+        "engine_ms": "34.4",
+        "persistence_ms": "10.3"
       },
       {
         "opponent": "Public Counterplay",
-        "completed_episodes": "6,000",
-        "matches_per_second": "4.51",
-        "end_to_end_ms": "222",
-        "action_ms": "122",
-        "inference_ms": "34",
-        "baseline_ms": "79",
-        "encoding_ms": "26",
-        "engine_ms": "30",
-        "persistence_ms": "17"
+        "completed_episodes": "5,000",
+        "matches_per_second": "4.86",
+        "end_to_end_ms": "203.7",
+        "action_ms": "120.3",
+        "inference_ms": "32.8",
+        "baseline_ms": "77.8",
+        "encoding_ms": "25.3",
+        "engine_ms": "29.2",
+        "persistence_ms": "9.0"
+      },
+      {
+        "opponent": "Historical policy pool",
+        "completed_episodes": "5,000",
+        "matches_per_second": "5.05",
+        "end_to_end_ms": "194.8",
+        "action_ms": "82.7",
+        "inference_ms": "70.2",
+        "baseline_ms": "0.0",
+        "encoding_ms": "28.1",
+        "engine_ms": "34.9",
+        "persistence_ms": "13.5"
       }
     ],
     "opportunities": [
@@ -1244,15 +1244,118 @@
           "detail": "Showdown engine time was 29–35 ms per episode. A simulator rewrite alone would leave policy inference, opponent scoring, and observation preparation as larger costs on hard-opponent workloads."
         }
       ]
+    },
+    "round473_full_iteration_profile": {
+      "round": "473",
+      "summary": "Round473 trained on 20,000 fresh hard-opponent games, passed the strict audit after one replacement match, and completed PPO. Rollouts: 520.77 s; full input-to-checkpoint: 940.75 s; peak aggregate RSS: 9.60 GiB.",
+      "observed_rollout_games_per_second": 38.4,
+      "observed_rollout_wall_seconds": 520.77,
+      "observed_workflow_games_per_second": 21.26,
+      "ppo_sample_preparation_seconds": 98.3,
+      "ppo_wall_seconds": 159.81,
+      "transitions": 167439,
+      "peak_rss_gib": 9.6,
+      "iteration_stages": [
+        {
+          "stage": "Fresh rollouts",
+          "seconds": 520.77,
+          "share": "55.4%"
+        },
+        {
+          "stage": "Strict audit and recovery",
+          "seconds": 260.13,
+          "share": "27.7%"
+        },
+        {
+          "stage": "PPO preparation, optimization, and checkpoint",
+          "seconds": 159.81,
+          "share": "17.0%"
+        }
+      ],
+      "ppo_stages": [
+        {
+          "stage": "Record preparation",
+          "seconds": 91.82
+        },
+        {
+          "stage": "Tensor aggregation",
+          "seconds": 6.48
+        },
+        {
+          "stage": "CUDA optimization (1,312 steps)",
+          "seconds": 55.65
+        },
+        {
+          "stage": "Other PPO update work",
+          "seconds": 5.86
+        }
+      ],
+      "rollout_stages": [
+        {
+          "stage": "Action selection (includes inference and baseline scoring)",
+          "ms": 86.5,
+          "share": "48.0%"
+        },
+        {
+          "stage": "Observation encoding",
+          "ms": 27.0,
+          "share": "15.0%"
+        },
+        {
+          "stage": "Showdown engine roundtrip",
+          "ms": 31.8,
+          "share": "17.6%"
+        },
+        {
+          "stage": "Trajectory persistence",
+          "ms": 10.5,
+          "share": "5.8%"
+        },
+        {
+          "stage": "Pre-match setup",
+          "ms": 9.0,
+          "share": "5.0%"
+        },
+        {
+          "stage": "Preview and first step",
+          "ms": 2.0,
+          "share": "1.1%"
+        },
+        {
+          "stage": "Other episode work",
+          "ms": 13.4,
+          "share": "7.4%"
+        }
+      ],
+      "timing_caveat": "Action selection includes inference and opponent scoring; do not add those component times again when interpreting end-to-end latency.",
+      "opportunities": [
+        {
+          "title": "Reduce public opponent scoring cost",
+          "detail": "Public Counterplay scoring averaged 77.8 ms per episode; profile shared calculations and cache state-derived features before attempting simulator replacement."
+        },
+        {
+          "title": "Batch policy inference",
+          "detail": "Historical policy-pool inference averaged 70.2 ms per episode. Benchmark GPU batches against CPU using real search/rollout batch sizes and include transfer overhead."
+        },
+        {
+          "title": "Improve observation throughput",
+          "detail": "Observation encoding averaged 25–29 ms per episode; target repeated feature construction and state lookups."
+        },
+        {
+          "title": "Measure evaluation worker scaling",
+          "detail": "Round472 full-match evaluation ran at 3.51–5.78 games/s on eight CPU workers. Benchmark worker counts for complete paired matches before increasing evaluation sample sizes."
+        }
+      ],
+      "report": "round473_training_profile.json"
     }
   },
   "latest_run": {
     "round": 473,
-    "status": "Fresh hard-opponent mixed PPO · training in progress",
-    "summary": "A new 20,000-game update from Round430 is underway. The mixture is 25% each Max Damage, legacy Counterplay, Public Counterplay, and a five-checkpoint PPO pool; random-opponent training was removed because the incumbent already scores about 95% there.",
-    "games": "20,000 planned fresh games",
-    "epochs": "4 PPO passes planned",
-    "evaluation": "Held-out five-opponent paired league planned after audit and training"
+    "status": "Fresh hard-opponent mixed PPO · paired evaluation in progress",
+    "summary": "Round473 trained on 20,000 fresh audited games from Round430 with no random-opponent games: 25% each Max Damage, legacy Counterplay, Public Counterplay, and a five-checkpoint policy pool. The candidate checkpoint is complete; Round430 remains the validated default pending the five-opponent paired screen.",
+    "games": "20,000 audited games · 167,439 transitions",
+    "epochs": "4 PPO passes · 1,312 optimizer steps",
+    "evaluation": "256 clusters × 2 outcomes vs five opponents · running"
   },
   "method": "Native self-play PPO for in-battle decisions. Terminal win/loss remains the main objective; win-probability and hidden-set prediction are auxiliary tasks. Search comes after a stronger policy.",
   "jax_decision": "Round430 has a confirmed self-play head-to-head lift over Round424, but external-opponent screens remain inconclusive. Prioritize measured inference batching, observation throughput, and rollouts; keep equilibrium-oriented opponent coverage and defer a JAX/GPU engine rewrite until its end-to-end payoff is measured.",
@@ -3444,8 +3547,8 @@
   },
   "round473_current_training": {
     "round": "473",
-    "status": "Fresh hard-opponent mixed PPO · rollouts in progress",
-    "summary": "Round430 remains the learner start and incumbent. Training uses 25% Max Damage, 25% legacy Counterplay, 25% Public Counterplay, and 25% pool opponents (Round430/465/468/471/472).",
+    "status": "Training complete · held-out paired evaluation in progress",
+    "summary": "The strict audit passed after one incomplete Public Counterplay match was replaced. PPO completed all four passes; Round430 remains the play default until the new league supports promotion.",
     "opponent_mix": {
       "Random": 0,
       "Max Damage": 25,
@@ -3453,11 +3556,13 @@
       "Public Counterplay": 25,
       "Policy pool": 25
     },
-    "training": "20,000 fresh games; four PPO passes, learning rate 5e-5, minibatch 512, terminal rewards, eight CPU rollout workers, CUDA optimizer.",
+    "training": "20,000 audited games, 167,439 transitions; learning rate 5e-5, minibatch 512, terminal rewards, 1,312 optimizer steps; final approximate KL 0.00487.",
     "seed": 202610473,
-    "speed_status": "Rollouts have started; full-run games/s and peak RSS will be recorded on completion.",
-    "candidate": "Round430 remains the validated play default until held-out paired results support promotion.",
+    "runtime": "38.40 rollout games/s; 21.26 games/s input-to-checkpoint; peak aggregate RSS 9.60 GiB. PPO preparation/tensor aggregation: 94.3 s; audit plus recovery: 260.1 s.",
+    "evaluation": "Fresh paired seed 20680473; 256 team-pair clusters × two side-swapped outcomes against five opponent classes. Evaluation is running.",
+    "candidate": "Round430 remains the validated play default pending paired results.",
     "artifacts": "training/outputs/phase12_headless/round473_fresh_hard_mixed_ppo_20k_20261031/",
-    "launcher": "scripts/train_round473_fresh_hard_mixed_ppo_20k.sh"
+    "launcher": "scripts/train_round473_fresh_hard_mixed_ppo_20k.sh",
+    "evaluation_launcher": "scripts/evaluate_round473_fresh_seed_league_256x2.sh"
   }
 }

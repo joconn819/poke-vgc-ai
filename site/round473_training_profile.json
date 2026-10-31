@@ -1,0 +1,103 @@
+{
+  "round": "473",
+  "summary": "Round473 trained on 20,000 fresh hard-opponent games, passed the strict audit after one replacement match, and completed PPO. Rollouts: 520.77 s; full input-to-checkpoint: 940.75 s; peak aggregate RSS: 9.60 GiB.",
+  "observed_rollout_games_per_second": 38.4,
+  "observed_rollout_wall_seconds": 520.77,
+  "observed_workflow_games_per_second": 21.26,
+  "ppo_sample_preparation_seconds": 98.3,
+  "ppo_wall_seconds": 159.81,
+  "transitions": 167439,
+  "peak_rss_gib": 9.6,
+  "iteration_stages": [
+    {
+      "stage": "Fresh rollouts",
+      "seconds": 520.77,
+      "share": "55.4%"
+    },
+    {
+      "stage": "Strict audit and recovery",
+      "seconds": 260.13,
+      "share": "27.7%"
+    },
+    {
+      "stage": "PPO preparation, optimization, and checkpoint",
+      "seconds": 159.81,
+      "share": "17.0%"
+    }
+  ],
+  "ppo_stages": [
+    {
+      "stage": "Record preparation",
+      "seconds": 91.82
+    },
+    {
+      "stage": "Tensor aggregation",
+      "seconds": 6.48
+    },
+    {
+      "stage": "CUDA optimization (1,312 steps)",
+      "seconds": 55.65
+    },
+    {
+      "stage": "Other PPO update work",
+      "seconds": 5.86
+    }
+  ],
+  "rollout_stages": [
+    {
+      "stage": "Action selection (includes inference and baseline scoring)",
+      "ms": 86.5,
+      "share": "48.0%"
+    },
+    {
+      "stage": "Observation encoding",
+      "ms": 27.0,
+      "share": "15.0%"
+    },
+    {
+      "stage": "Showdown engine roundtrip",
+      "ms": 31.8,
+      "share": "17.6%"
+    },
+    {
+      "stage": "Trajectory persistence",
+      "ms": 10.5,
+      "share": "5.8%"
+    },
+    {
+      "stage": "Pre-match setup",
+      "ms": 9.0,
+      "share": "5.0%"
+    },
+    {
+      "stage": "Preview and first step",
+      "ms": 2.0,
+      "share": "1.1%"
+    },
+    {
+      "stage": "Other episode work",
+      "ms": 13.4,
+      "share": "7.4%"
+    }
+  ],
+  "timing_caveat": "Action selection includes inference and opponent scoring; do not add those component times again when interpreting end-to-end latency.",
+  "opportunities": [
+    {
+      "title": "Reduce public opponent scoring cost",
+      "detail": "Public Counterplay scoring averaged 77.8 ms per episode; profile shared calculations and cache state-derived features before attempting simulator replacement."
+    },
+    {
+      "title": "Batch policy inference",
+      "detail": "Historical policy-pool inference averaged 70.2 ms per episode. Benchmark GPU batches against CPU using real search/rollout batch sizes and include transfer overhead."
+    },
+    {
+      "title": "Improve observation throughput",
+      "detail": "Observation encoding averaged 25–29 ms per episode; target repeated feature construction and state lookups."
+    },
+    {
+      "title": "Measure evaluation worker scaling",
+      "detail": "Round472 full-match evaluation ran at 3.51–5.78 games/s on eight CPU workers. Benchmark worker counts for complete paired matches before increasing evaluation sample sizes."
+    }
+  ],
+  "report": "round473_training_profile.json"
+}
