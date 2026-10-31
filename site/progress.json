@@ -1248,16 +1248,16 @@
   },
   "latest_run": {
     "round": 472,
-    "status": "Fresh mixed-opponent PPO · held-out evaluation in progress",
-    "summary": "Round472 completed a new 20,000-game update from Round430. Paired evaluation against Round430 is running on five opponents with fresh team-pair seeds; Round430 remains the default until results support promotion.",
+    "status": "Fresh mixed-opponent PPO · evaluated, not promoted",
+    "summary": "Round472 completed a fresh 20,000-game PPO update and a paired screen on 256 team clusters against five opponent classes. The candidate showed no confirmed overall improvement; Round430 remains the validated play default.",
     "games": "20,000 audited games · 167,000 transitions",
     "epochs": "4 PPO passes · 1,308 optimizer steps",
-    "evaluation": "256 clusters × 2 outcomes vs five opponents; pending"
+    "evaluation": "256 clusters × 2 side-swapped outcomes vs five opponents · no promotion"
   },
   "method": "Native self-play PPO for in-battle decisions. Terminal win/loss remains the main objective; win-probability and hidden-set prediction are auxiliary tasks. Search comes after a stronger policy.",
   "jax_decision": "Round430 has a confirmed self-play head-to-head lift over Round424, but external-opponent screens remain inconclusive. Prioritize measured inference batching, observation throughput, and rollouts; keep equilibrium-oriented opponent coverage and defer a JAX/GPU engine rewrite until its end-to-end payoff is measured.",
   "evaluation_note": "Round465 scored 45.51% against Max Damage [41.70%, 49.32%] and 46.00% against Public Counterplay [42.19%, 49.80%]. Same-seed Max Damage deltas over Round464 (+0.10 pp [-1.56, +1.76]) and Round430 (+0.88 pp [-1.27, +3.03]) include zero, so Round430 remains the validated incumbent. The 58.40% five-opponent mean is pulled upward by the 95.12% Random result; the p10 is 45.70% and the worst opponent score is 45.51%. Use paired team-cluster intervals and hard-opponent results to judge changes, not one overall mean.",
-  "generated_at": "2026-10-31 06:35 UTC",
+  "generated_at": "2026-10-31 07:13 UTC",
   "round462_evaluation": {
     "status": "Round462 not promoted · initial paired screen complete",
     "summary": "Round462 scored 44.82% against Max Damage [41.02%, 48.54%]. On the same teams and seeds, Round430 scored 44.73% and Round432 scored 44.43%; paired deltas were +0.10 pp [-1.37, +1.56] and +0.39 pp [-1.37, +2.05]. The update did not measurably change this weakness. Results against Public Counterplay and historical PPO are inconclusive; Random is an easy-baseline check.",
@@ -3345,8 +3345,8 @@
   },
   "round472_current_training": {
     "round": "472",
-    "status": "Training complete · held-out evaluation in progress",
-    "summary": "Fresh mixed-opponent PPO from Round430 completed all four passes on 20,000 audited games (167,000 transitions). One incomplete rollout was replaced before audit passed.",
+    "status": "Training and paired evaluation complete · Round472 not promoted",
+    "summary": "Fresh mixed-opponent PPO from Round430 completed on 20,000 audited games (167,000 transitions). The candidate remains experimental: paired five-opponent evaluation found no confirmed overall gain.",
     "opponent_mix": {
       "Random": 10,
       "Max Damage": 20,
@@ -3356,7 +3356,90 @@
     },
     "training": "Four passes, learning rate 5e-5, 1,308 optimizer steps; final approximate KL 0.00489.",
     "runtime": "38.51 rollout games/s; 21.45 games/s input-to-checkpoint; 9.18 GiB peak RSS.",
-    "candidate": "Round430 remains the validated play default pending paired evaluation.",
+    "candidate": "Round430 remains the validated play default; Round472 is not promoted.",
     "artifacts": "training/outputs/phase12_headless/round472_fresh_robust_mixed_ppo_20k_20261031/"
+  },
+  "round472_evaluation": {
+    "status": "Round472 not promoted · multi-opponent paired screen complete",
+    "method": "256 matched team-pair clusters per opponent; two side-swapped outcomes per cluster; Round402 team-preview selectors fixed; 20,000 paired cluster-bootstrap replicates. Battle randomness is not identical across candidate/control runs.",
+    "summary": "Equal-weight mean change across five opponents was +0.68 percentage points (95% stratified paired-bootstrap interval −0.12 to +1.47). Public Counterplay was +2.05 pp with a nominal 95% interval [+0.29, +3.91], but its Bonferroni familywise interval across five opponents was [−0.29, +4.49]. The candidate is promising but not confirmed; Round430 remains incumbent.",
+    "opponents": [
+      {
+        "opponent": "Max Damage",
+        "round430_score_percent": 35.55,
+        "round472_score_percent": 36.62,
+        "paired_delta_pp": 1.07,
+        "paired_ci95_pp": [
+          -0.59,
+          2.83
+        ],
+        "clusters": 256,
+        "round430_games_per_second": 4.4,
+        "round472_games_per_second": 5.03
+      },
+      {
+        "opponent": "Legacy Counterplay",
+        "round430_score_percent": 35.25,
+        "round472_score_percent": 34.38,
+        "paired_delta_pp": -0.88,
+        "paired_ci95_pp": [
+          -2.93,
+          1.17
+        ],
+        "clusters": 256,
+        "round430_games_per_second": 3.51,
+        "round472_games_per_second": 4.11
+      },
+      {
+        "opponent": "Public Counterplay",
+        "round430_score_percent": 36.72,
+        "round472_score_percent": 38.77,
+        "paired_delta_pp": 2.05,
+        "paired_ci95_pp": [
+          0.29,
+          3.91
+        ],
+        "familywise_ci95_pp": [
+          -0.29,
+          4.49
+        ],
+        "clusters": 256,
+        "round430_games_per_second": 4.58,
+        "round472_games_per_second": 5.78
+      },
+      {
+        "opponent": "Random",
+        "round430_score_percent": 94.82,
+        "round472_score_percent": 94.82,
+        "paired_delta_pp": 0.0,
+        "paired_ci95_pp": [
+          -0.98,
+          0.98
+        ],
+        "clusters": 256,
+        "round430_games_per_second": 5.07,
+        "round472_games_per_second": 4.41
+      },
+      {
+        "opponent": "Historical PPO · Round102",
+        "round430_score_percent": 46.88,
+        "round472_score_percent": 48.05,
+        "paired_delta_pp": 1.17,
+        "paired_ci95_pp": [
+          -0.88,
+          3.32
+        ],
+        "clusters": 256,
+        "round430_games_per_second": 5.74,
+        "round472_games_per_second": 4.29
+      }
+    ],
+    "average_delta_pp": 0.68,
+    "average_delta_ci95_pp": [
+      -0.12,
+      1.47
+    ],
+    "evaluation_games_per_second": "3.51–5.78 across eight-worker opponent arms",
+    "artifact": "round472_evaluation.json"
   }
 }

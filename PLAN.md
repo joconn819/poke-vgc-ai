@@ -17167,7 +17167,7 @@ coverage, not another blind teacher-weight sweep.
 - Published report: `site/round471_matched_ppo_trial.json`.
 
 
-### Round472: fresh robust mixed-opponent PPO (training complete; evaluation underway; 2026-10-31)
+### Round472: fresh robust mixed-opponent PPO (training and evaluation complete; 2026-10-31)
 
 - Collected 20,000 fresh games from the validated Round430 policy. Opponents:
   10% random, 20% Max Damage, 25% legacy Counterplay, 25% Public Counterplay,
@@ -17190,11 +17190,30 @@ coverage, not another blind teacher-weight sweep.
   scoring 46.1 ms, and historical-policy inference 69.4 ms. Observation
   encoding took 25–29 ms and the Showdown engine 29–35 ms; inference, opponent
   scoring, and observation work remain the strongest speed targets.
-- Paired held-out evaluation is running on a fresh seed (`20680472`), 256
-  team-pair clusters and two side-swapped outcomes per cluster, against Max
-  Damage, legacy Counterplay, Public Counterplay, random, and historical PPO
-  Round102. Round430 is the matched control and remains the play default until
-  results support a change.
+- Paired held-out evaluation completed on fresh seed `20680472`, with 256
+  matched team-pair clusters, two side-swapped outcomes per cluster, and both
+  Round402 preview selectors fixed. Scores and paired candidate-minus-Round430
+  changes (95% cluster-bootstrap intervals) were: Max Damage 36.62% vs 35.55%,
+  +1.07 pp [-0.59, +2.83]; legacy Counterplay 34.38% vs 35.25%, -0.88 pp
+  [-2.93, +1.17]; Public Counterplay 38.77% vs 36.72%, +2.05 pp
+  [+0.29, +3.91]; random 94.82% vs 94.82%, 0.00 pp [-0.98, +0.98]; and
+  historical Round102 PPO 48.05% vs 46.88%, +1.17 pp [-0.88, +3.32]. All
+  intervals use paired team-cluster resampling; one repeat was incomplete and
+  excluded in each Round430 control arm for legacy Counterplay and random.
+  There were no action corrections.
+- The equal-weight mean change over the five fixed opponent classes was
+  +0.68 pp with a stratified paired-bootstrap 95% interval [-0.12, +1.47].
+  Public Counterplay was the only nominally positive per-opponent 95% interval;
+  its Bonferroni familywise 95% interval across five opponent comparisons is
+  [-0.29, +4.49] pp and includes zero. Treat this as a promising but unconfirmed
+  signal, not a robust improvement. Keep Round430 as the validated incumbent;
+  do not promote Round472 from this screen alone.
+- Full evaluation used eight CPU workers and took 178–291 s per opponent arm,
+  at 3.51–5.78 complete matches/s. Training rollout speed (38.51 games/s)
+  does not predict full-match evaluation speed. The current speed targets
+  remain policy inference, opponent action scoring, and observation encoding;
+  speed up complete-match evaluation by tuning parallel worker count against
+  CPU and memory before scaling sample counts.
 - Reproducible commands: `scripts/train_round472_fresh_robust_mixed_ppo_20k.sh`
   and `scripts/evaluate_round472_fresh_seed_league_256x2.sh`.
 - Training output: `training/outputs/phase12_headless/round472_fresh_robust_mixed_ppo_20k_20261031/`.
