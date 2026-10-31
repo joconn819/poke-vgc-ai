@@ -16962,6 +16962,46 @@ coverage, not another blind teacher-weight sweep.
   plus
   `training/outputs/phase12_headless/round467_opening_first5_intervention_vs_ppo_256x2_seed20261120/`.
 
+### Round467 first-five intervention with the website's Round402 selector
+
+- The play page uses the Round402 preview selector, while the transfer tests
+  above used Round94. Ran matched raw-versus-first-five screens with Round402
+  on two disjoint 128-cluster × two-repeat seed ranges, each side-swapped.
+  Each arm completed 512 games per opponent with zero action corrections,
+  timeouts, or errors.
+- Valid pooled results across 256 unique team clusters: against Max Damage,
+  raw/hybrid scored 40.14%/54.10%, paired gain +13.96 percentage points (95%
+  cluster interval [+8.89, +19.14]); against public Counterplay, raw/hybrid
+  scored 39.06%/47.07%, gain +8.01 points ([+3.03, +12.99]).
+- The first attempted second seed run used a base seed too close to the first;
+  the generated team-seed ranges overlapped. It is retained at
+  `round467_opening_intervention_round402_selector_128x2_seed20261202/` for
+  transparency but is **not** counted as independent evidence or included in
+  pooled confidence intervals. The valid disjoint seed set is
+  `round467_opening_intervention_round402_selector_128x2_seed20261205/`.
+- Speed note: the clean disjoint Round402 screen ran at 3.77/9.98 aggregate
+  games/s (raw/hybrid) vs Max Damage; one raw worker had a long-tail batch.
+  Against Counterplay it ran at 7.53/6.91 games/s. These are evaluation
+  throughput, not training throughput; the wide worker-time spread means a
+  single aggregate is sensitive to battle-duration tails.
+- The local bot adapter already exposes `--first-n-max-damage`; this tested
+  configuration uses 5 and then returns to the Round467 PPO policy. Updated
+  the published play instructions to use that tested Round402-selector
+  combination. The underlying trained checkpoint and win-probability head
+  remain unchanged; the head still does not choose actions. Keep the override
+  as a distinct inference-time policy component and continue legal-response
+  audits before claiming near-equilibrium play.
+- **Local Showdown adapter completed a full match:** started the existing local
+  Showdown server on port 8000 and launched `scripts/run_lan_bot.py` with the
+  Round467 checkpoint, Round402 selector, and `--first-n-max-damage 5`. A
+  `poke-env` random player challenged it in
+  `gen9championsdoubles2026mcclosed`; the match finished at turn 3. The bot
+  logged 3/3 first-five scorer decisions, 0 invalid-action fallbacks, and
+  decision latency p50 1.42 ms / p95 2.36 ms / max 2.47 ms. This verifies one
+  complete local-server protocol path, not the full forced-switch,
+  disconnect, timeout, or target-coverage matrix. Battle tag:
+  `battle-gen9championsdoubles2026mcclosed-1391089`.
+
 ### Round467 opening-intervention transfer check (2026-10-30)
 
 - Evaluated raw Round467 and a hybrid that replaced its first five battle
