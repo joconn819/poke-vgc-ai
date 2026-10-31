@@ -16860,3 +16860,43 @@ broad optimal-play validation. Pooled artifacts are recorded under
 - The win-probability head remained auxiliary: default move choice still
   comes directly from masked PPO action logits. Search/evaluator-based action
   selection remains opt-in and disabled in the default policy.
+
+### Round467 stronger opening-teacher signal test (2026-10-30)
+
+- Repeated the 20,000-game Round466 mix from the Round430 incumbent, added
+  Round466 to the four-version policy pool, and increased opening-teacher loss
+  weight from 0.1 to 0.5. Teacher-forced actions at decision indices 1 and 4
+  remained excluded from PPO loss. Strict audit passed after regenerating one
+  identical-team match: 20,000 complete matches, 40,000 safe perspectives,
+  and 162,087 trainable transitions. A `NameError` in the recovery helper's
+  return value occurred after the repaired shard was atomically written; fixed
+  the return to use `invalid_ids`, audited the corpus directly, and did not
+  repeat rollouts.
+- The PPO KL guard stopped the update after 184 of 1,268 planned optimizer
+  steps (0.58 passes equivalent), with approximate KL 0.03182. The candidate
+  checkpoint saved and loaded successfully, but remains isolated from the
+  incumbent.
+- Held-out evaluation used 128 team-pair clusters, two side-swapped outcomes
+  each (512 games per opponent). Round467 scored 41.99% vs Max Damage
+  [34.96, 49.02], 37.50% vs Public Counterplay [30.66, 44.34], 58.20% vs
+  Round464 [50.78, 65.63], and 52.15% vs Round465 [45.12, 59.18]. No
+  timeouts or action adjustments occurred.
+- Matched with Round430 on the same hard-opponent sets, Round467 deltas were
+  +1.76 pp vs Max Damage (95% paired cluster interval [-1.95, +5.66]) and
+  -0.20 pp vs Public Counterplay ([-3.52, +3.32]). Matched with Round466 on
+  all four sets, deltas were +1.17 pp vs Max Damage ([-2.34, +4.69]),
+  -0.20 pp vs Public Counterplay ([-4.10, +3.91]), +0.98 pp vs Round464
+  ([-2.54, +4.30]), and +0.98 pp vs Round465 ([-2.54, +4.30]). Every
+  interval includes zero. Increasing teacher weight did not demonstrate a
+  reproducible improvement; keep Round430 as the validated incumbent and
+  Round467 as an experimental checkpoint only.
+- Rollout telemetry: 7.53 games/s per worker vs Max Damage, 5.34 vs the
+  historical policy pool, and 4.84 vs Public Counterplay. Mean action
+  selection took 48, 79, and 121 ms respectively; the public Counterplay
+  scorer accounts for most of the latter. PPO preparation took about 89 s;
+  the KL-stopped update took about 5 s of optimization after aggregation.
+- Default move selection still uses masked PPO policy logits. The win
+  probability head remains an auxiliary prediction target; it does not rank
+  ordinary moves.
+- Artifacts:
+  `training/outputs/phase12_headless/round467_round430_opening14_teacher_weight5_pool430_464_465_466_20k_20261030/`

@@ -1,0 +1,25 @@
+{
+  "games": 20000,
+  "opponent_mix": {
+    "Max Damage": 6000,
+    "Public Counterplay": 6000,
+    "historical policy pool": 8000
+  },
+  "transitions": 162087,
+  "teacher_loss_weight": 0.5,
+  "ppo_optimizer_steps": 184,
+  "optimizer_step_budget": 1268,
+  "passes_equivalent": 0.58,
+  "approx_kl": 0.031824,
+  "stop_reason": "KL safety limit",
+  "sample_preparation_seconds": 88.8,
+  "optimizer_seconds": 5.0,
+  "win_probability_loss": 0.48789,
+  "gpu": "RTX 4060 Laptop GPU used for PPO update",
+  "rollout_per_worker_games_per_second": {
+    "Max Damage": 7.53,
+    "historical policy pool": 5.34,
+    "Public Counterplay": 4.84
+  },
+  "end_to_end_throughput_note": "Rollout per-worker rate only; exact aggregate wall time was not retained."
+}
