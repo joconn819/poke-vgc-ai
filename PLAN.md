@@ -17551,24 +17551,28 @@ coverage, not another blind teacher-weight sweep.
   Brier 0.12028. These outcomes describe the policies and opponent mixture in
   the data; they are not a value estimate for ideal play.
 - Reproduction: `scripts/train_round480_current_policy_state_value.sh` and
-  `scripts/evaluate_round480_recent_value_search_screen.sh`.
+  `scripts/evaluate_round480_recent_value_search_screen.sh` (defaults to the
+  full 256-cluster paired screen; set `START_CLUSTER` and `CLUSTERS` to shard).
   Evaluator and disk-backed cache are under
   `training/outputs/phase12_headless/round480_recent_mixed_state_value_20261031/`.
-- Screened the Round430 policy with learned one-turn midgame maximin search
-  against Max Damage, using the new value model, Round402 selector, two hidden
-  worlds, four candidates per side, and one chance sample. Across 32 paired
-  team clusters and both seat swaps (128 complete games), raw scored 48.44%
-  and search scored 42.19%, a paired change of -6.25 pp (95% cluster bootstrap
-  CI [-17.19,+4.69]). The screen is small and uncertain; it gives no evidence
-  to promote search. Keep the policy-only runner as default.
-- Search ran in 62 of 64 search opportunities. Median full adapter latency was
-  251 ms (p95 335 ms); inner Showdown rollout median was 153 ms. Aggregate
-  evaluation throughput was 4.31 complete matches/s. Search used the evaluator
-  at the frontier, but its higher predictive accuracy did not translate into a
-  measured win-rate gain in this screen.
+- Screened Round430 with one-turn learned midgame maximin search against Max
+  Damage, using the new value model, Round402 selector, two hidden worlds, four
+  candidate actions per side, and one chance sample. Across 256 paired team
+  clusters and both seat swaps (1,024 complete matches), policy-only scored
+  39.84% and search scored 42.38%, a paired change of +2.54 pp (95% team-cluster
+  bootstrap CI [-0.78,+6.05]). Seat-specific changes were +3.13 pp and +1.95
+  pp. The interval includes zero and this is one opponent only, so the result
+  is promising but inconclusive; do not promote search or infer general
+  strength from it.
+- The search returned a matrix choice in 499/512 search-side matches; 13 cases
+  safely fell back to policy after encountering unsupported possible-Illusion
+  previews (10) or publicly observed Transform states (3). Aggregate
+  evaluation throughput was 1,024 matches / 230.11 s = 4.45 matches/s. Search
+  adapter latency median/p95 was 248.8/337.8 ms; the inner Showdown advance
+  median/p95 was 154.6/240.6 ms. Value inference median was 4.85 ms.
 - Decision flow: the deployed/default PPO selects legal moves from masked
   policy logits. Its auxiliary win-probability head does not rank moves. A
   separate learned state-value model can influence a move only when optional
   search is explicitly enabled; it scores simulated successor states inside a
-  payoff matrix. Search remains off by default pending stronger, multi-opponent
-  paired evidence.
+  payoff matrix. Search remains off by default pending broader paired evidence
+  against the opponent pool.

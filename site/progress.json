@@ -263,9 +263,9 @@
   ],
   "speed": {
     "games_per_second": "38.40 standard PPO rollout",
-    "context": "Round480 learned-search screen: 128 complete matches / 29.69 s = 4.31 matches/s, separate from standard PPO rollout (38.40 games/s) and Round479 branch collection (30.01 matches/s). Search-adapter latency median 251 ms, p95 335 ms.",
+    "context": "Round480 full learned-search evaluation: 1,024 complete matches / 230.11 s = 4.45 matches/s across both arms. This is separate from standard PPO rollout (38.40 games/s) and Round479 branch collection (30.01 matches/s). Search decision latency median 249 ms, p95 338 ms.",
     "decision_latency": "131–204 ms per episode across hard-opponent classes",
-    "current_bottleneck": "Action improvement is still unproven: the Round480 value model calibrated on recent mixed-policy states, but one-turn learned search did not show a reliable gain. Round479 robust targets were also sparse (23/256 states had a positive non-incumbent action).",
+    "current_bottleneck": "Action improvement is not established: Round480 value predictions calibrated on recent mixed-policy states, but a 256-cluster learned-search screen against Max Damage had a +2.54 pp estimate with a confidence interval spanning zero. Round479 robust counterfactual targets were sparse (23/256 states had a positive non-incumbent action).",
     "gpu_status": "RTX 4060 used for PPO optimization; rollout decisions and headless simulator remain CPU-side",
     "profile_context": "Round467 completed 20,000 rollouts: per-worker speed 7.53/5.34/4.84 games/s for Max Damage/policy/Public Counterplay. PPO preparation took 89 s; the KL-stopped CUDA optimizer ran about 5 s. Aggregate rollout wall time was not retained.",
     "active_training_profile": {
@@ -1359,8 +1359,8 @@
   },
   "method": "Native self-play PPO for in-battle decisions. Terminal win/loss remains the main objective; win-probability and hidden-set prediction are auxiliary tasks. Search comes after a stronger policy.",
   "jax_decision": "Round430 has a confirmed self-play head-to-head lift over Round424, but external-opponent screens remain inconclusive. Prioritize measured inference batching, observation throughput, and rollouts; keep equilibrium-oriented opponent coverage and defer a JAX/GPU engine rewrite until its end-to-end payoff is measured.",
-  "evaluation_note": "Round480 trained a recent-mixture state-value model (held-out Brier 0.15555, log loss 0.46713, ECE 0.01112) and screened one-turn learned midgame maximin search on 32 matched team clusters against Max Damage. Search changed the win rate by -6.25 pp [ -17.19, +4.69 ]; the interval includes zero and this small screen does not support promotion. Round430 policy-only remains default. Earlier Round478 PPO actor screen also showed no supported lift; the dashboard reports opponent-specific performance rather than optimizing a single matchup.",
-  "generated_at": "2026-10-31 11:19 UTC",
+  "evaluation_note": "Round480 trained a recent-mixture value estimator (held-out Brier 0.15555, log loss 0.46713, ECE 0.01112). In a 256-cluster screen against Max Damage, one-turn learned midgame maximin search scored 42.38% vs 39.84% policy-only, +2.54 pp [−0.78,+6.05]. Both seats favored search, but the cluster interval includes zero and only one opponent class was tested. Search stays optional; Round430 masked PPO logits remain the default move selector and the auxiliary win-probability head does not rank moves. Earlier Round478 actor screen also showed no supported lift. The dashboard reports opponent-specific results rather than optimizing a single matchup.",
+  "generated_at": "2026-10-31 11:25 UTC",
   "round462_evaluation": {
     "status": "Round462 not promoted · initial paired screen complete",
     "summary": "Round462 scored 44.82% against Max Damage [41.02%, 48.54%]. On the same teams and seeds, Round430 scored 44.73% and Round432 scored 44.43%; paired deltas were +0.10 pp [-1.37, +1.56] and +0.39 pp [-1.37, +2.05]. The update did not measurably change this weakness. Results against Public Counterplay and historical PPO are inconclusive; Random is an easy-baseline check.",
@@ -4167,7 +4167,7 @@
     "train_round479": "https://github.com/joconn819/poke-vgc-ai/blob/master/scripts/train_round479_robust_counterfactual_policy.sh"
   },
   "round480_state_value_search": {
-    "status": "Value prediction improved measurement; no demonstrated move-selection gain",
+    "status": "Fresh state-value evaluator; learned search screen remains inconclusive",
     "policy_checkpoint": "Round430 hard-opponent auxiliary PPO",
     "value_checkpoint": "Round480, trained from Round472 / Round473 / Round476 mixed-policy rollouts",
     "value_model": {
@@ -4189,27 +4189,54 @@
     },
     "search_screen": {
       "opponent": "Max Damage",
-      "method": "One-turn learned midgame maximin search",
-      "clusters": 32,
-      "side_swapped_complete_matches": 128,
-      "raw_win_rate_percent": 48.44,
-      "search_win_rate_percent": 42.19,
-      "paired_delta_percentage_points": -6.25,
+      "method": "One-turn learned midgame maximin",
+      "clusters": 256,
+      "side_swapped_complete_matches": 1024,
+      "raw_win_rate_percent": 39.84,
+      "search_win_rate_percent": 42.38,
+      "paired_delta_percentage_points": 2.54,
       "paired_cluster_bootstrap_95_pp": [
-        -17.19,
-        4.69
+        -0.78,
+        6.05
       ],
-      "successful_search_reports": "62 of 64 search opportunities",
-      "decision_latency_median_ms": 251,
-      "decision_latency_p95_ms": 335,
-      "evaluation_matches_per_second": 4.31,
-      "interpretation": "Small, inconclusive screen; do not promote search. Default play remains policy-only."
+      "successful_search_reports": "499 of 512 search-side matches",
+      "decision_latency_median_ms": 248.75,
+      "decision_latency_p95_ms": 337.81,
+      "evaluation_matches_per_second": 4.45,
+      "interpretation": "Both seats favored search, but the 95% team-cluster interval includes zero. The screen covers Max Damage only, so it does not establish a robust gain; keep search experimental.",
+      "seat_specific_paired_delta_pp": [
+        3.13,
+        1.95
+      ],
+      "safe_policy_fallbacks": 13,
+      "fallback_reasons": {
+        "possible_Illusion_preview": 10,
+        "publicly_observed_Transform": 3
+      },
+      "inner_showdown_latency_median_ms": 154.61,
+      "inner_showdown_latency_p95_ms": 240.63,
+      "initial_32_cluster_interim": {
+        "raw_win_rate_percent": 48.44,
+        "search_win_rate_percent": 42.19,
+        "paired_delta_percentage_points": -6.25,
+        "paired_cluster_bootstrap_95_pp": [
+          -17.19,
+          4.69
+        ]
+      },
+      "search_settings": {
+        "hidden_worlds": 2,
+        "candidate_actions_per_side": 4,
+        "chance_samples_per_joint_action": 1,
+        "decision_timeout_seconds": 5
+      }
     },
     "reproduction": {
       "train": "https://github.com/joconn819/poke-vgc-ai/blob/master/scripts/train_round480_current_policy_state_value.sh",
       "search": "https://github.com/joconn819/poke-vgc-ai/blob/master/scripts/evaluate_round480_recent_value_search_screen.sh",
       "plan": "https://github.com/joconn819/poke-vgc-ai/blob/master/PLAN.md"
     },
-    "created_at": "2026-10-31 UTC"
+    "created_at": "2026-10-31 UTC",
+    "action_selection_note": "Default play continues to use Round430 masked PPO logits; the win-probability head is auxiliary and learned search stays disabled unless explicitly requested."
   }
 }
