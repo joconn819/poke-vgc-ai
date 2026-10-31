@@ -5747,6 +5747,36 @@
       "aggregate_matches_per_second": 47.98
     },
     "interpretation": "Max Damage is one of five counterfactual response classes in this batch. Agent promotion still requires fresh side-swapped full-match evaluation over varied opponents; Max Damage-only gains cannot promote a candidate.",
-    "plan": "https://github.com/joconn819/poke-vgc-ai/blob/master/PLAN.md"
+    "plan": "https://github.com/joconn819/poke-vgc-ai/blob/master/PLAN.md",
+    "preliminary_fit": {
+      "hidden_set_prior": "showdown_random_champions",
+      "usable_states": 90,
+      "team_split": {
+        "train": 58,
+        "validation": 14,
+        "test": 18
+      },
+      "best_epoch": 1,
+      "validation_action_outcome_brier": 0.181863,
+      "maximin": {
+        "changed_actions": 14,
+        "test_clusters": 18,
+        "selected_minus_policy_worst_response_pp": 2.78,
+        "team_cluster_95_ci_pp": [
+          -2.78,
+          9.72
+        ]
+      },
+      "equal_weight": {
+        "selected_minus_policy_worst_response_pp": 0.0,
+        "team_cluster_95_ci_pp": [
+          -5.56,
+          6.94
+        ]
+      },
+      "interpretation": "Too few test clusters for a strength claim; the confidence intervals include zero. Per-response Brier was worse than the constant baseline for the Round476 PPO head and near the baseline for most other responses. No checkpoint promoted.",
+      "report_path": "training/outputs/phase12_headless/round497_showdown_prior_action_value_fit_20261031/report.json",
+      "checkpoint_path": "training/outputs/phase12_headless/round497_showdown_prior_action_value_fit_20261031/response_conditioned_action_value.pt"
+    }
   }
 }

@@ -18094,6 +18094,17 @@ coverage, not another blind teacher-weight sweep.
   were usable, 360 worlds were prepared, and 30,434 branches ran in 634.30
   seconds (47.98 aggregate matches/s); 54 states were skipped, with no
   unexplained empty-mask failures after the parser fix.
+- Preliminary fit on the 90 Showdown-prior states used a team-cluster split
+  (58 train, 14 validation, 18 test) and four of eight chance outcomes for
+  training. The response-conditioned model stopped at epoch 1; pooled
+  validation Brier was 0.1819. On 18 test clusters, maximin selection changed
+  14 actions and improved the empirical worst-response rate by 2.78 pp, but
+  its 95% team-cluster interval was [-2.78,+9.72] pp. Equal-weight selection's
+  worst-response delta was 0.00 pp [-5.56,+6.94]. Per-response test Brier was
+  worse than the constant-rate baseline for the Round476 policy head and
+  nearly tied for most others. This is a small, noisy feasibility fit, not
+  evidence of better play; no checkpoint is promoted. Fit report and weights
+  are under `training/outputs/phase12_headless/round497_showdown_prior_action_value_fit_20261031/`.
 - Promotion remains gated on a fresh, side-swapped full-match league across
   varied opponents and held-out teams. Report per-opponent win rates and
   confidence intervals, mean and lower-tail performance, invalid actions, and
