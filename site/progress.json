@@ -1129,17 +1129,17 @@
     }
   },
   "latest_run": {
-    "round": 468,
-    "status": "20,000-game robust opponent mixture · candidate not promoted",
-    "summary": "Round468 trained from Round430 with terminal win/loss PPO rewards and a 10/20/25/25/20% mixture of Random, Max Damage, legacy Counterplay, Public Counterplay, and historical PPOs. Fresh league results were weak against Max Damage (38.18%), legacy Counterplay (34.38%), and Public Counterplay (39.39%), and unresolved against Round430 (49.32% [45.70%, 52.93%]). Round430 remains the validated default.",
-    "games": "20,000 audited self-play games",
-    "epochs": "4 PPO passes · 1,308 optimizer steps",
-    "evaluation": "Candidate not promoted · 10,220 completed games across five opponents"
+    "round": 470,
+    "status": "Same-batch PPO ablation · candidate not promoted",
+    "summary": "Rounds469 and 470 replayed the same 20,000-game Round468 batch from the Round430 initialization, testing opponent-balanced loss and undiscounted terminal returns. Neither showed a statistically supported gain over Round430 against Max Damage, legacy Counterplay, or Public Counterplay. Round430 remains the validated default.",
+    "games": "20,000 reused; no new rollouts in these ablations",
+    "epochs": "4 PPO passes · 1,308 optimizer steps each",
+    "evaluation": "Three matched 512-cluster screens per candidate; all paired intervals include zero"
   },
   "method": "Native self-play PPO for in-battle decisions. Terminal win/loss remains the main objective; win-probability and hidden-set prediction are auxiliary tasks. Search comes after a stronger policy.",
   "jax_decision": "Round430 has a confirmed self-play head-to-head lift over Round424, but external-opponent screens remain inconclusive. Prioritize measured inference batching, observation throughput, and rollouts; keep equilibrium-oriented opponent coverage and defer a JAX/GPU engine rewrite until its end-to-end payoff is measured.",
   "evaluation_note": "Round465 scored 45.51% against Max Damage [41.70%, 49.32%] and 46.00% against Public Counterplay [42.19%, 49.80%]. Same-seed Max Damage deltas over Round464 (+0.10 pp [-1.56, +1.76]) and Round430 (+0.88 pp [-1.27, +3.03]) include zero, so Round430 remains the validated incumbent. The 58.40% five-opponent mean is pulled upward by the 95.12% Random result; the p10 is 45.70% and the worst opponent score is 45.51%. Use paired team-cluster intervals and hard-opponent results to judge changes, not one overall mean.",
-  "generated_at": "2026-10-31 04:32 UTC",
+  "generated_at": "2026-10-31 05:41 UTC",
   "round462_evaluation": {
     "status": "Round462 not promoted · initial paired screen complete",
     "summary": "Round462 scored 44.82% against Max Damage [41.02%, 48.54%]. On the same teams and seeds, Round430 scored 44.73% and Round432 scored 44.43%; paired deltas were +0.10 pp [-1.37, +1.56] and +0.39 pp [-1.37, +2.05]. The update did not measurably change this weakness. Results against Public Counterplay and historical PPO are inconclusive; Random is an easy-baseline check.",
@@ -3018,5 +3018,123 @@
     ],
     "interpretation": "The policy did not improve robust play in this screen: it scored poorly against Max Damage and both Counterplay variants and was unresolved against Round430 PPO. The random score inflates the 51.22% equal-opponent mean; median is 39.39%, p10 35.90%, worst opponent 34.38%. No invalid-action corrections occurred. The win-probability head is auxiliary and does not select moves.",
     "artifacts": "round468_robust_mixed_league.json"
+  },
+  "round470_ppo_replays": {
+    "title": "Matched Round469/470 PPO replay comparisons",
+    "status": "Neither replay promoted · Round430 remains validated",
+    "summary": "Same-batch replay of two controlled PPO updates on identical held-out teams. None of the six paired intervals excludes zero.",
+    "opponents": [
+      {
+        "trial": "Round469 · balanced loss 0.5",
+        "opponent": "Max Damage",
+        "round430_score_percent": 37.73,
+        "candidate_score_percent": 37.9,
+        "paired_delta_pp": 0.15,
+        "paired_ci95_pp": [
+          -1.17,
+          1.42
+        ],
+        "clusters": 512,
+        "matched_cases": 1020,
+        "timeouts_or_errors": 3
+      },
+      {
+        "trial": "Round469 · balanced loss 0.5",
+        "opponent": "Legacy Counterplay",
+        "round430_score_percent": 34.65,
+        "candidate_score_percent": 34.21,
+        "paired_delta_pp": -0.39,
+        "paired_ci95_pp": [
+          -1.86,
+          1.03
+        ],
+        "clusters": 512,
+        "matched_cases": 1022,
+        "timeouts_or_errors": 1
+      },
+      {
+        "trial": "Round469 · balanced loss 0.5",
+        "opponent": "Public Counterplay",
+        "round430_score_percent": 39.01,
+        "candidate_score_percent": 39.3,
+        "paired_delta_pp": 0.29,
+        "paired_ci95_pp": [
+          -1.03,
+          1.61
+        ],
+        "clusters": 512,
+        "matched_cases": 1023,
+        "timeouts_or_errors": 1
+      },
+      {
+        "trial": "Round470 · gamma=1, lambda=1",
+        "opponent": "Max Damage",
+        "round430_score_percent": 37.73,
+        "candidate_score_percent": 37.55,
+        "paired_delta_pp": -0.2,
+        "paired_ci95_pp": [
+          -1.37,
+          0.98
+        ],
+        "clusters": 512,
+        "matched_cases": 1023,
+        "timeouts_or_errors": 0
+      },
+      {
+        "trial": "Round470 · gamma=1, lambda=1",
+        "opponent": "Legacy Counterplay",
+        "round430_score_percent": 34.65,
+        "candidate_score_percent": 34.03,
+        "paired_delta_pp": -0.63,
+        "paired_ci95_pp": [
+          -1.95,
+          0.73
+        ],
+        "clusters": 512,
+        "matched_cases": 1023,
+        "timeouts_or_errors": 0
+      },
+      {
+        "trial": "Round470 · gamma=1, lambda=1",
+        "opponent": "Public Counterplay",
+        "round430_score_percent": 39.01,
+        "candidate_score_percent": 39.88,
+        "paired_delta_pp": 0.88,
+        "paired_ci95_pp": [
+          -0.2,
+          1.95
+        ],
+        "clusters": 512,
+        "matched_cases": 1023,
+        "timeouts_or_errors": 1
+      }
+    ],
+    "interpretation": "None of the six paired intervals excludes zero. Neither optimizer change improved the validated Round430 policy on these hard opponents. The win-probability head remains auxiliary and does not select moves.",
+    "artifacts": "round470_matched_ppo_trials.json"
+  },
+  "round470_full_iteration_profile": {
+    "round": "470",
+    "summary": "Round470 reused the Round468 trajectories; no new rollouts. PPO data preparation and optimization completed in about 165 s; evaluation dominated wall time. Round468 remains the latest measured rollout-throughput profile.",
+    "observed_rollout_games_per_second": 37.94,
+    "observed_rollout_wall_seconds": 527.15,
+    "observed_workflow_games_per_second": 21.23,
+    "ppo_sample_preparation_seconds": 104.56,
+    "ppo_wall_seconds": 165.0,
+    "transitions": 167383,
+    "peak_rss_gib": 9.19,
+    "opportunities": [
+      {
+        "title": "Increase PPO update budget carefully",
+        "detail": "The four-pass update stayed near KL 0.005 and did not change held-out performance. Test a larger update budget while retaining the KL safety stop and matched evaluation."
+      },
+      {
+        "title": "Keep hard opponent coverage",
+        "detail": "Both loss reweighting and full-return replay left hard-opponent results within uncertainty. Continue measuring Max Damage and both Counterplay pools alongside historical PPOs."
+      },
+      {
+        "title": "Preserve rollout throughput",
+        "detail": "No new rollouts were collected for the replay ablations; latest measured 8-worker speed remains Round468 at 37.94 games/s."
+      }
+    ]
   }
 }

@@ -1,0 +1,97 @@
+{
+  "title": "Matched Round469/470 PPO replay comparisons",
+  "status": "Neither replay is promoted; Round430 remains validated",
+  "method": "Each candidate replayed Round468 data from the Round430 initialization. The same 512 generated team-pair clusters and Round402 previews were evaluated against Round430, with two side-swapped outcomes per cluster. Paired confidence intervals use 20,000 bootstrap resamples over team-pair clusters; battle RNG is not exactly paired.",
+  "training": {
+    "Round469": "Opponent-balanced loss, power 0.5; otherwise Round468 PPO settings.",
+    "Round470": "Undiscounted terminal returns, gamma=1 and lambda=1; otherwise Round468 PPO settings."
+  },
+  "opponents": [
+    {
+      "trial": "Round469 \u00b7 balanced loss 0.5",
+      "opponent": "Max Damage",
+      "round430_score_percent": 37.73,
+      "candidate_score_percent": 37.9,
+      "paired_delta_pp": 0.15,
+      "paired_ci95_pp": [
+        -1.17,
+        1.42
+      ],
+      "clusters": 512,
+      "matched_cases": 1020,
+      "timeouts_or_errors": 3
+    },
+    {
+      "trial": "Round469 \u00b7 balanced loss 0.5",
+      "opponent": "Legacy Counterplay",
+      "round430_score_percent": 34.65,
+      "candidate_score_percent": 34.21,
+      "paired_delta_pp": -0.39,
+      "paired_ci95_pp": [
+        -1.86,
+        1.03
+      ],
+      "clusters": 512,
+      "matched_cases": 1022,
+      "timeouts_or_errors": 1
+    },
+    {
+      "trial": "Round469 \u00b7 balanced loss 0.5",
+      "opponent": "Public Counterplay",
+      "round430_score_percent": 39.01,
+      "candidate_score_percent": 39.3,
+      "paired_delta_pp": 0.29,
+      "paired_ci95_pp": [
+        -1.03,
+        1.61
+      ],
+      "clusters": 512,
+      "matched_cases": 1023,
+      "timeouts_or_errors": 1
+    },
+    {
+      "trial": "Round470 \u00b7 gamma=1, lambda=1",
+      "opponent": "Max Damage",
+      "round430_score_percent": 37.73,
+      "candidate_score_percent": 37.55,
+      "paired_delta_pp": -0.2,
+      "paired_ci95_pp": [
+        -1.37,
+        0.98
+      ],
+      "clusters": 512,
+      "matched_cases": 1023,
+      "timeouts_or_errors": 0
+    },
+    {
+      "trial": "Round470 \u00b7 gamma=1, lambda=1",
+      "opponent": "Legacy Counterplay",
+      "round430_score_percent": 34.65,
+      "candidate_score_percent": 34.03,
+      "paired_delta_pp": -0.63,
+      "paired_ci95_pp": [
+        -1.95,
+        0.73
+      ],
+      "clusters": 512,
+      "matched_cases": 1023,
+      "timeouts_or_errors": 0
+    },
+    {
+      "trial": "Round470 \u00b7 gamma=1, lambda=1",
+      "opponent": "Public Counterplay",
+      "round430_score_percent": 39.01,
+      "candidate_score_percent": 39.88,
+      "paired_delta_pp": 0.88,
+      "paired_ci95_pp": [
+        -0.2,
+        1.95
+      ],
+      "clusters": 512,
+      "matched_cases": 1023,
+      "timeouts_or_errors": 1
+    }
+  ],
+  "interpretation": "None of the six paired intervals excludes zero. Neither optimizer change improved the validated Round430 policy on these hard opponents. The win-probability head remains auxiliary and does not select moves.",
+  "artifact_root": "training/outputs/phase12_headless/"
+}

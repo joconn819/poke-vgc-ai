@@ -15,10 +15,10 @@ promoted. Round430 completed a 20,000-game stronger-opponent iteration, but its
 over Round424, so Round430 is the current in-battle continuation candidate:
 55.32% cluster-weighted score (95% CI [51.86%, 58.79%]) across 512 clusters.
 This head-to-head result alone does not establish robust strength against
-external policies. Round468 trained 20,000 games on a broad opponent mixture,
-but its fresh league score was only 38.18% vs Max Damage, 34.38% vs legacy
-Counterplay, 39.39% vs Public Counterplay, and 49.32% vs Round430 (95% CI
-[45.70%, 52.93%]); it remains unpromoted and Round430 remains the validated
+external policies. Rounds468–470 tested a broad opponent mix, tempered
+opponent-balanced loss, and undiscounted terminal returns on fresh held-out
+matches. None showed a statistically supported gain over Round430 against
+Max Damage or either Counterplay policy, so Round430 remains the validated
 incumbent. Search remains conditional on stronger held-out performance.
 At inference, legal actions are selected from masked PPO policy logits; the
 win-probability head is an auxiliary training target and does not rank moves.
@@ -17086,3 +17086,46 @@ coverage, not another blind teacher-weight sweep.
   coverage remain unverified.
 - Published play page now defaults to Round430 and explains why the newer
   opponent-sensitive hybrid is not used as the general default.
+
+
+### Rounds468–470: mixed-opponent training and controlled PPO ablations (2026-10-30/31)
+
+- Round468 collected 20,000 games from Round430 with terminal win/loss PPO and
+  a 10% Random / 20% Max Damage / 25% legacy Counterplay / 25% Public
+  Counterplay / 20% historical PPO pool mixture. The strict audit passed after
+  one malformed rollout was replaced. The candidate completed 1,308 PPO steps
+  over four passes (167,383 decision transitions). Rollout speed was 37.94
+  games/s across eight workers; full input-to-checkpoint throughput was 21.23
+  games/s over 942.16 s; peak aggregate rollout RSS was 9.19 GiB.
+- Against Round430 on the same 512 team-pair clusters, Round468's paired score
+  changes were +0.44 pp vs Max Damage (95% CI [-0.93,+1.81]), -0.15 pp vs
+  legacy Counterplay ([-1.61,+1.27]), and +0.44 pp vs Public Counterplay
+  ([-0.73,+1.61]). None is supported as an improvement.
+- Round469 replayed the same 20,000 games from the same Round430 starting
+  checkpoint, changing only to opponent-balanced PPO loss at power 0.5. The
+  candidate completed four PPO passes and was evaluated on the same teams and
+  previews. Paired changes vs Round430: Max Damage +0.15 pp ([-1.17,+1.42]),
+  legacy Counterplay -0.39 pp ([-1.86,+1.03]), Public Counterplay +0.29 pp
+  ([-1.03,+1.61]). This reweighting did not improve the lower tail.
+- Round470 replayed the same data from Round430 with undiscounted terminal
+  returns (gamma=1, lambda=1), changing only the return estimator. Paired
+  changes vs Round430: Max Damage -0.20 pp ([-1.37,+0.98]), legacy Counterplay
+  -0.63 pp ([-1.95,+0.73]), Public Counterplay +0.88 pp ([-0.20,+1.95]). All
+  intervals include zero, so full returns are not a confirmed improvement.
+- Each control used the Round402 selector, identical generated team pairs and
+  previews, 512 team clusters, two side-swapped outcomes per cluster, and
+  20,000 cluster bootstrap replicates. Each arm had roughly 2,046–2,048
+  completed games, with zero action adjustments; a few cases were incomplete
+  and excluded from matched differences.
+- All three learned checkpoints remain unpromoted. Round430 remains the default.
+  Replaying the same data isolated the optimizer/credit assignment changes but
+  did not change strength; the next candidate should test whether the PPO trust
+  region is too conservative by increasing the update budget with the KL guard
+  enabled, then evaluate on the same held-out teams before any promotion.
+- Artifacts: `training/outputs/phase12_headless/round468_robust_mixed_ppo_20k_20261030/`,
+  `round468_common_seed_round430_control_512x2_20261030/`,
+  `round469_opponent_balanced_replay_20k_20261030/`,
+  `round469_balanced_same_seed_league_512x2_20261030/`,
+  `round470_undiscounted_gae_replay_20k_20261030/`, and
+  `round470_undiscounted_same_seed_league_512x2_20261030/`. Published report:
+  `site/round470_matched_ppo_trials.json`.
