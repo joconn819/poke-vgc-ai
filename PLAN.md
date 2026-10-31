@@ -17915,3 +17915,37 @@ coverage, not another blind teacher-weight sweep.
   and evaluation with `scripts/evaluate_round485_maxdamage_exposure_fresh_league.sh`.
   The curated report and machine-readable scorecard are in
   `site/round485_opponent_exposure.json`.
+
+### Round494: public-information boundary audit for counterfactual training (2026-10-31)
+
+- Audited `scripts/collect_midgame_action_counterfactuals.py` and the existing
+  public-compatible search-world path. The collector captures a real battle
+  snapshot, then replays candidate actions from that same snapshot. Its policy
+  features are player-view observations, but the simulated outcome labels are
+  conditioned on the actual hidden opponent sets in that battle. This is
+  legitimate for ordinary on-policy outcome data, but it does not train an
+  action evaluator against a distribution of plausible hidden sets for each
+  public state.
+- The midgame search path is safer for that purpose: it calls
+  `ClosedSheetBeliefTracker` using observed battle events, samples sets from
+  public preview species plus revealed facts, and asks
+  `buildSanitizedSearchWorlds` to align public facts into reconstructed worlds.
+  The sampler uses the local Showdown random-champions set builder and legal
+  team validation. It is a particular prior, not a complete model of all
+  plausible legal tournament sets; policy-value gains against it alone would
+  not establish robustness.
+- This audit explains a key source of apparent transfer failure: training
+  counterfactual rankings on actual hidden sets can reward choices that fit
+  those sampled opponents while evaluation changes the team/set distribution.
+  Max Damage remains a useful regression opponent, but its win rate is not a
+  sufficient measure of general strength. The Round485 70%-Max-Damage training
+  exposure change did not measurably improve either that matchup or the broader
+  league.
+- Next experiment gate: make action outcomes aggregate over multiple
+  independently sampled, public-compatible hidden worlds per public state,
+  with paired chance seeds across candidate actions. Keep each world’s private
+  sets out of model inputs. Include more than one legal set prior or report the
+  random-champions prior explicitly; compare the learned selector with the
+  incumbent on fresh teams, held-out public-compatible worlds, and the full
+  opponent league before promotion. Track wall-clock branches/s and end-to-end
+  matches/s because world preparation and replay may become the new bottleneck.

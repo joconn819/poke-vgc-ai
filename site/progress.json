@@ -5497,5 +5497,22 @@
       "analysis": "https://github.com/joconn819/poke-vgc-ai/blob/master/scripts/analyze_round491_action_ranking.py",
       "collection": "https://github.com/joconn819/poke-vgc-ai/blob/master/scripts/collect_round493_pairwise_confirmation.sh"
     }
+  },
+  "round494_hidden_world_audit": {
+    "round": 494,
+    "date": "2026-10-31",
+    "status": "audit complete; multi-world action-label experiment not yet run",
+    "finding": "The counterfactual collector replays candidate actions from a captured real battle snapshot. Policy features are player-view observations, but outcome labels are conditioned on that match's actual hidden opponent sets.",
+    "public_compatible_search_path": "The midgame search path samples hidden teams from public preview species and revealed facts, then builds sanitized current-state snapshots. Its current set prior comes from Showdown's random-champions set builder and does not cover all plausible legal tournament sets.",
+    "implication": "Actual-hidden-set labels can yield action rankings that transfer poorly when the hidden-team distribution changes. Max Damage remains a regression opponent, but its win rate alone is not a general-strength measure.",
+    "next_gate": "Train action values over multiple independently sampled public-compatible hidden worlds per public state, with paired chance seeds, and compare against the incumbent on held-out teams/worlds and the full opponent league.",
+    "sources": [
+      "scripts/collect_midgame_action_counterfactuals.py",
+      "scripts/run_headless_showdown_self_play.py",
+      "src/belief/closed_sheet.py",
+      "scripts/showdown_sample_hidden_teams.js",
+      "scripts/showdown_headless_worker.js"
+    ],
+    "plan": "https://github.com/joconn819/poke-vgc-ai/blob/master/PLAN.md"
   }
 }
