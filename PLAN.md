@@ -18935,13 +18935,20 @@ coverage, not another blind teacher-weight sweep.
   rows were excluded from PPO policy-gradient loss, but did receive the separate
   teacher loss. PPO stopped at KL limit after only 177/1,296 planned steps.
 
-### Round524: same broad mixture, lower PPO learning rate (active)
+### Round524: same broad mixture, lower PPO learning rate (trained; evaluation active)
 
-- Controlled follow-up from Round430 keeps Round520's opponent mix, first-five
+- Controlled follow-up from Round430 kept Round520's opponent mix, first-five
   Max Damage teacher rate, teacher loss weight, batch size, and epoch budget;
-  only the learning rate changes from 5e-5 to 1.5e-5. The purpose is to see
-  whether the KL stop prevented useful optimization from completing.
+  only the learning rate changed from 5e-5 to 1.5e-5.
+- The strict audit passed after automatic fresh-seed recovery: 20,000 trainable
+  games, 40,000 safe/player-view rows, 165,874 transitions, zero errors. Rollouts
+  took 541.60 sec (36.93 aggregate games/s); audit plus recovery took 251.68 sec;
+  end to end was 913.40 sec (21.89 games/s). PPO took 120.08 sec and again
+  stopped at its KL limit, now after 400/1,296 optimizer steps (approx KL 0.0327;
+  teacher loss 1.302). The lower rate extended training 2.26x vs Round520's 177
+  steps but still completed less than one third of the planned updates.
+- Checkpoint: `training/outputs/phase12_headless/round524_opening5_teacher_low_lr_20k_20261031/checkpoints/latest.pt`.
 - Run: `scripts/train_round524_opening5_teacher_low_lr_20k.sh`; output:
   `training/outputs/phase12_headless/round524_opening5_teacher_low_lr_20k_20261031/`.
-- Do not promote based on training metrics. Require the rollout audit and fresh
-  paired side-swapped evaluation against Max Damage and the broader league.
+- Fresh paired six-class evaluation is running. Do not promote based on training
+  metrics; decide from Max Damage and broader league results.

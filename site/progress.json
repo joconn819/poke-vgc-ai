@@ -7201,13 +7201,35 @@
     "report": "round523_opening_trace_replication.json"
   },
   "round524_training": {
-    "status": "Active; fresh lower-learning-rate PPO run",
+    "status": "Complete; evaluation in progress",
     "run": "round524_opening5_teacher_low_lr_20k_20261031",
-    "games_planned": 20000,
-    "start_checkpoint": "Round430",
+    "games": 20000,
     "learning_rate": 1.5e-05,
-    "controlled_change": "Same opponent mixture, first-five Max Damage teacher rate, teacher loss weight, PPO batch size, and epochs as Round520; learning rate reduced from 5e-5 to 1.5e-5 because Round520 hit its KL limit after 177/1296 optimizer steps.",
-    "training_script": "scripts/train_round524_opening5_teacher_low_lr_20k.sh",
+    "controlled_change": "Round520 settings held fixed except learning rate reduced 5e-5 \u2192 1.5e-5.",
+    "audit": {
+      "trainable_games": 20000,
+      "safe_player_view_rows": 40000,
+      "transitions": 165874,
+      "errors": 0,
+      "recovered_malformed_matches": 1
+    },
+    "runtime": {
+      "rollout_seconds": 541.598,
+      "rollout_games_per_second": 36.93,
+      "audit_and_recovery_seconds": 251.675,
+      "training_seconds": 120.083,
+      "end_to_end_seconds": 913.396,
+      "end_to_end_games_per_second": 21.89,
+      "optimizer_steps": 400,
+      "optimizer_step_budget": 1296,
+      "stop_reason": "KL limit",
+      "approx_kl": 0.032744,
+      "teacher_loss": 1.301956
+    },
+    "checkpoint": "training/outputs/phase12_headless/round524_opening5_teacher_low_lr_20k_20261031/checkpoints/latest.pt",
+    "evaluation": "round525_fresh_league.json",
+    "report": "round524_training.json",
+    "script": "scripts/train_round524_opening5_teacher_low_lr_20k.sh",
     "output": "training/outputs/phase12_headless/round524_opening5_teacher_low_lr_20k_20261031/"
   }
 }
