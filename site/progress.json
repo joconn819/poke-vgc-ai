@@ -7046,7 +7046,7 @@
       "public_counterplay": 0.25,
       "frozen_policy_pool": 0.2
     },
-    "teacher": "Half of Max Damage matches got Max Damage actions for decisions 1\u20135; 10% of all games. Teacher-forced steps excluded from PPO policy loss.",
+    "teacher": "Half of Max Damage matches got Max Damage actions for decisions 1\u20135; 10% of all games. Teacher-forced steps excluded from PPO policy loss. Teacher cross-entropy loss weight was 0.50; teacher rows were excluded only from PPO policy-gradient loss.",
     "audit": {
       "trainable_games": 20000,
       "safe_player_view_rows": 40000,
@@ -7156,5 +7156,58 @@
     "first5_games_per_second": 8.824,
     "errors_timeouts_or_action_adjustments": 0,
     "interpretation": "First-five Max Damage actions materially improve this sample, but the hybrid is still below 50%. Sparse teacher training did not solve opening decisions. Diagnostic only; not promoted."
+  },
+  "round523_opening_trace_replication": {
+    "status": "Complete; traced first-five intervention replication",
+    "method": "128 fresh team-pair clusters, two outcome repeats, side-swapped; paired cluster bootstrap. Decision traces enabled.",
+    "raw_score_pct": 44.727,
+    "raw_cluster_ci95_pct": [
+      37.695,
+      51.953
+    ],
+    "first5_score_pct": 44.336,
+    "first5_cluster_ci95_pct": [
+      37.305,
+      51.563
+    ],
+    "paired_delta_pp": -0.391,
+    "paired_ci95_pp": [
+      -7.813,
+      7.227
+    ],
+    "clusters": 128,
+    "matches_per_arm": 512,
+    "raw_games_per_second": 5.177,
+    "first5_games_per_second": 9.61,
+    "errors_timeouts_action_adjustments": 0,
+    "first_turn_action_slots_changed": 736,
+    "first_turn_action_slots_total": 1024,
+    "raw_loss_snapshot1": {
+      "agent_alive": 5.5,
+      "opponent_alive": 5.74,
+      "agent_team_hp_sum": 4.78,
+      "opponent_team_hp_sum": 5.17
+    },
+    "raw_loss_snapshot2": {
+      "agent_alive": 4.62,
+      "opponent_alive": 5.29,
+      "agent_team_hp_sum": 4.17,
+      "opponent_team_hp_sum": 4.73
+    },
+    "interpretation": "This independent traced screen does not reproduce the Round522 first-five intervention lift. The agent is already behind in the first post-turn snapshots among losses, but outcome-stratified traces are descriptive rather than causal. The broad confidence interval and variation across fresh samples require more paired evidence before selecting a training target.",
+    "trace_analysis_raw": "round523_raw_trace_analysis.json",
+    "trace_analysis_first5": "round523_first5_trace_analysis.json",
+    "reproduction": "Round520 checkpoint with evaluate_native_paired_parallel.py --trace-decisions, 128 pairs x 2 repeats, seed 202611528",
+    "report": "round523_opening_trace_replication.json"
+  },
+  "round524_training": {
+    "status": "Active; fresh lower-learning-rate PPO run",
+    "run": "round524_opening5_teacher_low_lr_20k_20261031",
+    "games_planned": 20000,
+    "start_checkpoint": "Round430",
+    "learning_rate": 1.5e-05,
+    "controlled_change": "Same opponent mixture, first-five Max Damage teacher rate, teacher loss weight, PPO batch size, and epochs as Round520; learning rate reduced from 5e-5 to 1.5e-5 because Round520 hit its KL limit after 177/1296 optimizer steps.",
+    "training_script": "scripts/train_round524_opening5_teacher_low_lr_20k.sh",
+    "output": "training/outputs/phase12_headless/round524_opening5_teacher_low_lr_20k_20261031/"
   }
 }

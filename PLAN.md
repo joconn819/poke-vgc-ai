@@ -18913,3 +18913,35 @@ coverage, not another blind teacher-weight sweep.
 - This supports a substantial opening-policy weakness and indicates Round520 did not learn enough from sparse opening labels. Even the override remains below 50%; it is a diagnostic, not a solution.
 - Report: `training/outputs/phase12_headless/round522_round520_first5_transfer_128x2_20261031/report.json`.
 - Next: trace which opening decisions and state transitions create the loss gap; run a controlled, higher-signal opening-imitation/update experiment from Round430 while keeping a diverse opponent mixture. Audit targets and action semantics first, then evaluate on fresh side-swapped teams against Max Damage and the full league. Keep Round430 until replicated evidence supports promotion, and report its baseline weakness directly.
+
+### Round523: traced replication of first-five intervention (complete)
+
+- Repeated the Round520 raw vs first-five Max Damage-action comparison with
+  decision traces on 128 fresh team-pair clusters, two repeats, side-swaps.
+  Raw scored 44.73% [37.70,51.95]; first-five scored 44.34% [37.30,51.56].
+  Paired change was -0.39 pp [-7.81,+7.23], so Round522's +12.30 pp lift did
+  not replicate. Both arms had zero errors, timeouts, or action adjustments.
+- The intervention changed 736 of 1,024 first-turn action slots, but did not
+  improve this sample. Loss traces show the policy already behind after the
+  first post-turn snapshots (snapshot 1: 5.50 vs 5.74 living Pokémon and 4.78
+  vs 5.17 team HP sum; snapshot 2: 4.62 vs 5.29 and 4.17 vs 4.73). These are
+  descriptive associations and do not prove which action caused the loss.
+- Trace replay report:
+  `training/outputs/phase12_headless/round523_round520_opening_traces_128x2_20261031/`.
+  One raw trace had 3,353 simulator steps despite ending at turn 6; this is a
+  long-match protocol/trajectory anomaly and is excluded from interpreting
+  normal trace-length summaries.
+- Round520 used a teacher cross-entropy loss weight of 0.50. Teacher-forced
+  rows were excluded from PPO policy-gradient loss, but did receive the separate
+  teacher loss. PPO stopped at KL limit after only 177/1,296 planned steps.
+
+### Round524: same broad mixture, lower PPO learning rate (active)
+
+- Controlled follow-up from Round430 keeps Round520's opponent mix, first-five
+  Max Damage teacher rate, teacher loss weight, batch size, and epoch budget;
+  only the learning rate changes from 5e-5 to 1.5e-5. The purpose is to see
+  whether the KL stop prevented useful optimization from completing.
+- Run: `scripts/train_round524_opening5_teacher_low_lr_20k.sh`; output:
+  `training/outputs/phase12_headless/round524_opening5_teacher_low_lr_20k_20261031/`.
+- Do not promote based on training metrics. Require the rollout audit and fresh
+  paired side-swapped evaluation against Max Damage and the broader league.
