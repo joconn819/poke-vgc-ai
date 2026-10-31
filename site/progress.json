@@ -5746,7 +5746,7 @@
       "elapsed_seconds_total": 634.3,
       "aggregate_matches_per_second": 47.98
     },
-    "interpretation": "Max Damage is one of five counterfactual response classes in this batch. Agent promotion still requires fresh side-swapped full-match evaluation over varied opponents; Max Damage-only gains cannot promote a candidate.",
+    "interpretation": "Max Damage is one of five counterfactual response classes; it is not the sole training target or promotion gate. Only one class is a learned PPO (Round476), so the response set still does not represent a broad policy family. Follow-up should add separate Round430 and Round102 policy responses; promotion requires fresh side-swapped full-match evaluation across varied opponents.",
     "plan": "https://github.com/joconn819/poke-vgc-ai/blob/master/PLAN.md",
     "preliminary_fit": {
       "hidden_set_prior": "showdown_random_champions",

@@ -18105,6 +18105,15 @@ coverage, not another blind teacher-weight sweep.
   nearly tied for most others. This is a small, noisy feasibility fit, not
   evidence of better play; no checkpoint is promoted. Fit report and weights
   are under `training/outputs/phase12_headless/round497_showdown_prior_action_value_fit_20261031/`.
+- Opponent-diversity limit: although these counterfactual labels cover five
+  response classes, only one is a learned PPO policy (Round476); the other four
+  are heuristic policies. This is broader than a Max Damage-only target, but
+  it can still overfit to Round476 as the sole learned response. Before using
+  action values to update or promote the battle policy, add separate heads for
+  the Round430 incumbent and an older held-out PPO generation (Round102), keep
+  one generation out of fit when possible, and require full-match screens
+  against all of them plus public/legacy Counterplay and random. Do not treat
+  more response labels as proof of Nash or optimal play.
 - Promotion remains gated on a fresh, side-swapped full-match league across
   varied opponents and held-out teams. Report per-opponent win rates and
   confidence intervals, mean and lower-tail performance, invalid actions, and
