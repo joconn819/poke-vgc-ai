@@ -1160,12 +1160,12 @@
     }
   },
   "latest_run": {
-    "round": 471,
-    "status": "Higher-update PPO replay · candidate not promoted",
-    "summary": "All paired intervals include zero and all point estimates are slightly negative. The larger PPO update did not establish a strength gain; keep Round430 as the default. The win-probability head remains auxiliary and does not select moves.",
-    "games": "20,000 reused; no new rollouts",
-    "epochs": "8 PPO passes · 2,616 optimizer steps",
-    "evaluation": "Three matched 512-cluster comparisons; no supported gain"
+    "round": 472,
+    "status": "Fresh mixed-opponent PPO · rollouts in progress",
+    "summary": "Collecting 20,000 fresh games from Round430 against a refreshed policy pool plus Max Damage and both Counterplay baselines. Training and held-out evaluation are pending; Round430 remains the validated default.",
+    "games": "20,000 target · collection active",
+    "epochs": "4 PPO passes · lr 5e-5 planned",
+    "evaluation": "Pending; Round430 remains active candidate"
   },
   "method": "Native self-play PPO for in-battle decisions. Terminal win/loss remains the main objective; win-probability and hidden-set prediction are auxiliary tasks. Search comes after a stronger policy.",
   "jax_decision": "Round430 has a confirmed self-play head-to-head lift over Round424, but external-opponent screens remain inconclusive. Prioritize measured inference batching, observation throughput, and rollouts; keep equilibrium-oriented opponent coverage and defer a JAX/GPU engine rewrite until its end-to-end payoff is measured.",
@@ -3255,5 +3255,21 @@
         "detail": "The win-probability head is auxiliary supervision. Live choices still come from masked PPO action logits; evaluator-guided action scoring remains disabled by default."
       }
     ]
+  },
+  "round472_current_training": {
+    "round": "472",
+    "status": "Rollout collection in progress",
+    "summary": "Fresh 20,000-game mixed-opponent PPO iteration from the Round430 incumbent. The refreshed frozen policy pool contains Round430, Round465, Round468, and Round471.",
+    "opponent_mix": {
+      "Random": 10,
+      "Max Damage": 20,
+      "Legacy Counterplay": 25,
+      "Public Counterplay": 25,
+      "Policy pool": 20
+    },
+    "training": "PPO update pending strict rollout audit; planned 4 passes at learning rate 5e-5, terminal win/loss reward.",
+    "runtime": "Eight CPU rollout workers; CUDA PPO update. Round468 remains the latest completed throughput profile at 37.94 rollout games/s.",
+    "candidate": "Round430 remains the validated play default pending held-out evaluation.",
+    "artifacts": "training/outputs/phase12_headless/round472_fresh_robust_mixed_ppo_20k_20261031/"
   }
 }

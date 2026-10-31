@@ -4,7 +4,7 @@ Use this checklist to track implementation. Add dated notes under each phase as
 work progresses. Training may use a faster headless/local simulation path, but
 Pokémon Showdown remains the correctness reference and required battle platform.
 
-**Active policy-improvement plan (updated 2026-10-30):** this section is the
+**Active policy-improvement plan (updated 2026-10-31):** this section is the
 current source of truth and supersedes older recommendation sections below;
 dated entries remain the experiment ledger. Direct-policy self-play PPO with
 auxiliary win-probability and hidden-set prediction is active. Round424's
@@ -15,11 +15,13 @@ promoted. Round430 completed a 20,000-game stronger-opponent iteration, but its
 over Round424, so Round430 is the current in-battle continuation candidate:
 55.32% cluster-weighted score (95% CI [51.86%, 58.79%]) across 512 clusters.
 This head-to-head result alone does not establish robust strength against
-external policies. Rounds468–470 tested a broad opponent mix, tempered
-opponent-balanced loss, and undiscounted terminal returns on fresh held-out
-matches. None showed a statistically supported gain over Round430 against
-Max Damage or either Counterplay policy, so Round430 remains the validated
-incumbent. Search remains conditional on stronger held-out performance.
+external policies. Rounds468–471 tested mixed-opponent PPO, balanced loss,
+undiscounted terminal returns, and a larger update budget. None showed a
+statistically supported gain over Round430 against Max Damage or either
+Counterplay policy, so Round430 remains the validated incumbent. Round472 is
+collecting a fresh 20,000-game mixed-opponent batch from Round430 with a
+refreshed frozen policy pool; evaluation is pending. Search remains conditional
+on stronger held-out performance.
 At inference, legal actions are selected from masked PPO policy logits; the
 win-probability head is an auxiliary training target and does not rank moves.
 The optional one-turn search can consult a state-value evaluator only when
@@ -17163,3 +17165,22 @@ coverage, not another blind teacher-weight sweep.
 - Corrected evaluation: `training/outputs/phase12_headless/round471_high_update_same_seed_league_512x2_20261031/`.
 - The first, mismatched attempt at `round471_high_update_same_seed_league_1024x2_20261031/` is non-comparable and excluded.
 - Published report: `site/round471_matched_ppo_trial.json`.
+
+
+### Round472: fresh robust mixed-opponent PPO (in progress; 2026-10-31)
+
+- Started a new 20,000-game rollout batch from the validated Round430 policy.
+  Opponents: 10% random, 20% Max Damage, 25% legacy Counterplay, 25% Public
+  Counterplay, and 20% frozen policy pool. The pool now samples Round430,
+  Round465, Round468, and Round471.
+- Keep Round468's PPO settings (four passes, learning rate 5e-5, minibatch 512,
+  terminal win/loss reward) to focus this iteration on fresh experience and
+  refreshed opponent coverage. Use the Round402 team selector on both sides.
+- Rollouts are running on eight CPU workers; PPO optimization will use CUDA.
+  The Round468 37.94 games/s rollout rate remains the latest completed profile;
+  Round472 throughput and peak memory will be recorded after completion.
+- After strict trajectory audit and PPO update, evaluate against Round430 on a
+  fresh held-out seed set across Max Damage, legacy Counterplay, and Public
+  Counterplay. Round430 remains the play default pending paired results.
+- Reproducible command: `scripts/train_round472_fresh_robust_mixed_ppo_20k.sh`.
+- Output: `training/outputs/phase12_headless/round472_fresh_robust_mixed_ppo_20k_20261031/`.
