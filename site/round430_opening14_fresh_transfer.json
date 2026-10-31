@@ -1,0 +1,41 @@
+{
+  "status": "Fresh narrow-opening transfer checks complete; no legacy-counterplay regression detected",
+  "candidate": "Round430 with public Max Damage actions at decision indices 1 and 4",
+  "method": "256 generated team-pair clusters, two outcome repeats, side-swapped; same teams, previews, battle seeds and Round402 selectors for raw and intervention arms. Independent matched intervals bootstrap by whole team cluster.",
+  "legacy_counterplay": {
+    "clusters": 256,
+    "paired_repeats": 512,
+    "raw_score_pct": 42.48,
+    "intervention_score_pct": 42.29,
+    "paired_delta_pp": -0.2,
+    "paired_ci95_pp": [
+      -3.81,
+      3.42
+    ],
+    "timeouts_per_arm": 0,
+    "action_adjustments": 0,
+    "games_per_second_intervention": 8.314
+  },
+  "round476": {
+    "clusters": 256,
+    "complete_paired_repeats": 510,
+    "raw_score_pct": 49.22,
+    "intervention_score_pct": 56.26,
+    "paired_delta_pp": 7.23,
+    "paired_ci95_pp": [
+      3.81,
+      10.74
+    ],
+    "timeouts_per_arm": 1,
+    "action_adjustments": 0,
+    "games_per_second_intervention": 4.509
+  },
+  "interpretation": "The narrower rule avoided the full first-five override\u2019s legacy-Counterplay loss and improved this fresh Round476 screen. Together with prior gains against Max Damage, Public Counterplay, Round102, Round464, and Round465, this supports a multi-family candidate. It is still a fixed heuristic, not a learned policy or proof of optimal play; retain raw Round430 until the behavior is integrated and screened on additional fresh families.",
+  "reproduction": "scripts/evaluate_round430_opening14_holdout_256x2.sh",
+  "artifacts": {
+    "legacy_intervention": "training/outputs/phase12_headless/round430_opening14_vs_legacy_counterplay_256x2_20261031/paired_summary.json",
+    "legacy_raw": "training/outputs/phase12_headless/round430_raw_vs_legacy_counterplay_256x2_seed2026115061/paired_summary.json",
+    "round476_intervention": "training/outputs/phase12_headless/round430_opening14_vs_round476_256x2_20261031/paired_summary.json",
+    "round476_raw": "training/outputs/phase12_headless/round430_raw_vs_round476_256x2_seed2026115077/paired_summary.json"
+  }
+}

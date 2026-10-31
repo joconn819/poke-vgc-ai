@@ -286,7 +286,15 @@ auxiliary win-probability and hidden-set prediction is active. Round430 remains
 the validated in-battle incumbent: its 55.32% head-to-head score against
 Round424 (95% cluster interval [51.86%, 58.79%]) is not proof of strength
 against external policies. Mixed-opponent PPO rounds 468–476 did not establish
-a robust gain over Round430. Round477's first-five Max Damage intervention
+a robust gain over Round430. The Round499 response-conditioned action selector
+failed to transfer to full matches and remains unpromoted. Separately, the
+Round430-specific decision-index 1+4 Max Damage action hybrid showed a fresh
++7.23 pp paired gain vs Round476 [+3.81,+10.74] and a neutral result vs legacy
+Counterplay (-0.20 pp [-3.81,+3.42]) on 256 team clusters each. Prior screens
+showed gains against Max Damage, Public Counterplay, Round102, Round464, and
+Round465. This is a multi-family tactical candidate, but still a fixed
+heuristic rather than a learned or equilibrium policy; raw Round430 remains
+the default pending broader deployment validation. Round477's first-five Max Damage intervention
 helped four tested opponent classes and significantly hurt legacy Counterplay,
 so it was not made a default rule. Rounds478–479 tested robust
 counterfactual action distillation against Max Damage, Public Counterplay, and
@@ -18548,3 +18556,31 @@ coverage, not another blind teacher-weight sweep.
   training/outputs/phase12_headless/round402_selector_currentdata_8ep_20261030/selector_candidate.pt
   --output training/outputs/phase12_headless/round499_holdout476_fullmatch_step3_256_20261031/report.json
   --seed 2026114993 --clusters 256 --decision-step 3 --device cuda`.
+
+### Round500: fresh transfer check for the Round430 1+4 opening hybrid
+
+- Tested the narrower action override at decision indices 1 and 4 against the
+  two outstanding cases: legacy Counterplay, where the first-five intervention
+  had regressed, and recent PPO Round476, which was not included in the original
+  1+4 transfer set. Each used 256 team-pair clusters, two outcome repeats,
+  side swaps, a common Round402 preview selector, and exact matched team,
+  preview, and battle seeds for raw and hybrid arms.
+- Against legacy Counterplay, raw Round430 scored 42.48% and the 1+4 hybrid
+  scored 42.29%: -0.20 pp (95% cluster CI [-3.81,+3.42]) over all 256 clusters
+  and 512 repeat-pairs. Both arms completed without errors, timeouts, or action
+  adjustments. Against Round476, raw scored 49.22% and the hybrid 56.26%: +7.23
+  pp (95% CI [+3.81,+10.74]) across 256 clusters and 510 common completed
+  repeat-pairs; each arm had one timeout outside the common paired set and zero
+  action adjustments. Intervention throughput was 8.31 matches/s versus legacy
+  Counterplay and 4.51 matches/s versus Round476.
+- Together with the previous 1+4 gains against Max Damage, Public Counterplay,
+  Round102, Round464, and Round465, these checks support evaluating the narrow
+  hybrid across a broad league. They do not prove optimal play: the rule still
+  explicitly copies a simple public damage heuristic at two decisions, while
+  PPO has not learned the behavior. Keep raw Round430 as the default for now;
+  next integrate the exact two-index option into the local-server adapter and
+  run a fresh all-family, paired full-match screen before changing defaults.
+- Reproduction: `scripts/evaluate_round430_opening14_holdout_256x2.sh`. Results:
+  `training/outputs/phase12_headless/round430_opening14_vs_legacy_counterplay_256x2_20261031/paired_summary.json`,
+  `training/outputs/phase12_headless/round430_opening14_vs_round476_256x2_20261031/paired_summary.json`,
+  and the corresponding `round430_raw_vs_*` directories.

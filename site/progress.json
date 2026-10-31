@@ -2011,7 +2011,7 @@
     "interpretation": "All paired intervals include zero. No action-selection mode is promoted based on this diagnostic."
   },
   "round430_opening_intervention": {
-    "summary": "Replacing Round430 decisions 0\u20134 with public Max Damage actions improved all four main screens: on 512 matched clusters, +8.40 pp vs Max Damage, +7.13 vs public Counterplay, +8.50 vs Round464 PPO, and +10.64 vs Round465 PPO (95% cluster interval +6.64 to +14.65). Fresh 128-cluster \u00d7 2-repeat sets independently gained +9.38 vs Max Damage, +10.74 vs Counterplay, +9.77 vs Round464, and +9.38 vs Round465. Against historical PPO Round102, two disjoint 128-cluster sets gained +7.62 pp and +8.79 pp; pooled over 256 clusters the paired gain was +8.20 pp (95% interval +3.32 to +13.09). Exact team, preview, and battle-seed matching; no timeouts or action corrections. The prior reversed-orientation Round465 score was not complemented; a direct matched Round430 rerun supplies the raw score and paired result. This remains a Round430-specific heuristic intervention, not a learned-policy improvement. A smaller decision-1-and-4 hybrid transferred on 512 matched clusters: +4.88 pp vs Max Damage (+1.76 to +8.01), +4.00 vs public Counterplay (+0.88 to +7.13), +6.54 vs Round464 PPO (+3.52 to +9.67), and +7.42 vs Round465 PPO (+4.30 to +10.55). All four paired cluster intervals exclude zero on these samples; these are promising opening heuristics, not policy learning or established optimal play. Fresh-seed replication pooled across 640 disjoint team clusters confirmed +5.23 pp vs Max Damage (95% CI +2.50 to +7.97), +4.26 pp vs public Counterplay (+1.56 to +6.95), and +7.85 pp vs Round465 PPO (+5.20 to +10.59). Round464 also replicated independently. All four opponents now have pooled 640-cluster estimates; results remain Round430-specific heuristic evidence. Round464 pooled across both disjoint sets is +7.03 pp (95% CI +4.41 to +9.65).",
+    "summary": "Replacing Round430 decisions 0\u20134 with public Max Damage actions improved all four main screens: on 512 matched clusters, +8.40 pp vs Max Damage, +7.13 vs public Counterplay, +8.50 vs Round464 PPO, and +10.64 vs Round465 PPO (95% cluster interval +6.64 to +14.65). Fresh 128-cluster \u00d7 2-repeat sets independently gained +9.38 vs Max Damage, +10.74 vs Counterplay, +9.77 vs Round464, and +9.38 vs Round465. Against historical PPO Round102, two disjoint 128-cluster sets gained +7.62 pp and +8.79 pp; pooled over 256 clusters the paired gain was +8.20 pp (95% interval +3.32 to +13.09). Exact team, preview, and battle-seed matching; no timeouts or action corrections. The prior reversed-orientation Round465 score was not complemented; a direct matched Round430 rerun supplies the raw score and paired result. This remains a Round430-specific heuristic intervention, not a learned-policy improvement. A smaller decision-1-and-4 hybrid transferred on 512 matched clusters: +4.88 pp vs Max Damage (+1.76 to +8.01), +4.00 vs public Counterplay (+0.88 to +7.13), +6.54 vs Round464 PPO (+3.52 to +9.67), and +7.42 vs Round465 PPO (+4.30 to +10.55). All four paired cluster intervals exclude zero on these samples; these are promising opening heuristics, not policy learning or established optimal play. Fresh-seed replication pooled across 640 disjoint team clusters confirmed +5.23 pp vs Max Damage (95% CI +2.50 to +7.97), +4.26 pp vs public Counterplay (+1.56 to +6.95), and +7.85 pp vs Round465 PPO (+5.20 to +10.59). Round464 also replicated independently. All four opponents now have pooled 640-cluster estimates; results remain Round430-specific heuristic evidence. Round464 pooled across both disjoint sets is +7.03 pp (95% CI +4.41 to +9.65). Fresh Round476 transfer added +7.23 pp [3.81,+10.74] over 256 clusters; a fresh 256-cluster legacy Counterplay comparison was neutral at -0.20 pp [-3.81,+3.42]. The narrower 1+4 intervention avoids the first-five override\u2019s legacy-Counterplay regression.",
     "report": "round430_opening_interventions.json",
     "opponents": {
       "max_damage": {
@@ -2614,6 +2614,47 @@
         ],
         "paired_delta_pp": 7.421875,
         "timeouts_or_errors": 0
+      }
+    },
+    "fresh_holdout_checks": {
+      "status": "Fresh narrow-opening transfer checks complete; no legacy-counterplay regression detected",
+      "candidate": "Round430 with public Max Damage actions at decision indices 1 and 4",
+      "method": "256 generated team-pair clusters, two outcome repeats, side-swapped; same teams, previews, battle seeds and Round402 selectors for raw and intervention arms. Independent matched intervals bootstrap by whole team cluster.",
+      "legacy_counterplay": {
+        "clusters": 256,
+        "paired_repeats": 512,
+        "raw_score_pct": 42.48,
+        "intervention_score_pct": 42.29,
+        "paired_delta_pp": -0.2,
+        "paired_ci95_pp": [
+          -3.81,
+          3.42
+        ],
+        "timeouts_per_arm": 0,
+        "action_adjustments": 0,
+        "games_per_second_intervention": 8.314
+      },
+      "round476": {
+        "clusters": 256,
+        "complete_paired_repeats": 510,
+        "raw_score_pct": 49.22,
+        "intervention_score_pct": 56.26,
+        "paired_delta_pp": 7.23,
+        "paired_ci95_pp": [
+          3.81,
+          10.74
+        ],
+        "timeouts_per_arm": 1,
+        "action_adjustments": 0,
+        "games_per_second_intervention": 4.509
+      },
+      "interpretation": "The narrower rule avoided the full first-five override\u2019s legacy-Counterplay loss and improved this fresh Round476 screen. Together with prior gains against Max Damage, Public Counterplay, Round102, Round464, and Round465, this supports a multi-family candidate. It is still a fixed heuristic, not a learned policy or proof of optimal play; retain raw Round430 until the behavior is integrated and screened on additional fresh families.",
+      "reproduction": "scripts/evaluate_round430_opening14_holdout_256x2.sh",
+      "artifacts": {
+        "legacy_intervention": "training/outputs/phase12_headless/round430_opening14_vs_legacy_counterplay_256x2_20261031/paired_summary.json",
+        "legacy_raw": "training/outputs/phase12_headless/round430_raw_vs_legacy_counterplay_256x2_seed2026115061/paired_summary.json",
+        "round476_intervention": "training/outputs/phase12_headless/round430_opening14_vs_round476_256x2_20261031/paired_summary.json",
+        "round476_raw": "training/outputs/phase12_headless/round430_raw_vs_round476_256x2_seed2026115077/paired_summary.json"
       }
     }
   },
@@ -6404,6 +6445,47 @@
         "interpretation": "No paired interval excludes zero; all point estimates favor policy-only. Keep Round430; do not promote the selector.",
         "report": "training/outputs/phase12_headless/round499_holdout476_fullmatch_step3_256_20261031/report.json"
       }
+    }
+  },
+  "round430_opening14_fresh_transfer": {
+    "status": "Fresh narrow-opening transfer checks complete; no legacy-counterplay regression detected",
+    "candidate": "Round430 with public Max Damage actions at decision indices 1 and 4",
+    "method": "256 generated team-pair clusters, two outcome repeats, side-swapped; same teams, previews, battle seeds and Round402 selectors for raw and intervention arms. Independent matched intervals bootstrap by whole team cluster.",
+    "legacy_counterplay": {
+      "clusters": 256,
+      "paired_repeats": 512,
+      "raw_score_pct": 42.48,
+      "intervention_score_pct": 42.29,
+      "paired_delta_pp": -0.2,
+      "paired_ci95_pp": [
+        -3.81,
+        3.42
+      ],
+      "timeouts_per_arm": 0,
+      "action_adjustments": 0,
+      "games_per_second_intervention": 8.314
+    },
+    "round476": {
+      "clusters": 256,
+      "complete_paired_repeats": 510,
+      "raw_score_pct": 49.22,
+      "intervention_score_pct": 56.26,
+      "paired_delta_pp": 7.23,
+      "paired_ci95_pp": [
+        3.81,
+        10.74
+      ],
+      "timeouts_per_arm": 1,
+      "action_adjustments": 0,
+      "games_per_second_intervention": 4.509
+    },
+    "interpretation": "The narrower rule avoided the full first-five override\u2019s legacy-Counterplay loss and improved this fresh Round476 screen. Together with prior gains against Max Damage, Public Counterplay, Round102, Round464, and Round465, this supports a multi-family candidate. It is still a fixed heuristic, not a learned policy or proof of optimal play; retain raw Round430 until the behavior is integrated and screened on additional fresh families.",
+    "reproduction": "scripts/evaluate_round430_opening14_holdout_256x2.sh",
+    "artifacts": {
+      "legacy_intervention": "training/outputs/phase12_headless/round430_opening14_vs_legacy_counterplay_256x2_20261031/paired_summary.json",
+      "legacy_raw": "training/outputs/phase12_headless/round430_raw_vs_legacy_counterplay_256x2_seed2026115061/paired_summary.json",
+      "round476_intervention": "training/outputs/phase12_headless/round430_opening14_vs_round476_256x2_20261031/paired_summary.json",
+      "round476_raw": "training/outputs/phase12_headless/round430_raw_vs_round476_256x2_seed2026115077/paired_summary.json"
     }
   }
 }
