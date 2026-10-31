@@ -1,0 +1,93 @@
+{
+  "status": "More counterfactual samples did not make the actor change actions",
+  "objective": "Estimate candidate joint-action outcomes across multiple response classes and distill only actions with positive worst-response advantage.",
+  "response_classes": [
+    "Max Damage",
+    "Public Counterplay",
+    "Round476 PPO"
+  ],
+  "information_boundary": "Learner observes its full own team and only opponent preview species; Public Counterplay uses public battle information.",
+  "round478": {
+    "states": 128,
+    "chance_repeats_per_candidate": 4,
+    "candidate_joint_actions_mean": 6.09,
+    "branch_matches": 9604,
+    "seconds": 304.27,
+    "aggregate_games_per_second": 31.56,
+    "positive_nonincumbent_targets": "8/128",
+    "incumbent_target_probability_mean": "93.86%",
+    "heldout_action_sets": "26",
+    "heldout_sets_choosing_incumbent": "26",
+    "league": [
+      {
+        "opponent": "Max Damage",
+        "round430": "32.62%",
+        "round478": "33.01%",
+        "delta_pp": 0.39,
+        "ci95_pp": [
+          -2.73,
+          3.71
+        ],
+        "clusters": 128,
+        "games_per_arm": 512,
+        "candidate_games_per_second": 4.28
+      },
+      {
+        "opponent": "Public Counterplay",
+        "round430": "34.38%",
+        "round478": "33.59%",
+        "delta_pp": -0.78,
+        "ci95_pp": [
+          -3.52,
+          2.15
+        ],
+        "clusters": 128,
+        "games_per_arm": 512,
+        "candidate_games_per_second": 6.65
+      },
+      {
+        "opponent": "Historical PPO Round102",
+        "round430": "45.12%",
+        "round478": "46.29%",
+        "delta_pp": 1.17,
+        "ci95_pp": [
+          -2.54,
+          4.88
+        ],
+        "clusters": 128,
+        "games_per_arm": 512,
+        "candidate_games_per_second": 4.42
+      }
+    ],
+    "timeouts_or_action_corrections": 0
+  },
+  "round479": {
+    "states": 256,
+    "chance_repeats_per_candidate": 8,
+    "candidate_joint_actions_mean": 6.21,
+    "branch_matches": 38672,
+    "seconds": 1288.62,
+    "aggregate_games_per_second": 30.01,
+    "worker_games_per_second": [
+      8.12,
+      9.06
+    ],
+    "positive_nonincumbent_targets": "23/256",
+    "incumbent_target_probability_mean": "91.67%",
+    "train_validation": "Best at epoch 1 (0.7996); validation worsened in epochs 2–4.",
+    "heldout_action_sets": "51",
+    "heldout_sets_choosing_incumbent": "51",
+    "all_state_argmax_changes": 1,
+    "mean_target_action_probability_increase_pp": 0.54,
+    "full_match_league": "Not run: no held-out candidate-set policy change and validation worsened.",
+    "timeouts_or_action_corrections": 0
+  },
+  "interpretation": "Do not scale this same positive-minimum distillation objective further. Next, change the target toward response-conditioned state values and a mixed/equilibrium-oriented action objective.",
+  "artifact": "round479_robust_counterfactual.json",
+  "plan": "https://github.com/joconn819/poke-vgc-ai/blob/master/PLAN.md",
+  "collect_round478": "https://github.com/joconn819/poke-vgc-ai/blob/master/scripts/collect_round478_robust_counterfactuals.sh",
+  "train_round478": "https://github.com/joconn819/poke-vgc-ai/blob/master/scripts/train_round478_robust_counterfactual_policy.sh",
+  "evaluate_round478": "https://github.com/joconn819/poke-vgc-ai/blob/master/scripts/evaluate_round478_robust_counterfactual_screen.sh",
+  "collect_round479": "https://github.com/joconn819/poke-vgc-ai/blob/master/scripts/collect_round479_robust_counterfactuals.sh",
+  "train_round479": "https://github.com/joconn819/poke-vgc-ai/blob/master/scripts/train_round479_robust_counterfactual_policy.sh"
+}

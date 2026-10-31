@@ -7,21 +7,18 @@ Pokémon Showdown remains the correctness reference and required battle platform
 **Active policy-improvement plan (updated 2026-10-31):** this section is the
 current source of truth and supersedes older recommendation sections below;
 dated entries remain the experiment ledger. Direct-policy self-play PPO with
-auxiliary win-probability and hidden-set prediction is active. Round424's
-multi-opponent screen showed no clear improvement, so the checkpoint was not
-promoted. Round430 completed a 20,000-game stronger-opponent iteration, but its
-512-game screens did not resolve its external-opponent strength. A fresh
-512-cluster side-swapped confirmation now shows a significant self-play lift
-over Round424, so Round430 is the current in-battle continuation candidate:
-55.32% cluster-weighted score (95% CI [51.86%, 58.79%]) across 512 clusters.
-This head-to-head result alone does not establish robust strength against
-external policies. Rounds468–471 tested mixed-opponent PPO, balanced loss,
-undiscounted terminal returns, and a larger update budget. None showed a
-statistically supported gain over Round430 against Max Damage or either
-Counterplay policy, so Round430 remains the validated incumbent. Round472 completed a fresh 20,000-game mixed-opponent batch and four-pass PPO
-update from Round430; a new-seed, five-opponent evaluation is underway. Search
-remains conditional
-on stronger held-out performance.
+auxiliary win-probability and hidden-set prediction is active. Round430 remains
+the validated in-battle incumbent: its 55.32% head-to-head score against
+Round424 (95% cluster interval [51.86%, 58.79%]) is not proof of strength
+against external policies. Mixed-opponent PPO rounds 468–476 did not establish
+a robust gain over Round430. Round477's first-five Max Damage intervention
+helped four tested opponent classes and significantly hurt legacy Counterplay,
+so it was not made a default rule. Rounds478–479 tested robust
+counterfactual action distillation against Max Damage, Public Counterplay, and
+Round476; the larger sample still produced almost no action changes and worse
+validation loss. Round430 remains the default; change the counterfactual
+objective or use stronger state-value / equilibrium targets before allocating
+another large PPO run. Search remains optional and gated on held-out strength.
 At inference, legal actions are selected from masked PPO policy logits; the
 win-probability head is an auxiliary training target and does not rank moves.
 The optional one-turn search can consult a state-value evaluator only when
@@ -57,6 +54,17 @@ stages are transition extraction (~27.2 s), model-input construction (~20.4 s),
 and load/parse/validation (~19.7 s); PPO optimization takes about 52 s. The
 next performance gate is a full rollout-plus-update measurement with
 peak-memory tracking.
+
+**Latest measured throughput (Round479, 2026-10-31):** paired
+counterfactual collection generated 38,672 complete local-Showdown matches in
+1,288.62 seconds (30.01 games/s aggregate over four CPU workers; individual
+shards measured 8.12–9.06 games/s). It covered 256 early-game states, six
+candidate joint actions per state on average, eight chance repeats, and three
+response classes. This is counterfactual branch throughput, not ordinary
+self-play throughput. The Round478 full-match league ran at 4.28–6.65 games/s
+over eight CPU workers, depending on opponent. The remaining general rollout
+bottleneck is policy/action scoring plus observation encoding; the new
+counterfactual bottleneck is sparse positive robust-action supervision.
 
 **Current objective (2026-10-30):** move toward optimal, equilibrium-oriented
 play in closed-team-sheet VGC. The earlier 80% goal against Max Damage is a
@@ -17471,3 +17479,63 @@ coverage, not another blind teacher-weight sweep.
   mixture, preserve randomized / self-play responses, and be evaluated on
   fresh teams against the full opponent pool. Keep cross-play and lower-tail
   results as the promotion gate; do not optimize only the equal-weight mean.
+
+### Round478: robust counterfactual actor update pilot (2026-10-31; not promoted)
+
+- Extended the paired counterfactual collector to optionally score each
+  candidate against Max Damage, closed-sheet Public Counterplay, and a frozen
+  PPO checkpoint. The Public Counterplay response uses only public information;
+  this avoids relying on the legacy Counterplay baseline as a teacher before
+  its information view is separately audited.
+- Collected 128 team-disjoint states at decision index 1, with four chance
+  repeats per candidate. The run executed 9,604 local-Showdown matches in
+  304.27 seconds (31.56 games/s aggregate over four CPU workers), with six
+  candidate joint actions per state on average, no missing states, and no
+  rejected actions.
+- Trained a robust positive-advantage policy distillation update from Round430
+  on CUDA. Validation loss decreased through all 12 epochs, but this was not
+  reflected in action choice: on 26 held-out team clusters the actor selected
+  the incumbent policy action in every candidate set. Only 8/128 states had
+  any non-incumbent action with positive worst-response advantage in the
+  training half of the chance outcomes; average target mass on the incumbent
+  action was 93.86%.
+- Fresh side-swapped screen on 128 clusters (512 matches per policy/opponent)
+  found Round478 deltas vs Round430 of +0.39 pp vs Max Damage (95% CI
+  [-2.73,+3.71]), -0.78 pp vs Public Counterplay ([-3.52,+2.15]), and +1.17 pp
+  vs historical Round102 PPO ([-2.54,+4.88]). All intervals include zero;
+  there were no timeouts or action corrections. Keep Round430 as default.
+- Reproduction: `scripts/collect_round478_robust_counterfactuals.sh`,
+  `scripts/train_round478_robust_counterfactual_policy.sh`, and
+  `scripts/evaluate_round478_robust_counterfactual_screen.sh`. Data, model,
+  and held-out summaries are under `training/outputs/phase12_headless/` with
+  `round478_` prefixes.
+
+### Round479: higher-repeat robust counterfactual follow-up (2026-10-31; not promoted)
+
+- To test whether Round478's sparse/noisy labels caused the no-op update,
+  repeated the same fixed action objective with 256 team-disjoint early-game
+  states and eight chance outcomes per candidate. The response classes remained
+  Max Damage, Public Counterplay, and Round476 PPO; the learner received only
+  its own full team and the opponent's preview species.
+- Collection completed 38,672 matches in 1,288.62 seconds (30.01 games/s
+  aggregate across four CPU workers; shard rates 8.12–9.06). All 256 states
+  were captured with no missing states and no rejected candidate actions. It
+  averaged 6.21 candidate joint actions per state. The side-by-side speed
+  figure is counterfactual branch throughput, not regular self-play throughput.
+- With four of eight chance outcomes used to form targets and four held out,
+  only 23/256 states had a non-incumbent candidate with positive worst-response
+  advantage; incumbent target mass averaged 91.67%. The actor update stopped
+  after four epochs: validation loss was best at epoch 1 (0.7996) and worsened
+  thereafter. It still selected the incumbent action on all 51 held-out
+  candidate sets; across all 256 states, only one candidate-set argmax changed
+  and target-action probability rose by only 0.54 percentage points on average.
+- This confirms that merely adding more samples to this sparse positive-minimum
+  distillation target is not enough. Round479 is not promoted and was not sent
+  through the full-match league because its held-out actor chose the baseline
+  action in all tested candidate sets and validation worsened. Next, change the
+  learning target: estimate response-conditioned state values / action payoffs
+  and optimize a mixed or equilibrium-oriented objective, instead of extending
+  this same conservative supervised target.
+- Reproduction: `scripts/collect_round479_robust_counterfactuals.sh` and
+  `scripts/train_round479_robust_counterfactual_policy.sh`. Outputs are under
+  `training/outputs/phase12_headless/` with `round479_` prefixes.
