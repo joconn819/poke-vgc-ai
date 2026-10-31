@@ -18272,11 +18272,12 @@ coverage, not another blind teacher-weight sweep.
   The Showdown-prior decision-step-1 phase completed with 81/144 usable states,
   324 worlds, and 41,777 branch matches in 1,052.34 seconds (39.699 matches/s
   across eight CPU workers). It skipped 61 forced-switch states and two public
-  Transform states; no candidates were rejected. The next phase, decision
-  step 3 under the same prior, is running. Two worker shards have finished and
-  six remain active; current checkpoints total 116/144 cluster attempts, 67
-  usable states, and 33,279 branches. These are partial counts, not phase
-  totals. The larger matched dataset will be fit jointly
+  Transform states; no candidates were rejected. Decision step 3 under the
+  same prior completed with 84/144 usable states, 336 hidden worlds, and 41,612
+  branches in 634.29 seconds (65.604 matches/s across eight CPU workers). It
+  skipped 57 forced-switch and three possible-Illusion states, with zero
+  rejected actions. Decision step 5 under the same prior is running. The larger
+  matched dataset will be fit jointly
   across both priors and all 14 opponent/prior heads, then compared to Round430
   on team-disjoint clusters. Promotion still requires fresh paired,
   side-swapped full-match evaluation across opponents.

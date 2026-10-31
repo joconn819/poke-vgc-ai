@@ -6167,19 +6167,19 @@
     "chance_repeats_per_candidate": 2,
     "workers": 8,
     "device": "CPU",
-    "completed_phases": 1,
+    "completed_phases": 2,
     "total_phases": 6,
-    "current_phase": "Showdown Random Champions prior, decision step 3",
-    "progress_note": "Decision step 3 under the Showdown Random Champions prior is running. Two worker shards have finished and six remain active; current checkpoints total 116/144 cluster attempts, 67 usable states, and 33,279 branches. These are partial counts, not phase totals.",
+    "current_phase": "Showdown Random Champions prior, decision step 5",
+    "progress_note": "Two of six phases are complete under the Showdown Random Champions prior. Step 1: 81/144 states, 41,777 branches in 1,052.34s (39.699 matches/s). Step 3: 84/144 states, 41,612 branches in 634.29s (65.604 matches/s). Zero rejected actions in both phases. Step 5 is running.",
     "reproduction": "scripts/collect_round499_policy_ensemble_144x4x2.sh",
     "plan": "https://github.com/joconn819/poke-vgc-ai/blob/master/PLAN.md",
     "partial_progress": {
-      "completed_worker_shards": 2,
-      "reported_worker_shards": 8,
+      "completed_worker_shards": 0,
+      "reported_worker_shards": 0,
       "total_worker_shards": 8,
-      "cluster_attempts_processed": 116,
-      "states_captured": 67,
-      "branch_matches": 33279,
+      "cluster_attempts_processed": 0,
+      "states_captured": 0,
+      "branch_matches": 0,
       "is_phase_total": false
     },
     "phase_results": [
@@ -6197,6 +6197,23 @@
         "missing_reasons": {
           "request_switch": 61,
           "public_transform_state": 2
+        },
+        "rejected_actions": 0
+      },
+      {
+        "decision_step": 3,
+        "hidden_set_prior": "showdown_random_champions",
+        "states_requested": 144,
+        "states_captured": 84,
+        "hidden_worlds_prepared": 336,
+        "branch_matches": 41612,
+        "elapsed_seconds": 634.288,
+        "matches_per_second": 65.604,
+        "world_preparation_seconds": 43.206,
+        "missing_states": 60,
+        "missing_reasons": {
+          "request_switch": 57,
+          "possible_illusion_preview": 3
         },
         "rejected_actions": 0
       }
