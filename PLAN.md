@@ -23,6 +23,16 @@ At inference, legal actions are selected from masked PPO policy logits; the
 win-probability head is an auxiliary training target and does not rank moves.
 The optional one-turn search can consult a state-value evaluator only when
 explicitly enabled; the default play path leaves search disabled.
+**Round485 opponent-exposure ablation (2026-10-31; not promoted):** from the
+same Round430 start and PPO configuration as Round473, increased Max Damage
+training exposure from 25% to 70%, reducing the legacy Counterplay, Public
+Counterplay, and policy-pool shares to 10% each. On the same 256 held-out
+team-pair clusters, Round485 scored 39.45% against Max Damage, a paired
+−0.68 pp vs Round473 (95% CI [−3.12,+1.76]); its equal-weight five-opponent
+change was −0.49 pp [−1.39,+0.39]. No opponent interval excludes zero. Higher
+Max Damage exposure did not show a matchup or league gain; keep Round430 as
+the default and preserve the balanced Round473 mix as a useful pool member.
+Detailed results and speed are recorded below and in `site/round485_opponent_exposure.json`.
 **Round482 equilibrium-target check (2026-10-31; reject both actor updates):**
 combined the independent Round479 256-team / 8-repeat and Round481 128-team /
 16-repeat counterfactual corpora (38,672 and 37,264 branch matches; 30.01 and
@@ -17643,3 +17653,42 @@ coverage, not another blind teacher-weight sweep.
   payoff matrix. Search remains off by default because its results are mixed
   across Max Damage and Public Counterplay; it must pass a broader opponent
   league before default use.
+
+### Round485: controlled Max Damage exposure ablation (2026-10-31; not promoted)
+
+- Trained from Round430 for 20,000 games with the same Round402 selectors,
+  PPO settings, and five policy-pool members as Round473. Changed only the
+  opponent proportions from 25% each Max Damage / legacy Counterplay / Public
+  Counterplay / policy pool to 70% / 10% / 10% / 10%. No Random games were
+  included in either training mix. The strict audit replaced one incomplete
+  Max Damage match and then accepted all 20,000 games, 159,313 transitions,
+  balanced at 10,000 trainable decisions per seat. The checkpoint is
+  `training/outputs/phase12_headless/round485_maxdamage_exposure_ppo_20k_20261031/checkpoints/latest.pt`.
+- Rollouts took 421.24 s (47.48 aggregate games/s); input-to-checkpoint time
+  was 809.82 s (24.70 games/s). Strict preflight and recovery consumed
+  235.72 s, including 115.08 s to replace the incomplete game; PPO took
+  152.81 s for four passes and 1,248 optimizer steps. The 70% Max Damage mix
+  is faster because those matchups are cheaper than Counterplay, not because
+  the policy improved. GPU PPO ran on the RTX 4060; rollout decisions and
+  Showdown simulation remained CPU-side.
+- Evaluated Round485 on the same seed, Round402 selectors, and 256 team-pair
+  clusters as the Round473 fresh league. Each opponent had two repeats and
+  side swaps (1,024 complete matches), no action corrections, and no
+  timeouts/errors. Round485 scores and paired changes versus balanced Round473
+  and Round430 (95% cluster-bootstrap intervals) were: Max Damage 39.45%,
+  −0.68 pp [−3.12,+1.76] / +1.17 pp [−0.59,+3.03]; legacy Counterplay
+  37.50%, 0.00 pp [−2.25,+2.25] / +1.17 pp [−0.59,+2.93]; Public Counterplay
+  40.92%, +0.68 pp [−1.07,+2.44] / −0.98 pp [−2.64,+0.59]; Random 95.02%,
+  −1.07 pp [−2.34,+0.10] / −0.10 pp [−0.78,+0.59]; historical Round102 PPO
+  55.96%, −1.37 pp [−3.52,+0.78] / +0.39 pp [−1.37,+2.15]. Every interval
+  includes zero.
+- The equal-weight five-opponent paired change was −0.49 pp [−1.39,+0.39]
+  against Round473 and +0.33 pp [−0.37,+1.04] against Round430. Excluding
+  Random, the changes were −0.34 pp vs Round473 and +0.44 pp vs Round430.
+  Raising Max Damage exposure to 70% did not measurably improve that matchup
+  or the broader league; keep Round430 as the validated default and do not
+  promote Round485.
+- Reproduce training with `scripts/train_round485_maxdamage_exposure_ppo_20k.sh`
+  and evaluation with `scripts/evaluate_round485_maxdamage_exposure_fresh_league.sh`.
+  The curated report and machine-readable scorecard are in
+  `site/round485_opponent_exposure.json`.

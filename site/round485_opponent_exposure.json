@@ -1,0 +1,146 @@
+{
+  "status": "Higher Max Damage training share did not establish a strength gain; Round430 remains the default.",
+  "method": "Round485 and Round473 both started from Round430 and used 20,000 games, the same Round402 team selectors, 4 PPO epochs, learning rate 5e-5, minibatch 512, terminal win/loss rewards, and the same five policy-pool members. The planned change was opponent mix: Round485 used 70% Max Damage / 10% legacy Counterplay / 10% Public Counterplay / 10% policy pool; Round473 used 25% of each hard opponent and policy pool. Each evaluation used the same 256 team-pair clusters, Round402 preview selectors on both sides, two side-swapped outcomes per cluster, and 20,000 paired cluster-bootstrap resamples.",
+  "training": {
+    "games": 20000,
+    "transitions": 159313,
+    "rollout_seconds": 421.24,
+    "rollout_games_per_second": 47.48,
+    "full_iteration_seconds": 809.82,
+    "full_iteration_games_per_second": 24.7,
+    "preflight_and_recovery_seconds": 235.72,
+    "replacement_matches": 1,
+    "ppo_seconds": 152.81,
+    "ppo_epochs": 4,
+    "optimizer_steps": 1248,
+    "opponent_counts": {
+      "max_damage": 14000,
+      "legacy_counterplay": 2000,
+      "public_counterplay": 2000,
+      "policy_pool": 2000
+    }
+  },
+  "opponents": [
+    {
+      "opponent": "Max Damage",
+      "score_percent": 39.45,
+      "score_ci95_percent": [
+        34.57,
+        44.34
+      ],
+      "games": 1024,
+      "clusters": 256,
+      "paired_delta_vs_round473_pp": -0.68,
+      "paired_ci_vs_round473_pp": [
+        -3.12,
+        1.76
+      ],
+      "paired_delta_vs_round430_pp": 1.17,
+      "paired_ci_vs_round430_pp": [
+        -0.59,
+        3.03
+      ]
+    },
+    {
+      "opponent": "Legacy Counterplay",
+      "score_percent": 37.5,
+      "score_ci95_percent": [
+        32.81,
+        42.19
+      ],
+      "games": 1024,
+      "clusters": 256,
+      "paired_delta_vs_round473_pp": 0.0,
+      "paired_ci_vs_round473_pp": [
+        -2.25,
+        2.25
+      ],
+      "paired_delta_vs_round430_pp": 1.17,
+      "paired_ci_vs_round430_pp": [
+        -0.59,
+        2.93
+      ]
+    },
+    {
+      "opponent": "Public Counterplay",
+      "score_percent": 40.92,
+      "score_ci95_percent": [
+        35.84,
+        45.9
+      ],
+      "games": 1024,
+      "clusters": 256,
+      "paired_delta_vs_round473_pp": 0.68,
+      "paired_ci_vs_round473_pp": [
+        -1.07,
+        2.44
+      ],
+      "paired_delta_vs_round430_pp": -0.98,
+      "paired_ci_vs_round430_pp": [
+        -2.64,
+        0.59
+      ]
+    },
+    {
+      "opponent": "Random",
+      "score_percent": 95.02,
+      "score_ci95_percent": [
+        93.36,
+        96.48
+      ],
+      "games": 1024,
+      "clusters": 256,
+      "paired_delta_vs_round473_pp": -1.07,
+      "paired_ci_vs_round473_pp": [
+        -2.34,
+        0.1
+      ],
+      "paired_delta_vs_round430_pp": -0.1,
+      "paired_ci_vs_round430_pp": [
+        -0.78,
+        0.59
+      ]
+    },
+    {
+      "opponent": "Historical PPO Round102",
+      "score_percent": 55.96,
+      "score_ci95_percent": [
+        50.88,
+        61.04
+      ],
+      "games": 1024,
+      "clusters": 256,
+      "paired_delta_vs_round473_pp": -1.37,
+      "paired_ci_vs_round473_pp": [
+        -3.52,
+        0.78
+      ],
+      "paired_delta_vs_round430_pp": 0.39,
+      "paired_ci_vs_round430_pp": [
+        -1.37,
+        2.15
+      ]
+    }
+  ],
+  "equal_weight_delta_vs_round473_pp": -0.49,
+  "equal_weight_ci_vs_round473_pp": [
+    -1.39,
+    0.39
+  ],
+  "hard_opponent_mean_delta_vs_round473_pp": -0.34,
+  "equal_weight_delta_vs_round430_pp": 0.33,
+  "equal_weight_ci_vs_round430_pp": [
+    -0.37,
+    1.04
+  ],
+  "hard_opponent_mean_delta_vs_round430_pp": 0.44,
+  "interpretation": "The 70% Max Damage mix scored 39.45% against Max Damage, 0.68 pp below Round473 on the matched clusters (95% CI −3.12 to +1.76). No per-opponent paired interval excludes zero. Its equal-weight five-opponent difference from Round473 was −0.49 pp (95% stratified cluster-bootstrap CI −1.39 to +0.39). Higher Max Damage exposure did not measurably help the Max Damage matchup and showed no robust league gain; do not promote Round485.",
+  "evaluation_seed": 20680473,
+  "action_adjustments": 0,
+  "timeouts_or_errors": 0,
+  "reproduction": {
+    "training": "https://github.com/joconn819/poke-vgc-ai/blob/master/scripts/train_round485_maxdamage_exposure_ppo_20k.sh",
+    "evaluation": "https://github.com/joconn819/poke-vgc-ai/blob/master/scripts/evaluate_round485_maxdamage_exposure_fresh_league.sh",
+    "plan": "https://github.com/joconn819/poke-vgc-ai/blob/master/PLAN.md"
+  }
+}
