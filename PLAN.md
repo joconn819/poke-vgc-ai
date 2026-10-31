@@ -18160,7 +18160,7 @@ coverage, not another blind teacher-weight sweep.
   against the incumbent or broad-policy opponents block promotion even if the
   Max Damage result improves.
 
-### Round498: learned-opponent response diversity (in progress)
+### Round498: learned-opponent response diversity (complete; no promotion)
 
 - Round497 varied hidden-set priors and included five response classes, but
   only one was a learned PPO policy (Round476). The preliminary PPO-head Brier
@@ -18221,3 +18221,37 @@ coverage, not another blind teacher-weight sweep.
   68,089 branches ran in 1,326.54 seconds (51.33 aggregate matches/s); seven
   uniform-prior states so far were excluded for lack of a compatible corpus
   set. The final phase is still running.
+- The final uniform-prior phase (decision step 5) completed with 32/48 usable
+  states, 128 worlds, and 13,296 branches in 218.10 seconds (60.963 matches/s).
+  The 16 skipped states were five forced switches, four support gaps, and
+  seven unreached decisions. No actions were rejected. The full uniform-prior
+  batch captured 83/144 states and ran 38,419 branches in 726.30 seconds
+  (52.897 aggregate matches/s), with 332 worlds and 11 support gaps. Across
+  both priors, Round498 captured 177/288 states, prepared 708 worlds, and ran
+  81,385 branches in 1,544.64 seconds (52.689 aggregate matches/s); 111 states
+  were excluded by documented request/eligibility/support causes, with zero
+  rejected candidate actions.
+- Fits were completed separately for the Showdown and uniform-set priors. The
+  Showdown fit used 60/15/19 train/validation/test team clusters, stopped at
+  epoch 1, and changed the incumbent action in 16 of 19 test states; its
+  maximin delta was 0.00 pp [-6.58,+7.89]. The uniform fit used 53/13/17
+  clusters, stopped at epoch 1, changed 16 of 17 actions, and measured +2.94 pp
+  maximin [-5.88,+11.76]. Both intervals include zero; equal-weight selection
+  showed no reliable gain. The small cluster counts prohibit a strength claim.
+- To check whether separate prior-specific fits were hiding a robust selector,
+  `scripts/merge_round498_hidden_prior_outcomes.py` aligned the 83 public
+  states common to both priors and made 14 response heads: seven opponents
+  under each prior. Eleven Showdown-prior states had no uniform-prior match;
+  no uniform-only states remained. The combined fit used 53/13/17 clusters,
+  stopped at epoch 1, and changed actions in 14 of 17 held-out states. Its
+  worst-response delta was -1.47 pp [-5.88,+2.94], so the selector did not
+  beat Round430. These intervals are cluster-bootstrap estimates from only 17
+  held-out team clusters and are not a final match-level evaluation.
+- This experiment confirms that Round497's single learned PPO response was a
+  real coverage gap, which Round498 corrected with Round476, Round430, and
+  Round102. Broadening the opponent set did not, by itself, improve action
+  selection. Keep Round430 active; do not promote the action-value model.
+  Next, increase held-out team coverage and evaluate any policy change in
+  paired, side-swapped full matches across the whole opponent pool and both
+  hidden-set priors. Max Damage remains one diagnostic opponent, not the
+  optimization objective.

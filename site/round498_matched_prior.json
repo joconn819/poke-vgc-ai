@@ -1,0 +1,28 @@
+{
+  "test_clusters": 17,
+  "train_clusters": 53,
+  "validation_clusters": 13,
+  "best_epoch": 1,
+  "validation_action_outcome_brier": 0.185286,
+  "actions_changed": 14,
+  "robust_maximin": {
+    "selected_minus_policy_worst_response_pp": -1.47,
+    "team_cluster_95_ci_pp": [
+      -5.88,
+      2.94
+    ]
+  },
+  "equal_weight": {
+    "selected_minus_policy_worst_response_pp": -1.47,
+    "team_cluster_95_ci_pp": [
+      -5.88,
+      2.94
+    ]
+  },
+  "matched_states": 83,
+  "response_heads": 14,
+  "showdown_only_states": 11,
+  "uniform_only_states": 0,
+  "interpretation": "The 14-head robust selector across both hidden-set priors did not improve over Round430; 95% team-cluster interval includes zero and the test has only 17 clusters. Not full-match strength evidence.",
+  "report_path": "training/outputs/phase12_headless/round498_matched_prior_ensemble_fit/report.json"
+}

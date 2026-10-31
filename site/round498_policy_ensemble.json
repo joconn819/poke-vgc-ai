@@ -1,6 +1,6 @@
 {
   "round": 498,
-  "status": "Round497 complete: no reliable action-value gain; broader PPO response data collection in progress",
+  "status": "Round498 complete; expanded PPO coverage did not produce a reliable action-selection gain",
   "pilot": {
     "usable_states": 3,
     "clusters_requested": 4,
@@ -21,7 +21,7 @@
     "interpretation": "Pipeline validation only; three states cannot support a strength conclusion."
   },
   "collection": {
-    "status": "running",
+    "status": "complete",
     "clusters_per_decision_step_per_prior": 48,
     "decision_steps": [
       1,
@@ -134,28 +134,44 @@
           "forced_switch": 11
         },
         "rejected_actions": 0
+      },
+      {
+        "decision_step": 5,
+        "hidden_set_prior": "uniform_unique_full_sets",
+        "states_captured": 32,
+        "states_requested": 48,
+        "hidden_worlds_prepared": 128,
+        "branch_matches": 13296,
+        "matches_per_second": 60.963,
+        "elapsed_seconds": 218.099,
+        "world_preparation_seconds": 14.856,
+        "missing_states": 16,
+        "missing_reasons": {
+          "decision_not_reached": 7,
+          "hidden_set_prior_support_gap": 4,
+          "forced_switch": 5
+        },
+        "rejected_actions": 0
       }
     ],
-    "completed_states_total": 145,
-    "requested_states_total": 240,
-    "branch_matches_total": 68089,
-    "elapsed_seconds_total": 1326.542,
-    "aggregate_matches_per_second": 51.331,
-    "hidden_worlds_prepared_total": 580,
-    "progress_note": "Five of six phases are complete; only decision step 5 under the uniform prior remains.",
-    "hidden_set_prior_support_gaps": 7
+    "completed_states_total": 177,
+    "requested_states_total": 288,
+    "branch_matches_total": 81385,
+    "elapsed_seconds_total": 1544.641,
+    "aggregate_matches_per_second": 52.689,
+    "hidden_worlds_prepared_total": 708,
+    "progress_note": "All six phases are complete: 177 usable states from 288 requested, 81,385 branches at 52.689 aggregate matches/s, and zero rejected actions. The uniform prior had 11 support gaps.",
+    "hidden_set_prior_support_gaps": 11
   },
-  "interpretation": "Round497 used only Round476 as a learned PPO response; Round498 adds Round430 and Round102 separately. Round430 remains the active policy pending held-out full-match improvement across varied opponents.",
+  "interpretation": "Adding Round430 and Round102 to Round476 corrected the learned-opponent coverage gap, but no selector was significantly better than Round430. Keep Round430 active; Max Damage is one diagnostic opponent, not the objective.",
   "plan": "https://github.com/joconn819/poke-vgc-ai/blob/master/PLAN.md",
   "showdown_prior_fit": {
-    "usable_states": 94,
-    "team_split": {
-      "train": 60,
-      "validation": 15,
-      "test": 19
-    },
+    "test_clusters": 19,
+    "train_clusters": 60,
+    "validation_clusters": 15,
     "best_epoch": 1,
     "validation_action_outcome_brier": 0.219037,
+    "actions_changed": 16,
     "robust_maximin": {
       "selected_minus_policy_worst_response_pp": 0.0,
       "team_cluster_95_ci_pp": [
@@ -170,10 +186,62 @@
         6.58
       ]
     },
-    "actions_changed": 16,
+    "usable_states": 94,
     "response_brier_beats_constant_baseline": true,
-    "interpretation": "Predictive Brier improved against all seven response heads, but held-out action selection showed no strength gain. No checkpoint promoted.",
-    "report_path": "training/outputs/phase12_headless/round498_showdown_policy_ensemble_fit_20261031/report.json",
-    "checkpoint_path": "training/outputs/phase12_headless/round498_showdown_policy_ensemble_fit_20261031/response_conditioned_action_value.pt"
-  }
+    "interpretation": "All seven outcome heads beat constant-rate Brier baselines, but action selection showed no reliable gain."
+  },
+  "uniform_prior_fit": {
+    "test_clusters": 17,
+    "train_clusters": 53,
+    "validation_clusters": 13,
+    "best_epoch": 1,
+    "validation_action_outcome_brier": 0.210048,
+    "actions_changed": 16,
+    "robust_maximin": {
+      "selected_minus_policy_worst_response_pp": 2.94,
+      "team_cluster_95_ci_pp": [
+        -5.88,
+        11.76
+      ]
+    },
+    "equal_weight": {
+      "selected_minus_policy_worst_response_pp": 0.0,
+      "team_cluster_95_ci_pp": [
+        -8.82,
+        8.82
+      ]
+    },
+    "usable_states": 83,
+    "response_brier_beats_constant_baseline": false,
+    "interpretation": "Some heads were worse than constant-rate baselines; maximin estimate is positive but highly uncertain."
+  },
+  "matched_prior_fit": {
+    "test_clusters": 17,
+    "train_clusters": 53,
+    "validation_clusters": 13,
+    "best_epoch": 1,
+    "validation_action_outcome_brier": 0.185286,
+    "actions_changed": 14,
+    "robust_maximin": {
+      "selected_minus_policy_worst_response_pp": -1.47,
+      "team_cluster_95_ci_pp": [
+        -5.88,
+        2.94
+      ]
+    },
+    "equal_weight": {
+      "selected_minus_policy_worst_response_pp": -1.47,
+      "team_cluster_95_ci_pp": [
+        -5.88,
+        2.94
+      ]
+    },
+    "matched_states": 83,
+    "response_heads": 14,
+    "showdown_only_states": 11,
+    "uniform_only_states": 0,
+    "interpretation": "The 14-head robust selector across both hidden-set priors did not improve over Round430; 95% team-cluster interval includes zero and the test has only 17 clusters. Not full-match strength evidence.",
+    "report_path": "training/outputs/phase12_headless/round498_matched_prior_ensemble_fit/report.json"
+  },
+  "experiment_script": "scripts/merge_round498_hidden_prior_outcomes.py"
 }
