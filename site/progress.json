@@ -6921,7 +6921,7 @@
     "artifact": "round516_loss_trace_analysis.json"
   },
   "round517_opening_action_intervention": {
-    "status": "Fresh paired test supports first-five opening improvement; Round518 training active",
+    "status": "Fresh paired test supports first-five opening improvement; Round519 training active",
     "method": "128 fresh team-pair clusters, two outcome repeats, side-swapped; Round430 raw policy vs targeted Max Damage-action overrides.",
     "raw": {
       "score_pct": 28.516,
@@ -6972,7 +6972,7 @@
     "report": "round517_opening_intervention.json"
   },
   "round518_training": {
-    "status": "Running",
+    "status": "Failed before PPO training: rollout rejected disabled Outrage action; partial data preserved for diagnostics",
     "run": "round518_opening5_teacher_population_20k_20261031",
     "games_planned": 20000,
     "start_checkpoint": "Round430",
@@ -6994,6 +6994,34 @@
     "teacher_fraction_of_all_games": 0.1,
     "ppo_loss_on_teacher_forced_actions": false,
     "command": "scripts/train_round518_opening5_teacher_population_20k.sh",
-    "output": "training/outputs/phase12_headless/round518_opening5_teacher_population_20k_20261031/"
+    "output": "training/outputs/phase12_headless/round518_opening5_teacher_population_20k_20261031/",
+    "failure": "Headless action mask re-enabled an Outrage move marked disabled in the player request. Partial rollout data was not used for training.",
+    "output_note": "Partial diagnostic artifacts retained; not a valid trained checkpoint."
+  },
+  "round519_training": {
+    "status": "Running rollouts; PPO updates have not started",
+    "run": "round519_opening5_teacher_population_20k_20261031",
+    "games_planned": 20000,
+    "start_checkpoint": "Round430",
+    "opponent_mix": {
+      "random": 0.1,
+      "max_damage": 0.2,
+      "legacy_counterplay": 0.25,
+      "public_counterplay": 0.25,
+      "frozen_policy_pool": 0.2
+    },
+    "max_damage_teacher_fraction": 0.5,
+    "teacher_action_steps": [
+      1,
+      2,
+      3,
+      4,
+      5
+    ],
+    "teacher_fraction_of_all_games": 0.1,
+    "ppo_loss_on_teacher_forced_actions": false,
+    "command": "scripts/train_round519_opening5_teacher_population_20k.sh",
+    "output": "training/outputs/phase12_headless/round519_opening5_teacher_population_20k_20261031/",
+    "protocol_fix": "Disabled request moves remain masked out; exact failing Outrage replay completed with zero action corrections."
   }
 }

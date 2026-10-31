@@ -18868,7 +18868,7 @@ coverage, not another blind teacher-weight sweep.
   fresh multi-opponent evaluation before promotion.
 - Raw, first-five, and 1+4 results: `training/outputs/phase12_headless/round517_round430_maxdamage_{raw,opening5,opening14}_128x2_20261031/`.
 
-### Round518: robust PPO with limited first-five teacher data (running)
+### Round518: rollout attempt stopped by disabled-move mask bug (failed; data preserved)
 
 - Start from Round430. Train 20,000 games with 10% random, 20% Max Damage,
   25% legacy Counterplay, 25% Public Counterplay, and a 20% frozen policy pool
@@ -18876,9 +18876,25 @@ coverage, not another blind teacher-weight sweep.
   labels for decisions 1–5; these teacher-forced decisions are excluded from
   PPO policy-gradient loss. This yields labels for about 10% of all games while
   keeping learning against a mixed population.
-- Run: `scripts/train_round518_opening5_teacher_population_20k.sh`; output:
-  `training/outputs/phase12_headless/round518_opening5_teacher_population_20k_20261031/`.
-- Gate promotion on a fresh matched evaluation against Max Damage, both
-  Counterplay baselines, Random, and a held-out PPO, using multiple team-pair
-  clusters and side swaps. Report worst/mean/lower-tail performance and runtime;
+- The rollout stopped before PPO training: a disabled Outrage move leaked into
+  the headless action mask and Showdown rejected the choice. Partial outputs are
+  preserved for diagnosis and are not training data or a checkpoint.
+- Fixed `get_action_mask` to honor the request disabled flag, including the
+  `randomNormal` special case; exact-seed replay completed with zero action
+  corrections. See the Round519 replay diagnostic JSONL.
+
+### Round519: retry robust PPO with limited first-five teacher data (rollouts active)
+
+- Repeated the Round518 configuration from Round430 after the disabled-move fix.
+  At the latest process check, rollout workers were active and had not begun PPO
+  updates. Training uses 20,000 games: 10% random, 20% Max Damage, 25% legacy
+  Counterplay, 25% Public Counterplay, and a 20% frozen policy pool. Half of Max
+  Damage games receive labels for decisions 1–5 (about 10% of all games); forced
+  teacher actions are excluded from PPO policy-gradient loss.
+- Run: `scripts/train_round519_opening5_teacher_population_20k.sh`; output:
+  `training/outputs/phase12_headless/round519_opening5_teacher_population_20k_20261031/`.
+- The first priority remains fixing the sub-50% Max Damage matchup while
+  measuring transfer. After a valid checkpoint is produced, require fresh paired,
+  side-swapped matches against Max Damage, both Counterplay baselines, Random,
+  and a held-out PPO. Report each result plus worst/mean/lower-tail performance;
   keep Round430 as default unless broad results support promotion.
