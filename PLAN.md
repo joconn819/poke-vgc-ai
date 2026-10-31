@@ -18213,3 +18213,11 @@ coverage, not another blind teacher-weight sweep.
   matches/s). Twenty-seven states were skipped: 23 forced switches, three
   full-set-prior support gaps, and one public Transform state. No actions were
   rejected; the remaining uniform-prior phases are running.
+- Round498's uniform-prior decision step 3 completed with 30/48 usable states,
+  120 worlds, and 14,414 branches in 260.11 seconds (55.415 matches/s). Its 18
+  skipped states were 11 forced switches, four support gaps, two possible-
+  Illusion previews, and one unreached decision. No actions were rejected.
+  Across all five completed Round498 phases, 145/240 states were usable and
+  68,089 branches ran in 1,326.54 seconds (51.33 aggregate matches/s); seven
+  uniform-prior states so far were excluded for lack of a compatible corpus
+  set. The final phase is still running.
