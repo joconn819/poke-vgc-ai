@@ -1,0 +1,111 @@
+{
+  "schema_version": 1,
+  "experiment": "Round484 heldout-repeat candidate action selection audit",
+  "source": "training/outputs/phase12_headless/round484_public_preview_actor_counterfactuals_128x8_20261031/data.json",
+  "source_checkpoint": "training/outputs/phase12_headless/round430_hard_opponent_auxiliary_ppo_20k_20261030/checkpoints/latest.pt",
+  "candidate_policy_checkpoint": "training/outputs/phase12_headless/round482_absolute_joint_regret_actor_384states_20261031_fullaction/counterfactual_policy.pt",
+  "states": 128,
+  "responses": [
+    "max_damage",
+    "public_counterplay",
+    "policy"
+  ],
+  "distinct_candidate_actions_per_state": {
+    "mean": 6.094,
+    "min": 2,
+    "max": 13
+  },
+  "candidate_category_state_coverage": {
+    "legal_perturbation": 99,
+    "protect": 63,
+    "redirection": 1,
+    "setup": 20,
+    "status": 26,
+    "switch": 74
+  },
+  "method": "For every state, select one candidate action using four of its eight outcome repeats, averaging equally across Max Damage, Public Counterplay, and Round476 policy responses. Score the selected action on the disjoint four repeats. The mean objective maximizes equal-weight response-class win rate; maximin maximizes the lowest sampled response-class win rate. Paired percentile bootstrap resamples whole team clusters.",
+  "interpretation_limit": "This measures a local candidate-action ceiling only. After the chosen first action, each branch continues with the reference policy; the three response classes are a finite league, not all legal opponent actions. It is neither a full-policy evaluation nor a Nash certificate.",
+  "bootstrap_samples": 20000,
+  "splits": {
+    "first_half_train_last_half_test": {
+      "mean": {
+        "states": 128,
+        "selected_nonbaseline_action_states": 67,
+        "heldout_delta_by_response_pp": {
+          "max_damage": 11.914,
+          "public_counterplay": 8.984,
+          "policy": 10.352
+        },
+        "heldout_equal_weight_delta_pp": 10.417,
+        "heldout_equal_weight_delta_ci95_pp": [
+          7.357,
+          13.672
+        ],
+        "heldout_statewise_worst_response_delta_pp": 9.961,
+        "heldout_statewise_worst_response_delta_ci95_pp": [
+          6.055,
+          14.453
+        ]
+      },
+      "maximin": {
+        "states": 128,
+        "selected_nonbaseline_action_states": 41,
+        "heldout_delta_by_response_pp": {
+          "max_damage": 8.008,
+          "public_counterplay": 5.664,
+          "policy": 7.227
+        },
+        "heldout_equal_weight_delta_pp": 6.966,
+        "heldout_equal_weight_delta_ci95_pp": [
+          4.102,
+          10.026
+        ],
+        "heldout_statewise_worst_response_delta_pp": 8.594,
+        "heldout_statewise_worst_response_delta_ci95_pp": [
+          4.688,
+          13.086
+        ]
+      }
+    },
+    "even_train_odd_test": {
+      "mean": {
+        "states": 128,
+        "selected_nonbaseline_action_states": 68,
+        "heldout_delta_by_response_pp": {
+          "max_damage": 10.156,
+          "public_counterplay": 10.742,
+          "policy": 7.031
+        },
+        "heldout_equal_weight_delta_pp": 9.31,
+        "heldout_equal_weight_delta_ci95_pp": [
+          6.12,
+          12.695
+        ],
+        "heldout_statewise_worst_response_delta_pp": 10.156,
+        "heldout_statewise_worst_response_delta_ci95_pp": [
+          6.055,
+          14.648
+        ]
+      },
+      "maximin": {
+        "states": 128,
+        "selected_nonbaseline_action_states": 44,
+        "heldout_delta_by_response_pp": {
+          "max_damage": 8.789,
+          "public_counterplay": 7.812,
+          "policy": 4.688
+        },
+        "heldout_equal_weight_delta_pp": 7.096,
+        "heldout_equal_weight_delta_ci95_pp": [
+          4.102,
+          10.352
+        ],
+        "heldout_statewise_worst_response_delta_pp": 9.961,
+        "heldout_statewise_worst_response_delta_ci95_pp": [
+          5.859,
+          14.258
+        ]
+      }
+    }
+  }
+}

@@ -70,6 +70,28 @@ each individual checkpoint supplied 2% of all games (400/20,000); the JSON
 mixture weights are conditional within the policy slice, not shares of all
 rollouts. Thus Round485 did not over-weight any single pool checkpoint. Full
 results and speed appear below and in `site/round485_opponent_exposure.json`.
+**Round484 split-sample candidate coverage audit (2026-10-31; offline
+diagnostic):** added a reproducible held-out-repeat audit at
+`scripts/analyze_round484_split_sample_action_selection.py`, with results in
+`training/outputs/phase12_headless/round484_split_sample_action_selection_20261031/report.json`
+and published as `site/round484_split_sample_action_selection.json`.
+It selects among the existing legal candidate actions using four sampled
+outcomes per response class and scores on the disjoint four repeats, across
+128 whole team clusters. The candidate set averaged 6.09 distinct joint
+actions/state (range 2–13); a switch was present in 74 states, Protect in 63,
+setup in 20, and redirection in one. Equal-weight response selection changed
+the baseline action in 67/128 states and gained +10.42 pp on held-out
+Max Damage/Public Counterplay/Round476 outcomes (95% cluster CI [+7.36,+13.67]);
+maximin selection changed 41/128 and gained +6.97 pp [+4.10,+10.03]. The
+independent even/odd repeat split replicated the signs and magnitudes. This is
+a one-step action ceiling with the incumbent continuation policy, not a full
+policy result or Nash proof. It indicates the existing policy frequently
+misses actions with repeatable local value; the failed Round482 actor projection
+still shows that transferring these labels to a deployable policy is the hard
+part. Next, build action-value supervision with cluster-disjoint train/validation
+states and compare predicted rankings against these held-out counterfactuals
+before any large PPO run. Expand candidate and response coverage before claiming
+robustness beyond the three sampled response classes.
 **Round482 equilibrium-target check (2026-10-31; reject both actor updates):**
 combined the independent Round479 256-team / 8-repeat and Round481 128-team /
 16-repeat counterfactual corpora (38,672 and 37,264 branch matches; 30.01 and
