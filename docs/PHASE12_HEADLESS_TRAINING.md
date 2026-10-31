@@ -524,3 +524,36 @@ hidden-world coverage, and whether the candidate set omits valuable actions.
 
 Artifacts: `outputs/phase12_headless/round490_ppo_generation_holdout_128x8_20261031/`
 and `outputs/phase12_headless/round491_external_ppo_generation_eval_128x8_20261031/`.
+
+## Pairwise action-value pilot and fresh confirmation (2026-10-31)
+
+Round491 also diagnosed within-state action ranking. Across five independent
+model fits, the response-conditioned win-probability model ranked worst-response
+action pairs correctly 56.7% of the time. Using four of eight chance repeats to
+select the best empirical maximin action and the other four to score it gained
+3.54 pp [2.16, 5.05] over the incumbent. This uses outcomes directly and is an
+oracle-style headroom estimate, not a legal live policy.
+
+Round492 trained five response-wise models on Round490, combining absolute
+outcome BCE with pairwise ranking loss; Round102 PPO was held out. On the same
+Round491 branches, maximin choice scored -0.69 pp [-1.84, 0.37] against the
+incumbent. A matched BCE-only ablation scored -1.21 pp [-2.37, 0.02]. The
+pairwise model's paired improvement over BCE-only was +0.52 pp [0.03, 1.01],
+and over the prior value selector was +0.62 pp [0.05, 1.21]. Worst-response
+pairwise accuracy increased from 56.7% to 58.4%. The gain is small and the
+selector still does not reliably beat the incumbent, so Round430 remains the
+active policy.
+
+Round493 is a pre-registered-style fresh confirmation using new seeds, 128
+states at each of decision indices 1, 3, and 5, eight chance repeats, and the
+same seven response types. Its opening phase captured all 128 states with no
+missing states, executing 46,120 branch matches at 51.5 wall-clock matches/s.
+The remaining phases are still collecting. The pairwise model and BCE-only
+control will be compared on these same new states before deciding whether to
+advance the action-value approach.
+
+Artifacts:
+`outputs/phase12_headless/round491_external_ppo_generation_eval_128x8_20261031/action_ranking_diagnostics.json`,
+`outputs/phase12_headless/round492_pairwise_response_ranker_20261031/`,
+`outputs/phase12_headless/round492_bce_ablation_20261031/`, and
+`outputs/phase12_headless/round493_pairwise_confirmation_128x8_20261031/`.

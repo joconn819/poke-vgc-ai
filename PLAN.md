@@ -184,6 +184,37 @@ comparison should include multiple PPO generations and a checkpoint family
 held out from fitting, and should compare predicted-action ranking against a
 regret-matched action distribution before PPO distillation. Reports:
 `training/outputs/phase12_headless/round489_wide_response_action_value_128x8_20261031/`.
+**Round492 pairwise action-value pilot (2026-10-31; not promoted; Round493
+confirmation in progress):** Round491's fresh data showed the response-conditioned
+win-probability model ranked worst-response action pairs correctly only 56.7% of
+the time. A split-repeat empirical selector, choosing on four chance repeats and
+scoring on the other four, gained +3.54 pp over the incumbent [+2.16,+5.05] on
+the same 371 states. This is a hindsight ceiling diagnostic, not deployable
+selection, because it directly uses sampled outcomes.
+
+To target ranking, five calibrated response-wise models were trained on Round490
+with BCE outcome loss plus a pairwise action-ranking loss; Round102 PPO remained
+held out. On the same Round491 branch outcomes, the pairwise selector's
+worst-response delta was -0.69 pp [-1.84,+0.37], versus -1.21 pp [-2.37,+0.02]
+for a matched BCE-only model. The paired gain over BCE-only was +0.52 pp
+[+0.03,+1.01], and the gain over the prior response-value selector was +0.62 pp
+[+0.05,+1.21]. Worst-response pairwise ranking accuracy rose from 56.7% to
+58.4%. This is encouraging but still does not show an improvement over the
+incumbent or a full-match gain, so keep Round430 active.
+
+Round493 is collecting a new 128-state sample at each of decisions 1, 3, and 5,
+with eight chance repeats against the same seven responses, to confirm the
+pairwise-vs-BCE result on fresh states. The opening phase completed all 128
+states with zero missing, 46,120 branch matches, and 51.5 wall-clock matches/s;
+later phases are still running. If confirmation is positive, test a live-safe
+belief-world action selector and then full-match results; do not deploy the
+empirical oracle.
+
+Artifacts: `training/outputs/phase12_headless/round491_external_ppo_generation_eval_128x8_20261031/action_ranking_diagnostics.json`,
+`training/outputs/phase12_headless/round492_pairwise_response_ranker_20261031/`,
+`training/outputs/phase12_headless/round492_bce_ablation_20261031/`, and
+`training/outputs/phase12_headless/round493_pairwise_confirmation_128x8_20261031/`.
+
 **Round490/491 PPO-generation holdout and opponent-family weighting audit
 (2026-10-31; selector rejected):** Round490 added two PPO generations to the
 fitting response set (Round476 and Round430) while holding Round102 out, alongside
