@@ -42,14 +42,14 @@
     </header>
 
     <section class="card" aria-labelledby="checkpoint-title">
-      <span class="badge">Play candidate: Round467 + tested opening hybrid</span>
+      <span class="badge">Validated play policy: Round430 PPO</span>
       <h2 id="checkpoint-title">Checkpoint used for matches</h2>
-      <p>The match policy uses the Round467 checkpoint with the tested first-five Max Damage action override, then returns to PPO. On disjoint paired evaluations with the same Round402 preview selector used here, the hybrid gained 13.96 points vs Max Damage and 8.01 points vs public Counterplay across 256 team clusters each. The Round467 win-probability head does not select moves. The learned Round430 checkpoint remains the validated PPO incumbent; this is a measured inference-time hybrid. The bot pins its checkpoint for each match. This exact Round467 + Round402 + first-five setup has completed a full local-server match (3 turns, zero invalid-action fallbacks); broader forced-switch, disconnect, and timeout handling is still being checked.</p>
+      <p>The default match policy uses the validated Round430 PPO checkpoint and the Round402 team selector, with no action override. The newer Round467 first-five Max Damage hybrid is experimental: on fresh 256-cluster screens it improved against Round430 PPO (+12.11 points) and Random (+1.76), but regressed against legacy Counterplay (−6.74 points). Its worst score was lower, so it is not the default. The win-probability head does not select moves. The bot pins its checkpoint for each match. A complete local-server match with Round430 was verified on the existing server: the bot won at turn 4 with zero invalid-action fallbacks. Its four decisions had p50/p95/max latency of 5.70/170.37/199.37 ms; one match is too small for a latency estimate. Forced-switch, disconnect, timeout, and broader action-coverage handling remain open.</p>
     </section>
 
     <section class="card" aria-labelledby="connect-title">
       <h2 id="connect-title">Start your match</h2>
-      <p>Enter the private address of the machine running the local Showdown server and Round467 bot. This page opens that server and prepares the challenge command.</p>
+      <p>Enter the private address of the machine running the local Showdown server and Round430 bot. This page opens that server and prepares the challenge command.</p>
       <label for="server">Showdown server address</label>
       <input id="server" inputmode="url" autocomplete="url" placeholder="192.168.1.153:8001" aria-describedby="server-help">
       <p class="note" id="server-help">Use the host IP and port, for example <code>192.168.1.153:8001</code>. This connection stays on your configured server; this page does not connect to public Pokémon Showdown.</p>
@@ -63,7 +63,7 @@
     <section class="card" aria-labelledby="steps-title">
       <h2 id="steps-title">Play a random team matchup</h2>
       <ol>
-        <li>Start the local Showdown server and bot once (commands below). The bot uses Round467, the Round402 team selector, and legal Max Damage actions for its first five in-battle decisions.</li>
+        <li>Start the local Showdown server and bot once (commands below). The bot uses the validated Round430 PPO checkpoint and the Round402 team selector.</li>
         <li>Open the server, sign in, and choose a legal team for <code>gen9championsdoubles2026mcclosed</code>. To vary your side between games, select or build a different legal team in Showdown.</li>
         <li>Use the copied challenge command in the Showdown lobby. The bot prepares a fresh team for each match and selects four Pokémon.</li>
       </ol>
@@ -72,19 +72,18 @@
     </section>
 
     <section class="card" aria-labelledby="setup-title">
-      <h2 id="setup-title">Start the latest checkpoint bot</h2>
+      <h2 id="setup-title">Start the validated PPO bot</h2>
       <p>On the machine hosting Showdown, run this from the project directory after setting <code>HOST_IP</code> to that machine’s private network address:</p>
       <pre>HOST_IP=192.168.1.153
 scripts/run_local_showdown_lan.sh "$HOST_IP" 8001</pre>
-      <p>In a second terminal, start the bot with the latest finished checkpoint:</p>
+      <p>In a second terminal, start the bot with the validated learned checkpoint:</p>
       <pre>PYTHONPATH=. POKEMON_SHOWDOWN_PATH=/home/justin/p/poke_learning/pokemon-showdown \
   venv/bin/python scripts/run_lan_bot.py \
   --server-host "$HOST_IP" --port 8001 \
   --username VGCCheckpointBot \
-  --checkpoint training/outputs/phase12_headless/round467_teacher_weight2_lr2p5_replay_same_batch_20261030/checkpoints/latest.pt \
-  --team-selection-checkpoint training/outputs/phase12_headless/round402_selector_currentdata_8ep_20261030/selector_candidate.pt \
-  --first-n-max-damage 5</pre>
-      <p class="note">The published progress site cannot host the Showdown battle process or access checkpoint files on the training machine, so the server and bot need to be running on a machine you control. The play command uses the Round467 checkpoint with the measured five-decision opening override shown above.</p>
+  --checkpoint training/outputs/phase12_headless/round430_hard_opponent_auxiliary_ppo_20k_20261030/checkpoints/latest.pt \
+  --team-selection-checkpoint training/outputs/phase12_headless/round402_selector_currentdata_8ep_20261030/selector_candidate.pt</pre>
+      <p class="note">The published progress site cannot host the Showdown battle process or access checkpoint files on the training machine, so the server and bot need to be running on a machine you control. The play command uses the validated Round430 PPO checkpoint without the opponent-sensitive Round467 opening override. See the progress dashboard for the full Round467 hybrid evaluation and artifacts.</p>
     </section>
     <footer><a href="./">← Back to training progress</a></footer>
   </main>

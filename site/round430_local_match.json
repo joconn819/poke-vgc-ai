@@ -1,0 +1,19 @@
+{
+  "status": "Complete local-server match verified",
+  "format": "gen9championsdoubles2026mcclosed",
+  "checkpoint": "Round430 validated PPO",
+  "team_selector": "Round402 team-selection checkpoint",
+  "opponent": "poke-env RandomPlayer with a generated legal team",
+  "battle_tag": "battle-gen9championsdoubles2026mcclosed-1397234",
+  "turn": 4,
+  "bot_won": true,
+  "decisions": 4,
+  "invalid_action_fallbacks": 0,
+  "search_decisions": 0,
+  "latency_ms": {
+    "p50": 5.7,
+    "p95": 170.37,
+    "max": 199.37
+  },
+  "latency_caveat": "One completed match and four decisions; this verifies protocol operation, not a stable latency distribution."
+}

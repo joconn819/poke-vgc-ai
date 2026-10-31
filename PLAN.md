@@ -17061,3 +17061,24 @@ coverage, not another blind teacher-weight sweep.
 - Artifacts: `training/outputs/phase12_headless/
   round467_hybrid_fresh_league_256x2_20261030/`. Published summary: `site/
   round467_hybrid_league.json`.
+
+
+### Round430 validated default: local-server match confirmation (2026-10-30)
+
+- After the fresh Round467 league screen found a lower-tail regression against
+  legacy Counterplay, changed the play-page default from the Round467 hybrid to
+  the validated Round430 PPO checkpoint, retaining the Round402 team selector.
+  Round467 first-five Max Damage remains experimental and is documented with
+  its mixed opponent results.
+- Re-ran the end-to-end adapter on the existing local server at
+  `127.0.0.1:8000` in `gen9championsdoubles2026mcclosed`. A generated-team
+  `poke-env RandomPlayer` challenged `VGC430test`; the complete match finished
+  at turn 4, Round430 won, and the adapter reported 4 decisions, 0 invalid
+  action fallbacks, and 0 search decisions. Battle tag:
+  `battle-gen9championsdoubles2026mcclosed-1397234`.
+- The four-decision latency sample was p50 5.70 ms / p95 170.37 ms / max
+  199.37 ms. This is a one-match protocol check and is not a stable decision
+  latency estimate. Forced switches, disconnects, timeouts, and broad target
+  coverage remain unverified.
+- Published play page now defaults to Round430 and explains why the newer
+  opponent-sensitive hybrid is not used as the general default.

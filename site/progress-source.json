@@ -2669,7 +2669,7 @@
   "round467_opening_intervention": {
     "round": 467,
     "title": "Round467 first-five Max Damage intervention transfer check",
-    "status": "Configured on the progress-site play page: Round467 PPO + first-five Max Damage action override",
+    "status": "Experimental opening intervention; the play page now defaults to validated Round430 PPO",
     "summary": "With the Round94 selector, paired gains were +7.62 pp [2.73, 12.50] vs Max Damage, +12.30 pp [7.32, 17.29] vs public Counterplay, +8.20 pp [3.42, 12.89] vs PPO Round464, and +8.98 pp [4.00, 13.87] vs PPO Round465. With the website’s Round402 selector, two disjoint 128-cluster seed sets pooled to +13.96 pp [8.89, 19.14] vs Max Damage and +8.01 pp [3.03, 12.99] vs Counterplay.",
     "method": "Raw and hybrid arms used fixed teams, previews, repeat indices, and side-swapped games. Paired 95% intervals use 10,000 team-cluster bootstrap resamples. Showdown battle randomness is server-side and not identical between arms. One separate Round402-selector attempt had overlapping generated team-seed ranges and is excluded from all pooled results. All included games completed without action corrections or timeouts; the Round94 Round465 comparison had one incomplete raw case and used 511 matched cases.",
     "intervention": "Use legal Max Damage joint actions for battle-decision indices 0 through 4, then return control to the Round467 masked PPO policy.",
@@ -2789,8 +2789,8 @@
         "artifact_prefix": "training/outputs/phase12_headless/round467_opening_intervention_round402_selector_128x2_seed20261205/public_counterplay"
       }
     ],
-    "interpretation": "The intervention has positive paired evidence across two preview selectors and five tested opponents. It is a promising inference-time candidate, not PPO learning, broad-population robustness, or optimal-play evidence. The win-probability head was not used for action selection. The progress-site play instructions now use Round467 with the first-five override and Round402 selector.",
-    "next_step": "Audit against a wider policy league and fresh legal responses, then verify a complete websocket match through the local Showdown adapter.",
+    "interpretation": "Earlier Round467 screens were positive against Max Damage, public Counterplay, and historical PPOs. A fresh 256-cluster league screen found a significant regression against legacy Counterplay despite gains against Round430 and Random. The override is opponent-sensitive and is not promoted as a general policy. The win-probability head was not used for action selection.",
+    "next_step": "Improve PPO against a diverse opponent mixture and adversarial responses; do not default to the opening override until lower-tail performance improves. Complete remaining adapter edge-case checks.",
     "runtime_note": "Aggregate evaluation throughput on 8 workers ranged from 3.77 to 9.98 games/s vs heuristic opponents and 3.72 to 7.17 games/s vs PPO policies. This is evaluation throughput, not training rollout throughput; long-game tails create substantial variation.",
     "artifacts": "round467_opening_intervention.json",
     "local_server_match": {
@@ -2887,5 +2887,24 @@
     "runtime_note": "Eight-worker evaluation throughput was 9.01/10.07 games/s raw/hybrid vs Random, 6.14/7.49 vs legacy Counterplay, and 3.53/7.20 vs Round430 PPO. One raw PPO-vs-PPO worker took 290 s while the others were about 115 s, showing long-tail batch cost. Treat these as workload-dependent evaluation rates, not training rollout throughput.",
     "artifacts": "round467_hybrid_league.json",
     "bootstrap_report": "Each opponent directory contains hybrid_minus_raw.json; detailed paired summaries and worker logs are in the local training output directory listed by artifact_prefix."
+  },
+  "round430_default_play_match": {
+    "status": "Complete local-server match verified",
+    "format": "gen9championsdoubles2026mcclosed",
+    "checkpoint": "Round430 validated PPO",
+    "team_selector": "Round402 team-selection checkpoint",
+    "opponent": "poke-env RandomPlayer with a generated legal team",
+    "battle_tag": "battle-gen9championsdoubles2026mcclosed-1397234",
+    "turn": 4,
+    "bot_won": true,
+    "decisions": 4,
+    "invalid_action_fallbacks": 0,
+    "search_decisions": 0,
+    "latency_ms": {
+      "p50": 5.7,
+      "p95": 170.37,
+      "max": 199.37
+    },
+    "latency_caveat": "One completed match and four decisions; this verifies protocol operation, not a stable latency distribution."
   }
 }
