@@ -18584,3 +18584,28 @@ coverage, not another blind teacher-weight sweep.
   `training/outputs/phase12_headless/round430_opening14_vs_legacy_counterplay_256x2_20261031/paired_summary.json`,
   `training/outputs/phase12_headless/round430_opening14_vs_round476_256x2_20261031/paired_summary.json`,
   and the corresponding `round430_raw_vs_*` directories.
+
+### Round501: local Showdown adapter smoke match (complete; integration only)
+
+- Ran the Round430 checkpoint through the local Showdown adapter in
+  `gen9championsdoubles2026mcclosed` against a local `RandomPlayer` challenger.
+  Both clients connected to `127.0.0.1:8000`; no public server was used.
+- The match completed at turn 7. Round430 won, handled seven decisions with zero
+  invalid-action fallbacks, and applied the configured Max Damage overrides at
+  indexed decision steps 1 and 4 (two overrides observed). Decision latency was
+  30.96 ms mean, 5.08 ms median, 136.50 ms p95, and 192.61 ms maximum.
+- This verifies one complete local-server protocol path and the opt-in adapter
+  setting. It is not a strength result: one random-opponent game cannot validate
+  the 1+4 hybrid, and raw Round430 remains the default. Next run paired,
+  side-swapped full matches against the broader held-out league using the local
+  adapter and preserve the raw policy arm as a control.
+- Run the bot with `--max-damage-action-steps 1 4` to enable this experimental
+  option. Omitting the option retains policy-only behavior. Smoke command:
+  `venv/bin/python -m scripts.run_lan_bot --checkpoint
+  training/outputs/phase12_headless/round430_hard_opponent_auxiliary_ppo_20k_20261030/checkpoints/latest.pt
+  --showdown-path /home/justin/p/poke_learning/pokemon-showdown
+  --server-host 127.0.0.1 --port 8000 --username VGC430Smoke --battles 1
+  --max-damage-action-steps 1 4`; challenge with
+  `venv/bin/python -m scripts.smoke_local_showdown_bot --bot VGC430Smoke
+  --username VGC430SmokeOpp --showdown-path
+  /home/justin/p/poke_learning/pokemon-showdown --host 127.0.0.1 --port 8000`.

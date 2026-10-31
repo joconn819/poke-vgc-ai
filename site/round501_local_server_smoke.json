@@ -1,0 +1,23 @@
+{
+  "status": "Complete local Showdown match; integration smoke only",
+  "format": "gen9championsdoubles2026mcclosed",
+  "server": "local 127.0.0.1:8000",
+  "checkpoint": "Round430 hard-opponent auxiliary PPO (2026-10-30)",
+  "opponent": "poke-env RandomPlayer challenger",
+  "result": {
+    "finished": true,
+    "bot_won": true,
+    "turns": 7,
+    "bot_decisions": 7,
+    "indexed_max_damage_overrides": 2,
+    "invalid_action_fallbacks": 0
+  },
+  "decision_latency_ms": {
+    "mean": 30.956,
+    "p50": 5.078,
+    "p95": 136.499,
+    "max": 192.611
+  },
+  "interpretation": "Confirms one complete match through the local-server adapter and confirms the exact decision-index 1+4 option fired twice. A single game against random play is not evidence of competitive strength. Keep policy-only Round430 as default pending paired, side-swapped evaluation across the broader held-out league.",
+  "reproduction": "scripts/run_lan_bot.py --max-damage-action-steps 1 4; scripts/smoke_local_showdown_bot.py"
+}

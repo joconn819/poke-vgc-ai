@@ -1395,7 +1395,7 @@
   "method": "Native self-play PPO for in-battle decisions. Terminal win/loss remains the main objective; win-probability and hidden-set prediction are auxiliary tasks. Search comes after a stronger policy.",
   "jax_decision": "Round430 has a confirmed self-play head-to-head lift over Round424, but external-opponent screens remain inconclusive. Prioritize measured inference batching, observation throughput, and rollouts; keep equilibrium-oriented opponent coverage and defer a JAX/GPU engine rewrite until its end-to-end payoff is measured.",
   "evaluation_note": "Round402\u2019s historical 77.15% is a team-preview selector benchmark against damage-preview selection, not an in-battle policy score against the Max Damage opponent. The latest in-battle Max Damage result is Round430 policy-only at 39.84% on 256 clusters; one-turn search scored 42.38% but its paired interval includes zero. Round485\u2019s 70%-Max-Damage training mix did not measurably improve that matchup or the broader opponent league. Compare only evaluations using matched tasks, selectors, teams, and seeds.",
-  "generated_at": "2026-10-31 20:26 UTC",
+  "generated_at": "2026-10-31 21:00 UTC",
   "round462_evaluation": {
     "status": "Round462 not promoted \u00b7 initial paired screen complete",
     "summary": "Round462 scored 44.82% against Max Damage [41.02%, 48.54%]. On the same teams and seeds, Round430 scored 44.73% and Round432 scored 44.43%; paired deltas were +0.10 pp [-1.37, +1.56] and +0.39 pp [-1.37, +2.05]. The update did not measurably change this weakness. Results against Public Counterplay and historical PPO are inconclusive; Random is an easy-baseline check.",
@@ -6487,5 +6487,28 @@
       "round476_intervention": "training/outputs/phase12_headless/round430_opening14_vs_round476_256x2_20261031/paired_summary.json",
       "round476_raw": "training/outputs/phase12_headless/round430_raw_vs_round476_256x2_seed2026115077/paired_summary.json"
     }
+  },
+  "round501_local_server_smoke": {
+    "status": "Complete local Showdown match; integration smoke only",
+    "format": "gen9championsdoubles2026mcclosed",
+    "server": "local 127.0.0.1:8000",
+    "checkpoint": "Round430 hard-opponent auxiliary PPO (2026-10-30)",
+    "opponent": "poke-env RandomPlayer challenger",
+    "result": {
+      "finished": true,
+      "bot_won": true,
+      "turns": 7,
+      "bot_decisions": 7,
+      "indexed_max_damage_overrides": 2,
+      "invalid_action_fallbacks": 0
+    },
+    "decision_latency_ms": {
+      "mean": 30.956,
+      "p50": 5.078,
+      "p95": 136.499,
+      "max": 192.611
+    },
+    "interpretation": "Confirms one complete match through the local-server adapter and confirms the exact decision-index 1+4 option fired twice. A single game against random play is not evidence of competitive strength. Keep policy-only Round430 as default pending paired, side-swapped evaluation across the broader held-out league.",
+    "reproduction": "scripts/run_lan_bot.py --max-damage-action-steps 1 4; scripts/smoke_local_showdown_bot.py"
   }
 }
