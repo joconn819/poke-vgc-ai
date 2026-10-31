@@ -24,7 +24,7 @@
     "switch": 74
   },
   "method": "For every state, select one candidate action using four of its eight outcome repeats, averaging equally across Max Damage, Public Counterplay, and Round476 policy responses. Score the selected action on the disjoint four repeats. The mean objective maximizes equal-weight response-class win rate; maximin maximizes the lowest sampled response-class win rate. Paired percentile bootstrap resamples whole team clusters.",
-  "interpretation_limit": "This measures a local candidate-action ceiling only. After the chosen first action, each branch continues with the reference policy; the three response classes are a finite league, not all legal opponent actions. It is neither a full-policy evaluation nor a Nash certificate.",
+  "interpretation_limit": "This measures a local candidate-action ceiling only. After the chosen first action, each branch continues with the reference policy; the three response classes are a finite league, not all legal opponent actions. It is neither a full-policy evaluation nor a Nash certificate. The branches were initialized from the real battle snapshot, including the hidden opposing team; direct action selection from these outcomes is an information oracle, not a closed-sheet policy.",
   "bootstrap_samples": 20000,
   "splits": {
     "first_half_train_last_half_test": {

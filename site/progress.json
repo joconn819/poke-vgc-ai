@@ -4590,7 +4590,7 @@
   }
 ,
   "round484_split_sample_action_selection": {
-    "summary": "On 128 held-out states, selecting among ~6 candidate joint actions using half the outcomes improved one-step continuation wins by +10.42 pp (95% cluster CI +7.36 to +13.67) under equal-weight response selection, and +6.97 pp (+4.10 to +10.03) under maximin selection. Even/odd split replicated the gain. This is not a full-policy or Nash result.",
+    "summary": "On 128 held-out states, selecting among ~6 candidate joint actions using half the outcomes improved one-step continuation wins by +10.42 pp (95% cluster CI +7.36 to +13.67) under equal-weight response selection, and +6.97 pp (+4.10 to +10.03) under maximin selection. Even/odd split replicated the gain. This is not a full-policy or Nash result. These branches use the actual hidden team; treat the selector gain as an information-oracle ceiling, not a closed-sheet agent result.",
     "report_url": "round484_split_sample_action_selection.json",
     "states": 128,
     "candidate_actions_per_state": {
@@ -4688,7 +4688,7 @@
         }
       }
     },
-    "interpretation_limit": "This measures a local candidate-action ceiling only. After the chosen first action, each branch continues with the reference policy; the three response classes are a finite league, not all legal opponent actions. It is neither a full-policy evaluation nor a Nash certificate.",
+    "interpretation_limit": "This measures a local candidate-action ceiling only. After the chosen first action, each branch continues with the reference policy; the three response classes are a finite league, not all legal opponent actions. It is neither a full-policy evaluation nor a Nash certificate. Branches use the actual hidden team from the captured snapshot, so the direct selector is an information oracle and not a legal live-agent policy.",
     "source_script": "scripts/analyze_round484_split_sample_action_selection.py"
   }
 ,
@@ -4731,7 +4731,7 @@
     "analysis_script": "scripts/analyze_round486_transfer_repeated_splits.py"
   },
   "round487_action_value_search_budget": {
-    "summary": "Across 256 states and 8 chance repeats, direct candidate selection gained +5.02 pp with 1 sample, +7.51 pp with 2, and +8.98 pp with 4 (equal-weight response mean; held-out repeats). The five-fit value model remained flat at −0.25 pp worst response. This is an offline one-step ceiling, not full-match performance.",
+    "summary": "Across 256 states and 8 chance repeats, direct candidate selection gained +5.02 pp with 1 sample, +7.51 pp with 2, and +8.98 pp with 4 (equal-weight response mean; held-out repeats). The five-fit value model remained flat at −0.25 pp worst response. This is an offline one-step ceiling, not full-match performance. Branches used true hidden-team snapshots, so the direct selector is an information oracle; the next test must use sampled public-compatible hidden worlds.",
     "corpus": {
       "states": 256,
       "branches": 37712,
@@ -5009,7 +5009,7 @@
         }
       }
     },
-    "interpretation_limit": "Offline one-step action ceiling with reference-policy continuation and only three sampled response classes. Estimated latency extrapolates collection throughput and does not equal optimized in-process search latency.",
+    "interpretation_limit": "Offline one-step action ceiling with reference-policy continuation and only three sampled response classes. Estimated latency extrapolates collection throughput and does not equal optimized in-process search latency. Branches used the actual hidden opposing team; these gains are information-oracle ceilings, not a closed-sheet action rule. A follow-up must use public-compatible sampled hidden worlds.",
     "collection_script": "scripts/collect_round487_action_value_transfer_256x8.sh",
     "analysis_script": "scripts/analyze_round487_sample_budget_tradeoff.py"
   }

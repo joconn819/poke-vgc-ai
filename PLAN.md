@@ -91,7 +91,12 @@ still shows that transferring these labels to a deployable policy is the hard
 part. Next, build action-value supervision with cluster-disjoint train/validation
 states and compare predicted rankings against these held-out counterfactuals
 before any large PPO run. Expand candidate and response coverage before claiming
-robustness beyond the three sampled response classes.
+robustness beyond the three sampled response classes. **Information-boundary
+qualification:** this action-selection screen branches from the real battle
+snapshot, which contains the actual hidden opposing sets. The measured direct
+selector is therefore an information-oracle upper bound, not an action rule
+available to a closed-sheet player. Only the fitted model is restricted to
+player-view features, and that model failed to transfer the gain.
 **Round486 action-value transfer recheck (2026-10-31; no promotion):** trained
 five independent response-conditioned value models on Round484's 128 states,
 holding out whole team clusters and disjoint chance repeats. The 130 held-out
@@ -117,10 +122,15 @@ gained +5.02 pp (95% cluster CI [+2.98,+7.09]) and maximin gained +3.72 pp
 worst-response gain ranged from +5.36 pp with one sample to +8.98 pp with four.
 First-vs-last repeat splits agreed. These are one-step candidate-set ceilings
 with frozen-policy continuation, not full-match agent gains; the response set
-is only three policies. A next search prototype should spend one or two samples
-initially, add samples for close decisions, and be tested for decision latency
-and full-match performance. Do not replace the default until that full-match
-gate passes. Reports: `training/outputs/phase12_headless/round487_action_value_transfer_256x8_20261031/`.
+is only three policies. **Information-boundary qualification:** the rollout
+samples use the true hidden team from the captured battle snapshot, so these
+gains are oracle-only and cannot be used by the live agent. Any follow-up search
+must build branches from sampled public-compatible hidden worlds, such as the
+existing `prepare_search_worlds` path, and verify that neither features nor
+actions reveal the true team. Only then should it test one or two samples first,
+adaptive sampling for close decisions, decision latency, and full-match results.
+Do not replace the default until those gates pass. Reports:
+`training/outputs/phase12_headless/round487_action_value_transfer_256x8_20261031/`.
 **Round482 equilibrium-target check (2026-10-31; reject both actor updates):**
 combined the independent Round479 256-team / 8-repeat and Round481 128-team /
 16-repeat counterfactual corpora (38,672 and 37,264 branch matches; 30.01 and

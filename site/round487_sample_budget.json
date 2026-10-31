@@ -266,6 +266,6 @@
       "estimated_wall_seconds_at_measured_collection_rate": 1.419
     }
   },
-  "interpretation_limit": "Offline one-step action ceiling with reference-policy continuation and only three sampled response classes. Estimated latency extrapolates collection throughput and does not equal optimized in-process search latency.",
+  "interpretation_limit": "Offline one-step action ceiling with reference-policy continuation and only three sampled response classes. Estimated latency extrapolates collection throughput and does not equal optimized in-process search latency. The branch snapshots contain the actual hidden opposing team, so these sample-budget gains are information-oracle ceilings and are not a legal live-agent decision rule. A follow-up must use public-compatible sampled hidden worlds.",
   "bootstrap_samples": 20000
 }
