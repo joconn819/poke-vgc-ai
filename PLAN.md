@@ -18114,6 +18114,22 @@ coverage, not another blind teacher-weight sweep.
   one generation out of fit when possible, and require full-match screens
   against all of them plus public/legacy Counterplay and random. Do not treat
   more response labels as proof of Nash or optimal play.
+- Uniform-prior retry: the initial step-1 shard failed when publicly revealed
+  moves/items/abilities had no compatible variant in the 20k-team corpus. The
+  collector now records this as `hidden_set_prior_support_gap` and skips the
+  affected state; it does not silently fall back to the Showdown prior. A
+  replay of the exact six-cluster shard captured two usable states, recorded
+  two support gaps and two forced switches, and rejected zero actions. The
+  retry uses a separate output root ending in `_retry1`, preserving the failed
+  partial artifacts for diagnosis.
+- Under the uniform full-set prior, decision step 1 captured 30/48 states,
+  prepared 120 worlds, and executed 10,758 branches in 302.11 seconds (35.61
+  matches/s). Eighteen states were skipped: 14 forced switches and four prior
+  support gaps. Step 3 captured 20/48 states, prepared 80 worlds, and executed
+  7,268 branches in 184.08 seconds (39.48 matches/s). Twenty-eight states
+  were skipped: 21 forced switches, five prior support gaps, one unreached
+  decision, and one possible-Illusion preview. No candidate actions were
+  rejected. The step-5 phase is still running.
 - Promotion remains gated on a fresh, side-swapped full-match league across
   varied opponents and held-out teams. Report per-opponent win rates and
   confidence intervals, mean and lower-tail performance, invalid actions, and

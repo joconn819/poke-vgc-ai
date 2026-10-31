@@ -5737,14 +5737,52 @@
             "decision_not_reached": 7
           },
           "rejected_actions": 0
+        },
+        {
+          "decision_step": 1,
+          "hidden_set_prior": "uniform_unique_full_sets",
+          "states_captured": 30,
+          "states_requested": 48,
+          "hidden_worlds_prepared": 120,
+          "branch_matches": 10758,
+          "matches_per_second": 35.609,
+          "elapsed_seconds": 302.115,
+          "world_preparation_seconds": 13.441,
+          "missing_states": 18,
+          "missing_reasons": {
+            "forced_switch": 14,
+            "hidden_set_prior_support_gap": 4
+          },
+          "rejected_actions": 0
+        },
+        {
+          "decision_step": 3,
+          "hidden_set_prior": "uniform_unique_full_sets",
+          "states_captured": 20,
+          "states_requested": 48,
+          "hidden_worlds_prepared": 80,
+          "branch_matches": 7268,
+          "matches_per_second": 39.483,
+          "elapsed_seconds": 184.078,
+          "world_preparation_seconds": 8.967,
+          "missing_states": 28,
+          "missing_reasons": {
+            "forced_switch": 21,
+            "hidden_set_prior_support_gap": 5,
+            "decision_not_reached": 1,
+            "possible_illusion_preview": 1
+          },
+          "rejected_actions": 0
         }
       ],
-      "progress_note": "All three decision steps under Showdown Random Champions are complete. The uniform full-set prior is now running under the same cluster seeds.",
-      "completed_states_total": 90,
-      "requested_states_total": 144,
-      "branch_matches_total": 30434,
-      "elapsed_seconds_total": 634.3,
-      "aggregate_matches_per_second": 47.98
+      "progress_note": "Five of six phases are complete. Step 5 under the uniform full-set prior is running. Nine states so far were excluded because the 20k observed-set corpus could not match their revealed facts.",
+      "completed_states_total": 140,
+      "requested_states_total": 240,
+      "branch_matches_total": 48460,
+      "elapsed_seconds_total": 1120.493,
+      "aggregate_matches_per_second": 43.249,
+      "hidden_worlds_prepared_total": 560,
+      "hidden_set_prior_support_gaps": 9
     },
     "interpretation": "Max Damage is one of five counterfactual response classes; it is not the sole training target or promotion gate. Only one class is a learned PPO (Round476), so the response set still does not represent a broad policy family. Follow-up should add separate Round430 and Round102 policy responses; promotion requires fresh side-swapped full-match evaluation across varied opponents.",
     "plan": "https://github.com/joconn819/poke-vgc-ai/blob/master/PLAN.md",
