@@ -1350,12 +1350,12 @@
     }
   },
   "latest_run": {
-    "round": 474,
-    "status": "Checkpoint population payoff screen · complete, no promotion",
-    "summary": "Direct local-Showdown head-to-heads among Round430, Round472, and Round473 produced a transitive point-estimate ranking, but every 95% cluster interval includes 50%. The result supports a finite-policy research direction, not a checkpoint promotion or a full-game Nash claim.",
-    "games": "256 team-pair clusters × 2 repeats per pairing",
-    "epochs": "3 checkpoint pairings",
-    "evaluation": "Round430 / Round472 / Round473 · completed"
+    "round": 476,
+    "status": "Fresh population-response PPO · training in progress",
+    "summary": "20,000-game response training from Round430. The frozen policy pool now includes Round430, Round465, Round472, Round473, and historical Round102. No checkpoint promotion before held-out evaluation.",
+    "games": "20,000 target · rollouts running",
+    "epochs": "4 PPO passes planned",
+    "evaluation": "Pending completion and audit"
   },
   "method": "Native self-play PPO for in-battle decisions. Terminal win/loss remains the main objective; win-probability and hidden-set prediction are auxiliary tasks. Search comes after a stronger policy.",
   "jax_decision": "Round430 has a confirmed self-play head-to-head lift over Round424, but external-opponent screens remain inconclusive. Prioritize measured inference batching, observation throughput, and rollouts; keep equilibrium-oriented opponent coverage and defer a JAX/GPU engine rewrite until its end-to-end payoff is measured.",
@@ -3861,5 +3861,38 @@
     ],
     "pooled_method": "Seed-stratified team-cluster bootstrap pooling Round474 and Round475 direct local Showdown matchups. Each retained cluster has both repeated outcomes complete and includes both side-swapped games. Two evaluation seed sets are represented; this is not a full VGC equilibrium estimate.",
     "pooled_artifact": "round475_pooled_population.json"
+  },
+  "round476_in_progress": {
+    "status": "Rollout collection in progress",
+    "opponents": "25% Max Damage · 25% legacy Counterplay · 25% Public Counterplay · 25% policy pool",
+    "policy_pool": [
+      "Round430",
+      "Round465",
+      "Round472",
+      "Round473",
+      "Historical Round102"
+    ],
+    "early_per_worker_games_per_second": [
+      4.95,
+      5.13
+    ],
+    "early_action_selection_ms_per_episode": [
+      81,
+      85
+    ],
+    "early_policy_inference_ms_per_episode": [
+      69,
+      72
+    ],
+    "early_showdown_engine_ms_per_episode": [
+      34,
+      35
+    ],
+    "early_observation_encoding_ms_per_episode": [
+      28,
+      29
+    ],
+    "launcher": "scripts/train_round476_refreshed_population_ppo_20k.sh",
+    "output": "training/outputs/phase12_headless/round476_refreshed_population_ppo_20k_20261031/"
   }
 }
