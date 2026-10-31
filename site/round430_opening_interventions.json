@@ -137,7 +137,8 @@
   "opening_1_and_4_transfer_screen": {
     "bootstrap_replicates": 20000,
     "description": "Public Max Damage overrides at Round430 decision indices 1 and 4 only, evaluated on the same 512 held-out team/preview clusters as raw Round430.",
-    "interpretation": "The decision-1-and-4 Max Damage override is positive on all four tested opponents and the 95% paired cluster intervals exclude zero on these matched samples. This supports a promising Round430-specific opening heuristic; it does not establish PPO improvement, generalization to new teams/seeds, or optimal play. Replicate on independent clusters before training or promotion.",
+    "independent_replication_note": "Second seed set is 128 new team clusters with two independent side-swapped repeats per cluster. The first set is 512 clusters with one repeat. The pooled cluster bootstrap averages repeated outcomes within cluster and resamples across the 640 disjoint clusters; both sets share the Round402 team selector and public random-team source.",
+    "interpretation": "The 1-and-4 intervention remained positive on three opponents across a second disjoint seed set. Pooled 640-cluster intervals exclude zero versus Max Damage, public Counterplay, and Round465 PPO. Round464 has only the initial 512-cluster screen. The intervention changes Round430 decisions only and has not been trained into PPO; it is not evidence of optimal play.",
     "max_damage": {
       "action_adjustments": 0,
       "baseline_artifact": "training/outputs/phase12_headless/round430_464_465_common_preview_league_512x1_20261030/round430_vs_max_damage/paired_summary.json",
@@ -157,6 +158,47 @@
       "timeouts_or_errors": 0
     },
     "method_note": "Team, preview, and evaluator seed identity are matched. Showdown battle RNG is generated server-side and is independent across matches; uncertainty is estimated by paired team-cluster bootstrap.",
+    "pooled_independent_seed_sets": [
+      {
+        "artifact": "training/outputs/phase12_headless/round430_opening1and4_maxdamage_pooled_seed_sets_640clusters.json",
+        "baseline_score_pct": 36.796875,
+        "bootstrap_replicates": 20000,
+        "intervention_score_pct": 42.03125,
+        "opponent": "Max Damage",
+        "paired_cluster_bootstrap_95_pp": [
+          2.5,
+          7.96875
+        ],
+        "paired_delta_pp": 5.234375,
+        "team_clusters": 640
+      },
+      {
+        "artifact": "training/outputs/phase12_headless/round430_opening1and4_public_counterplay_pooled_seed_sets_640clusters.json",
+        "baseline_score_pct": 38.3203125,
+        "bootstrap_replicates": 20000,
+        "intervention_score_pct": 42.578125,
+        "opponent": "Public Counterplay",
+        "paired_cluster_bootstrap_95_pp": [
+          1.5625,
+          6.953125
+        ],
+        "paired_delta_pp": 4.2578125,
+        "team_clusters": 640
+      },
+      {
+        "artifact": "training/outputs/phase12_headless/round430_opening1and4_round465_pooled_seed_sets_640clusters.json",
+        "baseline_score_pct": 50.9375,
+        "bootstrap_replicates": 20000,
+        "intervention_score_pct": 58.7890625,
+        "opponent": "Round465 PPO",
+        "paired_cluster_bootstrap_95_pp": [
+          5.1953125,
+          10.5859375
+        ],
+        "paired_delta_pp": 7.8515625,
+        "team_clusters": 640
+      }
+    ],
     "public_counterplay": {
       "action_adjustments": 0,
       "baseline_artifact": "training/outputs/phase12_headless/round430_464_465_common_preview_league_512x1_20261030/round430_vs_public_counterplay/paired_summary.json",

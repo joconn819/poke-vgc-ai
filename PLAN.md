@@ -16563,3 +16563,14 @@ team choice but does not change that conclusion.
   matched clusters. All four opponents screened so far have positive paired
   intervals excluding zero. This remains one team/seed population and a
   Round430-specific heuristic; independent replication is required.
+
+- An independent fresh set of 128 team clusters × two side-swapped repeats
+  confirmed transfer for the [1,4] override. Pooled with the disjoint first
+  512-cluster screen, the cluster-level paired results are: Max Damage
+  36.80% raw vs 42.03% hybrid, +5.23 pp (95% CI +2.50 to +7.97); public
+  Counterplay 38.32% vs 42.58%, +4.26 pp (+1.56 to +6.95); Round465 PPO
+  50.94% vs 58.79%, +7.85 pp (+5.20 to +10.59). These pool 640 independent
+  team clusters, averaging repeated outcomes within the fresh clusters before
+  bootstrap. Round464 has only the initial 512-cluster result. Both seed sets
+  use the Round402 team selector and public random-team source; this remains
+  targeted evidence for an opening heuristic, not broad optimal-play proof.

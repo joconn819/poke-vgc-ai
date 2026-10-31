@@ -1726,7 +1726,7 @@
     "interpretation": "All paired intervals include zero. No action-selection mode is promoted based on this diagnostic."
   },
   "round430_opening_intervention": {
-    "summary": "Replacing Round430 decisions 0–4 with public Max Damage actions improved all four main screens: on 512 matched clusters, +8.40 pp vs Max Damage, +7.13 vs public Counterplay, +8.50 vs Round464 PPO, and +10.64 vs Round465 PPO (95% cluster interval +6.64 to +14.65). Fresh 128-cluster × 2-repeat sets independently gained +9.38 vs Max Damage, +10.74 vs Counterplay, +9.77 vs Round464, and +9.38 vs Round465. Against historical PPO Round102, two disjoint 128-cluster sets gained +7.62 pp and +8.79 pp; pooled over 256 clusters the paired gain was +8.20 pp (95% interval +3.32 to +13.09). Exact team, preview, and battle-seed matching; no timeouts or action corrections. The prior reversed-orientation Round465 score was not complemented; a direct matched Round430 rerun supplies the raw score and paired result. This remains a Round430-specific heuristic intervention, not a learned-policy improvement. A smaller decision-1-and-4 hybrid transferred on 512 matched clusters: +4.88 pp vs Max Damage (+1.76 to +8.01), +4.00 vs public Counterplay (+0.88 to +7.13), +6.54 vs Round464 PPO (+3.52 to +9.67), and +7.42 vs Round465 PPO (+4.30 to +10.55). All four paired cluster intervals exclude zero on these samples; these are promising opening heuristics, not policy learning or established optimal play.",
+    "summary": "Replacing Round430 decisions 0–4 with public Max Damage actions improved all four main screens: on 512 matched clusters, +8.40 pp vs Max Damage, +7.13 vs public Counterplay, +8.50 vs Round464 PPO, and +10.64 vs Round465 PPO (95% cluster interval +6.64 to +14.65). Fresh 128-cluster × 2-repeat sets independently gained +9.38 vs Max Damage, +10.74 vs Counterplay, +9.77 vs Round464, and +9.38 vs Round465. Against historical PPO Round102, two disjoint 128-cluster sets gained +7.62 pp and +8.79 pp; pooled over 256 clusters the paired gain was +8.20 pp (95% interval +3.32 to +13.09). Exact team, preview, and battle-seed matching; no timeouts or action corrections. The prior reversed-orientation Round465 score was not complemented; a direct matched Round430 rerun supplies the raw score and paired result. This remains a Round430-specific heuristic intervention, not a learned-policy improvement. A smaller decision-1-and-4 hybrid transferred on 512 matched clusters: +4.88 pp vs Max Damage (+1.76 to +8.01), +4.00 vs public Counterplay (+0.88 to +7.13), +6.54 vs Round464 PPO (+3.52 to +9.67), and +7.42 vs Round465 PPO (+4.30 to +10.55). All four paired cluster intervals exclude zero on these samples; these are promising opening heuristics, not policy learning or established optimal play. Fresh-seed replication pooled across 640 disjoint team clusters confirmed +5.23 pp vs Max Damage (95% CI +2.50 to +7.97), +4.26 pp vs public Counterplay (+1.56 to +6.95), and +7.85 pp vs Round465 PPO (+5.20 to +10.59). Round464 has only the initial set; all experiments remain Round430-specific heuristic evidence.",
     "report": "round430_opening_interventions.json",
     "opponents": {
       "max_damage": {
@@ -2261,7 +2261,49 @@
         "intervention_artifact": "training/outputs/phase12_headless/round430_opening1and4_intervention_vs_round465_512x1_seed2026103067/paired_summary.json",
         "comparison_artifact": "training/outputs/phase12_headless/round430_opening1and4_intervention_vs_round465_512x1_seed2026103067/raw_vs_intervention_comparison.json"
       },
-      "interpretation": "The decision-1-and-4 Max Damage override is positive on all four tested opponents and the 95% paired cluster intervals exclude zero on these matched samples. This supports a promising Round430-specific opening heuristic; it does not establish PPO improvement, generalization to new teams/seeds, or optimal play. Replicate on independent clusters before training or promotion."
+      "interpretation": "The 1-and-4 intervention remained positive on three opponents across a second disjoint seed set. Pooled 640-cluster intervals exclude zero versus Max Damage, public Counterplay, and Round465 PPO. Round464 has only the initial 512-cluster screen. The intervention changes Round430 decisions only and has not been trained into PPO; it is not evidence of optimal play.",
+      "pooled_independent_seed_sets": [
+        {
+          "opponent": "Max Damage",
+          "team_clusters": 640,
+          "baseline_score_pct": 36.796875,
+          "intervention_score_pct": 42.03125,
+          "paired_delta_pp": 5.234375,
+          "paired_cluster_bootstrap_95_pp": [
+            2.5,
+            7.96875
+          ],
+          "bootstrap_replicates": 20000,
+          "artifact": "training/outputs/phase12_headless/round430_opening1and4_maxdamage_pooled_seed_sets_640clusters.json"
+        },
+        {
+          "opponent": "Public Counterplay",
+          "team_clusters": 640,
+          "baseline_score_pct": 38.3203125,
+          "intervention_score_pct": 42.578125,
+          "paired_delta_pp": 4.2578125,
+          "paired_cluster_bootstrap_95_pp": [
+            1.5625,
+            6.953125
+          ],
+          "bootstrap_replicates": 20000,
+          "artifact": "training/outputs/phase12_headless/round430_opening1and4_public_counterplay_pooled_seed_sets_640clusters.json"
+        },
+        {
+          "opponent": "Round465 PPO",
+          "team_clusters": 640,
+          "baseline_score_pct": 50.9375,
+          "intervention_score_pct": 58.7890625,
+          "paired_delta_pp": 7.8515625,
+          "paired_cluster_bootstrap_95_pp": [
+            5.1953125,
+            10.5859375
+          ],
+          "bootstrap_replicates": 20000,
+          "artifact": "training/outputs/phase12_headless/round430_opening1and4_round465_pooled_seed_sets_640clusters.json"
+        }
+      ],
+      "independent_replication_note": "Second seed set is 128 new team clusters with two independent side-swapped repeats per cluster. The first set is 512 clusters with one repeat. The pooled cluster bootstrap averages repeated outcomes within cluster and resamples across the 640 disjoint clusters; both sets share the Round402 team selector and public random-team source."
     }
   },
   "round430_common_preview_matrix": {
