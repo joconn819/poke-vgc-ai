@@ -18883,18 +18883,29 @@ coverage, not another blind teacher-weight sweep.
   `randomNormal` special case; exact-seed replay completed with zero action
   corrections. See the Round519 replay diagnostic JSONL.
 
-### Round519: retry robust PPO with limited first-five teacher data (rollouts active)
+### Round519: retry stopped by locked Outrage action-translation mismatch (failed; data preserved)
 
-- Repeated the Round518 configuration from Round430 after the disabled-move fix.
-  At the latest process check, rollout workers were active and had not begun PPO
-  updates. Training uses 20,000 games: 10% random, 20% Max Damage, 25% legacy
-  Counterplay, 25% Public Counterplay, and a 20% frozen policy pool. Half of Max
+- Rollouts stopped before PPO updates when the translator remapped a legal
+  targetless locked Outrage into an explicit target. Showdown rejected that
+  choice, so no checkpoint was produced and the partial data was not used.
+- Fixed the mismatch by preserving the targetless RANDOM_NORMAL order all the
+  way through translation. The exact failing seed completed in 12 steps with no
+  action correction. A 100-match smoke had zero errors/timeouts at 8.03 games/s;
+  two matches used the ordinary target fallback (three corrections total).
+- Failed-run output: `training/outputs/phase12_headless/round519_opening5_teacher_population_20k_20261031/`.
+
+### Round520: robust PPO with limited first-five teacher data (rollouts active)
+
+- Restarted the same broad-mix 20,000-game configuration from Round430 after
+  both protocol fixes. The mix is 10% random, 20% Max Damage, 25% legacy
+  Counterplay, 25% Public Counterplay, and 20% frozen policy pool. Half of Max
   Damage games receive labels for decisions 1–5 (about 10% of all games); forced
   teacher actions are excluded from PPO policy-gradient loss.
-- Run: `scripts/train_round519_opening5_teacher_population_20k.sh`; output:
-  `training/outputs/phase12_headless/round519_opening5_teacher_population_20k_20261031/`.
-- The first priority remains fixing the sub-50% Max Damage matchup while
-  measuring transfer. After a valid checkpoint is produced, require fresh paired,
-  side-swapped matches against Max Damage, both Counterplay baselines, Random,
-  and a held-out PPO. Report each result plus worst/mean/lower-tail performance;
-  keep Round430 as default unless broad results support promotion.
+- The latest process check confirms rollout workers active; PPO updates have not
+  yet started.
+- Run: `scripts/train_round520_opening5_teacher_population_20k.sh`; output:
+  `training/outputs/phase12_headless/round520_opening5_teacher_population_20k_20261031/`.
+- After a valid checkpoint is produced, require fresh paired, side-swapped
+  matches against Max Damage, both Counterplay baselines, Random, and a held-out
+  PPO. Report each result plus worst/mean/lower-tail performance; keep Round430
+  as default unless broad results support promotion.
