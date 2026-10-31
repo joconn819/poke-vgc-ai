@@ -18208,3 +18208,8 @@ coverage, not another blind teacher-weight sweep.
   actions in 16 states without showing a strength gain. Held-out response Brier
   beat a constant-rate baseline for all seven heads, but this better prediction
   did not improve action selection. Do not promote from this fit.
+- Round498's first uniform-prior phase (decision step 1) completed with 21/48
+  usable states, 84 worlds, and 10,709 branches in 248.09 seconds (43.165
+  matches/s). Twenty-seven states were skipped: 23 forced switches, three
+  full-set-prior support gaps, and one public Transform state. No actions were
+  rejected; the remaining uniform-prior phases are running.

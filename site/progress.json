@@ -5992,15 +5992,34 @@
             "forced_switch": 5
           },
           "rejected_actions": 0
+        },
+        {
+          "decision_step": 1,
+          "hidden_set_prior": "uniform_unique_full_sets",
+          "states_captured": 21,
+          "states_requested": 48,
+          "hidden_worlds_prepared": 84,
+          "branch_matches": 10709,
+          "matches_per_second": 43.165,
+          "elapsed_seconds": 248.093,
+          "world_preparation_seconds": 9.836,
+          "missing_states": 27,
+          "missing_reasons": {
+            "hidden_set_prior_support_gap": 3,
+            "public_transform_state": 1,
+            "forced_switch": 23
+          },
+          "rejected_actions": 0
         }
       ],
-      "completed_states_total": 94,
-      "requested_states_total": 144,
-      "branch_matches_total": 42966,
-      "elapsed_seconds_total": 818.34,
-      "aggregate_matches_per_second": 52.504,
-      "hidden_worlds_prepared_total": 376,
-      "progress_note": "All three Showdown-prior phases are complete. The three uniform-prior phases are running."
+      "completed_states_total": 115,
+      "requested_states_total": 192,
+      "branch_matches_total": 53675,
+      "elapsed_seconds_total": 1066.433,
+      "aggregate_matches_per_second": 50.337,
+      "hidden_worlds_prepared_total": 460,
+      "progress_note": "All three Showdown-prior phases and the first uniform-prior phase are complete; the last two phases are running.",
+      "hidden_set_prior_support_gaps": 3
     },
     "interpretation": "Round497 used only Round476 as a learned PPO response; Round498 adds Round430 and Round102 separately. Round430 remains the active policy pending held-out full-match improvement across varied opponents.",
     "plan": "https://github.com/joconn819/poke-vgc-ai/blob/master/PLAN.md",
