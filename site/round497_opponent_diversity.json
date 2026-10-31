@@ -1,6 +1,6 @@
 {
   "round": 497,
-  "status": "Broad hidden-set comparison in progress; no policy promoted",
+  "status": "Round497 data and cross-prior fits complete; no policy promoted",
   "pilot": {
     "states_per_prior": 1,
     "worlds_per_prior": 4,
@@ -13,7 +13,7 @@
     "interpretation": "One team cluster is far too small to infer strength or choose a prior; these are collector smoke results only."
   },
   "collection": {
-    "status": "running",
+    "status": "complete",
     "clusters_per_decision_step_per_prior": 48,
     "decision_steps": [
       1,
@@ -123,16 +123,34 @@
           "possible_illusion_preview": 1
         },
         "rejected_actions": 0
+      },
+      {
+        "decision_step": 5,
+        "hidden_set_prior": "uniform_unique_full_sets",
+        "states_captured": 26,
+        "states_requested": 48,
+        "hidden_worlds_prepared": 104,
+        "branch_matches": 7994,
+        "matches_per_second": 78.318,
+        "elapsed_seconds": 102.07,
+        "world_preparation_seconds": 11.772,
+        "missing_states": 22,
+        "missing_reasons": {
+          "forced_switch": 10,
+          "decision_not_reached": 7,
+          "hidden_set_prior_support_gap": 5
+        },
+        "rejected_actions": 0
       }
     ],
-    "progress_note": "Five of six phases are complete. Step 5 under the uniform full-set prior is running. Nine states so far were excluded because the 20k observed-set corpus could not match their revealed facts.",
-    "completed_states_total": 140,
-    "requested_states_total": 240,
-    "branch_matches_total": 48460,
-    "elapsed_seconds_total": 1120.493,
-    "aggregate_matches_per_second": 43.249,
-    "hidden_worlds_prepared_total": 560,
-    "hidden_set_prior_support_gaps": 9
+    "progress_note": "All six phases are complete. The 20k observed-set corpus had no compatible variant for 14 of 144 requested uniform-prior states (9.7%); those states were excluded instead of silently sampled from another prior.",
+    "completed_states_total": 166,
+    "requested_states_total": 288,
+    "branch_matches_total": 56454,
+    "elapsed_seconds_total": 1222.563,
+    "aggregate_matches_per_second": 46.177,
+    "hidden_worlds_prepared_total": 664,
+    "hidden_set_prior_support_gaps": 14
   },
   "interpretation": "Max Damage is one of five counterfactual response classes; it is not the sole training target or promotion gate. Only one class is a learned PPO (Round476), so the response set still does not represent a broad policy family. Follow-up should add separate Round430 and Round102 policy responses; promotion requires fresh side-swapped full-match evaluation across varied opponents.",
   "plan": "https://github.com/joconn819/poke-vgc-ai/blob/master/PLAN.md",
@@ -165,5 +183,63 @@
     "interpretation": "Too few test clusters for a strength claim; the confidence intervals include zero. Per-response Brier was worse than the constant baseline for the Round476 PPO head and near the baseline for most other responses. No checkpoint promoted.",
     "report_path": "training/outputs/phase12_headless/round497_showdown_prior_action_value_fit_20261031/report.json",
     "checkpoint_path": "training/outputs/phase12_headless/round497_showdown_prior_action_value_fit_20261031/response_conditioned_action_value.pt"
+  },
+  "uniform_prior_fit": {
+    "usable_states": 76,
+    "team_split": {
+      "train": 49,
+      "validation": 12,
+      "test": 15
+    },
+    "best_epoch": 8,
+    "validation_action_outcome_brier": 0.185631,
+    "maximin": {
+      "selected_minus_policy_worst_response_pp": -3.33,
+      "team_cluster_95_ci_pp": [
+        -8.33,
+        0.0
+      ]
+    },
+    "equal_weight": {
+      "selected_minus_policy_worst_response_pp": -3.33,
+      "team_cluster_95_ci_pp": [
+        -8.33,
+        0.0
+      ]
+    },
+    "interpretation": "Small test set; no supported promotion gain.",
+    "report_path": "training/outputs/phase12_headless/round497_uniform_prior_action_value_fit_20261031/report.json",
+    "checkpoint_path": "training/outputs/phase12_headless/round497_uniform_prior_action_value_fit_20261031/response_conditioned_action_value.pt"
+  },
+  "cross_prior": {
+    "showdown_model_on_uniform": {
+      "maximin_delta_pp": -3.95,
+      "maximin_ci95_pp": [
+        -9.21,
+        0.82
+      ],
+      "equal_weight_delta_pp": -2.47,
+      "equal_weight_ci95_pp": [
+        -6.25,
+        0.82
+      ],
+      "team_clusters": 76
+    },
+    "uniform_model_on_showdown": {
+      "maximin_delta_pp": 1.81,
+      "maximin_ci95_pp": [
+        -1.11,
+        4.86
+      ],
+      "equal_weight_delta_pp": 2.08,
+      "equal_weight_ci95_pp": [
+        -0.97,
+        5.14
+      ],
+      "team_clusters": 90
+    },
+    "interpretation": "Every interval includes zero. Same public states/team clusters were used across priors, so this is a prior-sensitivity diagnostic, not independent generalization or full-match strength evidence.",
+    "showdown_model_report_path": "training/outputs/phase12_headless/round497_crossprior_showdown_model_on_uniform_20261031.json",
+    "uniform_model_report_path": "training/outputs/phase12_headless/round497_crossprior_uniform_model_on_showdown_20261031.json"
   }
 }

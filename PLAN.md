@@ -18048,7 +18048,7 @@ coverage, not another blind teacher-weight sweep.
   on fresh team clusters, and require a broad full-match opponent league before
   any selector promotion. Keep Round430 as the active policy until that gate.
 
-### Round497: broad response and hidden-set-prior comparison (in progress)
+### Round497: broad response and hidden-set-prior comparison (complete; no promotion)
 
 - A one-state integration pilot ran the same seed under the Showdown Random
   Champions prior and a uniform prior over observed legal full-set variants.
@@ -18065,7 +18065,7 @@ coverage, not another blind teacher-weight sweep.
   Max Damage, frozen Round476 PPO, closed-sheet Public Counterplay, random
   legal play, and legacy Counterplay. Max Damage is one diagnostic in this
   set, not the sole training target or promotion gate.
-- In progress: collect 48 clusters at each of decision steps 1, 3, and 5 under
+- Collection design: collect 48 clusters at each of decision steps 1, 3, and 5 under
   each of the two hidden-set priors, with four worlds per state and two paired
   chance repeats, across eight CPU workers. Use the same cluster seeds under
   both priors and keep all records from a team cluster together for any
@@ -18130,9 +18130,55 @@ coverage, not another blind teacher-weight sweep.
   were skipped: 21 forced switches, five prior support gaps, one unreached
   decision, and one possible-Illusion preview. No candidate actions were
   rejected. The step-5 phase is still running.
+- Uniform-prior decision step 5 has completed: 26/48 states, 104 worlds, and
+  7,994 branches in 102.07 seconds (78.318 matches/s); world preparation took
+  11.77 seconds and zero candidates were rejected. The 22 skipped states were
+  ten forced switches, seven unreached decisions, and five support gaps. The
+  full uniform-prior corpus has 76/144 usable states, 304 worlds, and 26,020
+  branches in 588.26 seconds (44.23 aggregate matches/s); 68 states were
+  skipped, including 14 support gaps (9.7% of requests). Across both priors,
+  there are 166/288 usable states, 664 worlds, and 56,454 branches in 1,222.56
+  seconds (46.18 aggregate matches/s), with zero rejected candidate actions.
+- The uniform-prior feasibility fit used 49/12/15 train/validation/test
+  clusters, stopped at epoch 8, and had pooled validation Brier 0.1856. On its
+  15 test clusters, maximin selection was -3.33 pp vs the incumbent action
+  [-8.33,0.00]; equal-weight was also -3.33 pp [-8.33,0.00]. These are too
+  small to establish a regression, but they provide no support for promotion.
+- Cross-prior replay evaluated each fitted selector on the other prior's
+  outcomes for the same public team clusters. The Showdown-trained model was
+  -3.95 pp maximin [-9.21,+0.82] on uniform-prior outcomes and -2.47 pp
+  equal-weight [-6.25,+0.82]. The uniform-trained model was +1.81 pp maximin
+  [-1.11,+4.86] and +2.08 pp equal-weight [-0.97,+5.14] on Showdown-prior
+  outcomes. Every interval includes zero. Because the public states and team
+  clusters are shared across priors, this is a prior-sensitivity diagnostic,
+  not independent generalization or full-match strength evidence. Neither
+  action-value model is promoted.
 - Promotion remains gated on a fresh, side-swapped full-match league across
   varied opponents and held-out teams. Report per-opponent win rates and
   confidence intervals, mean and lower-tail performance, invalid actions, and
   latency. A Max Damage-only gain cannot promote a checkpoint; regressions
   against the incumbent or broad-policy opponents block promotion even if the
   Max Damage result improves.
+
+### Round498: learned-opponent response diversity (in progress)
+
+- Round497 varied hidden-set priors and included five response classes, but
+  only one was a learned PPO policy (Round476). The preliminary PPO-head Brier
+  and cross-prior selector results provide no reliable strength gain. The next
+  action-value data batch adds separate Round430 incumbent and Round102
+  historical PPO response heads; Round476 remains as the newer population
+  response, alongside Max Damage, Public Counterplay, random, and legacy
+  Counterplay.
+- A three-state pipeline pilot captured three usable states, prepared six
+  worlds, executed 847 branches in 72.12 seconds (11.74 matches/s on one
+  worker), and rejected zero actions. The saved rows contain all seven named
+  response heads. This confirms the extra policy checkpoints run through the
+  branch collector; it is not policy-strength evidence.
+- Full collection is running from `scripts/collect_round498_policy_ensemble_counterfactuals.sh`:
+  48 clusters at decision steps 1/3/5 under both Round497 hidden-set priors,
+  four worlds per state, two chance repeats, and eight CPU workers. The same
+  seeds are used under both priors. Reports must group by team cluster, include
+  support-gap/skipped-state counts, and compare all three PPO generations
+  separately. Keep Round430 as the active policy; do not use action-value
+  selector results to promote without held-out full-match confirmation against
+  the broad opponent league.

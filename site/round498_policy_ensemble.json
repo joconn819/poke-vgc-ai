@@ -1,0 +1,51 @@
+{
+  "round": 498,
+  "status": "Round497 complete: no reliable action-value gain; broader PPO response data collection in progress",
+  "pilot": {
+    "usable_states": 3,
+    "clusters_requested": 4,
+    "worlds_prepared": 6,
+    "branch_matches": 847,
+    "elapsed_seconds": 72.123,
+    "matches_per_second": 11.744,
+    "rejected_actions": 0,
+    "response_classes": [
+      "max_damage",
+      "policy_round476",
+      "public_counterplay",
+      "random",
+      "counterplay",
+      "policy_round430",
+      "policy_round102"
+    ],
+    "interpretation": "Pipeline validation only; three states cannot support a strength conclusion."
+  },
+  "collection": {
+    "status": "running",
+    "clusters_per_decision_step_per_prior": 48,
+    "decision_steps": [
+      1,
+      3,
+      5
+    ],
+    "hidden_worlds_per_state": 4,
+    "chance_repeats_per_candidate": 2,
+    "hidden_set_priors": [
+      "showdown_random_champions",
+      "uniform_unique_full_sets"
+    ],
+    "response_classes": [
+      "Max Damage",
+      "Round476 PPO",
+      "Round430 PPO",
+      "Round102 PPO",
+      "Public Counterplay",
+      "random legal",
+      "legacy Counterplay"
+    ],
+    "workers": 8,
+    "device": "CPU"
+  },
+  "interpretation": "Round497 used only Round476 as a learned PPO response; Round498 adds Round430 and Round102 separately. Round430 remains the active policy pending held-out full-match improvement across varied opponents.",
+  "plan": "https://github.com/joconn819/poke-vgc-ai/blob/master/PLAN.md"
+}
