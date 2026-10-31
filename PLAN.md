@@ -17278,3 +17278,20 @@ coverage, not another blind teacher-weight sweep.
 - Reproducible evaluation launcher:
   `scripts/evaluate_round473_fresh_seed_league_256x2.sh`. Evaluation output:
   `training/outputs/phase12_headless/round473_fresh_seed_league_256x2_20261031/`.
+
+### Round474: checkpoint population payoff screen (in progress; 2026-10-31)
+
+- Round472 and Round473 showed complementary but uncertain external-opponent
+  changes. Before training another checkpoint, measure direct head-to-head
+  payoff among Round430, Round472, and Round473 to build a small empirical
+  policy game and estimate a robust mixture over this finite population.
+- Evaluate the three unordered checkpoint pairs with the same local Showdown
+  format, Round402 preview selectors, fresh seed `20680474`, 256 team-pair
+  clusters, two repeats, and side swaps. This is a policy-level empirical game,
+  not a Nash equilibrium of the full VGC action/state game.
+- Reproducible launcher: `scripts/evaluate_round474_policy_population_256x2.sh`.
+  Output: `training/outputs/phase12_headless/round474_policy_population_256x2_20261031/`.
+- Use paired cluster bootstrap intervals for each pairwise payoff. Only derive
+  a checkpoint mixture if the payoff differences are stable enough; keep
+  Round430 as the validated default unless held-out robust evidence supports a
+  change.

@@ -1350,12 +1350,12 @@
     }
   },
   "latest_run": {
-    "round": 473,
-    "status": "Fresh hard-opponent mixed PPO · evaluated, not promoted",
-    "summary": "Round473 completed a fresh 20,000-game update from Round430 and a paired screen over 256 team clusters against five opponent classes. The mean lift was small and per-opponent evidence was inconclusive; Round430 remains the validated play default.",
-    "games": "20,000 audited games · 167,439 transitions",
-    "epochs": "4 PPO passes · 1,312 optimizer steps",
-    "evaluation": "256 clusters × 2 outcomes vs five opponents · complete"
+    "round": 474,
+    "status": "Checkpoint population payoff screen · running",
+    "summary": "Measuring direct local-Showdown head-to-head payoffs among Round430, Round472, and Round473 on a fresh seed. The paired outcomes will form a small empirical policy game for an approximate mixed-strategy calculation; this is not a full-game Nash solution.",
+    "games": "256 team-pair clusters × 2 repeats per pairing",
+    "epochs": "3 checkpoint pairings",
+    "evaluation": "Round430 / Round472 / Round473 · in progress"
   },
   "method": "Native self-play PPO for in-battle decisions. Terminal win/loss remains the main objective; win-probability and hidden-set prediction are auxiliary tasks. Search comes after a stronger policy.",
   "jax_decision": "Round430 has a confirmed self-play head-to-head lift over Round424, but external-opponent screens remain inconclusive. Prioritize measured inference batching, observation throughput, and rollouts; keep equilibrium-oriented opponent coverage and defer a JAX/GPU engine rewrite until its end-to-end payoff is measured.",
@@ -3645,5 +3645,25 @@
     "familywise": "All five Bonferroni familywise 95% per-opponent intervals include zero.",
     "evaluation_games_per_second": "3.71–8.02 across eight-worker opponent arms",
     "artifact": "round473_evaluation.json"
+  },
+  "round474_policy_population": {
+    "status": "Direct checkpoint matchups in progress",
+    "summary": "Three pairwise checkpoint matchups use matched team pairs, Round402 preview selectors, side swaps, and two repeats. Results will be used to estimate a finite policy-population payoff matrix.",
+    "policies": [
+      "Round430",
+      "Round472",
+      "Round473"
+    ],
+    "pairings": [
+      "Round430 vs Round472",
+      "Round430 vs Round473",
+      "Round472 vs Round473"
+    ],
+    "seed": 20680474,
+    "clusters_per_pairing": 256,
+    "outcome_repeats": 2,
+    "artifact": "training/outputs/phase12_headless/round474_policy_population_256x2_20261031/",
+    "launcher": "scripts/evaluate_round474_policy_population_256x2.sh",
+    "interpretation": "A finite checkpoint population game can guide a mixed policy; it is not a Nash equilibrium of the full VGC action/state game."
   }
 }
