@@ -18255,3 +18255,22 @@ coverage, not another blind teacher-weight sweep.
   paired, side-swapped full matches across the whole opponent pool and both
   hidden-set priors. Max Damage remains one diagnostic opponent, not the
   optimization objective.
+
+### Round499: expand held-out team coverage (running)
+
+- Round498's pooled-prior selector had only 17 held-out team clusters, so its
+  confidence interval was too wide to establish a modest action-selection
+  gain or loss. Round499 repeats the seven-response, two-prior collection at
+  three times the requested team clusters: 144 per decision step (1/3/5) per
+  prior, 864 requested states total. It keeps the incumbent Round430 as the
+  candidate policy and uses Round476, Round430, Round102, Max Damage, Public
+  Counterplay, random legal, and legacy Counterplay as separate responses.
+- Each state uses four hidden worlds and two chance repeats, with eight CPU
+  workers. Seeds are distinct from Round498 and aligned between priors. The
+  output is written to `training/outputs/phase12_headless/round499_policy_ensemble_144x4x2_20261031`.
+- Reproduction: `scripts/collect_round499_policy_ensemble_144x4x2.sh`.
+  Collection started with the Showdown-prior step-1 phase; no usable-state or
+  throughput total is available yet. The larger matched dataset will be fit
+  jointly across both priors and all 14 opponent/prior heads, then compared to
+  Round430 on team-disjoint clusters. Promotion still requires fresh paired,
+  side-swapped full-match evaluation across opponents.
