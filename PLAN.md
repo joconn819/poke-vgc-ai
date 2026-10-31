@@ -18270,10 +18270,11 @@ coverage, not another blind teacher-weight sweep.
   output is written to `training/outputs/phase12_headless/round499_policy_ensemble_144x4x2_20261031`.
 - Reproduction: `scripts/collect_round499_policy_ensemble_144x4x2.sh`.
   Collection started with the Showdown-prior step-1 phase. At the latest
-  checkpoint, six of eight worker shards reported 72 completed requested
-  clusters: 72 attempts yielded 26 usable states and 13,418 branch matches.
-  Many skipped states were forced-switch states. These are partial counts, not
-  a phase throughput result; the remaining shards are still running. The larger matched dataset will be fit jointly
+  checkpoint, three worker shards have finished their assignments, and all
+  eight have emitted progress: 102 of 144 cluster attempts processed, 54
+  usable states, and 27,820 branch matches. Many skipped states were forced-
+  switch states. These are partial counts, not a phase throughput result; five
+  shards are still running. The larger matched dataset will be fit jointly
   across both priors and all 14 opponent/prior heads, then compared to Round430
   on team-disjoint clusters. Promotion still requires fresh paired,
   side-swapped full-match evaluation across opponents.
