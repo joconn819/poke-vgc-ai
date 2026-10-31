@@ -16923,6 +16923,45 @@ coverage, not another blind teacher-weight sweep.
 - Replay artifacts:
   `training/outputs/phase12_headless/round467_teacher_weight2_lr2p5_replay_same_batch_20261030/`
 
+### Round467 first-five intervention transfer: independent seeds and PPO opponents
+
+- Added a disjoint 128-cluster × two-repeat seed set against Max Damage and
+  public Counterplay. Each policy arm completed 512 games without timeouts,
+  errors, or action adjustments. The hybrid's paired lift was +8.40 pp vs Max
+  Damage [95% cluster interval +1.76, +15.23] and +12.30 pp vs Counterplay
+  [+5.66, +18.95]. Pooling the two independent seed sets gives 256 clusters:
+  Max Damage raw/hybrid 45.61%/53.22%, +7.62 pp [+2.73, +12.50]; Counterplay
+  41.41%/53.71%, +12.30 pp [+7.32, +17.29]. These intervals bootstrap paired
+  team-cluster outcome differences and do not control for broader policy or
+  team-distribution selection.
+- Tested against historical PPO opponents on another held-out set with 256
+  team-pair clusters × two repeated side-swapped outcomes (1,024 games per
+  arm). Against Round464, raw/hybrid scored 50.49%/58.69%; paired gain +8.20
+  pp [+3.42, +12.89]. Against Round465, raw/hybrid scored 49.80%/58.69%;
+  paired gain +8.98 pp [+4.00, +13.87]. The raw Round465 arm had one
+  incomplete case; the comparison used 511 matched cases across all 256
+  clusters. No completed game had an action adjustment or timeout.
+- The same first-five legal Max Damage override now has positive paired
+  evidence against four varied opponents for Round467, including independent
+  confirmations against both heuristic opponents and larger screens against
+  two PPO policies. It is a promising inference-time hybrid, not a learned
+  strategy or full-game equilibrium. Do not relabel it as use of the
+  win-probability head: action choice is still policy logits after the five
+  override decisions, and the win-probability head does not rank actions.
+- **Candidate decision:** retain Round430 as the validated learned
+  checkpoint; track Round467 plus first-five override as a separate
+  experimental hybrid. Before changing default play, evaluate it against a
+  wider policy league and fresh legal-response audits, then verify the local
+  Showdown adapter uses the same override. This avoids treating wins against
+  four selected opponents as proof of robust or optimal play.
+- Artifacts:
+  `training/outputs/phase12_headless/round467_opening_first5_intervention_transfer_128x2_seed20261030/`,
+  `training/outputs/phase12_headless/round467_opening_first5_intervention_transfer_128x2_seed20261100/`,
+  and
+  `training/outputs/phase12_headless/round467_opening_first5_intervention_vs_ppo_128x2_seed20261110/`
+  plus
+  `training/outputs/phase12_headless/round467_opening_first5_intervention_vs_ppo_256x2_seed20261120/`.
+
 ### Round467 opening-intervention transfer check (2026-10-30)
 
 - Evaluated raw Round467 and a hybrid that replaced its first five battle
