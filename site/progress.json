@@ -6167,20 +6167,39 @@
     "chance_repeats_per_candidate": 2,
     "workers": 8,
     "device": "CPU",
-    "completed_phases": 0,
+    "completed_phases": 1,
     "total_phases": 6,
-    "current_phase": "Showdown Random Champions prior, decision step 1",
-    "progress_note": "Five shards have finished their assignments, and all eight have emitted progress. Current combined total: 122 of 144 cluster attempts processed, 66 usable states, and 34,292 branches. Three shards remain active; this is not the complete phase total or throughput.",
+    "current_phase": "Showdown Random Champions prior, decision step 3",
+    "progress_note": "Decision step 1 under the Showdown Random Champions prior is complete: 81/144 usable states, 324 hidden worlds, 41,777 branches in 1,052.34 seconds (39.699 matches/s across eight CPU workers), zero rejected actions. The decision-step-3 phase is now running.",
     "reproduction": "scripts/collect_round499_policy_ensemble_144x4x2.sh",
     "plan": "https://github.com/joconn819/poke-vgc-ai/blob/master/PLAN.md",
     "partial_progress": {
-      "completed_worker_shards": 5,
-      "reported_worker_shards": 8,
+      "completed_worker_shards": 0,
+      "reported_worker_shards": 0,
       "total_worker_shards": 8,
-      "cluster_attempts_processed": 122,
-      "states_captured": 66,
-      "branch_matches": 34292,
+      "cluster_attempts_processed": 0,
+      "states_captured": 0,
+      "branch_matches": 0,
       "is_phase_total": false
-    }
+    },
+    "phase_results": [
+      {
+        "decision_step": 1,
+        "hidden_set_prior": "showdown_random_champions",
+        "states_requested": 144,
+        "states_captured": 81,
+        "hidden_worlds_prepared": 324,
+        "branch_matches": 41777,
+        "elapsed_seconds": 1052.339,
+        "matches_per_second": 39.699,
+        "world_preparation_seconds": 40.025,
+        "missing_states": 63,
+        "missing_reasons": {
+          "request_switch": 61,
+          "public_transform_state": 2
+        },
+        "rejected_actions": 0
+      }
+    ]
   }
 }
