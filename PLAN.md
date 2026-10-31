@@ -17949,3 +17949,65 @@ coverage, not another blind teacher-weight sweep.
   incumbent on fresh teams, held-out public-compatible worlds, and the full
   opponent league before promotion. Track wall-clock branches/s and end-to-end
   matches/s because world preparation and replay may become the new bottleneck.
+
+### Round495: public-world counterfactual collector pilot (2026-10-31; plumbing only)
+
+- Added `--hidden-worlds` to the serial and parallel counterfactual collectors.
+  With this option, each captured public state is resumed into sampled,
+  Showdown-validated opponent worlds conditioned on preview species and
+  revealed facts; candidate actions share chance seeds across worlds. Sampled
+  sets are used internally for the simulated opponent's own policy and battle
+  state, but are not written into player policy-input rows. The outcomes remain
+  flattened as repeat samples for compatibility with the existing
+  response-conditioned value trainer. Use an even world count so its existing
+  split-sample diagnostic separates whole hidden worlds.
+- Added explicit request-state serialization for resumable Showdown snapshots
+  and an abort message for disposable world-preparation matches. The first
+  integration attempts exposed both missing lifecycle pieces; the successful
+  pilot below exercises the complete path.
+- Pilot command: `venv/bin/python scripts/collect_midgame_action_counterfactuals.py
+  --output /tmp/round495_public_world_smoke_retry4/data.json
+  --showdown-path /home/justin/p/poke_learning/pokemon-showdown --clusters 8
+  --states-per-cluster 1 --decision-step 3 --chance-repeats 1 --hidden-worlds 2
+  --candidate-mode policy_vs_max_damage --player-strategy public_counterplay
+  --seed 2026103102`.
+- Pilot captured 5/8 requested states, prepared 10 worlds, executed 29 branch
+  matches at 6.88 aggregate matches/s on one worker, and rejected zero actions.
+  Three states were skipped by the move-request / Illusion eligibility gates.
+  Row inspection confirmed two outcomes per candidate in two worlds and no
+  sampled opponent-team fields in the saved policy rows. The smoke artifact is
+  `training/outputs/phase12_headless/round495_public_world_smoke_8x2_20261031/data.json`.
+  This is implementation evidence only; it is far too small to compare policies
+  or train a useful value model.
+- Added `scripts/collect_round495_public_world_action_values.sh` for the next
+  24-cluster-per-phase collection at decision steps 1, 3, and 5, with four
+  hidden worlds, two chance repeats, and five response classes. The sampler
+  still uses only Showdown's random-champions set prior. Profile world
+  construction and branch throughput during that run, then train/evaluate
+  against held-out team clusters and unseen sampled worlds before any promotion.
+- Full collection completed at
+  `training/outputs/phase12_headless/round495_public_world_action_values_24x4x2_20261031_retry3/data.json`:
+  72 requested team clusters across the three phases, 36 usable states
+  (15/10/11 by decision step), 164 worlds prepared, and 12,374 branch matches
+  at 38.412 aggregate matches/s across eight workers. There were zero rejected
+  actions. The 36 exclusions were 26 forced-switch requests, five states where
+  the requested decision was not reached, and five resumed branches with an
+  empty legal-action mask; the collector discarded all candidate rows for each
+  affected state. Per-phase measurements were 39.40, 33.02, and 45.25 matches/s.
+  World construction used 20.61 seconds total, so full-match branching remains
+  the dominant measured collection cost.
+- A feasibility fit used the existing response-conditioned action-value
+  trainer on the Round495 data, producing 302 deduplicated candidate-action
+  rows across 36 states. GPU training stopped at epoch 2; validation action
+  outcome Brier was 0.2201. Held-out test covered only seven team clusters.
+  Robust maximin selection's held-out worst-response outcome was 17.86% vs
+  10.71% for the incumbent action, +7.14 pp [0.00,+21.43]. The equal-weight
+  selector had the same tiny-sample worst-response delta. This is not a reliable
+  strength result; do not promote it or interpret the lower CI boundary as a
+  confirmed gain. Round430 remains the default. Model and report:
+  `training/outputs/phase12_headless/round495_public_world_action_value_fit_20261031/`.
+- Next: improve the branch-state alignment that caused the five invalid
+  reconstructed states, then collect at least 128 usable states with more than
+  one set prior. Keep whole hidden worlds on opposite sides of the chance split,
+  report skipped-state rates by cause, and evaluate candidate choices on fresh
+  team clusters plus a separate full-match opponent league before promotion.

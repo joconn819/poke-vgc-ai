@@ -1,0 +1,1009 @@
+{
+  "schema_version": 1,
+  "data": "training/outputs/phase12_headless/round495_public_world_action_values_24x4x2_20261031_retry3/data.json",
+  "checkpoint": "training/outputs/phase12_headless/round495_public_world_action_value_fit_20261031/response_conditioned_action_value.pt",
+  "metrics": {
+    "team_split": {
+      "train": 23,
+      "validation": 6,
+      "test": 7,
+      "unit": "team_cluster"
+    },
+    "states": 302,
+    "test_states_selected": 7,
+    "test_action_rows": 63,
+    "response_names": [
+      "counterplay",
+      "max_damage",
+      "policy",
+      "public_counterplay",
+      "random"
+    ],
+    "evaluation_response_names": [
+      "counterplay",
+      "max_damage",
+      "policy",
+      "public_counterplay",
+      "random"
+    ],
+    "heldout_response_names": [],
+    "chance_split": {
+      "training_repeats_per_response": 4,
+      "test_repeats_per_response": 4,
+      "unit": "common chance index"
+    },
+    "best_epoch": 2,
+    "validation_action_outcome_brier": 0.22011898458003998,
+    "action_outcome_metrics_by_response": {
+      "counterplay": {
+        "samples": 252,
+        "brier": 0.19018112123012543,
+        "log_loss": 0.5705769658088684
+      },
+      "max_damage": {
+        "samples": 252,
+        "brier": 0.18972660601139069,
+        "log_loss": 0.5688945055007935
+      },
+      "policy": {
+        "samples": 252,
+        "brier": 0.18713155388832092,
+        "log_loss": 0.5560267567634583
+      },
+      "public_counterplay": {
+        "samples": 252,
+        "brier": 0.2473273128271103,
+        "log_loss": 0.6875840425491333
+      },
+      "random": {
+        "samples": 252,
+        "brier": 0.08313373476266861,
+        "log_loss": 0.3133965730667114
+      }
+    },
+    "constant_train_rate_metrics_by_response": {
+      "counterplay": {
+        "samples": 252,
+        "brier": 0.20616525411605835,
+        "log_loss": 0.6048136949539185
+      },
+      "max_damage": {
+        "samples": 252,
+        "brier": 0.2198488414287567,
+        "log_loss": 0.6326647400856018
+      },
+      "policy": {
+        "samples": 252,
+        "brier": 0.19708792865276337,
+        "log_loss": 0.5832575559616089
+      },
+      "public_counterplay": {
+        "samples": 252,
+        "brier": 0.25580650568008423,
+        "log_loss": 0.7047615647315979
+      },
+      "random": {
+        "samples": 252,
+        "brier": 0.08604975789785385,
+        "log_loss": 0.32308316230773926
+      }
+    },
+    "robust_selection": {
+      "aggregation": "minimum predicted response win probability",
+      "action_changed_from_policy_states": 7,
+      "test_states": 7,
+      "selected_worst_response_win_rate": 0.17857142857142858,
+      "policy_worst_response_win_rate": 0.10714285714285714,
+      "selected_minus_policy_worst_response": 0.07142857142857142,
+      "selected_minus_policy_worst_response_95_ci": [
+        0.0,
+        0.21428571428571427
+      ],
+      "by_response": {
+        "counterplay": {
+          "team_clusters": 7,
+          "selected_minus_policy": 0.0,
+          "paired_team_cluster_95_ci": [
+            -0.10714285714285714,
+            0.10714285714285714
+          ]
+        },
+        "max_damage": {
+          "team_clusters": 7,
+          "selected_minus_policy": 0.07142857142857142,
+          "paired_team_cluster_95_ci": [
+            -0.07142857142857142,
+            0.25
+          ]
+        },
+        "policy": {
+          "team_clusters": 7,
+          "selected_minus_policy": -0.07142857142857142,
+          "paired_team_cluster_95_ci": [
+            -0.21428571428571427,
+            0.0
+          ]
+        },
+        "public_counterplay": {
+          "team_clusters": 7,
+          "selected_minus_policy": -0.07142857142857142,
+          "paired_team_cluster_95_ci": [
+            -0.21428571428571427,
+            0.0
+          ]
+        },
+        "random": {
+          "team_clusters": 7,
+          "selected_minus_policy": -0.10714285714285714,
+          "paired_team_cluster_95_ci": [
+            -0.32142857142857145,
+            0.0
+          ]
+        }
+      }
+    },
+    "equal_weight_selection": {
+      "aggregation": "mean predicted response win probability",
+      "action_changed_from_policy_states": 6,
+      "test_states": 7,
+      "selected_minus_policy_worst_response": 0.07142857142857142,
+      "selected_minus_policy_worst_response_95_ci": [
+        0.0,
+        0.21428571428571427
+      ],
+      "by_response": {
+        "counterplay": {
+          "team_clusters": 7,
+          "selected_minus_policy": 0.0,
+          "paired_team_cluster_95_ci": [
+            -0.10714285714285714,
+            0.10714285714285714
+          ]
+        },
+        "max_damage": {
+          "team_clusters": 7,
+          "selected_minus_policy": 0.07142857142857142,
+          "paired_team_cluster_95_ci": [
+            -0.07142857142857142,
+            0.25
+          ]
+        },
+        "policy": {
+          "team_clusters": 7,
+          "selected_minus_policy": -0.07142857142857142,
+          "paired_team_cluster_95_ci": [
+            -0.21428571428571427,
+            0.0
+          ]
+        },
+        "public_counterplay": {
+          "team_clusters": 7,
+          "selected_minus_policy": -0.07142857142857142,
+          "paired_team_cluster_95_ci": [
+            -0.21428571428571427,
+            0.0
+          ]
+        },
+        "random": {
+          "team_clusters": 7,
+          "selected_minus_policy": -0.10714285714285714,
+          "paired_team_cluster_95_ci": [
+            -0.32142857142857145,
+            0.0
+          ]
+        }
+      }
+    }
+  },
+  "epoch_log": [
+    {
+      "epoch": 1,
+      "validation_brier": 0.22639085352420807
+    },
+    {
+      "epoch": 2,
+      "validation_brier": 0.22011898458003998
+    },
+    {
+      "epoch": 3,
+      "validation_brier": 0.22368445992469788
+    },
+    {
+      "epoch": 4,
+      "validation_brier": 0.25695696473121643
+    },
+    {
+      "epoch": 5,
+      "validation_brier": 0.2787382900714874
+    },
+    {
+      "epoch": 6,
+      "validation_brier": 0.293499618768692
+    },
+    {
+      "epoch": 7,
+      "validation_brier": 0.3011999726295471
+    },
+    {
+      "epoch": 8,
+      "validation_brier": 0.30407872796058655
+    },
+    {
+      "epoch": 9,
+      "validation_brier": 0.3063907325267792
+    },
+    {
+      "epoch": 10,
+      "validation_brier": 0.3124498724937439
+    },
+    {
+      "epoch": 11,
+      "validation_brier": 0.31163841485977173
+    },
+    {
+      "epoch": 12,
+      "validation_brier": 0.31372877955436707
+    },
+    {
+      "epoch": 13,
+      "validation_brier": 0.3125741183757782
+    },
+    {
+      "epoch": 14,
+      "validation_brier": 0.31315720081329346
+    }
+  ],
+  "selected_actions": [
+    {
+      "team_cluster": 0,
+      "state_repeat": 0,
+      "selected_action": [
+        9,
+        21
+      ],
+      "selected_candidate": [
+        "legal_perturbation_1"
+      ],
+      "policy_action": [
+        9,
+        25
+      ],
+      "predicted_response_probabilities": {
+        "counterplay": 0.3798808455467224,
+        "max_damage": 0.38689249753952026,
+        "policy": 0.7721286416053772,
+        "public_counterplay": 0.4924039840698242,
+        "random": 0.8716825246810913
+      },
+      "predicted_worst_response_probability": 0.3798808455467224,
+      "observed_by_response": {
+        "counterplay": {
+          "selected_win_rate": 0.5,
+          "policy_win_rate": 0.25,
+          "selected_minus_policy": 0.25
+        },
+        "max_damage": {
+          "selected_win_rate": 0.5,
+          "policy_win_rate": 0.0,
+          "selected_minus_policy": 0.5
+        },
+        "policy": {
+          "selected_win_rate": 1.0,
+          "policy_win_rate": 1.0,
+          "selected_minus_policy": 0.0
+        },
+        "public_counterplay": {
+          "selected_win_rate": 0.5,
+          "policy_win_rate": 0.5,
+          "selected_minus_policy": 0.0
+        },
+        "random": {
+          "selected_win_rate": 1.0,
+          "policy_win_rate": 1.0,
+          "selected_minus_policy": 0.0
+        }
+      },
+      "observed_worst_response": {
+        "selected_win_rate": 0.5,
+        "policy_win_rate": 0.0,
+        "selected_minus_policy": 0.5
+      }
+    },
+    {
+      "team_cluster": 3,
+      "state_repeat": 0,
+      "selected_action": [
+        1,
+        24
+      ],
+      "selected_candidate": [
+        "legal_perturbation_0"
+      ],
+      "policy_action": [
+        15,
+        20
+      ],
+      "predicted_response_probabilities": {
+        "counterplay": 0.3869464099407196,
+        "max_damage": 0.39644762873649597,
+        "policy": 0.8141151070594788,
+        "public_counterplay": 0.5155606269836426,
+        "random": 0.8989350199699402
+      },
+      "predicted_worst_response_probability": 0.3869464099407196,
+      "observed_by_response": {
+        "counterplay": {
+          "selected_win_rate": 0.0,
+          "policy_win_rate": 0.25,
+          "selected_minus_policy": -0.25
+        },
+        "max_damage": {
+          "selected_win_rate": 0.0,
+          "policy_win_rate": 0.25,
+          "selected_minus_policy": -0.25
+        },
+        "policy": {
+          "selected_win_rate": 1.0,
+          "policy_win_rate": 1.0,
+          "selected_minus_policy": 0.0
+        },
+        "public_counterplay": {
+          "selected_win_rate": 0.0,
+          "policy_win_rate": 0.0,
+          "selected_minus_policy": 0.0
+        },
+        "random": {
+          "selected_win_rate": 1.0,
+          "policy_win_rate": 1.0,
+          "selected_minus_policy": 0.0
+        }
+      },
+      "observed_worst_response": {
+        "selected_win_rate": 0.0,
+        "policy_win_rate": 0.0,
+        "selected_minus_policy": 0.0
+      }
+    },
+    {
+      "team_cluster": 21,
+      "state_repeat": 0,
+      "selected_action": [
+        11,
+        19
+      ],
+      "selected_candidate": [
+        "hybrid_damage0_policy1"
+      ],
+      "policy_action": [
+        20,
+        19
+      ],
+      "predicted_response_probabilities": {
+        "counterplay": 0.3748722970485687,
+        "max_damage": 0.3710971474647522,
+        "policy": 0.8003503680229187,
+        "public_counterplay": 0.49513623118400574,
+        "random": 0.8927643895149231
+      },
+      "predicted_worst_response_probability": 0.3710971474647522,
+      "observed_by_response": {
+        "counterplay": {
+          "selected_win_rate": 0.25,
+          "policy_win_rate": 0.25,
+          "selected_minus_policy": 0.0
+        },
+        "max_damage": {
+          "selected_win_rate": 0.0,
+          "policy_win_rate": 0.0,
+          "selected_minus_policy": 0.0
+        },
+        "policy": {
+          "selected_win_rate": 0.5,
+          "policy_win_rate": 1.0,
+          "selected_minus_policy": -0.5
+        },
+        "public_counterplay": {
+          "selected_win_rate": 0.0,
+          "policy_win_rate": 0.5,
+          "selected_minus_policy": -0.5
+        },
+        "random": {
+          "selected_win_rate": 1.0,
+          "policy_win_rate": 1.0,
+          "selected_minus_policy": 0.0
+        }
+      },
+      "observed_worst_response": {
+        "selected_win_rate": 0.0,
+        "policy_win_rate": 0.0,
+        "selected_minus_policy": 0.0
+      }
+    },
+    {
+      "team_cluster": 22,
+      "state_repeat": 0,
+      "selected_action": [
+        25,
+        21
+      ],
+      "selected_candidate": [
+        "max_damage"
+      ],
+      "policy_action": [
+        26,
+        16
+      ],
+      "predicted_response_probabilities": {
+        "counterplay": 0.3876646161079407,
+        "max_damage": 0.3958642780780792,
+        "policy": 0.8165958523750305,
+        "public_counterplay": 0.5122636556625366,
+        "random": 0.9029533267021179
+      },
+      "predicted_worst_response_probability": 0.3876646161079407,
+      "observed_by_response": {
+        "counterplay": {
+          "selected_win_rate": 0.0,
+          "policy_win_rate": 0.0,
+          "selected_minus_policy": 0.0
+        },
+        "max_damage": {
+          "selected_win_rate": 0.0,
+          "policy_win_rate": 0.0,
+          "selected_minus_policy": 0.0
+        },
+        "policy": {
+          "selected_win_rate": 1.0,
+          "policy_win_rate": 1.0,
+          "selected_minus_policy": 0.0
+        },
+        "public_counterplay": {
+          "selected_win_rate": 0.0,
+          "policy_win_rate": 0.0,
+          "selected_minus_policy": 0.0
+        },
+        "random": {
+          "selected_win_rate": 0.0,
+          "policy_win_rate": 0.75,
+          "selected_minus_policy": -0.75
+        }
+      },
+      "observed_worst_response": {
+        "selected_win_rate": 0.0,
+        "policy_win_rate": 0.0,
+        "selected_minus_policy": 0.0
+      }
+    },
+    {
+      "team_cluster": 36,
+      "state_repeat": 0,
+      "selected_action": [
+        44,
+        2
+      ],
+      "selected_candidate": [
+        "switch_slot1_arbok"
+      ],
+      "policy_action": [
+        44,
+        9
+      ],
+      "predicted_response_probabilities": {
+        "counterplay": 0.3701075613498688,
+        "max_damage": 0.36793091893196106,
+        "policy": 0.7833395600318909,
+        "public_counterplay": 0.47221633791923523,
+        "random": 0.884404718875885
+      },
+      "predicted_worst_response_probability": 0.36793091893196106,
+      "observed_by_response": {
+        "counterplay": {
+          "selected_win_rate": 0.75,
+          "policy_win_rate": 0.75,
+          "selected_minus_policy": 0.0
+        },
+        "max_damage": {
+          "selected_win_rate": 1.0,
+          "policy_win_rate": 0.75,
+          "selected_minus_policy": 0.25
+        },
+        "policy": {
+          "selected_win_rate": 1.0,
+          "policy_win_rate": 1.0,
+          "selected_minus_policy": 0.0
+        },
+        "public_counterplay": {
+          "selected_win_rate": 0.75,
+          "policy_win_rate": 0.75,
+          "selected_minus_policy": 0.0
+        },
+        "random": {
+          "selected_win_rate": 1.0,
+          "policy_win_rate": 1.0,
+          "selected_minus_policy": 0.0
+        }
+      },
+      "observed_worst_response": {
+        "selected_win_rate": 0.75,
+        "policy_win_rate": 0.75,
+        "selected_minus_policy": 0.0
+      }
+    },
+    {
+      "team_cluster": 59,
+      "state_repeat": 0,
+      "selected_action": [
+        16,
+        24
+      ],
+      "selected_candidate": [
+        "protect_slot1_protect"
+      ],
+      "policy_action": [
+        16,
+        21
+      ],
+      "predicted_response_probabilities": {
+        "counterplay": 0.32155296206474304,
+        "max_damage": 0.30350419878959656,
+        "policy": 0.7220210433006287,
+        "public_counterplay": 0.4100234806537628,
+        "random": 0.856515645980835
+      },
+      "predicted_worst_response_probability": 0.30350419878959656,
+      "observed_by_response": {
+        "counterplay": {
+          "selected_win_rate": 0.0,
+          "policy_win_rate": 0.0,
+          "selected_minus_policy": 0.0
+        },
+        "max_damage": {
+          "selected_win_rate": 0.0,
+          "policy_win_rate": 0.0,
+          "selected_minus_policy": 0.0
+        },
+        "policy": {
+          "selected_win_rate": 0.0,
+          "policy_win_rate": 0.0,
+          "selected_minus_policy": 0.0
+        },
+        "public_counterplay": {
+          "selected_win_rate": 0.0,
+          "policy_win_rate": 0.0,
+          "selected_minus_policy": 0.0
+        },
+        "random": {
+          "selected_win_rate": 1.0,
+          "policy_win_rate": 1.0,
+          "selected_minus_policy": 0.0
+        }
+      },
+      "observed_worst_response": {
+        "selected_win_rate": 0.0,
+        "policy_win_rate": 0.0,
+        "selected_minus_policy": 0.0
+      }
+    },
+    {
+      "team_cluster": 63,
+      "state_repeat": 0,
+      "selected_action": [
+        25,
+        24
+      ],
+      "selected_candidate": [
+        "spread_slot1_trickroom"
+      ],
+      "policy_action": [
+        25,
+        15
+      ],
+      "predicted_response_probabilities": {
+        "counterplay": 0.47548708319664,
+        "max_damage": 0.5248394012451172,
+        "policy": 0.7948747277259827,
+        "public_counterplay": 0.5728023648262024,
+        "random": 0.8680161833763123
+      },
+      "predicted_worst_response_probability": 0.47548708319664,
+      "observed_by_response": {
+        "counterplay": {
+          "selected_win_rate": 0.0,
+          "policy_win_rate": 0.0,
+          "selected_minus_policy": 0.0
+        },
+        "max_damage": {
+          "selected_win_rate": 0.0,
+          "policy_win_rate": 0.0,
+          "selected_minus_policy": 0.0
+        },
+        "policy": {
+          "selected_win_rate": 0.0,
+          "policy_win_rate": 0.0,
+          "selected_minus_policy": 0.0
+        },
+        "public_counterplay": {
+          "selected_win_rate": 0.0,
+          "policy_win_rate": 0.0,
+          "selected_minus_policy": 0.0
+        },
+        "random": {
+          "selected_win_rate": 1.0,
+          "policy_win_rate": 1.0,
+          "selected_minus_policy": 0.0
+        }
+      },
+      "observed_worst_response": {
+        "selected_win_rate": 0.0,
+        "policy_win_rate": 0.0,
+        "selected_minus_policy": 0.0
+      }
+    }
+  ],
+  "equal_weight_actions": [
+    {
+      "team_cluster": 0,
+      "state_repeat": 0,
+      "selected_action": [
+        9,
+        21
+      ],
+      "policy_action": [
+        9,
+        25
+      ],
+      "predicted_response_probabilities": {
+        "counterplay": 0.3798808455467224,
+        "max_damage": 0.38689249753952026,
+        "policy": 0.7721286416053772,
+        "public_counterplay": 0.4924039840698242,
+        "random": 0.8716825246810913
+      },
+      "observed_by_response": {
+        "counterplay": {
+          "selected_win_rate": 0.5,
+          "policy_win_rate": 0.25,
+          "selected_minus_policy": 0.25
+        },
+        "max_damage": {
+          "selected_win_rate": 0.5,
+          "policy_win_rate": 0.0,
+          "selected_minus_policy": 0.5
+        },
+        "policy": {
+          "selected_win_rate": 1.0,
+          "policy_win_rate": 1.0,
+          "selected_minus_policy": 0.0
+        },
+        "public_counterplay": {
+          "selected_win_rate": 0.5,
+          "policy_win_rate": 0.5,
+          "selected_minus_policy": 0.0
+        },
+        "random": {
+          "selected_win_rate": 1.0,
+          "policy_win_rate": 1.0,
+          "selected_minus_policy": 0.0
+        }
+      },
+      "observed_worst_response": {
+        "selected_win_rate": 0.5,
+        "policy_win_rate": 0.0,
+        "selected_minus_policy": 0.5
+      },
+      "predicted_mean_response_probability": 0.5805976986885071
+    },
+    {
+      "team_cluster": 3,
+      "state_repeat": 0,
+      "selected_action": [
+        1,
+        24
+      ],
+      "policy_action": [
+        15,
+        20
+      ],
+      "predicted_response_probabilities": {
+        "counterplay": 0.3869464099407196,
+        "max_damage": 0.39644762873649597,
+        "policy": 0.8141151070594788,
+        "public_counterplay": 0.5155606269836426,
+        "random": 0.8989350199699402
+      },
+      "observed_by_response": {
+        "counterplay": {
+          "selected_win_rate": 0.0,
+          "policy_win_rate": 0.25,
+          "selected_minus_policy": -0.25
+        },
+        "max_damage": {
+          "selected_win_rate": 0.0,
+          "policy_win_rate": 0.25,
+          "selected_minus_policy": -0.25
+        },
+        "policy": {
+          "selected_win_rate": 1.0,
+          "policy_win_rate": 1.0,
+          "selected_minus_policy": 0.0
+        },
+        "public_counterplay": {
+          "selected_win_rate": 0.0,
+          "policy_win_rate": 0.0,
+          "selected_minus_policy": 0.0
+        },
+        "random": {
+          "selected_win_rate": 1.0,
+          "policy_win_rate": 1.0,
+          "selected_minus_policy": 0.0
+        }
+      },
+      "observed_worst_response": {
+        "selected_win_rate": 0.0,
+        "policy_win_rate": 0.0,
+        "selected_minus_policy": 0.0
+      },
+      "predicted_mean_response_probability": 0.6024009585380554
+    },
+    {
+      "team_cluster": 21,
+      "state_repeat": 0,
+      "selected_action": [
+        11,
+        19
+      ],
+      "policy_action": [
+        20,
+        19
+      ],
+      "predicted_response_probabilities": {
+        "counterplay": 0.3748722970485687,
+        "max_damage": 0.3710971474647522,
+        "policy": 0.8003503680229187,
+        "public_counterplay": 0.49513623118400574,
+        "random": 0.8927643895149231
+      },
+      "observed_by_response": {
+        "counterplay": {
+          "selected_win_rate": 0.25,
+          "policy_win_rate": 0.25,
+          "selected_minus_policy": 0.0
+        },
+        "max_damage": {
+          "selected_win_rate": 0.0,
+          "policy_win_rate": 0.0,
+          "selected_minus_policy": 0.0
+        },
+        "policy": {
+          "selected_win_rate": 0.5,
+          "policy_win_rate": 1.0,
+          "selected_minus_policy": -0.5
+        },
+        "public_counterplay": {
+          "selected_win_rate": 0.0,
+          "policy_win_rate": 0.5,
+          "selected_minus_policy": -0.5
+        },
+        "random": {
+          "selected_win_rate": 1.0,
+          "policy_win_rate": 1.0,
+          "selected_minus_policy": 0.0
+        }
+      },
+      "observed_worst_response": {
+        "selected_win_rate": 0.0,
+        "policy_win_rate": 0.0,
+        "selected_minus_policy": 0.0
+      },
+      "predicted_mean_response_probability": 0.5868440866470337
+    },
+    {
+      "team_cluster": 22,
+      "state_repeat": 0,
+      "selected_action": [
+        25,
+        21
+      ],
+      "policy_action": [
+        26,
+        16
+      ],
+      "predicted_response_probabilities": {
+        "counterplay": 0.3876646161079407,
+        "max_damage": 0.3958642780780792,
+        "policy": 0.8165958523750305,
+        "public_counterplay": 0.5122636556625366,
+        "random": 0.9029533267021179
+      },
+      "observed_by_response": {
+        "counterplay": {
+          "selected_win_rate": 0.0,
+          "policy_win_rate": 0.0,
+          "selected_minus_policy": 0.0
+        },
+        "max_damage": {
+          "selected_win_rate": 0.0,
+          "policy_win_rate": 0.0,
+          "selected_minus_policy": 0.0
+        },
+        "policy": {
+          "selected_win_rate": 1.0,
+          "policy_win_rate": 1.0,
+          "selected_minus_policy": 0.0
+        },
+        "public_counterplay": {
+          "selected_win_rate": 0.0,
+          "policy_win_rate": 0.0,
+          "selected_minus_policy": 0.0
+        },
+        "random": {
+          "selected_win_rate": 0.0,
+          "policy_win_rate": 0.75,
+          "selected_minus_policy": -0.75
+        }
+      },
+      "observed_worst_response": {
+        "selected_win_rate": 0.0,
+        "policy_win_rate": 0.0,
+        "selected_minus_policy": 0.0
+      },
+      "predicted_mean_response_probability": 0.6030684113502502
+    },
+    {
+      "team_cluster": 36,
+      "state_repeat": 0,
+      "selected_action": [
+        44,
+        2
+      ],
+      "policy_action": [
+        44,
+        9
+      ],
+      "predicted_response_probabilities": {
+        "counterplay": 0.3701075613498688,
+        "max_damage": 0.36793091893196106,
+        "policy": 0.7833395600318909,
+        "public_counterplay": 0.47221633791923523,
+        "random": 0.884404718875885
+      },
+      "observed_by_response": {
+        "counterplay": {
+          "selected_win_rate": 0.75,
+          "policy_win_rate": 0.75,
+          "selected_minus_policy": 0.0
+        },
+        "max_damage": {
+          "selected_win_rate": 1.0,
+          "policy_win_rate": 0.75,
+          "selected_minus_policy": 0.25
+        },
+        "policy": {
+          "selected_win_rate": 1.0,
+          "policy_win_rate": 1.0,
+          "selected_minus_policy": 0.0
+        },
+        "public_counterplay": {
+          "selected_win_rate": 0.75,
+          "policy_win_rate": 0.75,
+          "selected_minus_policy": 0.0
+        },
+        "random": {
+          "selected_win_rate": 1.0,
+          "policy_win_rate": 1.0,
+          "selected_minus_policy": 0.0
+        }
+      },
+      "observed_worst_response": {
+        "selected_win_rate": 0.75,
+        "policy_win_rate": 0.75,
+        "selected_minus_policy": 0.0
+      },
+      "predicted_mean_response_probability": 0.5755997896194458
+    },
+    {
+      "team_cluster": 59,
+      "state_repeat": 0,
+      "selected_action": [
+        16,
+        21
+      ],
+      "policy_action": [
+        16,
+        21
+      ],
+      "predicted_response_probabilities": {
+        "counterplay": 0.3149237334728241,
+        "max_damage": 0.2930763065814972,
+        "policy": 0.7375040054321289,
+        "public_counterplay": 0.4043577313423157,
+        "random": 0.8705469965934753
+      },
+      "observed_by_response": {
+        "counterplay": {
+          "selected_win_rate": 0.0,
+          "policy_win_rate": 0.0,
+          "selected_minus_policy": 0.0
+        },
+        "max_damage": {
+          "selected_win_rate": 0.0,
+          "policy_win_rate": 0.0,
+          "selected_minus_policy": 0.0
+        },
+        "policy": {
+          "selected_win_rate": 0.0,
+          "policy_win_rate": 0.0,
+          "selected_minus_policy": 0.0
+        },
+        "public_counterplay": {
+          "selected_win_rate": 0.0,
+          "policy_win_rate": 0.0,
+          "selected_minus_policy": 0.0
+        },
+        "random": {
+          "selected_win_rate": 1.0,
+          "policy_win_rate": 1.0,
+          "selected_minus_policy": 0.0
+        }
+      },
+      "observed_worst_response": {
+        "selected_win_rate": 0.0,
+        "policy_win_rate": 0.0,
+        "selected_minus_policy": 0.0
+      },
+      "predicted_mean_response_probability": 0.5240817666053772
+    },
+    {
+      "team_cluster": 63,
+      "state_repeat": 0,
+      "selected_action": [
+        25,
+        24
+      ],
+      "policy_action": [
+        25,
+        15
+      ],
+      "predicted_response_probabilities": {
+        "counterplay": 0.47548708319664,
+        "max_damage": 0.5248394012451172,
+        "policy": 0.7948747277259827,
+        "public_counterplay": 0.5728023648262024,
+        "random": 0.8680161833763123
+      },
+      "observed_by_response": {
+        "counterplay": {
+          "selected_win_rate": 0.0,
+          "policy_win_rate": 0.0,
+          "selected_minus_policy": 0.0
+        },
+        "max_damage": {
+          "selected_win_rate": 0.0,
+          "policy_win_rate": 0.0,
+          "selected_minus_policy": 0.0
+        },
+        "policy": {
+          "selected_win_rate": 0.0,
+          "policy_win_rate": 0.0,
+          "selected_minus_policy": 0.0
+        },
+        "public_counterplay": {
+          "selected_win_rate": 0.0,
+          "policy_win_rate": 0.0,
+          "selected_minus_policy": 0.0
+        },
+        "random": {
+          "selected_win_rate": 1.0,
+          "policy_win_rate": 1.0,
+          "selected_minus_policy": 0.0
+        }
+      },
+      "observed_worst_response": {
+        "selected_win_rate": 0.0,
+        "policy_win_rate": 0.0,
+        "selected_minus_policy": 0.0
+      },
+      "predicted_mean_response_probability": 0.6472039818763733
+    }
+  ]
+}

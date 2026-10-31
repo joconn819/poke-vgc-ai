@@ -17,7 +17,8 @@ def main() -> None:
     inputs = [Path(value) for value in sys.argv[2:]]
     payloads = [json.loads(path.read_text(encoding="utf-8")) for path in inputs]
     expected = {"checkpoint", "candidate_policy_checkpoint", "opponent_checkpoint",
-                "team_selection_checkpoint", "format", "paired_response_classes"}
+                "team_selection_checkpoint", "format", "paired_response_classes",
+                "hidden_worlds_requested", "hidden_world_prior"}
     for key in expected:
         if len({json.dumps(data.get(key), sort_keys=True) for data in payloads}) != 1:
             raise ValueError(f"collection metadata differs across phases for {key}")
@@ -70,6 +71,16 @@ def main() -> None:
         "clusters_requested": cluster_offset,
         "states_captured": sum(phase_counts.values()),
         "chance_repeats": payloads[0]["chance_repeats"],
+        "hidden_worlds_requested": payloads[0].get("hidden_worlds_requested", 0),
+        "hidden_worlds_prepared": sum(
+            int(data.get("hidden_worlds_prepared", 0)) for data in payloads
+        ),
+        "hidden_world_preparation_seconds": sum(
+            float(data.get("hidden_world_preparation_seconds", 0.0)) for data in payloads
+        ),
+        "hidden_world_prior": payloads[0].get(
+            "hidden_world_prior", "actual_captured_battle_world"
+        ),
         "candidate_mode": payloads[0]["candidate_mode"],
         "paired_response_classes": payloads[0]["paired_response_classes"],
         "matches_executed": total_matches,

@@ -22,12 +22,82 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from scripts.run_headless_showdown_self_play import (
     _load_policy,
     _load_team_selector,
+    _public_preview_may_have_illusion,
     run_game,
 )
 from scripts.evaluate_counterplay_paired import choose_damage_preview_action
-from src.env.headless_showdown import HeadlessShowdownWorker
+from src.env.headless_showdown import HeadlessShowdownProcess, HeadlessShowdownWorker
+from src.belief.closed_sheet import (
+    ClosedSheetBeliefTracker,
+    possible_selected_rosters,
+    sample_showdown_hidden_teams,
+)
 from src.training.self_play import PolicyAgent
-from src.training.team_selection import random_action
+from src.training.team_selection import decode_action, random_action
+from poke_env.data.normalize import to_id_str
+
+
+def public_world_branches(
+    *, worker: HeadlessShowdownWorker, data: dict, teams: tuple[list[dict], list[dict]],
+    preview: tuple[int, int], format_id: str, showdown_path: Path,
+    count: int, seed: int,
+) -> list[dict]:
+    """Prepare resumed snapshots from sampled worlds conditioned on public facts."""
+    if count < 1:
+        raise ValueError("public hidden-world count must be positive")
+    species = [str(mon.get("species") or mon.get("name")) for mon in teams[1]]
+    if len(species) != 6:
+        raise ValueError("public hidden-world sampling needs six preview species")
+    own_selection = decode_action(int(preview[0]))
+    own_preview = list(own_selection.leads + own_selection.back)
+    with HeadlessShowdownProcess(
+        teams[0], teams[1], format_id=format_id, seed=seed,
+        showdown_path=showdown_path, worker=worker,
+        snapshot=data["battle_snapshot"],
+        parser_snapshot=data["parser_snapshot"],
+    ) as match:
+        belief = ClosedSheetBeliefTracker(species)
+        belief.update_from_battle(match.battles[0])
+        leads = belief.opening_leads()
+        selections = possible_selected_rosters(
+            species, leads, belief.appeared_species()
+        )
+        preview_index = {to_id_str(name): i for i, name in enumerate(species)}
+        selection_indexes = [
+            [preview_index[to_id_str(name)] for name in selection]
+            for selection in selections
+        ]
+        if not selection_indexes:
+            raise ValueError("no public-compatible opponent selection remains")
+        hypotheses = sample_showdown_hidden_teams(
+            species, belief.public_facts(), format_id=format_id, count=count,
+            seed=seed, showdown_path=showdown_path,
+        )
+        rng = np.random.default_rng(seed ^ 0x6A09E667)
+        try:
+            prepared = match.prepare_search_worlds({
+                "acting_side": 0,
+                "seed": int(seed),
+                "own_preview": own_preview,
+                "opponent_preview_species": species,
+                "revealed_facts": belief.public_facts(),
+                "hypotheses": [
+                    {"opponent_team": team,
+                     "opponent_preview": selection_indexes[int(rng.integers(len(selection_indexes)))]}
+                    for team in hypotheses
+                ],
+            })
+        finally:
+            match.abort_match()
+    return [
+        {"initial_battle_snapshot": snapshot,
+         "initial_parser_snapshot": data["parser_snapshot"],
+         "initial_decision_counts": tuple(data["decision_counts_at_snapshot"]),
+         "preview_actions_override": preview,
+         "public_hidden_world_index": index,
+         "sampled_opponent_team": hypotheses[index]}
+        for index, snapshot in enumerate(prepared["snapshots"])
+    ]
 
 
 def strategic_candidate_actions(
@@ -205,6 +275,11 @@ def main() -> None:
         help="alternate this frozen policy with Max Damage across state samples",
     )
     parser.add_argument(
+        "--additional-opponent-checkpoint", action="append", default=[],
+        metavar="NAME=PATH",
+        help="add a named PPO response (strategy label will be NAME)",
+    )
+    parser.add_argument(
         "--team-selection-checkpoint", type=Path,
         help="apply this preview selector to the player policy and policy opponents",
     )
@@ -221,6 +296,11 @@ def main() -> None:
     parser.add_argument("--states-per-cluster", type=int, default=2)
     parser.add_argument("--decision-step", type=int, default=5)
     parser.add_argument("--chance-repeats", type=int, default=4)
+    parser.add_argument(
+        "--hidden-worlds", type=int, default=0,
+        help=("sample an even number of public-compatible hidden-team worlds per state; "
+              "0 keeps the legacy actual-world branches"),
+    )
     parser.add_argument(
         "--candidate-mode", choices=(
             "broad", "policy_vs_max_damage", "policy_vs_max_damage_and_hybrids"
@@ -254,8 +334,10 @@ def main() -> None:
     args = parser.parse_args()
     if (args.clusters < 1 or args.cluster_offset < 0
             or args.states_per_cluster < 1 or args.decision_step < 1
-            or args.chance_repeats < 1):
-        parser.error("clusters/states/repeats must be positive and decision-step must be at least one")
+            or args.chance_repeats < 1 or args.hidden_worlds < 0):
+        parser.error("clusters/states/repeats must be positive, hidden-worlds nonnegative, and decision-step at least one")
+    if args.hidden_worlds == 1 or args.hidden_worlds % 2:
+        parser.error("--hidden-worlds must be zero or an even number of at least two")
     if args.paired_opponent_responses and args.opponent_checkpoint is None:
         parser.error("--paired-opponent-responses requires --opponent-checkpoint")
     if ((args.include_public_counterplay_response or args.include_random_response
@@ -264,6 +346,21 @@ def main() -> None:
         parser.error("additional response classes require paired responses")
     if args.player_strategy == "policy" and args.checkpoint is None:
         parser.error("--checkpoint is required when --player-strategy=policy")
+    additional_policy_paths = {}
+    for value in args.additional_opponent_checkpoint:
+        if "=" not in value:
+            parser.error("additional opponent checkpoints must use NAME=PATH")
+        name, path = value.split("=", 1)
+        if not name.startswith("policy_") or name in additional_policy_paths:
+            parser.error("additional opponent names must be unique and start with policy_")
+        if name in {"policy", "max_damage", "public_counterplay", "counterplay", "random"}:
+            parser.error(f"reserved additional opponent name: {name}")
+        checkpoint_path = Path(path)
+        if not checkpoint_path.is_file():
+            parser.error(f"additional opponent checkpoint not found: {checkpoint_path}")
+        additional_policy_paths[name] = checkpoint_path
+    if additional_policy_paths and not args.paired_opponent_responses:
+        parser.error("additional opponent checkpoints require --paired-opponent-responses")
     torch.set_num_threads(1)
     try:
         torch.set_num_interop_threads(1)
@@ -283,14 +380,23 @@ def main() -> None:
         if args.candidate_policy_checkpoint else None
     )
     opponent_model = _load_policy(args.opponent_checkpoint, args.device)
+    named_opponent_models = {"policy": opponent_model}
+    named_opponent_models.update({
+        name: _load_policy(path, args.device)
+        for name, path in additional_policy_paths.items()
+    })
     team_selector, team_selector_config = _load_team_selector(
         args.team_selection_checkpoint
     )
     rows: list[dict] = []
     matches_executed = 0
     missing_states = 0
+    missing_state_reasons: dict[str, int] = {}
     rejected_candidates = 0
     rejected_candidate_details: list[dict] = []
+    unsupported_world_replays: list[dict] = []
+    hidden_worlds_prepared = 0
+    hidden_world_preparation_seconds = 0.0
     started = time.perf_counter()
     with HeadlessShowdownWorker(args.showdown_path) as worker:
         for local_cluster in range(args.clusters):
@@ -344,6 +450,7 @@ def main() -> None:
                 p = policy["counterfactual_action_data"]
                 if p is None:
                     missing_states += 1
+                    missing_state_reasons["decision_not_reached"] = missing_state_reasons.get("decision_not_reached", 0) + 1
                     continue
                 if p.get("battle_snapshot") is None:
                     raise RuntimeError("counterfactual prefix did not produce a battle snapshot")
@@ -354,6 +461,39 @@ def main() -> None:
                     initial_decision_counts=tuple(p["decision_counts_at_snapshot"]),
                     preview_actions_override=preview,
                 )
+                if args.hidden_worlds:
+                    snapshot_request_state = p["battle_snapshot"].get("requestState")
+                    if snapshot_request_state != "move":
+                        missing_states += 1
+                        reason = f"request_{snapshot_request_state or 'unknown'}"
+                        missing_state_reasons[reason] = missing_state_reasons.get(reason, 0) + 1
+                        continue
+                    public_species = [
+                        str(member.get("species") or member.get("name"))
+                        for member in teams[1]
+                    ]
+                    if _public_preview_may_have_illusion(public_species):
+                        missing_states += 1
+                        missing_state_reasons["possible_illusion_preview"] = missing_state_reasons.get("possible_illusion_preview", 0) + 1
+                        continue
+                    world_started = time.perf_counter()
+                    try:
+                        branches = public_world_branches(
+                            worker=worker, data=p, teams=teams, preview=preview,
+                            format_id=args.format, showdown_path=args.showdown_path,
+                            count=args.hidden_worlds,
+                            seed=args.seed + cluster * 10007 + state_repeat * 1009 + 0x51ED,
+                        )
+                    except RuntimeError as error:
+                        if "Transform" not in str(error):
+                            raise
+                        missing_states += 1
+                        missing_state_reasons["public_transform_state"] = missing_state_reasons.get("public_transform_state", 0) + 1
+                        continue
+                    hidden_world_preparation_seconds += time.perf_counter() - world_started
+                    hidden_worlds_prepared += len(branches)
+                else:
+                    branches = [branch]
                 branch_common = dict(common)
                 branch_common["capture_battle_snapshot"] = False
                 damage_common = dict(branch_common)
@@ -417,8 +557,12 @@ def main() -> None:
                     response_names.append("random")
                 if args.paired_opponent_responses and args.include_legacy_counterplay_response:
                     response_names.append("counterplay")
+                if args.paired_opponent_responses:
+                    response_names.extend(additional_policy_paths)
                 outcome_cache: dict[tuple[int, int], dict[str, list[int]]] = {}
                 rejected_action_keys: set[tuple[int, int]] = set()
+                state_row_start = len(rows)
+                state_invalid_replay = False
                 for name, action in candidates:
                     key = (int(action[0]), int(action[1]))
                     if key in rejected_action_keys:
@@ -431,31 +575,61 @@ def main() -> None:
                         for response_name in response_names:
                             outcomes = []
                             response_common = dict(branch_common)
-                            response_common["opponent_strategy"] = response_name
-                            response_common["opponent_model"] = (
-                                opponent_model if response_name == "policy" else None
+                            is_policy_response = response_name in named_opponent_models
+                            response_common["opponent_strategy"] = (
+                                "policy" if is_policy_response else response_name
                             )
+                            response_common["opponent_model"] = named_opponent_models.get(response_name)
                             response_common["opponent_team_selection_model"] = (
-                                team_selector if response_name == "policy" else None
+                                team_selector if is_policy_response else None
                             )
                             response_common["opponent_team_selection_config"] = (
-                                team_selector_config if response_name == "policy" else None
+                                team_selector_config if is_policy_response else None
                             )
-                            for chance_repeat in range(args.chance_repeats):
+                            for world_branch in branches:
+                              for chance_repeat in range(args.chance_repeats):
                                 chance_seed = (
                                     args.seed + cluster * 10007 + state_repeat * 1009
                                     + 1000003 + chance_repeat * 7919
                                 )
-                                result = run_game(
-                                    output_path=temp_output,
-                                    first_turn_forced_action=action,
-                                    forced_action_step=args.decision_step,
-                                    capture_action_step=args.decision_step,
-                                    reseed_random_at_decision=(
-                                        args.decision_step, chance_seed
-                                    ),
-                                    **response_common, **branch,
-                                )
+                                branch_args = {
+                                    key: value for key, value in world_branch.items()
+                                    if key not in {
+                                        "public_hidden_world_index", "sampled_opponent_team"
+                                    }
+                                }
+                                world_response_common = dict(response_common)
+                                if args.hidden_worlds:
+                                    world_response_common["teams_override"] = (
+                                        teams[0], world_branch["sampled_opponent_team"]
+                                    )
+                                try:
+                                    result = run_game(
+                                        output_path=temp_output,
+                                        first_turn_forced_action=action,
+                                        forced_action_step=args.decision_step,
+                                        capture_action_step=args.decision_step,
+                                        reseed_random_at_decision=(
+                                            args.decision_step, chance_seed
+                                        ),
+                                        **world_response_common, **branch_args,
+                                    )
+                                except RuntimeError as error:
+                                    if "No legal action available" not in str(error):
+                                        raise
+                                    state_invalid_replay = True
+                                    unsupported_world_replays.append({
+                                        "team_cluster": cluster,
+                                        "state_repeat": state_repeat,
+                                        "hidden_world_index": world_branch.get(
+                                            "public_hidden_world_index", 0
+                                        ),
+                                        "opponent_strategy": response_name,
+                                        "candidate": name,
+                                        "action": list(key),
+                                        "unsupported_replay": "no_legal_action_in_resumed_branch",
+                                    })
+                                    break
                                 matches_executed += 1
                                 replay = result["counterfactual_action_data"]
                                 if replay is not None and replay.get("forced_action_accepted") is False:
@@ -471,6 +645,7 @@ def main() -> None:
                                     rejected_candidate_details.append({
                                         "team_cluster": cluster,
                                         "state_repeat": state_repeat,
+                                        "hidden_world_index": world_branch.get("public_hidden_world_index", 0),
                                         "opponent_strategy": response_name,
                                         "candidate": name,
                                         "action": list(key),
@@ -499,13 +674,23 @@ def main() -> None:
                                         f"opponent response {response_name}"
                                     )
                                 outcomes.append(int(result["winner"] == "Headless P1"))
+                              if action_rejected:
+                                break
+                              if state_invalid_replay:
+                                break
+                            if state_invalid_replay:
+                                break
                             if action_rejected:
                                 break
                             outcomes_by_opponent[response_name] = outcomes
                         if action_rejected:
                             rejected_action_keys.add(key)
                             continue
+                        if state_invalid_replay:
+                            break
                         outcome_cache[key] = outcomes_by_opponent
+                    if state_invalid_replay:
+                        break
                     outcomes = [
                         outcome
                         for response_outcomes in outcomes_by_opponent.values()
@@ -548,7 +733,16 @@ def main() -> None:
                         "outcome_rate": float(np.mean(outcomes)),
                         "wins": int(sum(outcomes)),
                         "repeats": len(outcomes),
+                        "public_hidden_worlds": len(branches),
+                        "chance_repeats_per_world": args.chance_repeats,
                     })
+                if state_invalid_replay:
+                    del rows[state_row_start:]
+                    missing_states += 1
+                    missing_state_reasons["invalid_world_replay_no_legal_action"] = (
+                        missing_state_reasons.get("invalid_world_replay_no_legal_action", 0) + 1
+                    )
+                    continue
             if (local_cluster + 1) % 8 == 0:
                 elapsed = max(time.perf_counter() - started, 1e-9)
                 print(json.dumps({
@@ -557,6 +751,7 @@ def main() -> None:
                     "matches_executed": matches_executed,
                     "matches_per_second": matches_executed / elapsed,
                     "missing_states": missing_states,
+                    "missing_state_reasons": missing_state_reasons,
                 }), flush=True)
     if temp_output.exists():
         temp_output.unlink()
@@ -656,6 +851,13 @@ def main() -> None:
         "clusters_requested": args.clusters,
         "states_per_cluster": args.states_per_cluster,
         "chance_repeats": args.chance_repeats,
+        "hidden_worlds_requested": args.hidden_worlds,
+        "hidden_worlds_prepared": hidden_worlds_prepared,
+        "hidden_world_preparation_seconds": hidden_world_preparation_seconds,
+        "hidden_world_prior": (
+            "local_showdown_random_champions_conditioned_on_public_facts"
+            if args.hidden_worlds else "actual_captured_battle_world"
+        ),
         "candidate_mode": args.candidate_mode,
         "preview_strategy": args.preview_strategy,
         "states_captured": len({(r["team_cluster"], r["state_repeat"]) for r in rows}),
@@ -663,8 +865,10 @@ def main() -> None:
         "elapsed_seconds": elapsed,
         "matches_per_second": matches_executed / max(elapsed, 1e-9),
         "missing_states": missing_states,
+        "missing_state_reasons": missing_state_reasons,
         "rejected_candidates": rejected_candidates,
         "rejected_candidate_details": rejected_candidate_details,
+        "unsupported_world_replays": unsupported_world_replays,
         "candidate_summary": summary,
         "candidate_summary_by_opponent": stratified_summary,
         "rows": rows,

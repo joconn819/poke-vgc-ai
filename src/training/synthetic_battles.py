@@ -32,6 +32,10 @@ class TrajectoryStep:
     action: int
     reward: float
     done: bool
+    # Optional fields retain compatibility with older serialized trajectories.
+    terminated: bool = False
+    truncated: bool = False
+    reward_components: Optional[Dict[str, float]] = None
 
 
 @dataclass
@@ -162,6 +166,9 @@ class BattleGenerator:
                 action=action,
                 reward=float(reward),
                 done=done,
+                terminated=bool(terminated),
+                truncated=bool(truncated),
+                reward_components=info.get("reward_components"),
             )
             trajectory.append(step)
             

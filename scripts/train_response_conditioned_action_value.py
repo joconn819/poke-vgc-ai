@@ -59,6 +59,10 @@ def main() -> None:
     parser.add_argument("--patience", type=int, default=12)
     parser.add_argument("--batch-size", type=int, default=256)
     parser.add_argument("--device", choices=("cpu", "cuda"), default="cuda")
+    parser.add_argument(
+        "--heldout-response", action="append", default=[],
+        help="exclude this response head from fitting but score choices against its outcomes",
+    )
     args = parser.parse_args()
     if not 0.05 <= args.test_fraction <= 0.4:
         parser.error("test-fraction must be between 0.05 and 0.4")
@@ -74,7 +78,13 @@ def main() -> None:
     if not raw_rows:
         raise ValueError("counterfactual dataset contains no rows")
 
-    response_names = sorted(raw_rows[0].get("outcomes_by_opponent", {}))
+    evaluation_response_names = sorted(raw_rows[0].get("outcomes_by_opponent", {}))
+    heldout_response_names = set(args.heldout_response)
+    unknown_heldout = heldout_response_names - set(evaluation_response_names)
+    if unknown_heldout:
+        raise ValueError(f"held-out response names are absent from data: {sorted(unknown_heldout)}")
+    response_names = [name for name in evaluation_response_names
+                      if name not in heldout_response_names]
     if len(response_names) < 2:
         raise ValueError("data must include at least two paired opponent response classes")
 
@@ -83,7 +93,7 @@ def main() -> None:
     deduplicated: dict[tuple[int, int, tuple[int, int]], dict] = {}
     for row in raw_rows:
         outcomes_by_response = row.get("outcomes_by_opponent")
-        if not outcomes_by_response or set(outcomes_by_response) != set(response_names):
+        if not outcomes_by_response or set(outcomes_by_response) != set(evaluation_response_names):
             raise ValueError("every candidate must have all paired response outcomes")
         if row.get("native_action_features") is None or row.get("public_context_features") is None:
             raise ValueError("response-conditioned training requires action and public-context features")
@@ -91,7 +101,7 @@ def main() -> None:
                (int(row["action"][0]), int(row["action"][1])))
         normalized = {
             name: [int(value) for value in outcomes_by_response[name]]
-            for name in response_names
+            for name in evaluation_response_names
         }
         prior = deduplicated.get(key)
         if prior is None:
@@ -156,7 +166,7 @@ def main() -> None:
             [float(value) for value in row["outcomes_by_opponent"][name]]
             for row in rows
         ], dtype=np.float32)
-        for name in response_names
+        for name in evaluation_response_names
     }
     row_teams = np.asarray([int(row["team_cluster"]) for row in rows])
     train_row_mask = np.isin(row_teams, list(train_teams))
@@ -268,14 +278,14 @@ def main() -> None:
         base = np.full_like(labels, float(train_labels.mean()))
         baseline_metrics[name] = _binary_metrics(base, labels)
 
-    policy_deltas_by_team = {name: {} for name in response_names}
-    selected_rates_by_team = {name: {} for name in response_names}
-    policy_rates_by_team = {name: {} for name in response_names}
+    policy_deltas_by_team = {name: {} for name in evaluation_response_names}
+    selected_rates_by_team = {name: {} for name in evaluation_response_names}
+    policy_rates_by_team = {name: {} for name in evaluation_response_names}
     selected_worst_delta_by_team: dict[int, list[float]] = {}
     policy_worst_by_team: dict[int, list[float]] = {}
     selected_worst_by_team: dict[int, list[float]] = {}
     equal_weight_worst_delta_by_team: dict[int, list[float]] = {}
-    equal_weight_response_delta_by_team = {name: {} for name in response_names}
+    equal_weight_response_delta_by_team = {name: {} for name in evaluation_response_names}
     robust_selected_actions = 0
     equal_weight_selected_actions = 0
     for (team_cluster, state_repeat), indexes in state_rows.items():
@@ -311,7 +321,7 @@ def main() -> None:
         }
         if selected_position != policy_position:
             robust_selected_actions += 1
-        for response_index, name in enumerate(response_names):
+        for name in evaluation_response_names:
             selected_rate = float(np.mean(selected_row["outcomes_by_opponent"][name][midpoint:]))
             policy_rate = float(np.mean(policy_row["outcomes_by_opponent"][name][midpoint:]))
             selected_worst.append(selected_rate)
@@ -356,7 +366,7 @@ def main() -> None:
             equal_weight_selected_actions += 1
         equal_selected_outcomes = []
         equal_policy_outcomes = []
-        for name in response_names:
+        for name in evaluation_response_names:
             selected_rate = float(np.mean(equal_selected["outcomes_by_opponent"][name][midpoint:]))
             policy_rate = float(np.mean(policy_row["outcomes_by_opponent"][name][midpoint:]))
             equal_selected_outcomes.append(selected_rate)
@@ -386,7 +396,7 @@ def main() -> None:
         return {team: float(np.mean(team_values)) for team, team_values in values.items()}
 
     selection_by_response = {}
-    for index, name in enumerate(response_names):
+    for index, name in enumerate(evaluation_response_names):
         deltas = reduce_team(policy_deltas_by_team[name])
         selection_by_response[name] = {
             "team_clusters": len(deltas),
@@ -403,7 +413,7 @@ def main() -> None:
             "selected_minus_policy": float(np.mean(list(deltas.values()))) if deltas else None,
             "paired_team_cluster_95_ci": _cluster_interval(deltas, args.seed + 201 + index),
         }
-        for index, name in enumerate(response_names)
+        for index, name in enumerate(evaluation_response_names)
     }
     metrics = {
         "team_split": {
@@ -416,6 +426,8 @@ def main() -> None:
         "test_states_selected": len(selected_records),
         "test_action_rows": int(test_row_mask.sum()),
         "response_names": response_names,
+        "evaluation_response_names": evaluation_response_names,
+        "heldout_response_names": sorted(heldout_response_names),
         "chance_split": {
             "training_repeats_per_response": midpoint,
             "test_repeats_per_response": chance_count - midpoint,

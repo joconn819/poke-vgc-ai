@@ -1,0 +1,51 @@
+{
+  "round": 495,
+  "date": "2026-10-31",
+  "status": "multi-world data collected and feasibility fit complete; no promotion",
+  "collection": {
+    "decision_steps": [1, 3, 5],
+    "requested_team_clusters": 72,
+    "usable_states": 36,
+    "usable_states_by_step": {"1": 15, "3": 10, "5": 11},
+    "hidden_worlds_per_state": 4,
+    "chance_repeats_per_world": 2,
+    "hidden_worlds_prepared": 164,
+    "response_classes": ["Max Damage", "Round476 PPO", "Public Counterplay", "Random", "Legacy Counterplay"],
+    "branch_matches": 12374,
+    "aggregate_matches_per_second": 38.412,
+    "workers": 8,
+    "hidden_world_preparation_seconds": 20.609,
+    "rejected_actions": 0,
+    "skipped_states": 36,
+    "skipped_state_reasons": {
+      "forced_switch_request": 26,
+      "decision_not_reached": 5,
+      "invalid_resumed_branch_empty_legal_mask": 5
+    },
+    "prior": "local Showdown random-champions sets conditioned on public preview species and revealed facts"
+  },
+  "feasibility_fit": {
+    "deduplicated_candidate_actions": 302,
+    "states": 36,
+    "train_validation_test_team_clusters": [23, 6, 7],
+    "best_epoch": 2,
+    "validation_action_outcome_brier": 0.220119,
+    "robust_maximin_test_states": 7,
+    "robust_selected_worst_response_win_rate": 17.857,
+    "incumbent_worst_response_win_rate": 10.714,
+    "paired_delta_percentage_points": 7.143,
+    "paired_team_cluster_95_ci_percentage_points": [0.0, 21.429],
+    "interpretation": "The held-out sample is far too small to establish a gain. The candidate is not promoted and Round430 remains the default."
+  },
+  "reproduction": {
+    "collector": "scripts/collect_round495_public_world_action_values.sh",
+    "trainer": "scripts/train_response_conditioned_action_value.py",
+    "collection_data": "training/outputs/phase12_headless/round495_public_world_action_values_24x4x2_20261031_retry3/data.json",
+    "collection_data_url": "https://github.com/joconn819/poke-vgc-ai/blob/master/training/outputs/phase12_headless/round495_public_world_action_values_24x4x2_20261031_retry3/data.json",
+    "fit_report": "training/outputs/phase12_headless/round495_public_world_action_value_fit_20261031/report.json",
+    "fit_report_url": "https://github.com/joconn819/poke-vgc-ai/blob/master/training/outputs/phase12_headless/round495_public_world_action_value_fit_20261031/report.json",
+    "checkpoint_url": "https://github.com/joconn819/poke-vgc-ai/blob/master/training/outputs/phase12_headless/round495_public_world_action_value_fit_20261031/response_conditioned_action_value.pt",
+    "plan": "https://github.com/joconn819/poke-vgc-ai/blob/master/PLAN.md"
+  },
+  "next_gate": "Fix public-state alignment in the five invalid reconstructed branches, add a second public-compatible set prior, then evaluate on at least 128 usable held-out states and a fresh full-match opponent league."
+}

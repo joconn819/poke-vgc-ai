@@ -19,6 +19,10 @@ def main() -> None:
     parser.add_argument("--checkpoint", type=Path)
     parser.add_argument("--candidate-policy-checkpoint", type=Path)
     parser.add_argument("--opponent-checkpoint", type=Path)
+    parser.add_argument(
+        "--additional-opponent-checkpoint", action="append", default=[],
+        metavar="NAME=PATH",
+    )
     parser.add_argument("--team-selection-checkpoint", type=Path)
     parser.add_argument("--output-dir", type=Path, required=True)
     parser.add_argument("--clusters", type=int, required=True)
@@ -33,6 +37,7 @@ def main() -> None:
     parser.add_argument("--seed", type=int, default=2026102802)
     parser.add_argument("--states-per-cluster", type=int, default=2)
     parser.add_argument("--chance-repeats", type=int, default=4)
+    parser.add_argument("--hidden-worlds", type=int, default=0)
     parser.add_argument("--decision-step", type=int, default=3)
     parser.add_argument(
         "--candidate-mode", choices=("broad", "policy_vs_max_damage"),
@@ -49,12 +54,27 @@ def main() -> None:
     args = parser.parse_args()
     if args.clusters < 1 or args.workers < 1 or args.workers > args.clusters:
         parser.error("workers and clusters must be positive, with workers <= clusters")
+    if args.hidden_worlds < 0 or args.hidden_worlds == 1 or args.hidden_worlds % 2:
+        parser.error("hidden-worlds must be zero or an even number of at least two")
     if args.player_strategy == "policy" and args.checkpoint is None:
         parser.error("--checkpoint is required when --player-strategy=policy")
     for path in (args.checkpoint, args.opponent_checkpoint,
                  args.team_selection_checkpoint, args.candidate_policy_checkpoint):
         if path is not None and not path.is_file():
             parser.error(f"checkpoint not found: {path}")
+    additional_policy_names = []
+    for value in args.additional_opponent_checkpoint:
+        if "=" not in value:
+            parser.error("additional opponent checkpoints must use NAME=PATH")
+        name, path_value = value.split("=", 1)
+        path = Path(path_value)
+        if not name.startswith("policy_") or name in additional_policy_names:
+            parser.error("additional opponent names must be unique and start with policy_")
+        if not path.is_file():
+            parser.error(f"additional opponent checkpoint not found: {path}")
+        additional_policy_names.append(name)
+    if args.additional_opponent_checkpoint and args.opponent_checkpoint is None:
+        parser.error("additional opponent checkpoints require --opponent-checkpoint")
     if not (args.showdown_path / "dist" / "sim").is_dir():
         parser.error(f"Showdown simulator not found under {args.showdown_path}")
     args.output_dir.mkdir(parents=True, exist_ok=True)
@@ -77,6 +97,7 @@ def main() -> None:
             "--cluster-offset", str(offset),
             "--states-per-cluster", str(args.states_per_cluster),
             "--chance-repeats", str(args.chance_repeats),
+            "--hidden-worlds", str(args.hidden_worlds),
             "--decision-step", str(args.decision_step),
             "--candidate-mode", args.candidate_mode,
             "--seed", str(args.seed), "--device", args.device,
@@ -94,6 +115,8 @@ def main() -> None:
         if args.opponent_checkpoint is not None:
             command.extend(["--opponent-checkpoint", str(args.opponent_checkpoint)])
             command.append("--paired-opponent-responses")
+            for value in args.additional_opponent_checkpoint:
+                command.extend(["--additional-opponent-checkpoint", value])
             if args.include_public_counterplay_response:
                 command.append("--include-public-counterplay-response")
             if args.include_random_response:
@@ -185,12 +208,22 @@ def main() -> None:
         "clusters_requested": args.clusters,
         "states_per_cluster": args.states_per_cluster,
         "chance_repeats": args.chance_repeats,
+        "hidden_worlds_requested": args.hidden_worlds,
+        "hidden_worlds_prepared": sum(p["hidden_worlds_prepared"] for p in shard_payloads),
+        "hidden_world_preparation_seconds": sum(
+            p["hidden_world_preparation_seconds"] for p in shard_payloads
+        ),
+        "hidden_world_prior": (
+            "local_showdown_random_champions_conditioned_on_public_facts"
+            if args.hidden_worlds else "actual_captured_battle_world"
+        ),
         "candidate_mode": args.candidate_mode,
         "paired_response_classes": (
             (["max_damage", "policy"]
              + (["public_counterplay"] if args.include_public_counterplay_response else [])
              + (["random"] if args.include_random_response else [])
-             + (["counterplay"] if args.include_legacy_counterplay_response else []))
+             + (["counterplay"] if args.include_legacy_counterplay_response else [])
+             + additional_policy_names)
             if args.opponent_checkpoint is not None else []
         ),
         "player_strategy": args.player_strategy,
@@ -202,6 +235,14 @@ def main() -> None:
         "matches_per_second": sum(p["matches_executed"] for p in shard_payloads)
         / max(elapsed, 1e-9),
         "missing_states": sum(p["missing_states"] for p in shard_payloads),
+        "missing_state_reasons": {
+            reason: sum(p.get("missing_state_reasons", {}).get(reason, 0)
+                        for p in shard_payloads)
+            for reason in sorted({
+                reason for p in shard_payloads
+                for reason in p.get("missing_state_reasons", {})
+            })
+        },
         "rejected_candidates": sum(p["rejected_candidates"] for p in shard_payloads),
         "team_clusters": sorted(cluster_ids),
         "worker_shards": [

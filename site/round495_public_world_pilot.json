@@ -1,0 +1,25 @@
+{
+  "round": 495,
+  "date": "2026-10-31",
+  "status": "collector plumbing passed a tiny smoke pilot; no strength conclusion",
+  "requested_states": 8,
+  "captured_states": 5,
+  "skipped_states": 3,
+  "public_hidden_worlds": 2,
+  "worlds_prepared": 10,
+  "branch_matches": 29,
+  "aggregate_matches_per_second": 6.883,
+  "workers": 1,
+  "chance_repeats_per_world": 1,
+  "rejected_actions": 0,
+  "policy_rows_contain_sampled_sets": false,
+  "prior": "local Showdown random-champions set builder conditioned on public preview species and revealed facts",
+  "interpretation": "Protocol smoke result only. Five states are too few to compare policies or establish value-model accuracy. The single-world prior remains limited and no candidate is promoted.",
+  "next_collection": "24 clusters at decision steps 1, 3, and 5; four worlds per state; two chance repeats per world; Max Damage, frozen PPO, Public Counterplay, Random, and legacy Counterplay response classes.",
+  "artifacts": {
+    "pilot": "https://github.com/joconn819/poke-vgc-ai/blob/master/training/outputs/phase12_headless/round495_public_world_smoke_8x2_20261031/data.json",
+    "collector": "https://github.com/joconn819/poke-vgc-ai/blob/master/scripts/collect_midgame_action_counterfactuals.py",
+    "launcher": "https://github.com/joconn819/poke-vgc-ai/blob/master/scripts/collect_round495_public_world_action_values.sh",
+    "plan": "https://github.com/joconn819/poke-vgc-ai/blob/master/PLAN.md"
+  }
+}
