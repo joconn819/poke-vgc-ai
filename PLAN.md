@@ -18047,3 +18047,33 @@ coverage, not another blind teacher-weight sweep.
   action values without mixing correlated worlds across train/test, evaluate
   on fresh team clusters, and require a broad full-match opponent league before
   any selector promotion. Keep Round430 as the active policy until that gate.
+
+### Round497: broad response and hidden-set-prior comparison (in progress)
+
+- A one-state integration pilot ran the same seed under the Showdown Random
+  Champions prior and a uniform prior over observed legal full-set variants.
+  Each captured one state, prepared four hidden worlds, executed 18 branches,
+  and rejected zero actions. Aggregate candidate win estimates differed
+  (policy/max-damage response: 62.5%/50.0% vs 87.5%/87.5%), but this is one
+  team cluster and cannot support a strength or prior-selection conclusion.
+  Artifacts are `/tmp/round497_showdown_random_champions.json` and
+  `/tmp/round497_uniform_unique_full_sets.json`.
+- This is a useful warning about narrow measurements: the smoke pilot uses the
+  `policy_vs_max_damage` candidate ablation, so Max Damage appears prominently
+  in its summary. Do not use this pilot to select an agent. The expanded batch
+  uses broad tactical candidates and paired responses against five classes:
+  Max Damage, frozen Round476 PPO, closed-sheet Public Counterplay, random
+  legal play, and legacy Counterplay. Max Damage is one diagnostic in this
+  set, not the sole training target or promotion gate.
+- In progress: collect 48 clusters at each of decision steps 1, 3, and 5 under
+  each of the two hidden-set priors, with four worlds per state and two paired
+  chance repeats, across eight CPU workers. Use the same cluster seeds under
+  both priors and keep all records from a team cluster together for any
+  train/validation/test split. Compare prior sensitivity on held-out clusters;
+  do not interpret branch rows as independent games.
+- Promotion remains gated on a fresh, side-swapped full-match league across
+  varied opponents and held-out teams. Report per-opponent win rates and
+  confidence intervals, mean and lower-tail performance, invalid actions, and
+  latency. A Max Damage-only gain cannot promote a checkpoint; regressions
+  against the incumbent or broad-policy opponents block promotion even if the
+  Max Damage result improves.

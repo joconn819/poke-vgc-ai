@@ -1,0 +1,42 @@
+{
+  "round": 497,
+  "status": "Broad hidden-set comparison in progress; no policy promoted",
+  "pilot": {
+    "states_per_prior": 1,
+    "worlds_per_prior": 4,
+    "branches_per_prior": 18,
+    "rejected_actions_per_prior": 0,
+    "showdown_prior_policy_win_rate_pct": 62.5,
+    "showdown_prior_max_damage_win_rate_pct": 50.0,
+    "uniform_prior_policy_win_rate_pct": 87.5,
+    "uniform_prior_max_damage_win_rate_pct": 87.5,
+    "interpretation": "One team cluster is far too small to infer strength or choose a prior; these are collector smoke results only."
+  },
+  "collection": {
+    "status": "running",
+    "clusters_per_decision_step_per_prior": 48,
+    "decision_steps": [
+      1,
+      3,
+      5
+    ],
+    "hidden_worlds_per_state": 4,
+    "chance_repeats_per_candidate": 2,
+    "hidden_set_priors": [
+      "showdown_random_champions",
+      "uniform_unique_full_sets"
+    ],
+    "response_classes": [
+      "Max Damage",
+      "Round476 PPO",
+      "Public Counterplay",
+      "random legal",
+      "legacy Counterplay"
+    ],
+    "candidate_set": "broad tactical alternatives",
+    "workers": 8,
+    "device": "CPU"
+  },
+  "interpretation": "Max Damage is one of five counterfactual response classes in this batch. Agent promotion still requires fresh side-swapped full-match evaluation over varied opponents; Max Damage-only gains cannot promote a candidate.",
+  "plan": "https://github.com/joconn819/poke-vgc-ai/blob/master/PLAN.md"
+}
