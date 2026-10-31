@@ -1,0 +1,79 @@
+{
+  "round": 467,
+  "title": "Round467 first-five hybrid fresh opponent league audit",
+  "status": "Completed · exploratory only; mixed transfer evidence",
+  "method": "Raw PPO and first-five Max Damage hybrid were evaluated on identical generated teams, Round402 selector previews, repeat indices, and side-swapped games. Each opponent screen used 256 team-pair clusters with two repeated outcomes (1,024 games per arm). Paired 95% intervals use 10,000 bootstrap resamples over team clusters. Showdown battle RNG is server-side, so the outcome randomness is not identical between arms.",
+  "intervention": "For the evaluated Round467 policy only, replace decision indices 0–4 with the legal Max Damage scorer; then return to masked PPO policy logits.",
+  "opponents": [
+    {
+      "opponent": "Random",
+      "opponent_checkpoint": null,
+      "raw_score_percent": 96.09,
+      "hybrid_score_percent": 97.85,
+      "paired_delta_pp": 1.76,
+      "paired_ci95_pp": [
+        0.49,
+        3.03
+      ],
+      "team_clusters": 256,
+      "games_per_arm": 1024,
+      "raw_games_per_second": 9.01,
+      "hybrid_games_per_second": 10.07,
+      "hybrid_max_damage_overrides": 4835,
+      "timeouts_or_errors_raw": 0,
+      "timeouts_or_errors_hybrid": 0,
+      "action_adjustments_raw": 0,
+      "action_adjustments_hybrid": 0,
+      "seed_base": 20300000,
+      "artifact_prefix": "training/outputs/phase12_headless/round467_hybrid_fresh_league_256x2_20261030/random"
+    },
+    {
+      "opponent": "Legacy Counterplay",
+      "opponent_checkpoint": null,
+      "raw_score_percent": 40.72,
+      "hybrid_score_percent": 33.98,
+      "paired_delta_pp": -6.74,
+      "paired_ci95_pp": [
+        -11.52,
+        -1.86
+      ],
+      "team_clusters": 256,
+      "games_per_arm": 1024,
+      "raw_games_per_second": 6.14,
+      "hybrid_games_per_second": 7.49,
+      "hybrid_max_damage_overrides": 5107,
+      "timeouts_or_errors_raw": 0,
+      "timeouts_or_errors_hybrid": 0,
+      "action_adjustments_raw": 0,
+      "action_adjustments_hybrid": 0,
+      "seed_base": 20400000,
+      "artifact_prefix": "training/outputs/phase12_headless/round467_hybrid_fresh_league_256x2_20261030/counterplay"
+    },
+    {
+      "opponent": "Round430 PPO",
+      "opponent_checkpoint": "Round430",
+      "raw_score_percent": 49.51,
+      "hybrid_score_percent": 61.62,
+      "paired_delta_pp": 12.11,
+      "paired_ci95_pp": [
+        7.23,
+        16.99
+      ],
+      "team_clusters": 256,
+      "games_per_arm": 1024,
+      "raw_games_per_second": 3.53,
+      "hybrid_games_per_second": 7.2,
+      "hybrid_max_damage_overrides": 5078,
+      "timeouts_or_errors_raw": 0,
+      "timeouts_or_errors_hybrid": 0,
+      "action_adjustments_raw": 0,
+      "action_adjustments_hybrid": 0,
+      "seed_base": 20500000,
+      "artifact_prefix": "training/outputs/phase12_headless/round467_hybrid_fresh_league_256x2_20261030/policy"
+    }
+  ],
+  "interpretation": "The override transfers positively against a random policy and Round430 PPO, but significantly regresses against the legacy Counterplay heuristic. It is opponent-sensitive and should not be called generally stronger, robust, or optimal. A larger league or mixed-policy training objective is needed before promoting it. The win-probability head was not used to select actions.",
+  "runtime_note": "Eight-worker evaluation throughput was 9.01/10.07 games/s raw/hybrid vs Random, 6.14/7.49 vs legacy Counterplay, and 3.53/7.20 vs Round430 PPO. One raw PPO-vs-PPO worker took 290 s while the others were about 115 s, showing long-tail batch cost. Treat these as workload-dependent evaluation rates, not training rollout throughput.",
+  "artifacts": "round467_hybrid_league.json",
+  "bootstrap_report": "Each opponent directory contains hybrid_minus_raw.json; detailed paired summaries and worker logs are in the local training output directory listed by artifact_prefix."
+}

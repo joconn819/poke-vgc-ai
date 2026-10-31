@@ -17030,3 +17030,34 @@ coverage, not another blind teacher-weight sweep.
   not used to select actions in either arm.
 - Raw paired artifacts and comparisons:
   `training/outputs/phase12_headless/round467_opening_first5_intervention_transfer_128x2_seed20261030/`.
+
+
+### Round467 first-five hybrid: fresh opponent league audit (2026-10-30)
+
+- Compared raw Round467 PPO with the first-five Max Damage override against
+  random, legacy Counterplay, and Round430 PPO on fresh, opponent-specific seed
+  ranges. All arms used the Round402 team selector, identical generated teams,
+  previews, repeat indices, and side-swapped games. Each screen covered 256
+  team-pair clusters, two outcome repeats, and 1,024 completed games per arm.
+  Paired intervals use 10,000 team-cluster bootstrap samples; Showdown battle
+  RNG is server-side and is not exactly shared between arms.
+- Raw/hybrid scores and paired differences: Random 96.09%/97.85%, +1.76 pp
+  [ +0.49, +3.03 ]; legacy Counterplay 40.72%/33.98%, −6.74 pp
+  [ −11.52, −1.86 ]; Round430 PPO 49.51%/61.62%, +12.11 pp
+  [ +7.23, +16.99 ]. All games completed without timeouts, errors, or action
+  corrections. The hybrid replaced 4,835 / 5,107 / 5,078 legal decisions in
+  these three screens, respectively.
+- This is clear opponent sensitivity: the opening override helps vs Round430
+  but regresses vs legacy Counterplay. Do not promote it as generally stronger
+  or optimal based on this evidence. Keep Round430 as the validated learned
+  incumbent; use Round467 hybrid only as an experimental candidate until a
+  broader league and approximate best-response audit establish its lower-tail
+  behavior. The win-probability head remains auxiliary and does not select
+  actions.
+- Eight-worker evaluation throughput raw/hybrid: 9.01/10.07 games/s vs Random,
+  6.14/7.49 vs legacy Counterplay, and 3.53/7.20 vs Round430. The PPO raw arm
+  had one long-tail shard at 290 s versus roughly 115 s for the other shards;
+  therefore these rates vary with battle length and are not training rates.
+- Artifacts: `training/outputs/phase12_headless/
+  round467_hybrid_fresh_league_256x2_20261030/`. Published summary: `site/
+  round467_hybrid_league.json`.
