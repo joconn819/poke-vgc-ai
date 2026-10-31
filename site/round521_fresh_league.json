@@ -1,0 +1,125 @@
+{
+  "baseline": "Round430 hard-opponent auxiliary PPO",
+  "candidate": "Round520 opening-teacher mixed-population PPO",
+  "method": "128 fresh team-pair clusters, one outcome repeat per cluster, side-swapped, identical seeds/teams/previews/selectors for both checkpoints. Paired confidence intervals bootstrap team-pair clusters. Showdown battle randomness is server-side and is not identical between arms.",
+  "opponent_classes": [
+    "Random",
+    "Max Damage",
+    "Counterplay",
+    "Public Counterplay",
+    "Round476 PPO",
+    "Round485 PPO"
+  ],
+  "opponents": {
+    "counterplay": {
+      "cluster_ci95_pp": [
+        -3.516,
+        5.078
+      ],
+      "matched_cases": 128,
+      "matched_team_clusters": 128,
+      "paired_delta_pp": 0.781,
+      "round430_action_adjustments": 0,
+      "round430_games_per_second": 4.627,
+      "round430_score_pct": 26.562,
+      "round430_timeouts_or_errors": 0,
+      "round520_action_adjustments": 0,
+      "round520_games_per_second": 5.282,
+      "round520_score_pct": 27.344,
+      "round520_timeouts_or_errors": 0
+    },
+    "max_damage": {
+      "cluster_ci95_pp": [
+        -3.516,
+        5.078
+      ],
+      "matched_cases": 128,
+      "matched_team_clusters": 128,
+      "paired_delta_pp": 0.781,
+      "round430_action_adjustments": 0,
+      "round430_games_per_second": 7.366,
+      "round430_score_pct": 45.312,
+      "round430_timeouts_or_errors": 0,
+      "round520_action_adjustments": 0,
+      "round520_games_per_second": 5.013,
+      "round520_score_pct": 46.094,
+      "round520_timeouts_or_errors": 0
+    },
+    "public_counterplay": {
+      "cluster_ci95_pp": [
+        -4.688,
+        3.125
+      ],
+      "matched_cases": 128,
+      "matched_team_clusters": 128,
+      "paired_delta_pp": -0.781,
+      "round430_action_adjustments": 0,
+      "round430_games_per_second": 6.022,
+      "round430_score_pct": 42.969,
+      "round430_timeouts_or_errors": 0,
+      "round520_action_adjustments": 0,
+      "round520_games_per_second": 7.514,
+      "round520_score_pct": 42.188,
+      "round520_timeouts_or_errors": 0
+    },
+    "random": {
+      "cluster_ci95_pp": [
+        -3.906,
+        0.781
+      ],
+      "matched_cases": 128,
+      "matched_team_clusters": 128,
+      "paired_delta_pp": -1.562,
+      "round430_action_adjustments": 0,
+      "round430_games_per_second": 4.378,
+      "round430_score_pct": 96.094,
+      "round430_timeouts_or_errors": 0,
+      "round520_action_adjustments": 0,
+      "round520_games_per_second": 3.875,
+      "round520_score_pct": 94.531,
+      "round520_timeouts_or_errors": 0
+    },
+    "round476": {
+      "cluster_ci95_pp": [
+        -1.562,
+        8.594
+      ],
+      "matched_cases": 128,
+      "matched_team_clusters": 128,
+      "paired_delta_pp": 3.516,
+      "round430_action_adjustments": 0,
+      "round430_games_per_second": 2.522,
+      "round430_score_pct": 41.797,
+      "round430_timeouts_or_errors": 0,
+      "round520_action_adjustments": 0,
+      "round520_games_per_second": 3.331,
+      "round520_score_pct": 45.312,
+      "round520_timeouts_or_errors": 0
+    },
+    "round485": {
+      "cluster_ci95_pp": [
+        -2.344,
+        5.469
+      ],
+      "matched_cases": 128,
+      "matched_team_clusters": 128,
+      "paired_delta_pp": 1.562,
+      "round430_action_adjustments": 0,
+      "round430_games_per_second": 3.221,
+      "round430_score_pct": 54.688,
+      "round430_timeouts_or_errors": 0,
+      "round520_action_adjustments": 0,
+      "round520_games_per_second": 4.504,
+      "round520_score_pct": 56.25,
+      "round520_timeouts_or_errors": 0
+    }
+  },
+  "paired_cases_per_checkpoint_per_opponent": 128,
+  "promotion": "Screening evidence only. Require independent confirmation and broad opponent/held-out-team evidence before promotion.",
+  "reproduction": "scripts/evaluate_round520_fresh_league_128x1.sh",
+  "round430_checkpoint": "/home/justin/p/poke_learning_2/training/outputs/phase12_headless/round430_hard_opponent_auxiliary_ppo_20k_20261030/checkpoints/latest.pt",
+  "round520_checkpoint": "/home/justin/p/poke_learning_2/training/outputs/phase12_headless/round520_opening5_teacher_population_20k_20261031/checkpoints/latest.pt",
+  "side_swapped_matches_per_checkpoint_per_opponent_requested": 256,
+  "status": "Complete; fresh six-class screen",
+  "workers": 8
+}

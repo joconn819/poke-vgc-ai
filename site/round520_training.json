@@ -1,0 +1,42 @@
+{
+  "status": "Complete; checkpoint not promoted",
+  "run": "round520_opening5_teacher_population_20k_20261031",
+  "games": 20000,
+  "start_checkpoint": "Round430",
+  "opponent_mix": {
+    "random": 0.1,
+    "max_damage": 0.2,
+    "legacy_counterplay": 0.25,
+    "public_counterplay": 0.25,
+    "frozen_policy_pool": 0.2
+  },
+  "teacher": "Half of Max Damage matches got Max Damage actions for decisions 1\u20135; 10% of all games. Teacher-forced steps excluded from PPO policy loss.",
+  "audit": {
+    "trainable_games": 20000,
+    "safe_player_view_rows": 40000,
+    "valid_ppo_rows": 20000,
+    "trainable_transitions": 165841,
+    "errors": 0,
+    "malformed_matches_replaced": 1
+  },
+  "runtime": {
+    "rollout_seconds": 543.96,
+    "rollout_games_per_second": 36.77,
+    "workers": 8,
+    "audit_and_recovery_seconds": 251.54,
+    "end_to_end_seconds": 906.36,
+    "end_to_end_games_per_second": 22.07,
+    "peak_aggregate_rss_mb": 9311
+  },
+  "ppo": {
+    "optimizer_steps": 177,
+    "optimizer_step_budget": 1296,
+    "stop_reason": "KL limit",
+    "approx_kl": 0.0401
+  },
+  "checkpoint": "training/outputs/phase12_headless/round520_opening5_teacher_population_20k_20261031/checkpoints/latest.pt",
+  "six_class_screen": "round521_fresh_league.json",
+  "opening_transfer": "round522_first5_transfer.json",
+  "command": "scripts/train_round520_opening5_teacher_population_20k.sh",
+  "output": "training/outputs/phase12_headless/round520_opening5_teacher_population_20k_20261031/"
+}

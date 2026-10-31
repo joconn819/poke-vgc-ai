@@ -1,0 +1,22 @@
+{
+  "status": "Complete; Round520 first-five transfer screen",
+  "method": "128 fresh team-pair clusters, two outcome repeats, side-swapped. Same Round520 checkpoint in both arms; first-five legal Max Damage actions replace the policy only in the intervention arm. Paired cluster bootstrap.",
+  "raw_score_pct": 29.102,
+  "first5_score_pct": 41.406,
+  "paired_delta_pp": 12.305,
+  "paired_ci95_pp": [
+    5.273,
+    19.531
+  ],
+  "matched_team_clusters": 128,
+  "matched_cases": 256,
+  "raw_games_per_second": 5.765,
+  "first5_games_per_second": 8.824,
+  "raw_timeouts_or_errors": 0,
+  "first5_timeouts_or_errors": 0,
+  "raw_action_adjustments": 0,
+  "first5_action_adjustments": 0,
+  "first5_overrides": 2524,
+  "raw_checkpoint": "/home/justin/p/poke_learning_2/training/outputs/phase12_headless/round520_opening5_teacher_population_20k_20261031/checkpoints/latest.pt",
+  "reproduction": "scripts/evaluate_round520_first5_transfer_128x2.sh"
+}

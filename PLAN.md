@@ -18894,18 +18894,22 @@ coverage, not another blind teacher-weight sweep.
   two matches used the ordinary target fallback (three corrections total).
 - Failed-run output: `training/outputs/phase12_headless/round519_opening5_teacher_population_20k_20261031/`.
 
-### Round520: robust PPO with limited first-five teacher data (rollouts active)
+### Round520: robust PPO with limited first-five teacher data (complete; not promoted)
 
-- Restarted the same broad-mix 20,000-game configuration from Round430 after
-  both protocol fixes. The mix is 10% random, 20% Max Damage, 25% legacy
-  Counterplay, 25% Public Counterplay, and 20% frozen policy pool. Half of Max
-  Damage games receive labels for decisions 1–5 (about 10% of all games); forced
-  teacher actions are excluded from PPO policy-gradient loss.
-- The latest process check confirms rollout workers active; PPO updates have not
-  yet started.
-- Run: `scripts/train_round520_opening5_teacher_population_20k.sh`; output:
-  `training/outputs/phase12_headless/round520_opening5_teacher_population_20k_20261031/`.
-- After a valid checkpoint is produced, require fresh paired, side-swapped
-  matches against Max Damage, both Counterplay baselines, Random, and a held-out
-  PPO. Report each result plus worst/mean/lower-tail performance; keep Round430
-  as default unless broad results support promotion.
+- Trained 20,000 games from Round430 using 10% random, 20% Max Damage, 25% legacy Counterplay, 25% Public Counterplay, and 20% frozen policy pool. Half of Max Damage games received teacher labels for decisions 1–5 (10% of all games); teacher-forced actions were excluded from PPO policy-gradient loss.
+- Audit passed: 20,000 trainable games, 40,000 safe/player-view rows, 20,000 valid PPO rows, 165,841 trainable transitions, zero errors. Automatic fresh-seed recovery replaced one malformed/timed-out match.
+- Rollouts: 543.96 seconds at 36.77 aggregate games/s across eight workers. Audit and recovery: 251.54 seconds. End to end: 906.36 seconds / 22.07 games/s. Peak aggregate RSS: 9,311 MB. PPO stopped at its KL limit after 177 of 1,296 planned optimizer steps (approx KL 0.0401).
+- Checkpoint: `training/outputs/phase12_headless/round520_opening5_teacher_population_20k_20261031/checkpoints/latest.pt`.
+- Fresh six-class screen (128 team clusters/class, one repeat, side-swapped) showed no significant paired change from Round430 in any class. Round520 scored 46.09% vs Max Damage (+0.78 pp, 95% CI [-3.52,+5.08]); Random 94.53%, Counterplay 27.34%, Public Counterplay 42.19%, Round476 45.31%, and Round485 56.25%. All paired intervals include zero. Keep Round430 as default.
+
+### Round521: fresh six-class league screen (complete)
+
+- No timeouts, protocol errors, or action corrections. No opponent class showed a statistically supported paired change. The Max Damage score remains below 50%; this is evidence of a play-quality gap, not optimal play.
+- Report: `training/outputs/phase12_headless/round521_round520_fresh_league_128x1_20261031/report.json`.
+
+### Round522: first-five teacher transfer diagnostic (complete)
+
+- On 128 fresh team-pair clusters, two repeats and side swaps, Round520 scored 29.10% raw against Max Damage. Replacing the first five decisions with Max Damage actions raised it to 41.41%, a paired +12.30 pp [95% cluster interval +5.27,+19.53]. Both arms had zero errors, timeouts, or action adjustments.
+- This supports a substantial opening-policy weakness and indicates Round520 did not learn enough from sparse opening labels. Even the override remains below 50%; it is a diagnostic, not a solution.
+- Report: `training/outputs/phase12_headless/round522_round520_first5_transfer_128x2_20261031/report.json`.
+- Next: trace which opening decisions and state transitions create the loss gap; run a controlled, higher-signal opening-imitation/update experiment from Round430 while keeping a diverse opponent mixture. Audit targets and action semantics first, then evaluate on fresh side-swapped teams against Max Damage and the full league. Keep Round430 until replicated evidence supports promotion, and report its baseline weakness directly.
