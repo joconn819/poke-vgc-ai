@@ -1247,12 +1247,12 @@
     }
   },
   "latest_run": {
-    "round": 472,
-    "status": "Fresh mixed-opponent PPO · evaluated, not promoted",
-    "summary": "Round472 completed a fresh 20,000-game PPO update and a paired screen on 256 team clusters against five opponent classes. The candidate showed no confirmed overall improvement; Round430 remains the validated play default.",
-    "games": "20,000 audited games · 167,000 transitions",
-    "epochs": "4 PPO passes · 1,308 optimizer steps",
-    "evaluation": "256 clusters × 2 side-swapped outcomes vs five opponents · no promotion"
+    "round": 473,
+    "status": "Fresh hard-opponent mixed PPO · training in progress",
+    "summary": "A new 20,000-game update from Round430 is underway. The mixture is 25% each Max Damage, legacy Counterplay, Public Counterplay, and a five-checkpoint PPO pool; random-opponent training was removed because the incumbent already scores about 95% there.",
+    "games": "20,000 planned fresh games",
+    "epochs": "4 PPO passes planned",
+    "evaluation": "Held-out five-opponent paired league planned after audit and training"
   },
   "method": "Native self-play PPO for in-battle decisions. Terminal win/loss remains the main objective; win-probability and hidden-set prediction are auxiliary tasks. Search comes after a stronger policy.",
   "jax_decision": "Round430 has a confirmed self-play head-to-head lift over Round424, but external-opponent screens remain inconclusive. Prioritize measured inference batching, observation throughput, and rollouts; keep equilibrium-oriented opponent coverage and defer a JAX/GPU engine rewrite until its end-to-end payoff is measured.",
@@ -3441,5 +3441,23 @@
     ],
     "evaluation_games_per_second": "3.51–5.78 across eight-worker opponent arms",
     "artifact": "round472_evaluation.json"
+  },
+  "round473_current_training": {
+    "round": "473",
+    "status": "Fresh hard-opponent mixed PPO · rollouts in progress",
+    "summary": "Round430 remains the learner start and incumbent. Training uses 25% Max Damage, 25% legacy Counterplay, 25% Public Counterplay, and 25% pool opponents (Round430/465/468/471/472).",
+    "opponent_mix": {
+      "Random": 0,
+      "Max Damage": 25,
+      "Legacy Counterplay": 25,
+      "Public Counterplay": 25,
+      "Policy pool": 25
+    },
+    "training": "20,000 fresh games; four PPO passes, learning rate 5e-5, minibatch 512, terminal rewards, eight CPU rollout workers, CUDA optimizer.",
+    "seed": 202610473,
+    "speed_status": "Rollouts have started; full-run games/s and peak RSS will be recorded on completion.",
+    "candidate": "Round430 remains the validated play default until held-out paired results support promotion.",
+    "artifacts": "training/outputs/phase12_headless/round473_fresh_hard_mixed_ppo_20k_20261031/",
+    "launcher": "scripts/train_round473_fresh_hard_mixed_ppo_20k.sh"
   }
 }

@@ -17218,3 +17218,34 @@ coverage, not another blind teacher-weight sweep.
   and `scripts/evaluate_round472_fresh_seed_league_256x2.sh`.
 - Training output: `training/outputs/phase12_headless/round472_fresh_robust_mixed_ppo_20k_20261031/`.
 - Evaluation output: `training/outputs/phase12_headless/round472_fresh_seed_league_256x2_20261031/`.
+
+### Round473: hard-opponent mixed PPO (training in progress; 2026-10-31)
+
+- The Round472 league did not establish an overall gain, so keep Round430 as
+  the learner start and current incumbent. Its Public Counterplay result is a
+  useful signal, but not enough to promote the candidate after five-opponent
+  comparisons and multiplicity adjustment.
+- Round473 collects 20,000 fresh games with a 25% Max Damage, 25% legacy
+  Counterplay, 25% Public Counterplay, and 25% five-checkpoint policy-pool
+  mixture. The pool contains Round430, Round465, Round468, Round471, and
+  Round472. Random-opponent play is omitted because the current policy already
+  scores about 95% there; its share is reassigned evenly to hard-opponent
+  training. This retains a mixed response pool instead of creating a specific
+  exploiter.
+- The learner starts from Round430 and uses the Round402 preview selectors,
+  four PPO passes, 5e-5 learning rate, minibatch 512, terminal win/loss reward,
+  eight CPU rollout workers, and CUDA optimization. Fresh rollout seed:
+  `202610473`.
+- Reproducible launcher: `scripts/train_round473_fresh_hard_mixed_ppo_20k.sh`.
+  Output directory: `training/outputs/phase12_headless/round473_fresh_hard_mixed_ppo_20k_20261031/`.
+- After audit and PPO complete, evaluate against Round430 with the same five
+  opponent classes, a fresh team seed, paired side swaps, and two outcome
+  repeats across 256 team-pair clusters. Keep Round430 as default unless the
+  multi-opponent evidence supports promotion.
+- Speed/bottleneck tracking: record aggregate rollout games/s, complete
+  input-to-checkpoint games/s, peak aggregate RSS, and per-opponent decision
+  latency. Round472 rollout was 38.51 games/s but its full-match evaluation
+  was 3.51–5.78 games/s on eight workers; retain that distinction when sizing
+  the next evaluation. Inference, opponent scoring, and observation encoding
+  are the measured training-time targets; full-match worker scaling remains to
+  be profiled.
