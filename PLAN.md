@@ -18071,6 +18071,13 @@ coverage, not another blind teacher-weight sweep.
   both priors and keep all records from a team cluster together for any
   train/validation/test split. Compare prior sensitivity on held-out clusters;
   do not interpret branch rows as independent games.
+- The first phase completed at decision step 1 under the Showdown prior:
+  34/48 usable states, 136 worlds, 12,082 branch matches, 38.219 matches/s
+  over eight workers, 16.99 seconds of world preparation, and zero rejected
+  candidates. Fourteen states were skipped because they were forced-switch
+  requests. This is the first full-collection throughput remeasurement after
+  the Round496 parser repair and is essentially unchanged from Round495's
+  38.412 branch matches/s; Showdown branch resolution remains the bottleneck.
 - Promotion remains gated on a fresh, side-swapped full-match league across
   varied opponents and held-out teams. Report per-opponent win rates and
   confidence intervals, mean and lower-tail performance, invalid actions, and
