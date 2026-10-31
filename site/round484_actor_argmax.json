@@ -1,0 +1,56 @@
+{
+  "status": "Reject the Round482 regret-matching actor after corrected public-preview action screen",
+  "invalidated_prior_run": "Round483 labels are invalid for actor-action conclusions: candidate inference got an empty opponent token roster because its species helper did not handle dictionary teams. Do not use those action-choice metrics.",
+  "method": "Round484 supplied only the six species revealed at team preview, explicitly labeled duplicate actions, and tested the candidate checkpoint’s full legal-action argmax. It uses the first decision only; Round430 takes subsequent actions.",
+  "collection": {
+    "states": 128,
+    "chance_repeats_per_candidate": 8,
+    "heldout_chance_repeats": 4,
+    "branch_matches": 18976,
+    "aggregate_matches_per_second": 31.72,
+    "workers": 4,
+    "missing_states": 0,
+    "rejected_actions": 0,
+    "explicit_actor_argmax_matches": 128,
+    "states_actor_action_changed": 29,
+    "mean_candidate_probability_mass": 0.6321
+  },
+  "paired_outcomes": {
+    "Max Damage": {
+      "delta_pp": -1.37,
+      "ci95_pp": [
+        -3.32,
+        0.39
+      ]
+    },
+    "Round476 PPO": {
+      "delta_pp": 0.0,
+      "ci95_pp": [
+        -2.93,
+        2.93
+      ]
+    },
+    "Public Counterplay": {
+      "delta_pp": -0.78,
+      "ci95_pp": [
+        -3.52,
+        1.56
+      ]
+    },
+    "statewise_worst_response": {
+      "delta_pp": -4.69,
+      "ci95_pp": [
+        -7.81,
+        -2.15
+      ]
+    }
+  },
+  "interpretation": "The corrected full-argmax intervention is significantly worse on statewise worst response and has no supported gain against any one response class. Do not promote or run a full-match screen. Counterfactual target quality / response coverage remains the bottleneck.",
+  "artifact": "round484_actor_argmax.json",
+  "plan": "../PLAN.md",
+  "reproduction": {
+    "collector": "https://github.com/joconn819/poke-vgc-ai/blob/master/scripts/collect_round484_public_preview_actor_counterfactuals.sh",
+    "analysis": "https://github.com/joconn819/poke-vgc-ai/blob/master/scripts/analyze_round484_actor_argmax_outcomes.py",
+    "counterfactual_collector": "https://github.com/joconn819/poke-vgc-ai/blob/master/scripts/collect_midgame_action_counterfactuals.py"
+  }
+}

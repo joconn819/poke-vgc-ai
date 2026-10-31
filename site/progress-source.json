@@ -263,9 +263,9 @@
   ],
   "speed": {
     "games_per_second": "38.40 standard PPO rollout",
-    "context": "Round480 one-turn search: Max Damage 1,024 complete matches / 230.11 s = 4.45 matches/s; Public Counterplay 512 matches / 149.50 s = 3.42 matches/s at one chance sample. Four samples on Public Counterplay reduced speed to 1.80 matches/s and raised median decision latency to 782 ms (p95 1,107 ms). Separate from standard PPO rollout (38.40 games/s) and Round479 branch collection (30.01 matches/s). Round482 counterfactual collection ran at 30.01 games/s (Round479, 38,672 branches) and 34.49 games/s (Round481, 37,264 branches), across four CPU workers; these branch rates are not full-match evaluation or PPO rollout rates.",
+    "context": "Round480 one-turn search: Max Damage 1,024 complete matches / 230.11 s = 4.45 matches/s; Public Counterplay 512 matches / 149.50 s = 3.42 matches/s at one chance sample. Four samples on Public Counterplay reduced speed to 1.80 matches/s and raised median decision latency to 782 ms (p95 1,107 ms). Separate from standard PPO rollout (38.40 games/s) and Round479 branch collection (30.01 matches/s). Round482 counterfactual collection ran at 30.01 games/s (Round479, 38,672 branches) and 34.49 games/s (Round481, 37,264 branches), across four CPU workers; these branch rates are not full-match evaluation or PPO rollout rates. Round484 corrected action-coverage collection ran at 31.72 branch matches/s aggregate across four CPU workers (18,976 matches, 128 states, eight repeats; zero invalid actions).",
     "decision_latency": "131–204 ms per episode across hard-opponent classes",
-    "current_bottleneck": "Round482 counterfactual targets do not transfer to the actor: regret matching improves mean payoff vs each sampled response, but worsens held-out statewise worst response; conservative distillation mostly preserves incumbent actions. Focus next on policy projection / richer state coverage before large training. Search remains off by default.",
+    "current_bottleneck": "The corrected Round484 full-legal-action intervention from the Round482 regret-matching actor is significantly worse on statewise worst response (−4.69 pp [−7.81,−2.15]); no opponent-class gain is supported. Focus on better response coverage and payoff targets before scaling policy training or search.",
     "gpu_status": "RTX 4060 used for PPO optimization; rollout decisions and headless simulator remain CPU-side",
     "profile_context": "Round467 completed 20,000 rollouts: per-worker speed 7.53/5.34/4.84 games/s for Max Damage/policy/Public Counterplay. PPO preparation took 89 s; the KL-stopped CUDA optimizer ran about 5 s. Aggregate rollout wall time was not retained.",
     "active_training_profile": {
@@ -4349,6 +4349,62 @@
       "audit": "https://github.com/joconn819/poke-vgc-ai/blob/master/scripts/analyze_round481_regret_matching_targets.py",
       "train": "https://github.com/joconn819/poke-vgc-ai/blob/master/scripts/train_round482_combined_regret_matching_policy.sh",
       "trainer": "https://github.com/joconn819/poke-vgc-ai/blob/master/scripts/train_counterfactual_policy_update.py"
+    }
+  },
+  "round484_actor_action_audit": {
+    "status": "Reject the Round482 regret-matching actor after corrected public-preview action screen",
+    "invalidated_prior_run": "Round483 labels are invalid for actor-action conclusions: candidate inference got an empty opponent token roster because its species helper did not handle dictionary teams. Do not use those action-choice metrics.",
+    "method": "Round484 supplied only the six species revealed at team preview, explicitly labeled duplicate actions, and tested the candidate checkpoint’s full legal-action argmax. It uses the first decision only; Round430 takes subsequent actions.",
+    "collection": {
+      "states": 128,
+      "chance_repeats_per_candidate": 8,
+      "heldout_chance_repeats": 4,
+      "branch_matches": 18976,
+      "aggregate_matches_per_second": 31.72,
+      "workers": 4,
+      "missing_states": 0,
+      "rejected_actions": 0,
+      "explicit_actor_argmax_matches": 128,
+      "states_actor_action_changed": 29,
+      "mean_candidate_probability_mass": 0.6321
+    },
+    "paired_outcomes": {
+      "Max Damage": {
+        "delta_pp": -1.37,
+        "ci95_pp": [
+          -3.32,
+          0.39
+        ]
+      },
+      "Round476 PPO": {
+        "delta_pp": 0.0,
+        "ci95_pp": [
+          -2.93,
+          2.93
+        ]
+      },
+      "Public Counterplay": {
+        "delta_pp": -0.78,
+        "ci95_pp": [
+          -3.52,
+          1.56
+        ]
+      },
+      "statewise_worst_response": {
+        "delta_pp": -4.69,
+        "ci95_pp": [
+          -7.81,
+          -2.15
+        ]
+      }
+    },
+    "interpretation": "The corrected full-argmax intervention is significantly worse on statewise worst response and has no supported gain against any one response class. Do not promote or run a full-match screen. Counterfactual target quality / response coverage remains the bottleneck.",
+    "artifact": "round484_actor_argmax.json",
+    "plan": "../PLAN.md",
+    "reproduction": {
+      "collector": "https://github.com/joconn819/poke-vgc-ai/blob/master/scripts/collect_round484_public_preview_actor_counterfactuals.sh",
+      "analysis": "https://github.com/joconn819/poke-vgc-ai/blob/master/scripts/analyze_round484_actor_argmax_outcomes.py",
+      "counterfactual_collector": "https://github.com/joconn819/poke-vgc-ai/blob/master/scripts/collect_midgame_action_counterfactuals.py"
     }
   }
 }

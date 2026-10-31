@@ -228,9 +228,50 @@ def _candidate_log_probs(model: TransformerPolicy, output, state: dict,
     return torch.stack(result)
 
 
+def _full_policy_argmax(model: TransformerPolicy, output, state: dict,
+                        device: torch.device) -> tuple[int, int]:
+    """Return the deterministic greedy pair across every legal native action."""
+    width = len(state["legal_action_mask"]) // 2
+    legal = np.asarray(state["legal_action_mask"], dtype=np.int8)
+    masks = []
+    for slot in range(2):
+        padded = np.zeros(126, dtype=bool)
+        padded[:width] = legal[slot * width:(slot + 1) * width].astype(bool)
+        masks.append(torch.as_tensor(padded, dtype=torch.bool, device=device))
+    first_logits = output.native_action_logits[0, 0]
+    first_log_probs = torch.log_softmax(first_logits.masked_fill(~masks[0], -torch.inf), dim=-1)
+    second_base = output.native_action_logits[:, 1]
+    best_score = -torch.inf
+    best_action: tuple[int, int] | None = None
+    for first_action in torch.nonzero(masks[0], as_tuple=False).flatten().tolist():
+        second_mask = masks[1].clone()
+        if first_action == 0:
+            second_mask[0] = False
+        elif 1 <= first_action <= 6:
+            second_mask[first_action] = False
+        if not second_mask.any():
+            second_mask = masks[1]
+        previous = torch.tensor([first_action], dtype=torch.long, device=device)
+        logits = model.condition_native_second_action_logits(
+            second_base, output.state_context, previous
+        )[0]
+        second_log_probs = torch.log_softmax(
+            logits.masked_fill(~second_mask, -torch.inf), dim=-1
+        )
+        second_action = int(torch.argmax(second_log_probs).item())
+        score = first_log_probs[first_action] + second_log_probs[second_action]
+        if score > best_score:
+            best_score = score
+            best_action = (int(first_action), second_action)
+    if best_action is None:
+        raise ValueError("policy observation has no legal joint action")
+    return best_action
+
+
 def _state_loss(model: TransformerPolicy, batch_states: list[dict],
                 targets: list[np.ndarray], inputs: list[dict[str, torch.Tensor]],
-                device: torch.device, kl_coefficient: float) -> torch.Tensor:
+                device: torch.device, kl_coefficient: float,
+                projection_objective: str) -> torch.Tensor:
     batched = {
         key: torch.stack([item[key] for item in inputs]).to(device)
         for key in inputs[0]
@@ -249,22 +290,41 @@ def _state_loss(model: TransformerPolicy, batch_states: list[dict],
             [action["old_logp"] for action in state["actions"]],
             dtype=new_logp.dtype, device=device,
         )
-        old_prob = torch.softmax(old_logp, dim=0)
-        new_logp_normalized = torch.log_softmax(new_logp, dim=0)
-        old_logp_normalized = torch.log_softmax(old_logp, dim=0)
-        cross_entropy = -(target_tensor * new_logp_normalized).sum()
-        kl_anchor = (old_prob * (old_logp_normalized - new_logp_normalized)).sum()
-        losses.append(cross_entropy + kl_coefficient * kl_anchor)
+        if projection_objective == "candidate_conditional":
+            old_prob = torch.softmax(old_logp, dim=0)
+            new_logp_normalized = torch.log_softmax(new_logp, dim=0)
+            old_logp_normalized = torch.log_softmax(old_logp, dim=0)
+            cross_entropy = -(target_tensor * new_logp_normalized).sum()
+            anchor = (old_prob * (old_logp_normalized - new_logp_normalized)).sum()
+        elif projection_objective == "absolute_joint":
+            # Candidate actions are a strict subset of legal joint actions.
+            # Keep their true autoregressive log probabilities: normalizing
+            # this vector would incorrectly treat the sampled subset as the
+            # complete action space. The anchor is only over observed support,
+            # not a full-policy KL, because unsampled logits were not saved.
+            old_prob = torch.exp(old_logp)
+            cross_entropy = -(target_tensor * new_logp).sum()
+            anchor = -(old_prob * new_logp).sum()
+        else:
+            raise ValueError(f"unknown policy projection objective: {projection_objective}")
+        losses.append(cross_entropy + kl_coefficient * anchor)
     return torch.stack(losses).mean()
 
 
 def _candidate_test_delta(states: list[dict], targets_by_state: dict[tuple[int, int], np.ndarray],
                           action_scores: dict[tuple[int, int], np.ndarray],
-                          responses: list[str], chance_slices: dict[tuple[int, int], slice]) -> dict:
+                          responses: list[str], chance_slices: dict[tuple[int, int], slice],
+                          full_policy_actions: dict[tuple[int, int], tuple[int, int]]) -> dict:
     by_team: dict[int, list[float]] = {}
     mixed_by_team: dict[int, list[float]] = {}
     mixed_by_response: dict[str, list[float]] = {name: [] for name in responses}
+    absolute_by_response: dict[str, list[float]] = {name: [] for name in responses}
     picked_counts: dict[str, int] = {}
+    full_argmax_observed = 0
+    full_argmax_unobserved = 0
+    full_argmax_by_team: dict[int, list[float]] = {}
+    absolute_worst_by_team: dict[int, list[float]] = {}
+    candidate_mass_by_state: list[float] = []
     for state in states:
         key = (state["team_cluster"], state["state_repeat"])
         chance_slice = chance_slices[key]
@@ -296,6 +356,26 @@ def _candidate_test_delta(states: list[dict], targets_by_state: dict[tuple[int, 
         )
         name = picked["names"][0]
         picked_counts[name] = picked_counts.get(name, 0) + 1
+        action_set = {tuple(row["action"]) for row in state["actions"]}
+        if full_policy_actions[key] in action_set:
+            full_argmax_observed += 1
+            chosen = next(row for row in state["actions"]
+                          if tuple(row["action"]) == full_policy_actions[key])
+            full_deltas = [float(np.mean(np.asarray(chosen["outcomes"][response][chance_slice], dtype=float)
+                                         - np.asarray(base["outcomes"][response][chance_slice], dtype=float)))
+                           for response in responses]
+            full_argmax_by_team.setdefault(state["team_cluster"], []).append(min(full_deltas))
+        else:
+            full_argmax_unobserved += 1
+        absolute_probabilities = np.exp(np.clip(scores, -745.0, 0.0))
+        candidate_mass = float(absolute_probabilities.sum())
+        candidate_mass_by_state.append(candidate_mass)
+        absolute_deltas = absolute_probabilities @ candidate_deltas
+        for index, response in enumerate(responses):
+            absolute_by_response[response].append(float(absolute_deltas[index]))
+        absolute_worst_by_team.setdefault(state["team_cluster"], []).append(
+            float(np.min(absolute_deltas))
+        )
     values = np.asarray([np.mean(v) for v in by_team.values()], dtype=np.float64)
     rng = np.random.default_rng(411209)
     samples = values[rng.integers(0, len(values), (10000, len(values)))].mean(axis=1)
@@ -303,11 +383,31 @@ def _candidate_test_delta(states: list[dict], targets_by_state: dict[tuple[int, 
     mixed_samples = mixed_values[
         rng.integers(0, len(mixed_values), (10000, len(mixed_values)))
     ].mean(axis=1)
+    absolute_values = np.asarray([np.mean(v) for v in absolute_worst_by_team.values()], dtype=np.float64)
+    absolute_samples = absolute_values[
+        rng.integers(0, len(absolute_values), (10000, len(absolute_values)))
+    ].mean(axis=1)
+    full_values = np.asarray([np.mean(v) for v in full_argmax_by_team.values()], dtype=np.float64)
+    full_samples = full_values[
+        rng.integers(0, len(full_values), (10000, len(full_values)))
+    ].mean(axis=1) if len(full_values) else np.asarray([], dtype=np.float64)
     return {
         "team_clusters": len(values),
         "selected_minus_policy_worst_response": float(values.mean()),
         "cluster_bootstrap_95_ci": np.quantile(samples, [0.025, 0.975]).tolist(),
         "picked_candidate_counts": picked_counts,
+        "full_legal_action_argmax": {
+            "candidate_actions_with_measured_outcomes": full_argmax_observed,
+            "unmeasured_actions_outside_candidate_pool": full_argmax_unobserved,
+            "measured_subset_statewise_worst_response_delta": (
+                float(full_values.mean()) if len(full_values) else None
+            ),
+            "measured_subset_cluster_bootstrap_95_ci": (
+                np.quantile(full_samples, [0.025, 0.975]).tolist()
+                if len(full_samples) else None
+            ),
+            "measured_subset_clusters": int(len(full_values)),
+        },
         "candidate_restricted_mixed_distribution": {
             "scope": "actor probabilities renormalized over only the collected candidate actions",
             "mean_delta_by_response": {
@@ -315,6 +415,15 @@ def _candidate_test_delta(states: list[dict], targets_by_state: dict[tuple[int, 
             },
             "mean_statewise_worst_response_delta": float(mixed_values.mean()),
             "cluster_bootstrap_95_ci": np.quantile(mixed_samples, [0.025, 0.975]).tolist(),
+        },
+        "absolute_joint_probability_diagnostic": {
+            "description": "true actor probability mass on measured candidate actions; unmeasured legal-action mass contributes zero relative to incumbent, so this is not a full-policy value estimate",
+            "mean_candidate_probability_mass": float(np.mean(candidate_mass_by_state)),
+            "mean_measured_candidate_contribution_by_response": {
+                name: float(np.mean(absolute_by_response[name])) for name in responses
+            },
+            "mean_measured_candidate_contribution_to_statewise_worst_response": float(absolute_values.mean()),
+            "cluster_bootstrap_95_ci": np.quantile(absolute_samples, [0.025, 0.975]).tolist(),
         },
     }
 
@@ -339,6 +448,12 @@ def main() -> None:
         help="distill sparse robust advantages or a mixed strategy from the empirical payoff matrix",
     )
     parser.add_argument("--regret-matching-iterations", type=int, default=5000)
+    parser.add_argument(
+        "--policy-projection",
+        choices=("candidate_conditional", "absolute_joint"),
+        default="candidate_conditional",
+        help="normalize targets over sampled actions (legacy) or optimize their true joint probabilities",
+    )
     parser.add_argument("--kl-coefficient", type=float, default=0.05)
     parser.add_argument("--device", choices=("cpu", "cuda"), default="cuda")
     args = parser.parse_args()
@@ -423,7 +538,7 @@ def main() -> None:
                     model, batch,
                     [targets[(s["team_cluster"], s["state_repeat"])] for s in batch],
                     [input_cache[(s["team_cluster"], s["state_repeat"])] for s in batch],
-                    device, args.kl_coefficient,
+                    device, args.kl_coefficient, args.policy_projection,
                 )
                 losses.append(float(loss.cpu()))
         return float(np.mean(losses))
@@ -446,7 +561,7 @@ def main() -> None:
                 model, batch,
                 [targets[(s["team_cluster"], s["state_repeat"])] for s in batch],
                 [input_cache[(s["team_cluster"], s["state_repeat"])] for s in batch],
-                device, args.kl_coefficient,
+                device, args.kl_coefficient, args.policy_projection,
             )
             loss.backward()
             torch.nn.utils.clip_grad_norm_(model.parameters(), 1.0)
@@ -471,6 +586,7 @@ def main() -> None:
     # is a screening metric; the full-match paired evaluation remains the gate.
     test_states = split["test"]
     action_scores: dict[tuple[int, int], np.ndarray] = {}
+    full_policy_actions: dict[tuple[int, int], tuple[int, int]] = {}
     with torch.no_grad():
         for state in test_states:
             key = (state["team_cluster"], state["state_repeat"])
@@ -478,9 +594,10 @@ def main() -> None:
                     for name, tensor in input_cache[key].items()}
             output = model(**item)
             action_scores[key] = _candidate_log_probs(model, output, state, device).cpu().numpy()
+            full_policy_actions[key] = _full_policy_argmax(model, output, state, device)
     test_selection = _candidate_test_delta(
         test_states, targets, action_scores, responses,
-        {key: chance_slices[key][1] for key in action_scores}
+        {key: chance_slices[key][1] for key in action_scores}, full_policy_actions,
     )
     output_dir = args.output_dir
     output_dir.mkdir(parents=True, exist_ok=True)
@@ -492,6 +609,7 @@ def main() -> None:
         "data": str(args.data), "seed": args.seed, "best_epoch": best_epoch,
         "objective": args.target_objective + " with policy KL anchor",
         "regret_matching_iterations": args.regret_matching_iterations,
+        "policy_projection": args.policy_projection,
         "responses": responses, "team_split": {k: len({s['team_cluster'] for s in v})
                                                 for k, v in split.items()},
         "chance_split_by_repeat_count": chance_split_counts,
@@ -513,6 +631,7 @@ def main() -> None:
         "chance_split_by_repeat_count": chance_split_counts,
         "target": {"objective": args.target_objective,
                    "regret_matching_iterations": args.regret_matching_iterations,
+                   "policy_projection": args.policy_projection,
                    "advantage_margin": args.advantage_margin,
                    "temperature": args.advantage_temperature,
                    "kl_coefficient": args.kl_coefficient},

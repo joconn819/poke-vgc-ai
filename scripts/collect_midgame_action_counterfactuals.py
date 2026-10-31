@@ -26,6 +26,7 @@ from scripts.run_headless_showdown_self_play import (
 )
 from scripts.evaluate_counterplay_paired import choose_damage_preview_action
 from src.env.headless_showdown import HeadlessShowdownWorker
+from src.training.self_play import PolicyAgent
 from src.training.team_selection import random_action
 
 
@@ -36,6 +37,7 @@ def strategic_candidate_actions(
     legal_actions_by_slot: list[list[dict]],
     seed: int,
     candidate_mode: str = "broad",
+    extra_policy_actions: list[tuple[str, list[int]]] | None = None,
 ) -> list[tuple[str, list[int]]]:
     """Add legal tactical alternatives around the same player-view state."""
     width = len(mask) // 2
@@ -74,6 +76,14 @@ def strategic_candidate_actions(
         ("policy", [int(v) for v in policy_action]),
     ]
     seen = {tuple(pair) for _, pair in result}
+    for name, pair in extra_policy_actions or []:
+        candidate = [int(v) for v in pair]
+        if joint_choice_is_legal(candidate):
+            # Keep the alias even when this action is already represented by
+            # another candidate. It makes the extra policy's selected action
+            # explicit in the saved dataset without rerunning its outcomes.
+            result.append((name, candidate))
+            seen.add(tuple(candidate))
     damage_pair = [int(v) for v in damage_action]
     if joint_choice_is_legal(damage_pair):
         result.append(("max_damage", damage_pair))
@@ -138,9 +148,53 @@ def strategic_candidate_actions(
     return result
 
 
+def policy_argmax_legal_joint_action(policy, observation: list[float],
+                                     mask: list[int],
+                                     legal_actions_by_slot: list[list[dict]]) -> list[int]:
+    """Score the complete legal joint-action set under a policy checkpoint."""
+    width = len(mask) // 2
+    legal = [
+        set(np.flatnonzero(np.asarray(mask[slot * width:(slot + 1) * width])).tolist())
+        for slot in range(2)
+    ]
+    descriptors = [
+        {int(row["action_index"]): row for row in slot_rows}
+        for slot_rows in legal_actions_by_slot
+    ]
+    pairs = []
+    for first in legal[0]:
+        for second in legal[1]:
+            selected = [descriptors[slot].get(action)
+                        for slot, action in enumerate((first, second))]
+            if any(row is None for row in selected):
+                continue
+            if all(row.get("kind") == "pass" for row in selected):
+                continue
+            switches = [row.get("species") for row in selected
+                        if row.get("kind") == "switch"]
+            if len(switches) != len(set(switches)):
+                continue
+            mechanics = [row.get("mechanic") for row in selected
+                         if row.get("mechanic") in {"mega", "zmove", "dynamax", "tera"}]
+            if len(mechanics) > 1:
+                continue
+            pairs.append([int(first), int(second)])
+    if not pairs:
+        raise ValueError("no legal joint native actions in captured state")
+    scores = policy.log_prob_native_actions(
+        np.asarray(observation, dtype=np.float32),
+        np.asarray(mask, dtype=np.int8), pairs,
+    )
+    return pairs[int(np.argmax(np.asarray(scores, dtype=np.float64)))]
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--checkpoint", type=Path)
+    parser.add_argument(
+        "--candidate-policy-checkpoint", type=Path,
+        help="add this policy's full-legal-action argmax as a counterfactual candidate",
+    )
     parser.add_argument(
         "--player-strategy", choices=("policy", "public_counterplay"),
         default="public_counterplay",
@@ -214,6 +268,10 @@ def main() -> None:
     if temp_output.exists():
         temp_output.unlink()
     model = _load_policy(args.checkpoint, args.device) if args.checkpoint else None
+    candidate_model = (
+        _load_policy(args.candidate_policy_checkpoint, args.device)
+        if args.candidate_policy_checkpoint else None
+    )
     opponent_model = _load_policy(args.opponent_checkpoint, args.device)
     team_selector, team_selector_config = _load_team_selector(
         args.team_selection_checkpoint
@@ -319,6 +377,24 @@ def main() -> None:
                     p["action"], d["action"], p["legal_action_mask"],
                     p.get("legal_actions_by_slot", [[], []]), state_seed,
                     candidate_mode=args.candidate_mode,
+                    extra_policy_actions=(
+                        [("candidate_policy_argmax", policy_argmax_legal_joint_action(
+                            PolicyAgent(
+                                candidate_model, teams[0],
+                                [{"species": str(member.get("species") or member.get("name"))}
+                                 for member in teams[1]
+                                 if member.get("species") or member.get("name")],
+                                deterministic=True,
+                                temperature=1.0, device=args.device,
+                                public_context_features=(
+                                    np.asarray(p["public_context_features"], dtype=np.float32)
+                                    if p.get("public_context_features") is not None else None
+                                ),
+                            ), p["observation"], p["legal_action_mask"],
+                            p.get("legal_actions_by_slot", [[], []]),
+                        ))]
+                        if candidate_model is not None else None
+                    ),
                 )
                 action_log_probs = {
                     tuple(int(v) for v in row["action"]): float(row["log_probability"])
@@ -551,6 +627,10 @@ def main() -> None:
     payload = {
         "schema_version": 1,
         "checkpoint": str(args.checkpoint) if args.checkpoint else None,
+        "candidate_policy_checkpoint": (
+            str(args.candidate_policy_checkpoint)
+            if args.candidate_policy_checkpoint else None
+        ),
         "player_strategy": args.player_strategy,
         "format": args.format,
         "seed": args.seed,

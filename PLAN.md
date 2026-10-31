@@ -42,6 +42,27 @@ evaluation. The target is sensitive to per-state downside, while both actor
 updates fail to transfer their training targets; investigate counterfactual
 data coverage / policy projection before repeating the same distillation.
 Reports are in `training/outputs/phase12_headless/round482_*`.
+**Rounds483–484 actor-action coverage audit (2026-10-31):** the first
+Round483 action-label screen is invalid and must not be used for policy
+conclusions: its candidate checkpoint was scored with an empty opponent token
+roster because the helper handled Pokémon objects but not generated-team
+dictionaries. The model is trained with the six revealed opponent species, and
+the LAN agent also receives those species. Round484 fixes this and explicitly
+labels duplicate candidate actions, then evaluates the Round482 absolute-joint
+regret actor on 128 fresh team clusters, eight chance repeats, and the same
+Max Damage / Public Counterplay / Round476 response classes. Collection ran at
+31.72 matches/s aggregate across four workers (18,976 branch matches), with
+zero missing states or rejected actions. The actor's explicit action matched
+its independently rescored legal-action argmax on all 128 states; it changed
+the Round430 action in 29. On those selected actions, held-out chance repeats
+gave -1.37 pp vs Max Damage (95% cluster CI [-3.32, +0.39]), 0.00 pp vs
+Round476 ([-2.93, +2.93]), and -0.78 pp vs Public Counterplay ([-3.52,
++1.56]); mean statewise worst response was -4.69 pp ([-7.81, -2.15]). This is
+a one-step action intervention with Round430 used for subsequent actions, not
+a full-match result. Reject the actor; the action projection now matches its
+full legal argmax, so remaining failure points to poor candidate targets or
+insufficient opponent-response coverage rather than candidate-set argmax
+selection. Report: `training/outputs/phase12_headless/round484_actor_argmax_outcomes_20261031/report.json`.
 **Round430 stochastic-action diagnostic (2026-10-30):** added `--stochastic`
 to paired evaluation and compared sampled PPO actions with deterministic
 argmax on identical teams, previews, and battle seeds (128 team-pair clusters,

@@ -17,6 +17,7 @@ COLLECTOR = ROOT / "scripts" / "collect_midgame_action_counterfactuals.py"
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--checkpoint", type=Path)
+    parser.add_argument("--candidate-policy-checkpoint", type=Path)
     parser.add_argument("--opponent-checkpoint", type=Path)
     parser.add_argument("--team-selection-checkpoint", type=Path)
     parser.add_argument("--output-dir", type=Path, required=True)
@@ -49,7 +50,7 @@ def main() -> None:
     if args.player_strategy == "policy" and args.checkpoint is None:
         parser.error("--checkpoint is required when --player-strategy=policy")
     for path in (args.checkpoint, args.opponent_checkpoint,
-                 args.team_selection_checkpoint):
+                 args.team_selection_checkpoint, args.candidate_policy_checkpoint):
         if path is not None and not path.is_file():
             parser.error(f"checkpoint not found: {path}")
     if not (args.showdown_path / "dist" / "sim").is_dir():
@@ -83,6 +84,11 @@ def main() -> None:
         ]
         if args.checkpoint is not None:
             command.extend(["--checkpoint", str(args.checkpoint)])
+        if args.candidate_policy_checkpoint is not None:
+            command.extend([
+                "--candidate-policy-checkpoint",
+                str(args.candidate_policy_checkpoint),
+            ])
         if args.opponent_checkpoint is not None:
             command.extend(["--opponent-checkpoint", str(args.opponent_checkpoint)])
             command.append("--paired-opponent-responses")
@@ -156,6 +162,7 @@ def main() -> None:
     result = {
         "schema_version": 1,
         "checkpoint": str(args.checkpoint),
+        "candidate_policy_checkpoint": str(args.candidate_policy_checkpoint),
         "opponent_checkpoint": str(args.opponent_checkpoint),
         "team_selection_checkpoint": str(args.team_selection_checkpoint),
         "format": shard_payloads[0]["format"],
