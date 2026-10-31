@@ -1101,16 +1101,16 @@
   },
   "latest_run": {
     "round": 467,
-    "status": "20,000-game rollout complete · PPO stopped early by KL guard · challenger not promoted",
-    "summary": "Round467 tested stronger opening-teacher supervision (loss weight 0.5) on 20,000 games. PPO stopped after 184/1,268 optimizer steps when approximate KL reached 0.0318. Fresh held-out screens produced no reliable improvement: same-seed comparisons with Round466 were +1.17 pp vs Max Damage, −0.20 pp vs Public Counterplay, +0.98 pp vs Round464, and +0.98 pp vs Round465; all paired 95% cluster intervals include zero. Round430 remains the validated strength incumbent.",
-    "games": "20,000 completed",
-    "epochs": "0.58 of 4 requested PPO passes before KL stop",
-    "evaluation": "Four 512-game screens; no hard-opponent improvement; Round430 remains incumbent"
+    "status": "20,000-game PPO run · same-batch teacher-weight replay · challenger not promoted",
+    "summary": "A same-batch PPO replay from Round430 with teacher weight 0.2 and half learning rate completed 928/1,268 minibatch steps (2.93/4 passes) before the KL guard stopped it at approximate KL 0.01268. On the same held-out team/seed sets, it scored 41.60% vs Max Damage, 38.87% vs Public Counterplay, 58.40% vs Round464, and 51.17% vs Round465. Paired differences from teacher weight 0.1 and 0.5 include zero across all four opponents; Round430 remains the validated incumbent.",
+    "games": "20,000 reused; zero new rollouts for replay",
+    "epochs": "2.93 PPO passes before KL stop",
+    "evaluation": "Four 512-game screens; no significant gain over Round430 or neighboring teacher weights"
   },
   "method": "Native self-play PPO for in-battle decisions. Terminal win/loss remains the main objective; win-probability and hidden-set prediction are auxiliary tasks. Search comes after a stronger policy.",
   "jax_decision": "Round430 has a confirmed self-play head-to-head lift over Round424, but external-opponent screens remain inconclusive. Prioritize measured inference batching, observation throughput, and rollouts; keep equilibrium-oriented opponent coverage and defer a JAX/GPU engine rewrite until its end-to-end payoff is measured.",
   "evaluation_note": "Round465 scored 45.51% against Max Damage [41.70%, 49.32%] and 46.00% against Public Counterplay [42.19%, 49.80%]. Same-seed Max Damage deltas over Round464 (+0.10 pp [-1.56, +1.76]) and Round430 (+0.88 pp [-1.27, +3.03]) include zero, so Round430 remains the validated incumbent. The 58.40% five-opponent mean is pulled upward by the 95.12% Random result; the p10 is 45.70% and the worst opponent score is 45.51%. Use paired team-cluster intervals and hard-opponent results to judge changes, not one overall mean.",
-  "generated_at": "2026-10-31 02:02 UTC",
+  "generated_at": "2026-10-31 02:17 UTC",
   "round462_evaluation": {
     "status": "Round462 not promoted · initial paired screen complete",
     "summary": "Round462 scored 44.82% against Max Damage [41.02%, 48.54%]. On the same teams and seeds, Round430 scored 44.73% and Round432 scored 44.43%; paired deltas were +0.10 pp [-1.37, +1.56] and +0.39 pp [-1.37, +2.05]. The update did not measurably change this weakness. Results against Public Counterplay and historical PPO are inconclusive; Random is an easy-baseline check.",
@@ -2451,29 +2451,29 @@
   },
   "round467_evaluation": {
     "round": 467,
-    "status": "Complete · partial PPO update stopped by KL guard · not promoted",
-    "summary": "Round467 tested stronger opening-teacher supervision (loss weight 0.5) on 20,000 games. PPO stopped after 184/1,268 optimizer steps when approximate KL reached 0.0318. Fresh held-out screens produced no reliable improvement: same-seed comparisons with Round466 were +1.17 pp vs Max Damage, −0.20 pp vs Public Counterplay, +0.98 pp vs Round464, and +0.98 pp vs Round465; all paired 95% cluster intervals include zero. Round430 remains the validated strength incumbent.",
-    "method": "Each matchup: 128 held-out team-pair clusters × two repeated side-swapped local Showdown games (512 games). Cluster-bootstrap 95% intervals resample team-pair clusters. Round466 comparisons reuse the same team-pair/seed IDs. No evaluation timeouts or action adjustments.",
+    "status": "Complete · same-batch replay stopped by KL guard · not promoted",
+    "summary": "A same-batch PPO replay from Round430 with teacher weight 0.2 and half learning rate completed 928/1,268 minibatch steps (2.93/4 passes) before the KL guard stopped it at approximate KL 0.01268. On the same held-out team/seed sets, it scored 41.60% vs Max Damage, 38.87% vs Public Counterplay, 58.40% vs Round464, and 51.17% vs Round465. Paired differences from teacher weight 0.1 and 0.5 include zero across all four opponents; Round430 remains the validated incumbent.",
+    "method": "Each matchup: 128 held-out team-pair clusters × two repeated side-swapped local Showdown games (512 games). Cluster-bootstrap 95% intervals resample team-pair clusters. All compared checkpoints use identical team pairs and seed IDs. No evaluation timeouts or action adjustments.",
     "opponents": [
       {
         "opponent": "Max Damage",
-        "score_percent": 41.99,
+        "score_percent": 41.6,
         "cluster_bootstrap_95_pct": [
-          34.96,
-          49.02
+          34.38,
+          48.83
         ],
         "games": 512,
         "clusters": 128,
-        "evaluation_games_per_second": 5.26,
+        "evaluation_games_per_second": 3.86,
         "action_adjustments": 0,
         "timeouts": 0
       },
       {
         "opponent": "Public Counterplay",
-        "score_percent": 37.5,
+        "score_percent": 38.87,
         "cluster_bootstrap_95_pct": [
-          30.66,
-          44.34
+          31.84,
+          45.9
         ],
         "games": 512,
         "clusters": 128,
@@ -2483,27 +2483,27 @@
       },
       {
         "opponent": "PPO Round464",
-        "score_percent": 58.2,
+        "score_percent": 58.4,
         "cluster_bootstrap_95_pct": [
-          50.78,
+          50.98,
           65.62
         ],
         "games": 512,
         "clusters": 128,
-        "evaluation_games_per_second": 2.76,
+        "evaluation_games_per_second": 2.86,
         "action_adjustments": 0,
         "timeouts": 0
       },
       {
         "opponent": "PPO Round465",
-        "score_percent": 52.15,
+        "score_percent": 51.17,
         "cluster_bootstrap_95_pct": [
-          45.12,
-          59.18
+          43.95,
+          58.4
         ],
         "games": 512,
         "clusters": 128,
-        "evaluation_games_per_second": 2.79,
+        "evaluation_games_per_second": 2.76,
         "action_adjustments": 0,
         "timeouts": 0
       }
@@ -2513,11 +2513,11 @@
         "control": "Round430",
         "opponent": "Max Damage",
         "control_score_percent": 40.23,
-        "round467_score_percent": 41.99,
-        "paired_delta_percentage_points": 1.76,
+        "round467_score_percent": 41.6,
+        "paired_delta_percentage_points": 1.37,
         "paired_delta_cluster_bootstrap_95_pp": [
-          -1.95,
-          5.66
+          -1.17,
+          4.1
         ],
         "clusters": 128
       },
@@ -2525,11 +2525,11 @@
         "control": "Round430",
         "opponent": "Public Counterplay",
         "control_score_percent": 37.7,
-        "round467_score_percent": 37.5,
-        "paired_delta_percentage_points": -0.2,
+        "round467_score_percent": 38.87,
+        "paired_delta_percentage_points": 1.17,
         "paired_delta_cluster_bootstrap_95_pp": [
-          -3.52,
-          3.32
+          -1.37,
+          3.71
         ],
         "clusters": 128
       }
@@ -2537,49 +2537,99 @@
     "matched_round466_comparisons": [
       {
         "opponent": "Max Damage",
-        "previous_checkpoint": "Round466",
+        "previous_checkpoint": "Round466 · teacher 0.1",
         "previous_score_percent": 40.82,
-        "round467_score_percent": 41.99,
-        "paired_delta_percentage_points": 1.17,
+        "round467_score_percent": 41.6,
+        "paired_delta_percentage_points": 0.78,
         "paired_delta_cluster_bootstrap_95_pp": [
-          -2.34,
-          4.69
+          -1.56,
+          3.12
         ],
         "clusters": 128
       },
       {
         "opponent": "Public Counterplay",
-        "previous_checkpoint": "Round466",
+        "previous_checkpoint": "Round466 · teacher 0.1",
         "previous_score_percent": 37.7,
-        "round467_score_percent": 37.5,
-        "paired_delta_percentage_points": -0.2,
+        "round467_score_percent": 38.87,
+        "paired_delta_percentage_points": 1.17,
         "paired_delta_cluster_bootstrap_95_pp": [
-          -4.1,
-          3.91
+          -2.15,
+          4.3
         ],
         "clusters": 128
       },
       {
         "opponent": "PPO Round464",
-        "previous_checkpoint": "Round466",
+        "previous_checkpoint": "Round466 · teacher 0.1",
         "previous_score_percent": 57.23,
-        "round467_score_percent": 58.2,
-        "paired_delta_percentage_points": 0.98,
+        "round467_score_percent": 58.4,
+        "paired_delta_percentage_points": 1.17,
         "paired_delta_cluster_bootstrap_95_pp": [
-          -2.54,
-          4.3
+          -1.37,
+          3.71
         ],
         "clusters": 128
       },
       {
         "opponent": "PPO Round465",
-        "previous_checkpoint": "Round466",
+        "previous_checkpoint": "Round466 · teacher 0.1",
         "previous_score_percent": 51.17,
-        "round467_score_percent": 52.15,
-        "paired_delta_percentage_points": 0.98,
+        "round467_score_percent": 51.17,
+        "paired_delta_percentage_points": 0.0,
+        "paired_delta_cluster_bootstrap_95_pp": [
+          -2.93,
+          3.12
+        ],
+        "clusters": 128
+      }
+    ],
+    "matched_weight05_comparisons": [
+      {
+        "opponent": "Max Damage",
+        "previous_checkpoint": "Round467 · teacher 0.5",
+        "previous_score_percent": 41.99,
+        "round467_score_percent": 41.6,
+        "paired_delta_percentage_points": -0.39,
+        "paired_delta_cluster_bootstrap_95_pp": [
+          -3.91,
+          3.12
+        ],
+        "clusters": 128
+      },
+      {
+        "opponent": "Public Counterplay",
+        "previous_checkpoint": "Round467 · teacher 0.5",
+        "previous_score_percent": 37.5,
+        "round467_score_percent": 38.87,
+        "paired_delta_percentage_points": 1.37,
+        "paired_delta_cluster_bootstrap_95_pp": [
+          -2.15,
+          4.69
+        ],
+        "clusters": 128
+      },
+      {
+        "opponent": "PPO Round464",
+        "previous_checkpoint": "Round467 · teacher 0.5",
+        "previous_score_percent": 58.2,
+        "round467_score_percent": 58.4,
+        "paired_delta_percentage_points": 0.2,
         "paired_delta_cluster_bootstrap_95_pp": [
           -2.54,
-          4.3
+          3.12
+        ],
+        "clusters": 128
+      },
+      {
+        "opponent": "PPO Round465",
+        "previous_checkpoint": "Round467 · teacher 0.5",
+        "previous_score_percent": 52.15,
+        "round467_score_percent": 51.17,
+        "paired_delta_percentage_points": -0.98,
+        "paired_delta_cluster_bootstrap_95_pp": [
+          -4.3,
+          2.54
         ],
         "clusters": 128
       }
@@ -2592,22 +2642,24 @@
         "historical policy pool": 8000
       },
       "transitions": 162087,
-      "teacher_loss_weight": 0.5,
-      "ppo_optimizer_steps": 184,
+      "teacher_loss_weight": 0.2,
+      "learning_rate": 2.5e-05,
+      "ppo_optimizer_steps": 928,
       "optimizer_step_budget": 1268,
-      "passes_equivalent": 0.58,
-      "approx_kl": 0.031824,
+      "passes_equivalent": 2.93,
+      "approx_kl": 0.012678,
       "stop_reason": "KL safety limit",
-      "sample_preparation_seconds": 88.8,
-      "optimizer_seconds": 5.0,
-      "win_probability_loss": 0.48789,
-      "gpu": "RTX 4060 Laptop GPU used for PPO update",
+      "sample_preparation_seconds": 89.96,
+      "optimizer_seconds": 39.1,
+      "win_probability_loss": 0.481143,
+      "gpu": "RTX 4060 Laptop GPU used for PPO optimization",
+      "reused_rollout_batch": "Round467 20,000-game batch",
       "rollout_per_worker_games_per_second": {
         "Max Damage": 7.53,
         "historical policy pool": 5.34,
         "Public Counterplay": 4.84
       },
-      "end_to_end_throughput_note": "Rollout per-worker rate only; exact aggregate wall time was not retained."
+      "end_to_end_throughput_note": "Replay reused saved rollouts; no new simulation pass. Evaluator confirms changing teacher weight alone did not yield a significant gain."
     },
     "move_selection": "Masked PPO action logits select moves. The win-probability head is an auxiliary training target; it does not rank normal actions. Search with a separate state evaluator is optional and disabled by default.",
     "report": "round467_eval_scorecard.json",

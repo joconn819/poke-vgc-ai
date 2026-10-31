@@ -6,20 +6,22 @@
     "historical policy pool": 8000
   },
   "transitions": 162087,
-  "teacher_loss_weight": 0.5,
-  "ppo_optimizer_steps": 184,
+  "teacher_loss_weight": 0.2,
+  "learning_rate": 2.5e-05,
+  "ppo_optimizer_steps": 928,
   "optimizer_step_budget": 1268,
-  "passes_equivalent": 0.58,
-  "approx_kl": 0.031824,
+  "passes_equivalent": 2.93,
+  "approx_kl": 0.012678,
   "stop_reason": "KL safety limit",
-  "sample_preparation_seconds": 88.8,
-  "optimizer_seconds": 5.0,
-  "win_probability_loss": 0.48789,
-  "gpu": "RTX 4060 Laptop GPU used for PPO update",
+  "sample_preparation_seconds": 89.96,
+  "optimizer_seconds": 39.1,
+  "win_probability_loss": 0.481143,
+  "gpu": "RTX 4060 Laptop GPU used for PPO optimization",
+  "reused_rollout_batch": "Round467 20,000-game batch",
   "rollout_per_worker_games_per_second": {
     "Max Damage": 7.53,
     "historical policy pool": 5.34,
     "Public Counterplay": 4.84
   },
-  "end_to_end_throughput_note": "Rollout per-worker rate only; exact aggregate wall time was not retained."
+  "end_to_end_throughput_note": "Replay reused saved rollouts; no new simulation pass. Evaluator confirms changing teacher weight alone did not yield a significant gain."
 }

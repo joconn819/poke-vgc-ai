@@ -1,76 +1,88 @@
 {
-  "round430_controls": {
+  "teacher_02_vs_teacher_01": {
     "max_damage": {
-      "round467_score_percent": 41.9921875,
-      "round430_score_percent": 40.234375,
-      "paired_delta_pp": 1.7578125,
-      "paired_delta_cluster_bootstrap_95_pp": [
-        -1.953125,
-        5.6640625
+      "delta_pp": 0.78125,
+      "ci_pp": [
+        -1.5625,
+        3.125
       ],
-      "team_clusters": 128,
-      "matched_results": 256
+      "clusters": 128
     },
     "public_counterplay": {
-      "round467_score_percent": 37.5,
-      "round430_score_percent": 37.6953125,
-      "paired_delta_pp": -0.1953125,
-      "paired_delta_cluster_bootstrap_95_pp": [
-        -3.5205078124999956,
-        3.3203125
+      "delta_pp": 1.171875,
+      "ci_pp": [
+        -2.1484375,
+        4.296875
       ],
-      "team_clusters": 128,
-      "matched_results": 256
-    }
-  },
-  "round466_comparisons": {
-    "max_damage": {
-      "round467_score_pct": 41.9921875,
-      "round466_score_pct": 40.8203125,
-      "delta_round467_minus_round466_pp": 1.171875,
-      "paired_cluster_bootstrap_95_pp": [
-        -2.34375,
-        4.6875
-      ],
-      "clusters": 128,
-      "games_per_candidate": 512,
-      "round467_timeouts": 0
-    },
-    "public_counterplay": {
-      "round467_score_pct": 37.5,
-      "round466_score_pct": 37.6953125,
-      "delta_round467_minus_round466_pp": -0.1953125,
-      "paired_cluster_bootstrap_95_pp": [
-        -4.1015625,
-        3.90625
-      ],
-      "clusters": 128,
-      "games_per_candidate": 512,
-      "round467_timeouts": 0
+      "clusters": 128
     },
     "round464": {
-      "round467_score_pct": 58.203125,
-      "round466_score_pct": 57.2265625,
-      "delta_round467_minus_round466_pp": 0.9765625,
-      "paired_cluster_bootstrap_95_pp": [
-        -2.5390625,
-        4.296875
+      "delta_pp": 1.171875,
+      "ci_pp": [
+        -1.3671875,
+        3.7109375
       ],
-      "clusters": 128,
-      "games_per_candidate": 512,
-      "round467_timeouts": 0
+      "clusters": 128
     },
     "round465": {
-      "round467_score_pct": 52.1484375,
-      "round466_score_pct": 51.171875,
-      "delta_round467_minus_round466_pp": 0.9765625,
-      "paired_cluster_bootstrap_95_pp": [
-        -2.5390625,
-        4.296875
+      "delta_pp": 0.0,
+      "ci_pp": [
+        -2.9296875,
+        3.125
       ],
-      "clusters": 128,
-      "games_per_candidate": 512,
-      "round467_timeouts": 0
+      "clusters": 128
+    }
+  },
+  "teacher_02_vs_teacher_05": {
+    "max_damage": {
+      "delta_pp": -0.390625,
+      "ci_pp": [
+        -3.90625,
+        3.125
+      ],
+      "clusters": 128
+    },
+    "public_counterplay": {
+      "delta_pp": 1.3671875,
+      "ci_pp": [
+        -2.1484375,
+        4.6875
+      ],
+      "clusters": 128
+    },
+    "round464": {
+      "delta_pp": 0.1953125,
+      "ci_pp": [
+        -2.5390625,
+        3.125
+      ],
+      "clusters": 128
+    },
+    "round465": {
+      "delta_pp": -0.9765625,
+      "ci_pp": [
+        -4.296875,
+        2.5390625
+      ],
+      "clusters": 128
+    }
+  },
+  "teacher_02_vs_round430": {
+    "max_damage": {
+      "delta_pp": 1.3671875,
+      "ci_pp": [
+        -1.171875,
+        4.1015625
+      ],
+      "clusters": 128
+    },
+    "public_counterplay": {
+      "delta_pp": 1.171875,
+      "ci_pp": [
+        -1.3671875,
+        3.7109375
+      ],
+      "clusters": 128
     }
   }
 }

@@ -16900,3 +16900,25 @@ broad optimal-play validation. Pooled artifacts are recorded under
   ordinary moves.
 - Artifacts:
   `training/outputs/phase12_headless/round467_round430_opening14_teacher_weight5_pool430_464_465_466_20k_20261030/`
+
+**Round467 same-batch intermediate-weight replay:** Reused the audited 20,000
+Round467 games rather than paying for another rollout, started from the same
+Round430 checkpoint, set teacher weight to 0.2 and halved the learning rate to
+2.5e-5. This completed about 2.93/4 passes before the KL guard (928/1,268
+steps; approximate KL 0.01268). On the same held-out teams and seeds it scored
+41.60% vs Max Damage [34.38, 48.83], 38.87% vs Public Counterplay [31.84,
+45.90], 58.40% vs Round464 [50.98, 65.63], and 51.17% vs Round465 [43.95,
+58.40]. Matched differences from the weight-0.1 Round466 candidate were
++0.78 pp vs Max Damage [-1.56, +3.13], +1.17 pp vs Public Counterplay
+[-2.15, +4.30], +1.17 pp vs Round464 [-1.37, +3.71], and 0.00 pp vs Round465
+[-2.93, +3.13]. All intervals include zero. Compared with Round430 on the
+same hard-opponent teams/seeds, the changes were +1.37 pp vs Max Damage
+[-1.17, +4.10] and +1.17 pp vs Public Counterplay [-1.37, +3.71]. The
+intermediate replay is not a strength promotion. Replaying trajectories made
+the hyperparameter check cheaper, but confirmed that changing teacher weight
+alone is not a reliable way to improve strength. Next training should target
+better policy improvement signals and adversarial/equilibrium response
+coverage, not another blind teacher-weight sweep.
+
+- Replay artifacts:
+  `training/outputs/phase12_headless/round467_teacher_weight2_lr2p5_replay_same_batch_20261030/`
