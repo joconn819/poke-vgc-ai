@@ -262,10 +262,10 @@
     }
   ],
   "speed": {
-    "games_per_second": "38.40 rollout · 21.26 end-to-checkpoint",
-    "context": "Round473: 20,000 fresh hard-opponent games in 520.77 s; input-to-checkpoint in 940.75 s; peak aggregate rollout RSS 9.60 GiB.",
+    "games_per_second": "38.30 rollout · 21.20 end-to-checkpoint",
+    "context": "Round476: 20,000 audited hard-opponent PPO games; rollout generation 522.25 s; input-to-checkpoint 943.29 s; peak aggregate rollout RSS 9.59 GiB.",
     "decision_latency": "131–204 ms per episode across hard-opponent classes",
-    "current_bottleneck": "Public Counterplay scoring 77.8 ms; policy-pool inference 70.2 ms; observation encoding 25–29 ms; Showdown engine 29–35 ms per episode.",
+    "current_bottleneck": "Public Counterplay scoring 78 ms/episode; policy-pool action selection 79–85 ms including 67–72 ms inference; observation encoding 25–29 ms; Showdown engine 29–35 ms.",
     "gpu_status": "RTX 4060 used for PPO optimization; rollout decisions and headless simulator remain CPU-side",
     "profile_context": "Round467 completed 20,000 rollouts: per-worker speed 7.53/5.34/4.84 games/s for Max Damage/policy/Public Counterplay. PPO preparation took 89 s; the KL-stopped CUDA optimizer ran about 5 s. Aggregate rollout wall time was not retained.",
     "active_training_profile": {
@@ -1351,11 +1351,11 @@
   },
   "latest_run": {
     "round": 476,
-    "status": "Fresh population-response PPO · training in progress",
-    "summary": "20,000-game response training from Round430. The frozen policy pool now includes Round430, Round465, Round472, Round473, and historical Round102. No checkpoint promotion before held-out evaluation.",
-    "games": "20,000 target · rollouts running",
-    "epochs": "4 PPO passes planned",
-    "evaluation": "Pending completion and audit"
+    "status": "Fresh population-response PPO · evaluation in progress",
+    "summary": "Training audit passed after one valid replacement: 20,000 games, 167,878 transitions, 4 PPO passes, 1,312 updates. New checkpoint is matched against five held-out opponents before promotion.",
+    "games": "20,000 validated",
+    "epochs": "4 passes · 1,312 optimizer steps",
+    "evaluation": "256 team clusters × 2 outcomes · running"
   },
   "method": "Native self-play PPO for in-battle decisions. Terminal win/loss remains the main objective; win-probability and hidden-set prediction are auxiliary tasks. Search comes after a stronger policy.",
   "jax_decision": "Round430 has a confirmed self-play head-to-head lift over Round424, but external-opponent screens remain inconclusive. Prioritize measured inference batching, observation throughput, and rollouts; keep equilibrium-oriented opponent coverage and defer a JAX/GPU engine rewrite until its end-to-end payoff is measured.",
@@ -3863,7 +3863,7 @@
     "pooled_artifact": "round475_pooled_population.json"
   },
   "round476_in_progress": {
-    "status": "Rollout collection in progress",
+    "status": "Training complete · held-out evaluation in progress",
     "opponents": "25% Max Damage · 25% legacy Counterplay · 25% Public Counterplay · 25% policy pool",
     "policy_pool": [
       "Round430",
@@ -3872,27 +3872,35 @@
       "Round473",
       "Historical Round102"
     ],
-    "early_per_worker_games_per_second": [
-      4.95,
-      5.13
-    ],
-    "early_action_selection_ms_per_episode": [
-      81,
-      85
-    ],
-    "early_policy_inference_ms_per_episode": [
-      69,
-      72
-    ],
-    "early_showdown_engine_ms_per_episode": [
-      34,
-      35
-    ],
-    "early_observation_encoding_ms_per_episode": [
-      28,
-      29
-    ],
+    "trainable_games": 20000,
+    "trainable_transitions": 167878,
+    "optimizer_steps": 1312,
+    "approx_kl": 0.004935776563923737,
+    "rollout_games_per_second": 38.3,
+    "input_to_checkpoint_games_per_second": 21.2,
+    "rollout_wall_seconds": 522.25,
+    "input_to_checkpoint_seconds": 943.29,
+    "peak_aggregate_rss_gib": 9.59,
+    "per_worker_speed_games_per_second": {
+      "max_damage": [
+        7.47,
+        7.54
+      ],
+      "legacy_counterplay": [
+        5.12,
+        5.22
+      ],
+      "public_counterplay": [
+        4.83,
+        4.84
+      ],
+      "policy_pool": [
+        4.84,
+        5.28
+      ]
+    },
     "launcher": "scripts/train_round476_refreshed_population_ppo_20k.sh",
+    "evaluation_launcher": "scripts/evaluate_round476_fresh_seed_league_256x2.sh",
     "output": "training/outputs/phase12_headless/round476_refreshed_population_ppo_20k_20261031/"
   }
 }

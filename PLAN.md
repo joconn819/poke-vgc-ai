@@ -17339,3 +17339,36 @@ coverage, not another blind teacher-weight sweep.
   statistically established stronger checkpoint. Reproduce with
   `scripts/summarize_round474_475_pooled_population.py`; output:
   `training/outputs/phase12_headless/round475_policy_population_512x2_20261031/pooled_round474_475_summary.json`.
+
+### Round476: refreshed policy-population response (training complete; evaluation in progress; 2026-10-31)
+
+- Started a fresh 20,000-game PPO response run from Round430. It preserves
+  Round473's learner, PPO optimizer, 25% each Max Damage/legacy Counterplay/
+  Public Counterplay mixture, Round402 preview selector, and eight rollout
+  workers. The only planned change is the 5-policy opponent pool: Round430,
+  Round465, Round472, Round473, and historical Round102, each sampled at 20%.
+- Round476 tests whether training against both recent candidates and a distinct
+  historical PPO response adds useful coverage. It is not a targeted exploiter
+  and will not be promoted before fresh held-out league evaluation.
+- The first strict audit found one incomplete Max Damage game; automatic
+  recovery replaced it, and the second audit passed with exactly 20,000 games,
+  167,878 trainable transitions, 10,000 trainable decisions per seat, and no
+  audit errors. PPO completed all 1,312 optimizer steps, four passes, with
+  final approximate KL 0.00494. Checkpoint:
+  `training/outputs/phase12_headless/round476_refreshed_population_ppo_20k_20261031/checkpoints/latest.pt`.
+- Rollout generation took 522.25 s (38.30 games/s across eight workers); total
+  input-to-checkpoint time was 943.29 s (21.20 games/s). Peak aggregate RSS was
+  9.59 GiB, mean CPU use 7.34 cores. Full policy-pool rollout shards measured
+  about 4.84–5.28 games/s each; Max Damage shards 7.47–7.54; the legacy
+  Counterplay pair 5.12–5.22; Public Counterplay pair 4.83. The measured hot
+  path remains policy/action scoring plus observation encoding; Showdown
+  engine round-trip was roughly 29–35 ms per episode. The initial malformed
+  Max Damage game was saved to `rollouts/rejected_round_0001.jsonl`; the fresh
+  valid replacement is recorded separately.
+- The candidate is undergoing a fresh-seed, five-opponent evaluation against
+  Max Damage, legacy Counterplay, Public Counterplay, random, and historical
+  Round102 PPO, matched to Round430 on 256 team-pair clusters, two outcomes,
+  side swaps, and Round402 selectors. Do not promote before the evaluation.
+- Launcher: `scripts/train_round476_refreshed_population_ppo_20k.sh`.
+  Evaluation launcher: `scripts/evaluate_round476_fresh_seed_league_256x2.sh`.
+  Output: `training/outputs/phase12_headless/round476_refreshed_population_ppo_20k_20261031/`.
