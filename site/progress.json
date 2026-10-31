@@ -1395,7 +1395,7 @@
   "method": "Native self-play PPO for in-battle decisions. Terminal win/loss remains the main objective; win-probability and hidden-set prediction are auxiliary tasks. Search comes after a stronger policy.",
   "jax_decision": "Round430 has a confirmed self-play head-to-head lift over Round424, but external-opponent screens remain inconclusive. Prioritize measured inference batching, observation throughput, and rollouts; keep equilibrium-oriented opponent coverage and defer a JAX/GPU engine rewrite until its end-to-end payoff is measured.",
   "evaluation_note": "Round402\u2019s historical 77.15% is a team-preview selector benchmark against damage-preview selection, not an in-battle policy score against the Max Damage opponent. The latest in-battle Max Damage result is Round430 policy-only at 39.84% on 256 clusters; one-turn search scored 42.38% but its paired interval includes zero. Round485\u2019s 70%-Max-Damage training mix did not measurably improve that matchup or the broader opponent league. Compare only evaluations using matched tasks, selectors, teams, and seeds.",
-  "generated_at": "2026-10-31 20:22 UTC",
+  "generated_at": "2026-10-31 20:26 UTC",
   "round462_evaluation": {
     "status": "Round462 not promoted \u00b7 initial paired screen complete",
     "summary": "Round462 scored 44.82% against Max Damage [41.02%, 48.54%]. On the same teams and seeds, Round430 scored 44.73% and Round432 scored 44.43%; paired deltas were +0.10 pp [-1.37, +1.56] and +0.39 pp [-1.37, +2.05]. The update did not measurably change this weakness. Results against Public Counterplay and historical PPO are inconclusive; Random is an easy-baseline check.",
@@ -6141,7 +6141,7 @@
   },
   "round499_policy_ensemble": {
     "round": 499,
-    "status": "Collection and held-out fits complete; selector not promoted",
+    "status": "Two-prior collection and held-out full-match screen complete; selector not promoted",
     "candidate_policy": "Round430 incumbent",
     "requested_clusters_per_step_per_prior": 144,
     "decision_steps": [
@@ -6169,8 +6169,8 @@
     "device": "CPU",
     "completed_phases": 6,
     "total_phases": 6,
-    "current_phase": "Round430 remains active; wider independent full-match league evaluation needed",
-    "progress_note": "Both prior collections complete. Showdown Random Champions: 258/432 states, 1,032 worlds, 124,226 branches in 2,206.90s (56.290/s). Uniform Unique Full Sets: 229/432 states, 916 worlds, 110,477 branches in 2,112.83s (52.289/s). Across priors: 487 captures, 229 matched states, 234,703 branches, zero rejected actions. The joint fit and a Round476-held-out response fit are inconclusive; Round430 remains active.",
+    "current_phase": "Round430 remains active; expand independent opponent-family league evaluation",
+    "progress_note": "Both prior collections complete. Showdown Random Champions: 258/432 states, 1,032 worlds, 124,226 branches in 2,206.90s (56.290/s). Uniform Unique Full Sets: 229/432 states, 916 worlds, 110,477 branches in 2,112.83s (52.289/s). Across priors: 487 captures, 229 matched states, 234,703 branches, zero rejected actions. The joint fit and a Round476-held-out response fit are inconclusive; Round430 remains active. Fresh 256-cluster full-match step-3 screen with Round476 excluded from fit: selector delta -1.56 pp overall [-4.49,+1.37], -2.34 pp vs Max Damage, and -0.78 pp vs Round476; 1,024 matches at 7.394/s. No interval excludes zero; keep Round430.",
     "reproduction": "scripts/collect_round499_policy_ensemble_144x4x2.sh",
     "plan": "https://github.com/joconn819/poke-vgc-ai/blob/master/PLAN.md",
     "partial_progress": {
@@ -6377,7 +6377,33 @@
           0.0
         ]
       },
-      "promotion": "Not promoted: 46 test clusters, intervals include zero; holding out the Round476 PPO response did not show a robust gain. Round430 remains the deployed policy."
+      "promotion": "Not promoted: 46 test clusters, intervals include zero; holding out the Round476 PPO response did not show a robust gain. Round430 remains the deployed policy.",
+      "full_match_screen": {
+        "method": "Round476 policy response heads excluded from fitting; one-decision action selector at step 3; paired policy-only control; side-swapped teams; alternating Max Damage and Round476 opponents.",
+        "clusters": 256,
+        "matches": 1024,
+        "decision_reach_rate": 0.9921875,
+        "matches_per_second": 7.394,
+        "policy_win_rate_pct": 43.95,
+        "selected_win_rate_pct": 42.38,
+        "paired_delta_pp": -1.56,
+        "paired_ci95_pp": [
+          -4.49,
+          1.37
+        ],
+        "max_damage_delta_pp": -2.34,
+        "max_damage_ci95_pp": [
+          -5.86,
+          1.17
+        ],
+        "round476_delta_pp": -0.78,
+        "round476_ci95_pp": [
+          -5.47,
+          3.91
+        ],
+        "interpretation": "No paired interval excludes zero; all point estimates favor policy-only. Keep Round430; do not promote the selector.",
+        "report": "training/outputs/phase12_headless/round499_holdout476_fullmatch_step3_256_20261031/report.json"
+      }
     }
   }
 }

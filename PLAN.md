@@ -18497,7 +18497,7 @@ coverage, not another blind teacher-weight sweep.
   hidden-set priors. Max Damage remains one diagnostic opponent, not the
   optimization objective.
 
-### Round499: two-prior collection and held-out action-value fits (complete; not promoted)
+### Round499: two-prior collection, held-out fits, and full-match screen (complete; not promoted)
 
 - Round498's pooled-prior selector had only 17 held-out team clusters, so its
   confidence interval was too wide to establish a modest action-selection
@@ -18525,7 +18525,26 @@ coverage, not another blind teacher-weight sweep.
   candidates. Uniform-prior decision step 1 completed with 75/144 usable
   states, 300 worlds, and 38,803 branches in 1,040.33 seconds (37.299
   matches/s). It skipped 61 forced-switch states, two public Transform states,
-  and six full-set support gaps; no actions were rejected. Uniform-prior decision step 3 completed with 75/144 usable states, 300 hidden worlds, and 37,347 branches in 594.26 seconds (62.846 aggregate matches/s). It skipped 57 forced-switch states, nine full-set support gaps, and three possible-Illusion states; no actions were rejected. Uniform-prior step 5 completed with 79/144 states, 316 worlds, and 34,327 branches in 478.24 seconds (71.778 matches/s); 65 states were unavailable (20 decision-not-reached, 26 forced-switch, 15 full-set support gaps, three possible-Illusion, one Transform), and no candidates were rejected. The complete uniform prior covers 229/432 requested states, 916 worlds, and 110,477 branches in 2,112.83 seconds (52.289/s). Across both priors, 487 states were captured (229 matched), 1,948 worlds and 234,703 branches were evaluated in 4,319.73 seconds (54.333/s), with no rejected candidates. The full 14-head fit used 146/37/46 team-cluster train/validation/test splits; on 46 test clusters it changed 31 actions and raised worst-response outcome by 2.72 pp (95% CI [-0.54,+6.52]); equal-weight change was +1.63 pp [-1.09,+4.89]. A second fit held out both Round476 response heads and had -3.80 pp worst-response change [-8.15,0.00]. Both are inconclusive and do not justify promotion. Round430 remains active; proceed to a larger independent team/opponent full-match league screen before changing the policy. The complete two-prior dataset will be fit jointly
-  across both priors and all 14 opponent/prior heads, then compared to Round430
-  on team-disjoint clusters. Promotion still requires fresh paired,
-  side-swapped full-match evaluation across opponents.
+  and six full-set support gaps; no actions were rejected. Uniform-prior decision step 3 completed with 75/144 usable states, 300 hidden worlds, and 37,347 branches in 594.26 seconds (62.846 aggregate matches/s). It skipped 57 forced-switch states, nine full-set support gaps, and three possible-Illusion states; no actions were rejected. Uniform-prior step 5 completed with 79/144 states, 316 worlds, and 34,327 branches in 478.24 seconds (71.778 matches/s); 65 states were unavailable (20 decision-not-reached, 26 forced-switch, 15 full-set support gaps, three possible-Illusion, one Transform), and no candidates were rejected. The complete uniform prior covers 229/432 requested states, 916 worlds, and 110,477 branches in 2,112.83 seconds (52.289/s). Across both priors, 487 states were captured (229 matched), 1,948 worlds and 234,703 branches were evaluated in 4,319.73 seconds (54.333/s), with no rejected candidates. The full 14-head fit used 146/37/46 team-cluster train/validation/test splits; on 46 test clusters it changed 31 actions and raised worst-response outcome by 2.72 pp (95% CI [-0.54,+6.52]); equal-weight change was +1.63 pp [-1.09,+4.89]. A second fit held out both Round476 response heads and had -3.80 pp worst-response change [-8.15,0.00]. Both are inconclusive and do not justify promotion. Round430 remains active; proceed to a larger independent team/opponent full-match league screen before changing the policy. The held-out-Round476 checkpoint was then used in a fresh full-match screen.
+  Its action-value model excluded both Round476 response heads and chose at
+  decision step 3 by worst predicted value across the remaining 12 heads. On
+  256 team clusters / 1,024 full matches (both seats; baseline and selector
+  paired on identical teams and seeds), it reached the target decision in
+  99.2% of games and ran at 7.394 matches/s. Overall Round430 scored 43.95%
+  policy-only versus 42.38% with the selector, a paired change of -1.56 pp
+  (95% cluster CI [-4.49,+1.37]). The change was -2.34 pp [-5.86,+1.17]
+  versus Max Damage and -0.78 pp [-5.47,+3.91] versus Round476. No interval
+  excludes zero, but all point estimates favor policy-only. Keep Round430 as
+  the active move policy and do not deploy this selector. Reproduction:
+  `PYTHONPATH=. POKEMON_SHOWDOWN_PATH=/home/justin/p/poke_learning/pokemon-showdown
+  OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 venv/bin/python
+  scripts/evaluate_action_value_selector.py --policy-checkpoint
+  training/outputs/phase12_headless/round430_hard_opponent_auxiliary_ppo_20k_20261030/checkpoints/latest.pt
+  --opponent-checkpoint
+  training/outputs/phase12_headless/round476_refreshed_population_ppo_20k_20261031/checkpoints/latest.pt
+  --action-model-checkpoint
+  training/outputs/phase12_headless/round499_holdout_round476_policy_fit/response_conditioned_action_value.pt
+  --team-selection-checkpoint
+  training/outputs/phase12_headless/round402_selector_currentdata_8ep_20261030/selector_candidate.pt
+  --output training/outputs/phase12_headless/round499_holdout476_fullmatch_step3_256_20261031/report.json
+  --seed 2026114993 --clusters 256 --decision-step 3 --device cuda`.
