@@ -1351,11 +1351,11 @@
   },
   "latest_run": {
     "round": 473,
-    "status": "Fresh hard-opponent mixed PPO · paired evaluation in progress",
-    "summary": "Round473 trained on 20,000 fresh audited games from Round430 with no random-opponent games: 25% each Max Damage, legacy Counterplay, Public Counterplay, and a five-checkpoint policy pool. The candidate checkpoint is complete; Round430 remains the validated default pending the five-opponent paired screen.",
+    "status": "Fresh hard-opponent mixed PPO · evaluated, not promoted",
+    "summary": "Round473 completed a fresh 20,000-game update from Round430 and a paired screen over 256 team clusters against five opponent classes. The mean lift was small and per-opponent evidence was inconclusive; Round430 remains the validated play default.",
     "games": "20,000 audited games · 167,439 transitions",
     "epochs": "4 PPO passes · 1,312 optimizer steps",
-    "evaluation": "256 clusters × 2 outcomes vs five opponents · running"
+    "evaluation": "256 clusters × 2 outcomes vs five opponents · complete"
   },
   "method": "Native self-play PPO for in-battle decisions. Terminal win/loss remains the main objective; win-probability and hidden-set prediction are auxiliary tasks. Search comes after a stronger policy.",
   "jax_decision": "Round430 has a confirmed self-play head-to-head lift over Round424, but external-opponent screens remain inconclusive. Prioritize measured inference batching, observation throughput, and rollouts; keep equilibrium-oriented opponent coverage and defer a JAX/GPU engine rewrite until its end-to-end payoff is measured.",
@@ -3547,8 +3547,8 @@
   },
   "round473_current_training": {
     "round": "473",
-    "status": "Training complete · held-out paired evaluation in progress",
-    "summary": "The strict audit passed after one incomplete Public Counterplay match was replaced. PPO completed all four passes; Round430 remains the play default until the new league supports promotion.",
+    "status": "Training and paired evaluation complete · Round473 not promoted",
+    "summary": "Round473 completed its strict audit and PPO update. Fresh paired evaluation found a small +0.82 pp mean lift with a 95% interval [+0.02, +1.62], but all five familywise per-opponent intervals include zero and Public Counterplay declined. Round430 remains the validated default.",
     "opponent_mix": {
       "Random": 0,
       "Max Damage": 25,
@@ -3559,10 +3559,91 @@
     "training": "20,000 audited games, 167,439 transitions; learning rate 5e-5, minibatch 512, terminal rewards, 1,312 optimizer steps; final approximate KL 0.00487.",
     "seed": 202610473,
     "runtime": "38.40 rollout games/s; 21.26 games/s input-to-checkpoint; peak aggregate RSS 9.60 GiB. PPO preparation/tensor aggregation: 94.3 s; audit plus recovery: 260.1 s.",
-    "evaluation": "Fresh paired seed 20680473; 256 team-pair clusters × two side-swapped outcomes against five opponent classes. Evaluation is running.",
-    "candidate": "Round430 remains the validated play default pending paired results.",
+    "evaluation": "Fresh paired seed 20680473; 256 team-pair clusters × two side-swapped outcomes vs five opponents. One incomplete candidate Random repeat was excluded; no action corrections.",
+    "candidate": "Round430 remains the validated play default; Round473 is not promoted.",
     "artifacts": "training/outputs/phase12_headless/round473_fresh_hard_mixed_ppo_20k_20261031/",
     "launcher": "scripts/train_round473_fresh_hard_mixed_ppo_20k.sh",
     "evaluation_launcher": "scripts/evaluate_round473_fresh_seed_league_256x2.sh"
+  },
+  "round473_evaluation": {
+    "status": "Round473 not promoted · fresh paired league complete",
+    "method": "256 matched team-pair clusters per opponent; two side-swapped outcomes per cluster; Round402 preview selectors fixed; 20,000 paired cluster-bootstrap replicates. Battle RNG is server-side and is not identical across candidate/control matches.",
+    "summary": "The equal-weight mean paired change across five opponents was +0.82 pp (95% stratified paired-bootstrap interval [+0.02, +1.62]). Public Counterplay declined by 1.66 pp, the worst opponent change. Every per-opponent 95% interval includes zero, and all Bonferroni familywise intervals include zero. Keep Round430 as incumbent; do not promote Round473.",
+    "opponents": [
+      {
+        "opponent": "Max Damage",
+        "round430_score_percent": 38.28,
+        "round473_score_percent": 40.14,
+        "paired_delta_pp": 1.86,
+        "paired_ci95_pp": [
+          -0.29,
+          4.0
+        ],
+        "clusters": 256,
+        "round430_games_per_second": 6.6,
+        "round473_games_per_second": 8.02
+      },
+      {
+        "opponent": "Legacy Counterplay",
+        "round430_score_percent": 36.33,
+        "round473_score_percent": 37.5,
+        "paired_delta_pp": 1.17,
+        "paired_ci95_pp": [
+          -0.68,
+          3.12
+        ],
+        "clusters": 256,
+        "round430_games_per_second": 5.88,
+        "round473_games_per_second": 5.58
+      },
+      {
+        "opponent": "Public Counterplay",
+        "round430_score_percent": 41.89,
+        "round473_score_percent": 40.23,
+        "paired_delta_pp": -1.66,
+        "paired_ci95_pp": [
+          -3.42,
+          0.1
+        ],
+        "clusters": 256,
+        "round430_games_per_second": 7.07,
+        "round473_games_per_second": 7.22
+      },
+      {
+        "opponent": "Random",
+        "round430_score_percent": 95.12,
+        "round473_score_percent": 96.09,
+        "paired_delta_pp": 0.98,
+        "paired_ci95_pp": [
+          -0.1,
+          2.15
+        ],
+        "clusters": 256,
+        "round430_games_per_second": 3.71,
+        "round473_games_per_second": 4.59
+      },
+      {
+        "opponent": "Historical PPO · Round102",
+        "round430_score_percent": 55.57,
+        "round473_score_percent": 57.32,
+        "paired_delta_pp": 1.76,
+        "paired_ci95_pp": [
+          -0.2,
+          3.71
+        ],
+        "clusters": 256,
+        "round430_games_per_second": 6.64,
+        "round473_games_per_second": 5.7
+      }
+    ],
+    "average_delta_pp": 0.82,
+    "average_delta_ci95_pp": [
+      0.02,
+      1.62
+    ],
+    "worst_opponent_delta_pp": -1.66,
+    "familywise": "All five Bonferroni familywise 95% per-opponent intervals include zero.",
+    "evaluation_games_per_second": "3.71–8.02 across eight-worker opponent arms",
+    "artifact": "round473_evaluation.json"
   }
 }

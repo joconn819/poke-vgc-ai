@@ -17219,7 +17219,7 @@ coverage, not another blind teacher-weight sweep.
 - Training output: `training/outputs/phase12_headless/round472_fresh_robust_mixed_ppo_20k_20261031/`.
 - Evaluation output: `training/outputs/phase12_headless/round472_fresh_seed_league_256x2_20261031/`.
 
-### Round473: hard-opponent mixed PPO (training complete; evaluation in progress; 2026-10-31)
+### Round473: hard-opponent mixed PPO (training and evaluation complete; 2026-10-31)
 
 - The Round472 league did not establish an overall gain, so keep Round430 as
   the learner start and current incumbent. Its Public Counterplay result is a
@@ -17249,11 +17249,26 @@ coverage, not another blind teacher-weight sweep.
   took 94.3 s, the complete PPO training command took 159.8 s, and audit plus
   recovery took 260.1 s (128.0 s for the replacement match). The project stayed
   below the 50% disk-use limit at 41–42% during the run.
-- Reproducible paired evaluation is now running against Round430, using fresh
-  seed `20680473`, 256 team-pair clusters, two side-swapped outcomes per
-  cluster, and five opponents: Max Damage, legacy Counterplay, Public
-  Counterplay, random, and historical PPO Round102. Round430 remains the play
-  default until multi-opponent results support a change.
+- Paired evaluation completed against Round430 on fresh seed `20680473`, using
+  256 team-pair clusters, two side-swapped outcomes per cluster, and both
+  Round402 preview selectors fixed. Results and paired changes (95% cluster
+  intervals) were: Max Damage 40.14% vs 38.28%, +1.86 pp [-0.29, +4.00];
+  legacy Counterplay 37.50% vs 36.33%, +1.17 pp [-0.68, +3.12]; Public
+  Counterplay 40.23% vs 41.89%, -1.66 pp [-3.42, +0.10]; random 96.09% vs
+  95.12%, +0.98 pp [-0.10, +2.15]; historical Round102 PPO 57.32% vs 55.57%,
+  +1.76 pp [-0.20, +3.71]. One incomplete Round473 random repeat was excluded;
+  every arm had zero action corrections.
+- Across these five fixed opponent classes, the equal-weight mean paired lift
+  was +0.82 pp with a stratified paired-bootstrap 95% interval [+0.02, +1.62].
+  The worst opponent change was -1.66 pp vs Public Counterplay. Every
+  per-opponent 95% interval includes zero, and all five Bonferroni familywise
+  intervals include zero. This is a small, seed-specific average lift, not
+  evidence of robust or equilibrium improvement. Keep Round430 as the
+  validated play default; do not promote Round473.
+- Full-match evaluation used eight CPU workers and measured 3.71–8.02
+  completed games/s across the ten control/candidate opponent arms. Long
+  individual battles delayed a few workers; no other evaluation errors were
+  reported.
 - Speed/bottleneck tracking: Round473 per-opponent rollout shards measured
   5.0–7.5 games/s; full-match paired evaluation for Round472 measured
   3.51–5.78 games/s with eight CPU workers. Rollout and evaluation games/s are
