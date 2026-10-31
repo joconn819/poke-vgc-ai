@@ -6170,16 +6170,16 @@
     "completed_phases": 1,
     "total_phases": 6,
     "current_phase": "Showdown Random Champions prior, decision step 3",
-    "progress_note": "Decision step 3 under the Showdown Random Champions prior is running. One worker shard has finished and seven remain active; current checkpoints total 90/144 cluster attempts, 50 usable states, and 24,556 branches. These are partial counts, not phase totals.",
+    "progress_note": "Decision step 3 under the Showdown Random Champions prior is running. Two worker shards have finished and six remain active; current checkpoints total 116/144 cluster attempts, 67 usable states, and 33,279 branches. These are partial counts, not phase totals.",
     "reproduction": "scripts/collect_round499_policy_ensemble_144x4x2.sh",
     "plan": "https://github.com/joconn819/poke-vgc-ai/blob/master/PLAN.md",
     "partial_progress": {
-      "completed_worker_shards": 1,
+      "completed_worker_shards": 2,
       "reported_worker_shards": 8,
       "total_worker_shards": 8,
-      "cluster_attempts_processed": 90,
-      "states_captured": 50,
-      "branch_matches": 24556,
+      "cluster_attempts_processed": 116,
+      "states_captured": 67,
+      "branch_matches": 33279,
       "is_phase_total": false
     },
     "phase_results": [
