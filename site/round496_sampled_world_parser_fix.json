@@ -1,0 +1,36 @@
+{
+  "round": 496,
+  "date": "2026-10-31",
+  "status": "five formerly invalid sampled-world branches now replay successfully",
+  "root_cause": "Resumed sampled worlds used the sampled side current private move request but reused stale poke-env move caches from the original hidden set. A sampled Pokemon switching in later could therefore have an empty native legal-action mask.",
+  "fix": "Refresh the sampled response side active move cache from its own current request throughout branch replay. The fix is limited to that side and does not change the policy player observation.",
+  "targeted_replays": {
+    "cases": 5,
+    "cases_passed": 5,
+    "decision_step_team_clusters": [
+      "3/9",
+      "3/17",
+      "3/18",
+      "5/13",
+      "5/18"
+    ],
+    "branch_matches": [
+      362,
+      322,
+      362,
+      362,
+      162
+    ],
+    "invalid_branches": 0,
+    "rejected_actions": 0
+  },
+  "speed": {
+    "last_full_collection_branch_matches_per_second": 38.412,
+    "last_full_collection_workers": 8,
+    "post_fix_full_collection_reprofiled": false,
+    "current_bottleneck": "Showdown branch simulation; world preparation was 20.609 seconds in the last 12,374-branch collection."
+  },
+  "interpretation": "Targeted state restoration is repaired for all five previously failing cases. Recollect and re-evaluate before treating the model fit or strength as improved.",
+  "next_gate": "Add a second legal set prior and collect at least 128 held-out usable states, then compare on fresh team clusters and a full opponent league.",
+  "plan": "https://github.com/joconn819/poke-vgc-ai/blob/master/PLAN.md"
+}

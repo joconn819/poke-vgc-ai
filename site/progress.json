@@ -1395,7 +1395,7 @@
   "method": "Native self-play PPO for in-battle decisions. Terminal win/loss remains the main objective; win-probability and hidden-set prediction are auxiliary tasks. Search comes after a stronger policy.",
   "jax_decision": "Round430 has a confirmed self-play head-to-head lift over Round424, but external-opponent screens remain inconclusive. Prioritize measured inference batching, observation throughput, and rollouts; keep equilibrium-oriented opponent coverage and defer a JAX/GPU engine rewrite until its end-to-end payoff is measured.",
   "evaluation_note": "Round402\u2019s historical 77.15% is a team-preview selector benchmark against damage-preview selection, not an in-battle policy score against the Max Damage opponent. The latest in-battle Max Damage result is Round430 policy-only at 39.84% on 256 clusters; one-turn search scored 42.38% but its paired interval includes zero. Round485\u2019s 70%-Max-Damage training mix did not measurably improve that matchup or the broader opponent league. Compare only evaluations using matched tasks, selectors, teams, and seeds.",
-  "generated_at": "2026-10-31T12:11:25-05:00",
+  "generated_at": "2026-10-31T13:04:11-05:00",
   "round462_evaluation": {
     "status": "Round462 not promoted \u00b7 initial paired screen complete",
     "summary": "Round462 scored 44.82% against Max Damage [41.02%, 48.54%]. On the same teams and seeds, Round430 scored 44.73% and Round432 scored 44.43%; paired deltas were +0.10 pp [-1.37, +1.56] and +0.39 pp [-1.37, +2.05]. The update did not measurably change this weakness. Results against Public Counterplay and historical PPO are inconclusive; Random is an easy-baseline check.",
@@ -5610,6 +5610,42 @@
       "checkpoint_url": "https://github.com/joconn819/poke-vgc-ai/blob/master/training/outputs/phase12_headless/round495_public_world_action_value_fit_20261031/response_conditioned_action_value.pt",
       "plan": "https://github.com/joconn819/poke-vgc-ai/blob/master/PLAN.md"
     },
-    "next_gate": "Fix public-state alignment in the five invalid reconstructed branches, add a second public-compatible set prior, then evaluate on at least 128 usable held-out states and a fresh full-match opponent league."
+    "next_gate": "Sample at least 128 usable held-out states with a second public-compatible set prior; the five former empty-mask cases now pass targeted replay after refreshing sampled-side move caches."
+  },
+  "round496_sampled_world_parser_fix": {
+    "round": 496,
+    "date": "2026-10-31",
+    "status": "five formerly invalid sampled-world branches now replay successfully",
+    "root_cause": "Resumed sampled worlds used the sampled side current private move request but reused stale poke-env move caches from the original hidden set. A sampled Pokemon switching in later could therefore have an empty native legal-action mask.",
+    "fix": "Refresh the sampled response side active move cache from its own current request throughout branch replay. The fix is limited to that side and does not change the policy player observation.",
+    "targeted_replays": {
+      "cases": 5,
+      "cases_passed": 5,
+      "decision_step_team_clusters": [
+        "3/9",
+        "3/17",
+        "3/18",
+        "5/13",
+        "5/18"
+      ],
+      "branch_matches": [
+        362,
+        322,
+        362,
+        362,
+        162
+      ],
+      "invalid_branches": 0,
+      "rejected_actions": 0
+    },
+    "speed": {
+      "last_full_collection_branch_matches_per_second": 38.412,
+      "last_full_collection_workers": 8,
+      "post_fix_full_collection_reprofiled": false,
+      "current_bottleneck": "Showdown branch simulation; world preparation was 20.609 seconds in the last 12,374-branch collection."
+    },
+    "interpretation": "Targeted state restoration is repaired for all five previously failing cases. Recollect and re-evaluate before treating the model fit or strength as improved.",
+    "next_gate": "Add a second legal set prior and collect at least 128 held-out usable states, then compare on fresh team clusters and a full opponent league.",
+    "plan": "https://github.com/joconn819/poke-vgc-ai/blob/master/PLAN.md"
   }
 }

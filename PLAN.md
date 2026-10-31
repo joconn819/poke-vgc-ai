@@ -18006,8 +18006,44 @@ coverage, not another blind teacher-weight sweep.
   strength result; do not promote it or interpret the lower CI boundary as a
   confirmed gain. Round430 remains the default. Model and report:
   `training/outputs/phase12_headless/round495_public_world_action_value_fit_20261031/`.
-- Next: improve the branch-state alignment that caused the five invalid
-  reconstructed states, then collect at least 128 usable states with more than
-  one set prior. Keep whole hidden worlds on opposite sides of the chance split,
-  report skipped-state rates by cause, and evaluate candidate choices on fresh
-  team clusters plus a separate full-match opponent league before promotion.
+- Next: fix the branch parser's sampled-team move cache, then collect at least
+  128 usable states with more than one set prior. Keep whole hidden worlds on
+  opposite sides of the chance split, report skipped-state rates by cause, and
+  evaluate candidate choices on fresh team clusters plus a separate full-match
+  opponent league before promotion.
+
+### Round496: repair sampled-world parser move cache (2026-10-31; targeted replays pass)
+
+- Reproduced all five Round495 empty-mask branches from the original seeds and
+  checkpoints. In a resumed sampled world, Showdown's private request for P2
+  correctly described the sampled set, but the reused poke-env `Pokemon` object
+  retained the source match's move cache. When every move in the request was
+  absent from that stale cache, the native action mask was empty even though
+  Showdown had valid move orders.
+- Updated `HeadlessShowdownProcess` to optionally rebuild a selected side's
+  active move cache from each of its own current requests during branch replay.
+  The option is enabled only for P2 in public-world counterfactual branches;
+  it uses that side's private request and is not exposed to P1 policy inputs.
+  Refreshing each request is needed because a sampled bench Pokemon can enter
+  after the branch's initial state. Private move IDs are deliberately excluded
+  from saved diagnostics; records retain only the player side, active slot, and
+  legal-action counts.
+- Replayed the five formerly failing cases (step/cluster 3/9, 3/17, 3/18,
+  5/13, and 5/18) with their original team generation seeds, checkpoints,
+  worlds, response classes, and chance repeats. All five states were captured;
+  their replay counts were 362, 322, 362, 362, and 162 respectively, with no
+  invalid resumed branch and no rejected candidate action. These targeted
+  replays show the specific parser mismatch is repaired; they do not replace a
+  fresh full collection or establish policy strength.
+- Speed: the last full Round495 collection measured 38.412 branch matches/s
+  across eight workers (12,374 branches; 20.609 s total hidden-world prep).
+  Targeted replay rates are not directly comparable because each run uses one
+  cluster and different match lengths. Re-measure aggregate throughput on the
+  next full batch after this fix; branch simulation remains the measured
+  bottleneck, while public-world preparation was about 6% of measured branch
+  time.
+- Next: implement a second public-compatible legal-set prior, then collect at
+  least 128 usable held-out states across decision steps and both priors. Fit
+  action values without mixing correlated worlds across train/test, evaluate
+  on fresh team clusters, and require a broad full-match opponent league before
+  any selector promotion. Keep Round430 as the active policy until that gate.

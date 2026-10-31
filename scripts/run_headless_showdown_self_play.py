@@ -557,6 +557,7 @@ def run_game(
     preview_actions_override: tuple[int, int] | None = None,
     initial_battle_snapshot: dict[str, Any] | None = None,
     initial_parser_snapshot: dict[str, Any] | None = None,
+    refresh_request_move_slots_for_sides: tuple[int, ...] = (),
     initial_decision_counts: tuple[int, int] = (0, 0),
     persist_record: bool = True,
     max_damage_score_gate: bool = False,
@@ -745,6 +746,7 @@ def run_game(
         worker=worker,
         snapshot=initial_battle_snapshot,
         parser_snapshot=initial_parser_snapshot,
+        refresh_request_move_slots_for_sides=refresh_request_move_slots_for_sides,
     ) as match:
         if initial_battle_snapshot is None:
             preview_started = time.perf_counter()

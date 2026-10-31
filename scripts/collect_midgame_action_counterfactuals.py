@@ -12,6 +12,7 @@ from __future__ import annotations
 import argparse
 import json
 from pathlib import Path
+import re
 import sys
 import time
 
@@ -94,6 +95,9 @@ def public_world_branches(
          "initial_parser_snapshot": data["parser_snapshot"],
          "initial_decision_counts": tuple(data["decision_counts_at_snapshot"]),
          "preview_actions_override": preview,
+         # P2's own sampled sets differ from the source match. Refresh their
+         # active move cache from P2's current private request on resume.
+         "refresh_request_move_slots_for_sides": (1,),
          "public_hidden_world_index": index,
          "sampled_opponent_team": hypotheses[index]}
         for index, snapshot in enumerate(prepared["snapshots"])
@@ -618,6 +622,30 @@ def main() -> None:
                                     if "No legal action available" not in str(error):
                                         raise
                                     state_invalid_replay = True
+                                    # Record only coarse, player-neutral diagnostics.
+                                    # The full exception contains request details that
+                                    # may describe the other side's private moves.
+                                    error_text = str(error)
+                                    agent_match = re.search(
+                                        r"No legal action available for (Headless P[12])",
+                                        error_text,
+                                    )
+                                    position_match = re.search(
+                                        r"empty_position=(\d+)", error_text
+                                    )
+                                    legal_match = re.search(
+                                        r"legal_indices_by_position=(\[[^;]+\])",
+                                        error_text,
+                                    )
+                                    legal_counts = None
+                                    if legal_match:
+                                        try:
+                                            legal_counts = [
+                                                len(position)
+                                                for position in json.loads(legal_match.group(1))
+                                            ]
+                                        except (TypeError, ValueError):
+                                            pass
                                     unsupported_world_replays.append({
                                         "team_cluster": cluster,
                                         "state_repeat": state_repeat,
@@ -628,6 +656,14 @@ def main() -> None:
                                         "candidate": name,
                                         "action": list(key),
                                         "unsupported_replay": "no_legal_action_in_resumed_branch",
+                                        "empty_mask_agent": (
+                                            agent_match.group(1) if agent_match else None
+                                        ),
+                                        "empty_mask_position": (
+                                            int(position_match.group(1))
+                                            if position_match else None
+                                        ),
+                                        "legal_action_counts_by_position": legal_counts,
                                     })
                                     break
                                 matches_executed += 1
