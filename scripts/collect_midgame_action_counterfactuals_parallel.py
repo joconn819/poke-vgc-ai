@@ -154,9 +154,16 @@ def main() -> None:
     shard_payloads = [json.loads(item["output"].read_text()) for item in configs]
     rows = [row for payload in shard_payloads for row in payload["rows"]]
     cluster_ids = {int(row["team_cluster"]) for row in rows}
-    if len(cluster_ids) != args.clusters:
+    states_captured = sum(p["states_captured"] for p in shard_payloads)
+    if len(cluster_ids) != states_captured:
         raise RuntimeError(
-            f"expected {args.clusters} unique team clusters, observed {len(cluster_ids)}"
+            f"captured-state count ({states_captured}) does not match unique team "
+            f"clusters ({len(cluster_ids)})"
+        )
+    if len(cluster_ids) > args.clusters:
+        raise RuntimeError(
+            f"observed {len(cluster_ids)} unique team clusters, more than the "
+            f"requested {args.clusters}"
         )
     elapsed = time.perf_counter() - started
     result = {

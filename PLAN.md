@@ -57,6 +57,17 @@ At inference, legal actions are selected from masked PPO policy logits; the
 win-probability head is an auxiliary training target and does not rank moves.
 The optional one-turn search can consult a state-value evaluator only when
 explicitly enabled; the default play path leaves search disabled.
+**Opponent-family coverage gate (added 2026-10-31):** Max Damage remains a
+useful mechanics baseline, not the definition of strength. Do not promote a
+change based on Max Damage alone, or on the same small response set used to
+train it. Report side-swapped, team-clustered results against random, Max
+Damage, public Counterplay, legacy Counterplay, and multiple frozen PPO
+generations; when possible hold out an entire policy family/checkpoint from
+training and action-value fitting. Report equal-weight league mean, median,
+lower tail, and worst response. Any candidate with a credible regression on
+one family requires investigation before promotion, even if its aggregate
+improves. Counterfactual action values must be tested on an opponent set wider
+than their three training heads.
 **Round485 controlled opponent-exposure ablation (2026-10-31; not promoted):**
 matched Round473's Round430 start, PPO settings, Round402 selectors, and frozen
 policy pool while changing only opponent proportions to 70% Max Damage, 10%
@@ -131,6 +142,25 @@ actions reveal the true team. Only then should it test one or two samples first,
 adaptive sampling for close decisions, decision latency, and full-match results.
 Do not replace the default until those gates pass. Reports:
 `training/outputs/phase12_headless/round487_action_value_transfer_256x8_20261031/`.
+**Round488 multi-phase action-value transfer (2026-10-31; not promoted):**
+collected 128 opening states at decision 1, 128 at decision 3, and 118/128
+reachable states at decision 5 (10 matches ended before that decision), with
+eight chance repeats and paired Max Damage / Public Counterplay / Round476
+response outcomes. The three phases produced 56,198 branch matches in 950.94
+seconds (59.10 aggregate matches/s), with zero rejected candidates. Five
+team-disjoint model fits covered 256 unique held-out team clusters. Action
+outcome Brier scores improved over a constant-rate baseline, but the
+worst-response action selector changed 54/75 held-out actions in the first
+split and its five-split out-of-fold result was -1.56 pp (95% cluster CI
+[-4.10,+0.80]); response deltas were -1.73 pp vs Max Damage, +0.49 pp vs
+Round476, and -2.85 pp vs Public Counterplay (the last interval was
+[-5.50,-0.26]). This is negative selector-transfer evidence, not a full-match
+evaluation. Do not promote this model. It also reinforces the coverage concern:
+three response heads are too narrow to support a broad robust-play claim. Next,
+add varied held-out policy generations/families and random/legacy Counterplay
+to the evaluation matrix, then train/evaluate on a family-disjoint split before
+another value-selector iteration. Reports:
+`training/outputs/phase12_headless/round488_multiphase_action_value_128x8_20261031/`.
 **Round482 equilibrium-target check (2026-10-31; reject both actor updates):**
 combined the independent Round479 256-team / 8-repeat and Round481 128-team /
 16-repeat counterfactual corpora (38,672 and 37,264 branch matches; 30.01 and
