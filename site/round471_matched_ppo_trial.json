@@ -1,0 +1,62 @@
+{
+  "title": "Matched Round471 higher-update PPO replay comparison",
+  "status": "Round471 not promoted · Round430 remains validated",
+  "method": "Round471 replayed the audited 20,000-game Round468 corpus from the Round430 initialization, changing only learning rate and update passes. Evaluation used the same 512 held-out team-pair clusters and Round402 team selectors on both sides, with two side-swapped outcomes per cluster. Paired confidence intervals use 20,000 cluster bootstrap resamples; Showdown battle RNG is not directly controllable.",
+  "training": {
+    "Round471": "Learning rate 1e-4 (doubled) and 8 PPO passes; all 2,616 optimizer steps completed with KL guard enabled.",
+    "data": "Reused 20,000 audited games / 167,383 decision transitions; no new rollout simulation.",
+    "runtime": "Sample preparation 107.2 s; CUDA PPO optimization 110.0 s, 23.8 optimizer steps/s."
+  },
+  "opponents": [
+    {
+      "trial": "Round471 · higher PPO update",
+      "opponent": "Max Damage",
+      "round430_score_percent": 37.7,
+      "candidate_score_percent": 37.21,
+      "paired_delta_pp": -0.49,
+      "paired_ci95_pp": [
+        -1.9,
+        0.88
+      ],
+      "clusters": 512,
+      "matched_cases": 1023,
+      "timeouts_or_errors": 0,
+      "evaluation_games": 2048,
+      "evaluation_games_per_second": 7.38
+    },
+    {
+      "trial": "Round471 · higher PPO update",
+      "opponent": "Legacy Counterplay",
+      "round430_score_percent": 34.69,
+      "candidate_score_percent": 33.95,
+      "paired_delta_pp": -0.73,
+      "paired_ci95_pp": [
+        -2.25,
+        0.78
+      ],
+      "clusters": 511,
+      "matched_cases": 1022,
+      "timeouts_or_errors": 2,
+      "evaluation_games": 2044,
+      "evaluation_games_per_second": 5.02
+    },
+    {
+      "trial": "Round471 · higher PPO update",
+      "opponent": "Public Counterplay",
+      "round430_score_percent": 39.01,
+      "candidate_score_percent": 38.77,
+      "paired_delta_pp": -0.24,
+      "paired_ci95_pp": [
+        -1.56,
+        1.07
+      ],
+      "clusters": 512,
+      "matched_cases": 1023,
+      "timeouts_or_errors": 1,
+      "evaluation_games": 2046,
+      "evaluation_games_per_second": 6.06
+    }
+  ],
+  "interpretation": "All paired intervals include zero and all point estimates are slightly negative. The larger PPO update did not establish a strength gain; keep Round430 as the default. The win-probability head remains auxiliary and does not select moves.",
+  "artifact_root": "training/outputs/phase12_headless/"
+}
