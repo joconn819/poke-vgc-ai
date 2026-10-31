@@ -262,11 +262,11 @@
     }
   ],
   "speed": {
-    "games_per_second": "7.53 / 5.34 / 4.84",
-    "context": "Round467 per-worker rollout games/s: Max Damage 7.53, historical policy pool 5.34, Public Counterplay 4.84. Exact aggregate rollout wall time was not retained.",
-    "decision_latency": "~83 ms action selection per mixed-policy episode",
-    "current_bottleneck": "Round467 action selection averaged 48 ms per episode against Max Damage, 79 ms for the policy pool, and 121 ms against Public Counterplay (77 ms public baseline scoring). Observation encoding took 23–26 ms, engine roundtrip 28–33 ms. Higher teacher weight stopped PPO at its KL safety limit after 184 steps.",
-    "gpu_status": "RTX 4060 used for PPO optimization; rollout policy inference and Showdown simulation remain CPU-side",
+    "games_per_second": "37.94 rollout · 21.23 end-to-checkpoint",
+    "context": "Round468 8-worker rollouts: 20,000 games in 527.15 s. Including preflight, recovery, audit, and PPO: 942.16 s. Peak aggregate rollout RSS 9.19 GiB.",
+    "decision_latency": "Action selection 75–96 ms per episode vs PPO/Counterplay opponents",
+    "current_bottleneck": "Policy/action selection and legacy Counterplay scorer; PPO inference 65–74 ms, scorer 47 ms, engine 32–37 ms, observation encoding 25–29 ms per episode.",
+    "gpu_status": "RTX 4060 used for PPO optimization; rollout decisions and headless simulator remain CPU-side",
     "profile_context": "Round467 completed 20,000 rollouts: per-worker speed 7.53/5.34/4.84 games/s for Max Damage/policy/Public Counterplay. PPO preparation took 89 s; the KL-stopped CUDA optimizer ran about 5 s. Aggregate rollout wall time was not retained.",
     "active_training_profile": {
       "round": "467",
@@ -1097,20 +1097,49 @@
       ],
       "report": "round464_full_iteration_profile.json",
       "summary": "Round464 completed 20,000 audited games and PPO from Round463. Rollouts ran at 35.38 aggregate games/s; recovery-inclusive input-to-checkpoint speed was 17.66 games/s. A strict audit caught one identical-team match, which was replaced before PPO. Held-out evaluation is running; no promotion decision yet."
+    },
+    "round468_full_iteration_profile": {
+      "round": "468",
+      "summary": "Round468 completed 20,000 audited rollouts and a full PPO update. Rollouts ran at 37.94 aggregate games/s; full input-to-checkpoint speed was 21.23 games/s. Latest league found no robust improvement, so Round430 remains incumbent.",
+      "observed_rollout_games_per_second": 37.94,
+      "observed_rollout_wall_seconds": 527.15,
+      "observed_workflow_games_per_second": 21.23,
+      "ppo_sample_preparation_seconds": 97.1,
+      "ppo_wall_seconds": 159.16,
+      "transitions": 167383,
+      "peak_rss_gib": 9.19,
+      "opportunities": [
+        {
+          "title": "Batch policy inference across rollouts",
+          "detail": "PPO inference averaged 65–74 ms per episode against the policy pool. Batch ready decisions and benchmark CPU/GPU inference at actual worker batch sizes."
+        },
+        {
+          "title": "Reuse Counterplay scoring",
+          "detail": "Legacy Counterplay scoring averaged 47 ms per episode and pushed action selection near 96 ms. Cache repeated move/type/damage calculations before changing the simulator."
+        },
+        {
+          "title": "Keep observation encoding lean",
+          "detail": "Observation encoding averaged 25–29 ms per episode; profile feature construction and buffer reuse."
+        },
+        {
+          "title": "Keep the simulator as reference",
+          "detail": "Headless engine roundtrip averaged 32–37 ms per episode. Profile optimized native rollout before investing in a new engine."
+        }
+      ]
     }
   },
   "latest_run": {
-    "round": 467,
-    "status": "20,000-game PPO run · same-batch teacher-weight replay · challenger not promoted",
-    "summary": "A same-batch PPO replay from Round430 with teacher weight 0.2 and half learning rate completed 928/1,268 minibatch steps (2.93/4 passes) before the KL guard stopped it at approximate KL 0.01268. On the same held-out team/seed sets, it scored 41.60% vs Max Damage, 38.87% vs Public Counterplay, 58.40% vs Round464, and 51.17% vs Round465. Paired differences from teacher weight 0.1 and 0.5 include zero across all four opponents; Round430 remains the validated incumbent.",
-    "games": "20,000 reused; zero new rollouts for replay",
-    "epochs": "2.93 PPO passes before KL stop",
-    "evaluation": "Four 512-game screens; no significant gain over Round430 or neighboring teacher weights"
+    "round": 468,
+    "status": "20,000-game robust opponent mixture · candidate not promoted",
+    "summary": "Round468 trained from Round430 with terminal win/loss PPO rewards and a 10/20/25/25/20% mixture of Random, Max Damage, legacy Counterplay, Public Counterplay, and historical PPOs. Fresh league results were weak against Max Damage (38.18%), legacy Counterplay (34.38%), and Public Counterplay (39.39%), and unresolved against Round430 (49.32% [45.70%, 52.93%]). Round430 remains the validated default.",
+    "games": "20,000 audited self-play games",
+    "epochs": "4 PPO passes · 1,308 optimizer steps",
+    "evaluation": "Candidate not promoted · 10,220 completed games across five opponents"
   },
   "method": "Native self-play PPO for in-battle decisions. Terminal win/loss remains the main objective; win-probability and hidden-set prediction are auxiliary tasks. Search comes after a stronger policy.",
   "jax_decision": "Round430 has a confirmed self-play head-to-head lift over Round424, but external-opponent screens remain inconclusive. Prioritize measured inference batching, observation throughput, and rollouts; keep equilibrium-oriented opponent coverage and defer a JAX/GPU engine rewrite until its end-to-end payoff is measured.",
   "evaluation_note": "Round465 scored 45.51% against Max Damage [41.70%, 49.32%] and 46.00% against Public Counterplay [42.19%, 49.80%]. Same-seed Max Damage deltas over Round464 (+0.10 pp [-1.56, +1.76]) and Round430 (+0.88 pp [-1.27, +3.03]) include zero, so Round430 remains the validated incumbent. The 58.40% five-opponent mean is pulled upward by the 95.12% Random result; the p10 is 45.70% and the worst opponent score is 45.51%. Use paired team-cluster intervals and hard-opponent results to judge changes, not one overall mean.",
-  "generated_at": "2026-10-31 03:37 UTC",
+  "generated_at": "2026-10-31 04:32 UTC",
   "round462_evaluation": {
     "status": "Round462 not promoted · initial paired screen complete",
     "summary": "Round462 scored 44.82% against Max Damage [41.02%, 48.54%]. On the same teams and seeds, Round430 scored 44.73% and Round432 scored 44.43%; paired deltas were +0.10 pp [-1.37, +1.56] and +0.39 pp [-1.37, +2.05]. The update did not measurably change this weakness. Results against Public Counterplay and historical PPO are inconclusive; Random is an easy-baseline check.",
@@ -2906,5 +2935,88 @@
       "max": 199.37
     },
     "latency_caveat": "One completed match and four decisions; this verifies protocol operation, not a stable latency distribution."
+  },
+  "round468_robust_mixed_ppo": {
+    "title": "Round468 robust mixed PPO held-out opponent league",
+    "status": "Candidate not promoted · Round430 remains validated",
+    "training_games": 20000,
+    "transitions": 167383,
+    "opponent_mix": {
+      "counterplay": 5000,
+      "max_damage": 4000,
+      "policy": 4000,
+      "public_counterplay": 5000,
+      "random": 2000
+    },
+    "summary": "The policy did not improve robust play. Random inflates the mean; the lower-tail scores remain weak.",
+    "mean_score_percent": 51.22,
+    "median_score_percent": 39.39,
+    "p10_score_percent": 35.9,
+    "worst_opponent_score_percent": 34.38,
+    "total_games_completed": 10220,
+    "opponents": [
+      {
+        "opponent": "Counterplay",
+        "score_percent": 34.38,
+        "ci95_percent": [
+          31.15,
+          37.79
+        ],
+        "games": 2042,
+        "clusters": 512,
+        "timeouts_or_errors": 3,
+        "evaluation_games_per_second": 4.59
+      },
+      {
+        "opponent": "Max Damage",
+        "score_percent": 38.18,
+        "ci95_percent": [
+          34.81,
+          41.6
+        ],
+        "games": 2048,
+        "clusters": 512,
+        "timeouts_or_errors": 0,
+        "evaluation_games_per_second": 6.18
+      },
+      {
+        "opponent": "Round430 PPO",
+        "score_percent": 49.32,
+        "ci95_percent": [
+          45.7,
+          52.93
+        ],
+        "games": 2046,
+        "clusters": 512,
+        "timeouts_or_errors": 1,
+        "evaluation_games_per_second": 5.07
+      },
+      {
+        "opponent": "Public Counterplay",
+        "score_percent": 39.39,
+        "ci95_percent": [
+          36.18,
+          42.82
+        ],
+        "games": 2046,
+        "clusters": 512,
+        "timeouts_or_errors": 1,
+        "evaluation_games_per_second": 4.69
+      },
+      {
+        "opponent": "Random",
+        "score_percent": 94.85,
+        "ci95_percent": [
+          93.8,
+          95.9
+        ],
+        "games": 2038,
+        "clusters": 512,
+        "timeouts_or_errors": 5,
+        "evaluation_games_per_second": 4.43
+      }
+    ],
+    "interpretation": "The policy did not improve robust play in this screen: it scored poorly against Max Damage and both Counterplay variants and was unresolved against Round430 PPO. The random score inflates the 51.22% equal-opponent mean; median is 39.39%, p10 35.90%, worst opponent 34.38%. No invalid-action corrections occurred. The win-probability head is auxiliary and does not select moves.",
+    "artifacts": "round468_robust_mixed_league.json"
   }
 }

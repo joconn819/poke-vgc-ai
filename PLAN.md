@@ -15,7 +15,11 @@ promoted. Round430 completed a 20,000-game stronger-opponent iteration, but its
 over Round424, so Round430 is the current in-battle continuation candidate:
 55.32% cluster-weighted score (95% CI [51.86%, 58.79%]) across 512 clusters.
 This head-to-head result alone does not establish robust strength against
-external policies. Search remains conditional on stronger held-out performance.
+external policies. Round468 trained 20,000 games on a broad opponent mixture,
+but its fresh league score was only 38.18% vs Max Damage, 34.38% vs legacy
+Counterplay, 39.39% vs Public Counterplay, and 49.32% vs Round430 (95% CI
+[45.70%, 52.93%]); it remains unpromoted and Round430 remains the validated
+incumbent. Search remains conditional on stronger held-out performance.
 At inference, legal actions are selected from masked PPO policy logits; the
 win-probability head is an auxiliary training target and does not rank moves.
 The optional one-turn search can consult a state-value evaluator only when

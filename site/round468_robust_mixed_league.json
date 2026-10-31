@@ -1,0 +1,166 @@
+{
+  "title": "Round468 robust mixed PPO held-out opponent league",
+  "status": "Candidate not promoted; Round430 remains the validated default",
+  "training": {
+    "games": 20000,
+    "transitions": 167383,
+    "ppo_optimizer_steps": 1308,
+    "ppo_passes": 4,
+    "opponent_mix": {
+      "counterplay": 5000,
+      "max_damage": 4000,
+      "policy": 4000,
+      "public_counterplay": 5000,
+      "random": 2000
+    },
+    "rollout_wall_seconds": 527.1507376049994,
+    "rollout_games_per_second": 37.93981222688954,
+    "input_to_checkpoint_wall_seconds": 942.1643641800038,
+    "input_to_checkpoint_games_per_second": 21.227718602376402,
+    "peak_aggregate_rss_gib": 9.186019897460938,
+    "win_probability_auxiliary_loss": 0.4438997712385035,
+    "checkpoint": "training/outputs/phase12_headless/round468_robust_mixed_ppo_20k_20261030/checkpoints/latest.pt"
+  },
+  "evaluation": {
+    "cross_opponent_equal_weight_mean": 0.5122384439649127,
+    "cross_opponent_median": 0.3939393939393939,
+    "cross_opponent_p10": 0.35900273934867777,
+    "method": "Each opponent's score rate is computed from side-swapped case scores; repeated battle-seed cases are clustered by fixed team pair for confidence intervals. Cross-opponent metrics weight opponent pools equally.",
+    "opponents": [
+      {
+        "action_adjustments": 0,
+        "bootstrap_replicates": 20000,
+        "bootstrap_seed": 202610468,
+        "draws": 0,
+        "games_completed": 2042,
+        "incomplete_pairs": 3,
+        "interval_method": "percentile bootstrap resampling team-pair clusters; each case averages two side-swapped games and repeated Showdown battles are averaged within their fixed team pair",
+        "losses": 1340,
+        "opponent": "counterplay",
+        "pair_losses": 565,
+        "pair_splits": 210,
+        "pair_sweeps": 246,
+        "pairs_completed": 1021,
+        "pairs_requested": 1024,
+        "score_rate": 0.3437806072477963,
+        "score_rate_95_percentile_interval": [
+          0.3115234375,
+          0.3779296875
+        ],
+        "summary_path": "training/outputs/phase12_headless/round468_robust_mixed_ppo_20k_20261030/eval_counterplay_512x2_retry/paired_summary.json",
+        "team_pair_clusters_completed": 512,
+        "wins": 702
+      },
+      {
+        "action_adjustments": 0,
+        "bootstrap_replicates": 20000,
+        "bootstrap_seed": 202610469,
+        "draws": 0,
+        "games_completed": 2048,
+        "incomplete_pairs": 0,
+        "interval_method": "percentile bootstrap resampling team-pair clusters; each case averages two side-swapped games and repeated Showdown battles are averaged within their fixed team pair",
+        "losses": 1266,
+        "opponent": "max_damage",
+        "pair_losses": 516,
+        "pair_splits": 234,
+        "pair_sweeps": 274,
+        "pairs_completed": 1024,
+        "pairs_requested": 1024,
+        "score_rate": 0.3818359375,
+        "score_rate_95_percentile_interval": [
+          0.34814453125,
+          0.416015625
+        ],
+        "summary_path": "training/outputs/phase12_headless/round468_robust_mixed_ppo_20k_20261030/eval_max_damage_512x2_retry/paired_summary.json",
+        "team_pair_clusters_completed": 512,
+        "wins": 782
+      },
+      {
+        "action_adjustments": 0,
+        "bootstrap_replicates": 20000,
+        "bootstrap_seed": 202610470,
+        "draws": 0,
+        "games_completed": 2046,
+        "incomplete_pairs": 1,
+        "interval_method": "percentile bootstrap resampling team-pair clusters; each case averages two side-swapped games and repeated Showdown battles are averaged within their fixed team pair",
+        "losses": 1037,
+        "opponent": "policy",
+        "pair_losses": 422,
+        "pair_splits": 193,
+        "pair_sweeps": 408,
+        "pairs_completed": 1023,
+        "pairs_requested": 1024,
+        "score_rate": 0.49315738025415445,
+        "score_rate_95_percentile_interval": [
+          0.45703125,
+          0.529296875
+        ],
+        "summary_path": "training/outputs/phase12_headless/round468_robust_mixed_ppo_20k_20261030/eval_policy_512x2_retry/paired_summary.json",
+        "team_pair_clusters_completed": 512,
+        "wins": 1009
+      },
+      {
+        "action_adjustments": 0,
+        "bootstrap_replicates": 20000,
+        "bootstrap_seed": 202610471,
+        "draws": 0,
+        "games_completed": 2046,
+        "incomplete_pairs": 1,
+        "interval_method": "percentile bootstrap resampling team-pair clusters; each case averages two side-swapped games and repeated Showdown battles are averaged within their fixed team pair",
+        "losses": 1240,
+        "opponent": "public_counterplay",
+        "pair_losses": 492,
+        "pair_splits": 256,
+        "pair_sweeps": 275,
+        "pairs_completed": 1023,
+        "pairs_requested": 1024,
+        "score_rate": 0.3939393939393939,
+        "score_rate_95_percentile_interval": [
+          0.36181640625,
+          0.42822265625
+        ],
+        "summary_path": "training/outputs/phase12_headless/round468_robust_mixed_ppo_20k_20261030/eval_public_counterplay_512x2_retry/paired_summary.json",
+        "team_pair_clusters_completed": 512,
+        "wins": 806
+      },
+      {
+        "action_adjustments": 0,
+        "bootstrap_replicates": 20000,
+        "bootstrap_seed": 202610472,
+        "draws": 0,
+        "games_completed": 2038,
+        "incomplete_pairs": 5,
+        "interval_method": "percentile bootstrap resampling team-pair clusters; each case averages two side-swapped games and repeated Showdown battles are averaged within their fixed team pair",
+        "losses": 105,
+        "opponent": "random",
+        "pair_losses": 8,
+        "pair_splits": 89,
+        "pair_sweeps": 922,
+        "pairs_completed": 1019,
+        "pairs_requested": 1024,
+        "score_rate": 0.9484789008832188,
+        "score_rate_95_percentile_interval": [
+          0.93798828125,
+          0.958984375
+        ],
+        "summary_path": "training/outputs/phase12_headless/round468_robust_mixed_ppo_20k_20261030/eval_random_512x2_retry/paired_summary.json",
+        "team_pair_clusters_completed": 512,
+        "wins": 1933
+      }
+    ],
+    "summary_source": "training/outputs/phase12_headless/round468_robust_mixed_ppo_20k_20261030",
+    "total_action_adjustments": 0,
+    "total_games_completed": 10220,
+    "total_incomplete_pairs": 10,
+    "worst_opponent_score_rate": 0.3437806072477963
+  },
+  "interpretation": "The policy did not improve robust play in this screen: it scored poorly against Max Damage and both Counterplay variants and was unresolved against Round430 PPO. The random score inflates the 51.22% equal-opponent mean; median is 39.39%, p10 35.90%, worst opponent 34.38%. No invalid-action corrections occurred. The win-probability head is auxiliary and does not select moves.",
+  "evaluation_rates_games_per_second": {
+    "random": 4.43,
+    "max_damage": 6.18,
+    "counterplay": 4.59,
+    "public_counterplay": 4.69,
+    "round430_ppo": 5.07
+  },
+  "artifact_root": "training/outputs/phase12_headless/round468_robust_mixed_ppo_20k_20261030/"
+}
