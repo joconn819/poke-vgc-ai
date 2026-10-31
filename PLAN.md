@@ -17584,6 +17584,18 @@ coverage, not another blind teacher-weight sweep.
   Public Counterplay, with both cluster intervals including zero. Search is not
   robustly improved by the Round480 evaluator and remains disabled by default.
   The launcher supports both opponent classes through `OPPONENT_STRATEGY`.
+- Tested whether the Public Counterplay result was caused by a one-sample
+  chance budget. Repeated the same 128 paired clusters with four independent
+  outcome samples per candidate joint action. Policy-only again scored 43.36%;
+  search scored 40.23%, a paired change of -3.13 pp (95% team-cluster bootstrap
+  CI [-8.20,+1.95]). Only 31/256 searched decisions changed their selected
+  joint action versus the one-sample run. All 512 matches completed with zero
+  action corrections; the same 3 Illusion/Transform cases safely fell back.
+- Four samples raised median/p95 search latency from 245.7/332.0 ms to
+  782.4/1,106.8 ms and cut evaluation throughput from 3.42 to 1.80 matches/s.
+  It did not improve the paired result. Keep one-sample search only for
+  inexpensive experiments; additional sampling is not a promotion path by
+  itself.
 - Decision flow: the deployed/default PPO selects legal moves from masked
   policy logits. Its auxiliary win-probability head does not rank moves. A
   separate learned state-value model can influence a move only when optional

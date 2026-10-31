@@ -9,7 +9,8 @@ SHOWDOWN_PATH="${POKEMON_SHOWDOWN_PATH:-/home/justin/p/poke_learning/pokemon-sho
 CLUSTERS="${CLUSTERS:-256}"
 START_CLUSTER="${START_CLUSTER:-0}"
 OPPONENT_STRATEGY="${OPPONENT_STRATEGY:-max_damage}"
-OUT="${OUT:-$RUN/midgame_search_screen_${OPPONENT_STRATEGY}_${START_CLUSTER}_${CLUSTERS}.json}"
+CHANCE_SAMPLES="${CHANCE_SAMPLES:-1}"
+OUT="${OUT:-$RUN/midgame_search_screen_${OPPONENT_STRATEGY}_${START_CLUSTER}_${CLUSTERS}_c${CHANCE_SAMPLES}.json}"
 
 for file in "$CHECKPOINT" "$SELECTOR" "$RUN/evaluator/best.pt"; do
   [[ -s "$file" ]] || { echo "Missing required artifact: $file" >&2; exit 1; }
@@ -25,6 +26,6 @@ PYTHONPATH=. POKEMON_SHOWDOWN_PATH="$SHOWDOWN_PATH" \
     --start-cluster "$START_CLUSTER" --seed 202610480 \
     --opponent-strategy "$OPPONENT_STRATEGY" \
     --hidden-worlds 2 --candidates 4 --response-candidates 4 \
-    --chance-samples 1 --action-selection maximin --search-mode learned \
+    --chance-samples "$CHANCE_SAMPLES" --action-selection maximin --search-mode learned \
     --search-at midgame --state-value-checkpoint "$RUN/evaluator/best.pt" \
     --out "$OUT"

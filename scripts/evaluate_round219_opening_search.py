@@ -194,7 +194,7 @@ def main() -> None:
             'incoming_weight': args.counterplay_incoming_weight,
             'ko_bonus': args.counterplay_ko_bonus,
         },
-        'information_boundary': 'opening search receives own full team and public opponent preview species only; hidden sets sampled from closed-sheet belief',
+        'information_boundary': 'search receives only the acting player’s full own team, public preview, and player-visible battle state; hidden opponent information is sanitized and sampled from a closed-sheet belief',
         'seed': args.seed, 'start_cluster': args.start_cluster,
         'clusters': args.clusters, 'matches': len(rows),
         'elapsed_seconds': elapsed, 'matches_per_second': len(rows) / elapsed,
