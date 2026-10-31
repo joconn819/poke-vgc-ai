@@ -1726,7 +1726,7 @@
     "interpretation": "All paired intervals include zero. No action-selection mode is promoted based on this diagnostic."
   },
   "round430_opening_intervention": {
-    "summary": "Replacing Round430 decisions 0–4 with public Max Damage actions improved all four main screens: on 512 matched clusters, +8.40 pp vs Max Damage, +7.13 vs public Counterplay, +8.50 vs Round464 PPO, and +10.64 vs Round465 PPO (95% cluster interval +6.64 to +14.65). Fresh 128-cluster × 2-repeat sets independently gained +9.38 vs Max Damage, +10.74 vs Counterplay, +9.77 vs Round464, and +9.38 vs Round465. Against historical PPO Round102, two disjoint 128-cluster sets gained +7.62 pp and +8.79 pp; pooled over 256 clusters the paired gain was +8.20 pp (95% interval +3.32 to +13.09). Exact team, preview, and battle-seed matching; no timeouts or action corrections. The prior reversed-orientation Round465 score was not complemented; a direct matched Round430 rerun supplies the raw score and paired result. This remains a Round430-specific heuristic intervention, not a learned-policy improvement.",
+    "summary": "Replacing Round430 decisions 0–4 with public Max Damage actions improved all four main screens: on 512 matched clusters, +8.40 pp vs Max Damage, +7.13 vs public Counterplay, +8.50 vs Round464 PPO, and +10.64 vs Round465 PPO (95% cluster interval +6.64 to +14.65). Fresh 128-cluster × 2-repeat sets independently gained +9.38 vs Max Damage, +10.74 vs Counterplay, +9.77 vs Round464, and +9.38 vs Round465. Against historical PPO Round102, two disjoint 128-cluster sets gained +7.62 pp and +8.79 pp; pooled over 256 clusters the paired gain was +8.20 pp (95% interval +3.32 to +13.09). Exact team, preview, and battle-seed matching; no timeouts or action corrections. The prior reversed-orientation Round465 score was not complemented; a direct matched Round430 rerun supplies the raw score and paired result. This remains a Round430-specific heuristic intervention, not a learned-policy improvement. A smaller decision-1-and-4 hybrid also transferred on 512 matched clusters: +4.88 pp vs Max Damage (95% cluster CI +1.76 to +8.01) and +4.00 pp vs public Counterplay (+0.88 to +7.13); these are opening heuristics, not policy learning.",
     "report": "round430_opening_interventions.json",
     "opponents": {
       "max_damage": {
@@ -2182,6 +2182,46 @@
         13.90625
       ],
       "bootstrap_seed": 2026103071
+    },
+    "opening_1_and_4_transfer_screen": {
+      "description": "Public Max Damage overrides at Round430 decision indices 1 and 4 only, evaluated on the same 512 held-out team/preview clusters as raw Round430.",
+      "method_note": "Team, preview, and evaluator seed identity are matched. Showdown battle RNG is generated server-side and is independent across matches; uncertainty is estimated by paired team-cluster bootstrap.",
+      "bootstrap_replicates": 20000,
+      "max_damage": {
+        "clusters": 512,
+        "complete_games": 1024,
+        "baseline_score_pct": 36.62109375,
+        "intervention_score_pct": 41.50390625,
+        "paired_delta_pp": 4.8828125,
+        "paired_cluster_bootstrap_95_pp": [
+          1.7578125,
+          8.0078125
+        ],
+        "timeouts_or_errors": 0,
+        "action_adjustments": 0,
+        "overridden_actions": 2022,
+        "baseline_artifact": "training/outputs/phase12_headless/round430_464_465_common_preview_league_512x1_20261030/round430_vs_max_damage/paired_summary.json",
+        "intervention_artifact": "training/outputs/phase12_headless/round430_opening1and4_intervention_vs_max_damage_512x1_seed2026103067_retry1/paired_summary.json",
+        "comparison_artifact": "training/outputs/phase12_headless/round430_opening1and4_intervention_vs_max_damage_512x1_seed2026103067_retry1/raw_vs_intervention_comparison.json"
+      },
+      "public_counterplay": {
+        "clusters": 512,
+        "complete_games": 1024,
+        "baseline_score_pct": 38.57421875,
+        "intervention_score_pct": 42.578125,
+        "paired_delta_pp": 4.00390625,
+        "paired_cluster_bootstrap_95_pp": [
+          0.87890625,
+          7.12890625
+        ],
+        "timeouts_or_errors": 0,
+        "action_adjustments": 0,
+        "overridden_actions": 2030,
+        "baseline_artifact": "training/outputs/phase12_headless/round430_464_465_common_preview_league_512x1_20261030/round430_vs_public_counterplay/paired_summary.json",
+        "intervention_artifact": "training/outputs/phase12_headless/round430_opening1and4_intervention_vs_public_counterplay_512x1_seed2026103067/paired_summary_recovered.json",
+        "comparison_artifact": "training/outputs/phase12_headless/round430_opening1and4_intervention_vs_public_counterplay_512x1_seed2026103067/raw_vs_intervention_comparison_recovered.json",
+        "recovery_note": "One timed-out match was replayed in isolation with the exact team, preview, and evaluator seeds; all 512 clusters are complete in the recovered summary."
+      }
     }
   },
   "round430_common_preview_matrix": {
