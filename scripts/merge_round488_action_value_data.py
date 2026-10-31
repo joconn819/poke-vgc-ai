@@ -59,7 +59,7 @@ def main() -> None:
     merged = {
         "schema_version": 1,
         "output": str(output),
-        "experiment": "Round488 multi-phase public-view action-value dataset",
+        "experiment": "Multi-phase public-view action-value dataset",
         "checkpoint": payloads[0]["checkpoint"],
         "candidate_policy_checkpoint": payloads[0]["candidate_policy_checkpoint"],
         "opponent_checkpoint": payloads[0]["opponent_checkpoint"],

@@ -241,6 +241,7 @@ def main() -> None:
     model.eval()
 
     selected_records = []
+    equal_weight_records = []
     test_prob_by_response: dict[str, list[float]] = {name: [] for name in response_names}
     test_label_by_response: dict[str, list[float]] = {name: [] for name in response_names}
     state_rows: dict[tuple[int, int], list[int]] = {}
@@ -273,7 +274,10 @@ def main() -> None:
     selected_worst_delta_by_team: dict[int, list[float]] = {}
     policy_worst_by_team: dict[int, list[float]] = {}
     selected_worst_by_team: dict[int, list[float]] = {}
+    equal_weight_worst_delta_by_team: dict[int, list[float]] = {}
+    equal_weight_response_delta_by_team = {name: {} for name in response_names}
     robust_selected_actions = 0
+    equal_weight_selected_actions = 0
     for (team_cluster, state_repeat), indexes in state_rows.items():
         candidates = [rows[index] for index in indexes]
         feature_batch = torch.as_tensor(features[indexes], dtype=torch.float32, device=device)
@@ -332,6 +336,52 @@ def main() -> None:
         }
         selected_records.append(record)
 
+        # Compare a simple equal-weight opponent mixture with maximin using
+        # exactly the same held-out states, candidates, and chance outcomes.
+        equal_weight_scores = predictions.mean(axis=1)
+        equal_position = int(np.argmax(equal_weight_scores))
+        equal_selected = candidates[equal_position]
+        equal_record = {
+            "team_cluster": team_cluster,
+            "state_repeat": state_repeat,
+            "selected_action": equal_selected["action"],
+            "policy_action": policy_row["action"],
+            "predicted_response_probabilities": {
+                name: float(predictions[equal_position, i])
+                for i, name in enumerate(response_names)
+            },
+            "observed_by_response": {},
+        }
+        if equal_position != policy_position:
+            equal_weight_selected_actions += 1
+        equal_selected_outcomes = []
+        equal_policy_outcomes = []
+        for name in response_names:
+            selected_rate = float(np.mean(equal_selected["outcomes_by_opponent"][name][midpoint:]))
+            policy_rate = float(np.mean(policy_row["outcomes_by_opponent"][name][midpoint:]))
+            equal_selected_outcomes.append(selected_rate)
+            equal_policy_outcomes.append(policy_rate)
+            equal_weight_response_delta_by_team[name].setdefault(team_cluster, []).append(
+                selected_rate - policy_rate
+            )
+            equal_record["observed_by_response"][name] = {
+                "selected_win_rate": selected_rate,
+                "policy_win_rate": policy_rate,
+                "selected_minus_policy": selected_rate - policy_rate,
+            }
+        equal_weight_worst_delta_by_team.setdefault(team_cluster, []).append(
+            min(equal_selected_outcomes) - min(equal_policy_outcomes)
+        )
+        equal_record["observed_worst_response"] = {
+            "selected_win_rate": min(equal_selected_outcomes),
+            "policy_win_rate": min(equal_policy_outcomes),
+            "selected_minus_policy": min(equal_selected_outcomes) - min(equal_policy_outcomes),
+        }
+        equal_record["predicted_mean_response_probability"] = float(
+            equal_weight_scores[equal_position]
+        )
+        equal_weight_records.append(equal_record)
+
     def reduce_team(values: dict[int, list[float]]) -> dict[int, float]:
         return {team: float(np.mean(team_values)) for team, team_values in values.items()}
 
@@ -346,6 +396,15 @@ def main() -> None:
     worst_deltas = reduce_team(selected_worst_delta_by_team)
     worst_policy = reduce_team(policy_worst_by_team)
     worst_selected = reduce_team(selected_worst_by_team)
+    equal_weight_worst_delta = reduce_team(equal_weight_worst_delta_by_team)
+    equal_weight_by_response = {
+        name: {
+            "team_clusters": len(deltas := reduce_team(equal_weight_response_delta_by_team[name])),
+            "selected_minus_policy": float(np.mean(list(deltas.values()))) if deltas else None,
+            "paired_team_cluster_95_ci": _cluster_interval(deltas, args.seed + 201 + index),
+        }
+        for index, name in enumerate(response_names)
+    }
     metrics = {
         "team_split": {
             "train": len(train_teams),
@@ -375,6 +434,14 @@ def main() -> None:
             "selected_minus_policy_worst_response": float(np.mean(list(worst_deltas.values()))) if worst_deltas else None,
             "selected_minus_policy_worst_response_95_ci": _cluster_interval(worst_deltas, args.seed + 101),
             "by_response": selection_by_response,
+        },
+        "equal_weight_selection": {
+            "aggregation": "mean predicted response win probability",
+            "action_changed_from_policy_states": equal_weight_selected_actions,
+            "test_states": len(equal_weight_records),
+            "selected_minus_policy_worst_response": float(np.mean(list(equal_weight_worst_delta.values()))) if equal_weight_worst_delta else None,
+            "selected_minus_policy_worst_response_95_ci": _cluster_interval(equal_weight_worst_delta, args.seed + 301),
+            "by_response": equal_weight_by_response,
         },
     }
     checkpoint = {
@@ -411,6 +478,7 @@ def main() -> None:
         "metrics": metrics,
         "epoch_log": epoch_log,
         "selected_actions": selected_records,
+        "equal_weight_actions": equal_weight_records,
     }
     (args.output_dir / "report.json").write_text(json.dumps(report, indent=2) + "\n")
     print(json.dumps({"checkpoint": str(target_path), "metrics": metrics}, indent=2))

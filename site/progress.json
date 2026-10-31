@@ -12,7 +12,7 @@
     "games": "2,042",
     "label": "Current in-battle policy vs Round424 start",
     "status": "Round430 remains validated default; Round485 70% Max Damage exposure and Round480 search did not establish robust gains.",
-    "note": "Round431 scored 49.36% [45.85%, 52.93%] against Round430, and Round432 scored 47.90% [44.29%, 51.61%]; neither showed a clear gain. Round430 remains the validated in-battle candidate. Round402's 77.15% result is a separate team-preview selector benchmark. Round432 external screens also showed no clear lift: all paired 95% intervals vs Round430 and Round431 include zero. Round432 cross-opponent equal-weight mean/median/p10/worst were 60.35%/48.83%/47.64%/47.46%; the mean is buoyed by random play. Round435 used a Round434 restricted-game mixture (31.7% Round430 / 68.3% Round432 in the policy pool) and scored 52.98% [49.41%, 56.59%] head-to-head with Round430; all matched external deltas vs Round430/432 included zero. Round430 remains the candidate. Round436 removed hidden-set auxiliary loss on the identical Round435 data; it scored 53.42% [49.80%, 56.93%] vs Round435 over 512 clusters (one incomplete game), an inconclusive ablation. Round430 remains the validated candidate. Round436 external screens at 256 clusters found no supported paired gain vs Round435: deltas on 128 shared clusters were +0.20 pp vs Max Damage [-0.59,+0.98], +0.39 pp vs public Counterplay [-0.59,+1.37], 0.00 pp vs random [-0.78,+0.78], and -0.20 pp vs Round102 [-0.98,+0.39]. Round436 remains unpromoted; Round430 is still the validated candidate. Round462’s latest full training run screened at 44.82% vs Max Damage [41.02%, 48.54%] and around 48% vs Public Counterplay/historical PPO. Do not promote it; the Max Damage interval is below 50% and performance vs stronger policy opponents is inconclusive. Exact-seed Max Damage controls found no measurable change from Round430: +0.10 pp [−1.37, +1.56]; Round432 control was +0.39 pp [−1.37, +2.05]. The weakness predates Round462. Round485 increased Max Damage exposure from Round473’s 25% to 70%, with all else held as planned. On the same held-out team-pair clusters it did not improve the Max Damage result or the five-opponent composite; retain Round430. Round488 covered three game phases, but its three-response robust action-value selector regressed on held-out Public Counterplay; five split fits show no robust overall selector gain, so Round430 remains the default."
+    "note": "Round431 scored 49.36% [45.85%, 52.93%] against Round430, and Round432 scored 47.90% [44.29%, 51.61%]; neither showed a clear gain. Round430 remains the validated in-battle candidate. Round402's 77.15% result is a separate team-preview selector benchmark. Round432 external screens also showed no clear lift: all paired 95% intervals vs Round430 and Round431 include zero. Round432 cross-opponent equal-weight mean/median/p10/worst were 60.35%/48.83%/47.64%/47.46%; the mean is buoyed by random play. Round435 used a Round434 restricted-game mixture (31.7% Round430 / 68.3% Round432 in the policy pool) and scored 52.98% [49.41%, 56.59%] head-to-head with Round430; all matched external deltas vs Round430/432 included zero. Round430 remains the candidate. Round436 removed hidden-set auxiliary loss on the identical Round435 data; it scored 53.42% [49.80%, 56.93%] vs Round435 over 512 clusters (one incomplete game), an inconclusive ablation. Round430 remains the validated candidate. Round436 external screens at 256 clusters found no supported paired gain vs Round435: deltas on 128 shared clusters were +0.20 pp vs Max Damage [-0.59,+0.98], +0.39 pp vs public Counterplay [-0.59,+1.37], 0.00 pp vs random [-0.78,+0.78], and -0.20 pp vs Round102 [-0.98,+0.39]. Round436 remains unpromoted; Round430 is still the validated candidate. Round462’s latest full training run screened at 44.82% vs Max Damage [41.02%, 48.54%] and around 48% vs Public Counterplay/historical PPO. Do not promote it; the Max Damage interval is below 50% and performance vs stronger policy opponents is inconclusive. Exact-seed Max Damage controls found no measurable change from Round430: +0.10 pp [−1.37, +1.56]; Round432 control was +0.39 pp [−1.37, +2.05]. The weakness predates Round462. Round485 increased Max Damage exposure from Round473’s 25% to 70%, with all else held as planned. On the same held-out team-pair clusters it did not improve the Max Damage result or the five-opponent composite; retain Round430. Round488 covered three game phases, but its three-response robust action-value selector regressed on held-out Public Counterplay; five split fits show no robust overall selector gain, so Round430 remains the default. Round489 added Random and legacy Counterplay to the one-step response set, but neither maximin nor equal-weight action selection beat the incumbent on held-out clusters; the only learned-policy response was Round476."
   },
   "evaluation_scorecard": [
     {
@@ -1395,7 +1395,7 @@
   "method": "Native self-play PPO for in-battle decisions. Terminal win/loss remains the main objective; win-probability and hidden-set prediction are auxiliary tasks. Search comes after a stronger policy.",
   "jax_decision": "Round430 has a confirmed self-play head-to-head lift over Round424, but external-opponent screens remain inconclusive. Prioritize measured inference batching, observation throughput, and rollouts; keep equilibrium-oriented opponent coverage and defer a JAX/GPU engine rewrite until its end-to-end payoff is measured.",
   "evaluation_note": "Round402’s historical 77.15% is a team-preview selector benchmark against damage-preview selection, not an in-battle policy score against the Max Damage opponent. The latest in-battle Max Damage result is Round430 policy-only at 39.84% on 256 clusters; one-turn search scored 42.38% but its paired interval includes zero. Round485’s 70%-Max-Damage training mix did not measurably improve that matchup or the broader opponent league. Compare only evaluations using matched tasks, selectors, teams, and seeds.",
-  "generated_at": "2026-10-31 14:32 UTC",
+  "generated_at": "2026-10-31 15:03 UTC",
   "round462_evaluation": {
     "status": "Round462 not promoted · initial paired screen complete",
     "summary": "Round462 scored 44.82% against Max Damage [41.02%, 48.54%]. On the same teams and seeds, Round430 scored 44.73% and Round432 scored 44.43%; paired deltas were +0.10 pp [-1.37, +1.56] and +0.39 pp [-1.37, +2.05]. The update did not measurably change this weakness. Results against Public Counterplay and historical PPO are inconclusive; Random is an easy-baseline check.",
@@ -5085,5 +5085,131 @@
     },
     "interpretation_limit": "One-step action-value selector diagnostic, not a full-match policy evaluation or Nash equilibrium result. Training and evaluation response classes overlap and include only three opponents; broader family-disjoint evaluation is required.",
     "report_url": "round488_action_value_transfer.json"
+  },
+  "round489_wide_response_action_value": {
+    "summary": "Adding Random and legacy Counterplay to Max Damage, Public Counterplay, and Round476 did not fix action-value transfer. Five-split maximin worst-response delta was −1.13 pp [−3.52,+1.29]; equal-weight was −0.93 pp [−3.35,+1.53]. The selectors regressed against Round476 PPO, and Round430 remains the default.",
+    "status": "Wider opponent response set; no selector promoted",
+    "corpus": {
+      "decision_steps": [
+        1,
+        3,
+        5
+      ],
+      "phase_state_counts": {
+        "1": 128,
+        "3": 125,
+        "5": 119
+      },
+      "requested_states": 384,
+      "captured_states": 372,
+      "branch_matches": 93076,
+      "elapsed_seconds_sum": 1484.95,
+      "aggregate_matches_per_second": 62.68,
+      "missing_states": 12,
+      "rejected_candidates": 0,
+      "chance_repeats": 8,
+      "response_classes": [
+        "max_damage",
+        "policy",
+        "public_counterplay",
+        "random",
+        "counterplay"
+      ]
+    },
+    "evaluation": {
+      "independent_splits": 5,
+      "unique_heldout_team_clusters": 250,
+      "heldout_selection_records": 370,
+      "maximin": {
+        "mean_delta_pp": -1.125,
+        "team_cluster_bootstrap_ci95_pp": [
+          -3.517,
+          1.292
+        ]
+      },
+      "equal_weight": {
+        "mean_delta_pp": -0.925,
+        "team_cluster_bootstrap_ci95_pp": [
+          -3.35,
+          1.525
+        ]
+      },
+      "response_metrics": {
+        "counterplay": {
+          "mean_test_brier": 0.1877,
+          "mean_constant_rate_brier": 0.22798,
+          "maximin_delta_pp": -2.008,
+          "maximin_ci95_pp": [
+            -4.817,
+            0.708
+          ],
+          "equal_weight_delta_pp": -1.808,
+          "equal_weight_ci95_pp": [
+            -4.617,
+            0.9
+          ]
+        },
+        "max_damage": {
+          "mean_test_brier": 0.1995,
+          "mean_constant_rate_brier": 0.24629,
+          "maximin_delta_pp": 0.65,
+          "maximin_ci95_pp": [
+            -1.967,
+            3.35
+          ],
+          "equal_weight_delta_pp": 0.967,
+          "equal_weight_ci95_pp": [
+            -1.6,
+            3.583
+          ]
+        },
+        "policy": {
+          "mean_test_brier": 0.19704,
+          "mean_constant_rate_brier": 0.24937,
+          "maximin_delta_pp": -3.4,
+          "maximin_ci95_pp": [
+            -6.35,
+            -0.6
+          ],
+          "equal_weight_delta_pp": -2.7,
+          "equal_weight_ci95_pp": [
+            -5.65,
+            0.067
+          ]
+        },
+        "public_counterplay": {
+          "mean_test_brier": 0.20619,
+          "mean_constant_rate_brier": 0.2467,
+          "maximin_delta_pp": -1.608,
+          "maximin_ci95_pp": [
+            -4.883,
+            1.642
+          ],
+          "equal_weight_delta_pp": -1.758,
+          "equal_weight_ci95_pp": [
+            -4.833,
+            1.4
+          ]
+        },
+        "random": {
+          "mean_test_brier": 0.11538,
+          "mean_constant_rate_brier": 0.13732,
+          "maximin_delta_pp": -0.117,
+          "maximin_ci95_pp": [
+            -2.417,
+            2.117
+          ],
+          "equal_weight_delta_pp": 0.333,
+          "equal_weight_ci95_pp": [
+            -1.825,
+            2.417
+          ]
+        }
+      },
+      "interpretation_limit": "One-step candidate-set diagnostics with the same five response classes used for fitting, not a full-match policy evaluation or Nash equilibrium. The learned-policy response is only Round476; hold out PPO generations in the next evaluation.",
+      "local_report": "training/outputs/phase12_headless/round489_wide_response_action_value_128x8_20261031/repeated_split_report.json"
+    },
+    "interpretation_limit": "One-step candidate-set diagnostics with the same five response classes used for fitting, not a full-match policy evaluation or Nash equilibrium. The learned-policy response is only Round476; hold out PPO generations in the next evaluation.",
+    "report_url": "round489_wide_response_action_value.json"
   }
 }

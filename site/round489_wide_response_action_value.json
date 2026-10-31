@@ -1,0 +1,126 @@
+{
+  "schema_version": 1,
+  "round": 489,
+  "status": "Wider opponent response set; no selector promoted",
+  "summary": "Adding Random and legacy Counterplay to Max Damage, Public Counterplay, and Round476 did not fix action-value transfer. Five-split maximin worst-response delta was −1.13 pp [−3.52,+1.29]; equal-weight was −0.93 pp [−3.35,+1.53]. The selectors regressed against Round476 PPO, and Round430 remains the default.",
+  "collection": {
+    "decision_steps": [
+      1,
+      3,
+      5
+    ],
+    "phase_state_counts": {
+      "1": 128,
+      "3": 125,
+      "5": 119
+    },
+    "requested_states": 384,
+    "captured_states": 372,
+    "branch_matches": 93076,
+    "elapsed_seconds_sum": 1484.95,
+    "aggregate_matches_per_second": 62.68,
+    "missing_states": 12,
+    "rejected_candidates": 0,
+    "chance_repeats": 8,
+    "response_classes": [
+      "max_damage",
+      "policy",
+      "public_counterplay",
+      "random",
+      "counterplay"
+    ]
+  },
+  "evaluation": {
+    "independent_splits": 5,
+    "unique_heldout_team_clusters": 250,
+    "heldout_selection_records": 370,
+    "maximin": {
+      "mean_delta_pp": -1.125,
+      "team_cluster_bootstrap_ci95_pp": [
+        -3.517,
+        1.292
+      ]
+    },
+    "equal_weight": {
+      "mean_delta_pp": -0.925,
+      "team_cluster_bootstrap_ci95_pp": [
+        -3.35,
+        1.525
+      ]
+    },
+    "response_metrics": {
+      "counterplay": {
+        "mean_test_brier": 0.1877,
+        "mean_constant_rate_brier": 0.22798,
+        "maximin_delta_pp": -2.008,
+        "maximin_ci95_pp": [
+          -4.817,
+          0.708
+        ],
+        "equal_weight_delta_pp": -1.808,
+        "equal_weight_ci95_pp": [
+          -4.617,
+          0.9
+        ]
+      },
+      "max_damage": {
+        "mean_test_brier": 0.1995,
+        "mean_constant_rate_brier": 0.24629,
+        "maximin_delta_pp": 0.65,
+        "maximin_ci95_pp": [
+          -1.967,
+          3.35
+        ],
+        "equal_weight_delta_pp": 0.967,
+        "equal_weight_ci95_pp": [
+          -1.6,
+          3.583
+        ]
+      },
+      "policy": {
+        "mean_test_brier": 0.19704,
+        "mean_constant_rate_brier": 0.24937,
+        "maximin_delta_pp": -3.4,
+        "maximin_ci95_pp": [
+          -6.35,
+          -0.6
+        ],
+        "equal_weight_delta_pp": -2.7,
+        "equal_weight_ci95_pp": [
+          -5.65,
+          0.067
+        ]
+      },
+      "public_counterplay": {
+        "mean_test_brier": 0.20619,
+        "mean_constant_rate_brier": 0.2467,
+        "maximin_delta_pp": -1.608,
+        "maximin_ci95_pp": [
+          -4.883,
+          1.642
+        ],
+        "equal_weight_delta_pp": -1.758,
+        "equal_weight_ci95_pp": [
+          -4.833,
+          1.4
+        ]
+      },
+      "random": {
+        "mean_test_brier": 0.11538,
+        "mean_constant_rate_brier": 0.13732,
+        "maximin_delta_pp": -0.117,
+        "maximin_ci95_pp": [
+          -2.417,
+          2.117
+        ],
+        "equal_weight_delta_pp": 0.333,
+        "equal_weight_ci95_pp": [
+          -1.825,
+          2.417
+        ]
+      }
+    },
+    "interpretation_limit": "One-step candidate-set diagnostics with the same five response classes used for fitting, not a full-match policy evaluation or Nash equilibrium. The learned-policy response is only Round476; hold out PPO generations in the next evaluation.",
+    "local_report": "training/outputs/phase12_headless/round489_wide_response_action_value_128x8_20261031/repeated_split_report.json"
+  }
+}

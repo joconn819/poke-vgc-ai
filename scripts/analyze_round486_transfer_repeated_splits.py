@@ -13,9 +13,6 @@ from pathlib import Path
 from typing import Any
 
 
-RESPONSES = ("max_damage", "policy", "public_counterplay")
-
-
 def _ci(values: list[float], *, seed: int, samples: int) -> list[float]:
     rng = random.Random(seed)
     n = len(values)
@@ -36,10 +33,17 @@ def main() -> None:
     if len(paths) < 2:
         raise SystemExit(f"Expected repeated split reports; found {len(paths)}")
     per_team: dict[int, list[dict[str, Any]]] = defaultdict(list)
+    equal_weight_per_team: dict[int, list[dict[str, Any]]] = defaultdict(list)
     run_metrics = []
+    response_names: tuple[str, ...] | None = None
     for path in paths:
         report = json.loads(path.read_text(encoding="utf-8"))
         metrics = report["metrics"]
+        run_responses = tuple(metrics["response_names"])
+        if response_names is None:
+            response_names = run_responses
+        elif run_responses != response_names:
+            raise ValueError("repeated-split reports use different response classes")
         run_metrics.append({
             "report": str(path),
             "seed": int(report.get("seed", metrics.get("seed", 0))) if report.get("seed") else None,
@@ -54,36 +58,52 @@ def main() -> None:
                 "changed": row["selected_action"] != row["policy_action"],
                 "responses": {
                     name: float(row["observed_by_response"][name]["selected_minus_policy"])
-                    for name in RESPONSES
+                    for name in response_names
+                },
+                "worst": float(row["observed_worst_response"]["selected_minus_policy"]),
+            })
+        for row in report.get("equal_weight_actions", []):
+            equal_weight_per_team[int(row["team_cluster"])].append({
+                "changed": row["selected_action"] != row["policy_action"],
+                "responses": {
+                    name: float(row["observed_by_response"][name]["selected_minus_policy"])
+                    for name in response_names
                 },
                 "worst": float(row["observed_worst_response"]["selected_minus_policy"]),
             })
 
-    team_means = []
-    all_records = [row for rows in per_team.values() for row in rows]
-    for rows in per_team.values():
-        team_means.append({
-            "changed": statistics.mean(float(row["changed"]) for row in rows),
-            **{
-                name: statistics.mean(row["responses"][name] for row in rows)
-                for name in RESPONSES
-            },
-            "worst": statistics.mean(row["worst"] for row in rows),
-        })
+    def summarize(per_team_values: dict[int, list[dict[str, Any]]], salt: int):
+        team_means = []
+        all_rows = [row for rows in per_team_values.values() for row in rows]
+        for rows in per_team_values.values():
+            team_means.append({
+                "changed": statistics.mean(float(row["changed"]) for row in rows),
+                **{
+                    name: statistics.mean(row["responses"][name] for row in rows)
+                    for name in response_names
+                },
+                "worst": statistics.mean(row["worst"] for row in rows),
+            })
+        summary = {}
+        for metric in (*response_names, "worst"):
+            values = [row[metric] for row in team_means]
+            summary[metric] = {
+                "mean_delta_pp": round(statistics.mean(values) * 100, 3),
+                "team_cluster_bootstrap_ci95_pp": [
+                    round(value * 100, 3)
+                    for value in _ci(values, seed=args.seed + salt + len(summary), samples=args.bootstrap_samples)
+                ],
+            }
+        return team_means, all_rows, summary
 
-    summary = {}
-    for metric in (*RESPONSES, "worst"):
-        values = [row[metric] for row in team_means]
-        summary[metric] = {
-            "mean_delta_pp": round(statistics.mean(values) * 100, 3),
-            "team_cluster_bootstrap_ci95_pp": [
-                round(value * 100, 3)
-                for value in _ci(values, seed=args.seed + len(summary), samples=args.bootstrap_samples)
-            ],
-        }
+    team_means, all_records, summary = summarize(per_team, 0)
+    equal_weight_team_means, equal_weight_records, equal_weight_summary = summarize(
+        equal_weight_per_team, 1000
+    ) if equal_weight_per_team else ([], [], {})
     report = {
         "schema_version": 1,
-        "experiment": "Round486 Round484 action-value selector repeated cluster splits",
+        "experiment": "Repeated team-cluster splits for response-conditioned action-value selector",
+        "response_names": list(response_names),
         "method": (
             "Each report trains on disjoint team clusters and the first four chance repeats, "
             "then selects on unseen team clusters and scores on their last four repeats. "
@@ -95,10 +115,16 @@ def main() -> None:
         "heldout_selection_records": len(all_records),
         "selected_nonbaseline_action_records": sum(row["changed"] for row in all_records),
         "out_of_fold_paired_deltas": summary,
+        "equal_weight_selection": {
+            "unique_heldout_team_clusters": len(equal_weight_team_means),
+            "heldout_selection_records": len(equal_weight_records),
+            "selected_nonbaseline_action_records": sum(row["changed"] for row in equal_weight_records),
+            "out_of_fold_paired_deltas": equal_weight_summary,
+        },
         "interpretation_limit": (
             "A diagnostic on 128 opening states and the existing candidate set, not a full-match "
             "agent evaluation. Repeated random splits overlap, so records are clustered by team. "
-            "The selector's opponent robustness is limited to three sampled response classes."
+            "The selector's opponent robustness is limited to the response classes listed in this report."
         ),
         "bootstrap_samples": args.bootstrap_samples,
     }

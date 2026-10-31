@@ -238,6 +238,14 @@ def main() -> None:
         help=("when paired responses are enabled, also evaluate each action "
               "against the closed-sheet Public Counterplay policy"),
     )
+    parser.add_argument(
+        "--include-random-response", action="store_true",
+        help="when paired responses are enabled, also evaluate random legal play",
+    )
+    parser.add_argument(
+        "--include-legacy-counterplay-response", action="store_true",
+        help="when paired responses are enabled, also evaluate legacy Counterplay",
+    )
     parser.add_argument("--device", default="cpu")
     parser.add_argument(
         "--preview-strategy", choices=("random", "damage"), default="random",
@@ -250,8 +258,10 @@ def main() -> None:
         parser.error("clusters/states/repeats must be positive and decision-step must be at least one")
     if args.paired_opponent_responses and args.opponent_checkpoint is None:
         parser.error("--paired-opponent-responses requires --opponent-checkpoint")
-    if args.include_public_counterplay_response and not args.paired_opponent_responses:
-        parser.error("--include-public-counterplay-response requires paired responses")
+    if ((args.include_public_counterplay_response or args.include_random_response
+         or args.include_legacy_counterplay_response)
+            and not args.paired_opponent_responses):
+        parser.error("additional response classes require paired responses")
     if args.player_strategy == "policy" and args.checkpoint is None:
         parser.error("--checkpoint is required when --player-strategy=policy")
     torch.set_num_threads(1)
@@ -400,13 +410,13 @@ def main() -> None:
                     tuple(int(v) for v in row["action"]): float(row["log_probability"])
                     for row in (p.get("legal_joint_action_log_probabilities") or [])
                 }
-                response_names = (
-                    (("max_damage", "public_counterplay", "policy")
-                     if args.include_public_counterplay_response
-                     else ("max_damage", "policy"))
-                    if args.paired_opponent_responses
-                    else (opponent_strategy,)
-                )
+                response_names = ["max_damage", "policy"] if args.paired_opponent_responses else [opponent_strategy]
+                if args.paired_opponent_responses and args.include_public_counterplay_response:
+                    response_names.append("public_counterplay")
+                if args.paired_opponent_responses and args.include_random_response:
+                    response_names.append("random")
+                if args.paired_opponent_responses and args.include_legacy_counterplay_response:
+                    response_names.append("counterplay")
                 outcome_cache: dict[tuple[int, int], dict[str, list[int]]] = {}
                 rejected_action_keys: set[tuple[int, int]] = set()
                 for name, action in candidates:

@@ -43,6 +43,8 @@ def main() -> None:
         "--include-public-counterplay-response", action="store_true",
         help="pair each action against Max Damage, Public Counterplay, and the frozen PPO",
     )
+    parser.add_argument("--include-random-response", action="store_true")
+    parser.add_argument("--include-legacy-counterplay-response", action="store_true")
     parser.add_argument("--showdown-path", type=Path, required=True)
     args = parser.parse_args()
     if args.clusters < 1 or args.workers < 1 or args.workers > args.clusters:
@@ -94,8 +96,13 @@ def main() -> None:
             command.append("--paired-opponent-responses")
             if args.include_public_counterplay_response:
                 command.append("--include-public-counterplay-response")
-        elif args.include_public_counterplay_response:
-            parser.error("--include-public-counterplay-response requires --opponent-checkpoint")
+            if args.include_random_response:
+                command.append("--include-random-response")
+            if args.include_legacy_counterplay_response:
+                command.append("--include-legacy-counterplay-response")
+        elif (args.include_public_counterplay_response or args.include_random_response
+              or args.include_legacy_counterplay_response):
+            parser.error("additional response classes require --opponent-checkpoint")
         if args.team_selection_checkpoint is not None:
             command.extend([
                 "--team-selection-checkpoint", str(args.team_selection_checkpoint)
@@ -180,9 +187,11 @@ def main() -> None:
         "chance_repeats": args.chance_repeats,
         "candidate_mode": args.candidate_mode,
         "paired_response_classes": (
-            ["max_damage", "public_counterplay", "policy"]
-            if args.include_public_counterplay_response else
-            (["max_damage", "policy"] if args.opponent_checkpoint is not None else [])
+            (["max_damage", "policy"]
+             + (["public_counterplay"] if args.include_public_counterplay_response else [])
+             + (["random"] if args.include_random_response else [])
+             + (["counterplay"] if args.include_legacy_counterplay_response else []))
+            if args.opponent_checkpoint is not None else []
         ),
         "player_strategy": args.player_strategy,
         "preview_strategy": args.preview_strategy,

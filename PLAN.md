@@ -67,7 +67,9 @@ training and action-value fitting. Report equal-weight league mean, median,
 lower tail, and worst response. Any candidate with a credible regression on
 one family requires investigation before promotion, even if its aggregate
 improves. Counterfactual action values must be tested on an opponent set wider
-than their three training heads.
+than their training heads. Including several heuristic classes is not enough:
+the learned-policy response must include multiple historical PPO checkpoints,
+and evaluation must include at least one policy generation absent from fitting.
 **Round485 controlled opponent-exposure ablation (2026-10-31; not promoted):**
 matched Round473's Round430 start, PPO settings, Round402 selectors, and frozen
 policy pool while changing only opponent proportions to 70% Max Damage, 10%
@@ -161,6 +163,27 @@ add varied held-out policy generations/families and random/legacy Counterplay
 to the evaluation matrix, then train/evaluate on a family-disjoint split before
 another value-selector iteration. Reports:
 `training/outputs/phase12_headless/round488_multiphase_action_value_128x8_20261031/`.
+**Round489 expanded response coverage (2026-10-31; no selector promoted):**
+extended the Round488 collection to five responses: Max Damage, Random, legacy
+Counterplay, Public Counterplay, and one frozen PPO (Round476). Across decision
+indices 1, 3, and 5, 372 states were captured; 12 of 384 requested states ended
+before their target decision. Eight chance repeats yielded 93,076 branch games
+in 1,484.95 seconds (62.68 aggregate games/s); there were zero rejected
+actions. Five team-disjoint model fits covered 250 unique held-out team
+clusters. Action-outcome Brier beat a constant-rate baseline for every response
+class, but this did not translate into better action selection. Maximin's
+out-of-fold worst-response delta was -1.13 pp (95% cluster CI [-3.52,+1.29]);
+equal-weight selection was -0.93 pp [-3.35,+1.53]. Both changed about 65% of
+held-out choices. Against the only learned-policy response, Round476, maximin
+regressed -3.40 pp [-6.35,-0.60], while equal-weight was -2.70 pp
+[-5.65,+0.07]. These are one-step candidate-set results, not full-match
+performance or a Nash equilibrium. More heuristic types alone did not fix
+value-to-action transfer; the response set still contains only one learned
+policy checkpoint. Keep Round430 as the in-battle default. The next value-model
+comparison should include multiple PPO generations and a checkpoint family
+held out from fitting, and should compare predicted-action ranking against a
+regret-matched action distribution before PPO distillation. Reports:
+`training/outputs/phase12_headless/round489_wide_response_action_value_128x8_20261031/`.
 **Round482 equilibrium-target check (2026-10-31; reject both actor updates):**
 combined the independent Round479 256-team / 8-repeat and Round481 128-team /
 16-repeat counterfactual corpora (38,672 and 37,264 branch matches; 30.01 and
