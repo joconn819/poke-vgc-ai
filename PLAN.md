@@ -17129,3 +17129,37 @@ coverage, not another blind teacher-weight sweep.
   `round470_undiscounted_gae_replay_20k_20261030/`, and
   `round470_undiscounted_same_seed_league_512x2_20261030/`. Published report:
   `site/round470_matched_ppo_trials.json`.
+
+### Round471: larger PPO update replay (2026-10-31)
+
+- Replayed the audited Round468 20,000-game corpus from Round430, changing only
+  update size: doubled learning rate (`1e-4`) and eight requested passes, with
+  the KL guard enabled. Training consumed all 167,383 transitions and completed
+  2,616 optimizer steps (eight passes); the KL guard did not stop early.
+- Replay data preparation took 107.2 s; PPO optimization took 110.0 s
+  (23.8 optimizer steps/s on CUDA). This replay-to-checkpoint cost excludes new
+  game simulation. Round468 remains the latest measured rollout throughput:
+  37.94 games/s during rollouts and 21.23 games/s including input-to-checkpoint.
+- Matched against Round430 using the same Round402 team selectors, 512 held-out
+  team-pair clusters, two side-swapped outcomes per cluster, and 20,000 cluster
+  bootstrap resamples. Paired results: Max Damage Round430 37.70%, Round471
+  37.21%, delta -0.49 pp (95% CI [-1.90,+0.88]); legacy Counterplay 34.69%
+  vs 33.95%, delta -0.73 pp ([-2.25,+0.78]); Public Counterplay 39.01% vs
+  38.77%, delta -0.24 pp ([-1.56,+1.07]). Every interval includes zero.
+- Evaluation throughput was 7.38 games/s vs Max Damage, 5.02 vs legacy
+  Counterplay, and 6.06 vs Public Counterplay on eight CPU workers. The rollout
+  speed has not changed; policy/action inference, observation preparation, and
+  opponent scorers remain the measured non-engine bottlenecks.
+- An initial evaluation attempt used 1,024 clusters and omitted the opponent-side
+  preview selector; its previews did not match the control and were discarded.
+  The reported results above come from the corrected 512-cluster run with the
+  Round402 selector on both sides. One legacy Counterplay and one Public
+  Counterplay team cluster had incomplete outcomes; paired comparisons used 511
+  and 512 matched clusters respectively. No action corrections occurred.
+- Round471 is not promoted; Round430 remains the validated default. The
+  win-probability head is auxiliary supervision and does not currently select
+  moves; in-battle choices come from masked PPO action logits.
+- Candidate checkpoint: `training/outputs/phase12_headless/round471_high_update_replay_20k_20261031/checkpoints/latest.pt`.
+- Corrected evaluation: `training/outputs/phase12_headless/round471_high_update_same_seed_league_512x2_20261031/`.
+- The first, mismatched attempt at `round471_high_update_same_seed_league_1024x2_20261031/` is non-comparable and excluded.
+- Published report: `site/round471_matched_ppo_trial.json`.
