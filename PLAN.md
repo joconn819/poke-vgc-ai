@@ -18712,14 +18712,46 @@ coverage, not another blind teacher-weight sweep.
   incomplete cases. Round485 55.08% vs 55.47%; −0.39 [−3.91,+2.74]. No paired
   interval excludes zero; no action adjustments occurred. Round472 had two
   Round504 timeouts/errors; all other checkpoint-opponent arms had none.
-- The fresh Max Damage sample puts both checkpoints near 45%; this is not evidence
-  for a large drop from previous lower absolute rates, which used different team
-  samples. The paired estimate is near zero and uncertain. The full league likewise
-  shows no established broad gain or regression. Keep Round430 as the validated
-  default; Round504 is not promoted. Run a higher-repeat independent screen before
-  making claims about small changes.
+- Both checkpoints scored below 50% against this simple Max Damage policy: 44.53%
+  for Round430 and 44.92% for Round504. This is a substantive matchup weakness and
+  evidence that neither policy is optimal against this opponent; describing only
+  the near-zero paired change would hide the important result. The paired estimate
+  says the Round504 update did not measurably repair or worsen that weakness. Fresh
+  absolute rates from older team samples cannot establish a decline across rounds.
+  Cluster-bootstrap absolute 95% intervals on this 128-cluster screen span 50%, so
+  a larger repeat is needed to estimate the matchup's population rate precisely.
+  Round430 remains the default because Round504 has no broad verified gain, not
+  because Round430's Max Damage result is acceptable. Round504 is not promoted.
 - Across arms, throughput was about 1.97–8.07 games/s for Round430 and
   2.68–7.51 games/s for Round504, eight CPU workers; rates vary by opponent
   class and are not directly comparable as simulator speed.
 - Reproduction: `scripts/evaluate_round504_fresh_league_128x1.sh`; report:
   `training/outputs/phase12_headless/round505_round504_fresh_league_128x1_20261031/report.json`.
+
+
+### Round506: larger Max Damage weakness confirmation (complete; failure confirmed)
+
+- Compared Round430 and Round504 against the same Max Damage policy on 512 fresh
+  team-pair clusters with two outcome repeats and side swaps. Paired intervals
+  bootstrap team clusters; absolute-rate intervals use the same cluster unit.
+  Showdown battle RNG is server-side and differs between arms.
+- Round430 scored 39.06% (absolute 95% cluster interval 35.65–42.43%); Round504
+  scored 38.51% (35.06–41.90%). The paired Round504 change was −0.59 percentage
+  points (95% cluster interval −2.10 to +0.98) over 1,023 matched cases in 512
+  clusters. The paired result does not establish that Round504 caused a decline;
+  both absolute intervals are wholly below 50%, confirming a substantial weakness
+  against this simple baseline. This is a direct failure for both policies, not a
+  neutral result just because their difference is uncertain. Round504 had one
+  timeout/error and no action adjustments; Round430 had zero errors and no action
+  adjustments.
+- The absolute rate shifted from about 45% in Round505's 128-cluster fresh screen
+  to about 39% on these new teams. This reinforces the need for broad team sampling
+  and prevents interpreting cross-round absolute rates on different samples as a
+  policy trend. Within each run, paired comparisons are the proper estimate of
+  training change.
+- No checkpoint promotion: Round504 has neither a broad league gain nor a Max
+  Damage improvement. Next, inspect battle/action traces on this failure suite,
+  identify the recurring tactical causes, and add targeted training/evaluation
+  cases without making Max Damage the sole training target.
+- Reproduction: `scripts/evaluate_round505_maxdamage_confirmation_512x2.sh`; report:
+  `training/outputs/phase12_headless/round506_maxdamage_512x2_20261031/report.json`.

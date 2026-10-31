@@ -1,0 +1,39 @@
+{
+  "baseline": "Round430 hard-opponent auxiliary PPO",
+  "candidate": "Round504 balanced-population PPO",
+  "matched_cases": 1023,
+  "matched_team_clusters": 512,
+  "method": "512 fresh team-pair clusters, two outcome repeats per cluster, side-swapped; matched teams and previews. Paired and absolute confidence intervals bootstrap team-pair clusters. Showdown RNG is server-side and not identical between checkpoint arms.",
+  "opponent": "Max Damage",
+  "paired_ci95_pp": [
+    -2.1,
+    0.977
+  ],
+  "paired_delta_pp": -0.586,
+  "promotion": "Focused matchup diagnostic; interpret below-50 scores as a weakness, independently of whether this PPO update changed it.",
+  "status": "Complete with incomplete cases",
+  "round430": {
+    "action_adjustments": 0,
+    "clusters": 512,
+    "complete_matches": 2048,
+    "games_per_second": 7.467,
+    "score_ci95_pct": [
+      35.645,
+      42.432
+    ],
+    "score_pct": 39.062,
+    "timeouts_or_errors": 0
+  },
+  "round504": {
+    "action_adjustments": 0,
+    "clusters": 512,
+    "complete_matches": 2046,
+    "games_per_second": 7.288,
+    "score_ci95_pct": [
+      35.059,
+      41.895
+    ],
+    "score_pct": 38.514,
+    "timeouts_or_errors": 1
+  }
+}
