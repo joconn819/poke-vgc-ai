@@ -18661,3 +18661,65 @@ coverage, not another blind teacher-weight sweep.
   Do not promote Round476 on this basis. Keep Round430 as the validated default.
 - Reproduction: `scripts/evaluate_round476_round485_confirmation_256x2.sh`;
   report: `training/outputs/phase12_headless/round503_round476_vs_round485_confirmation_256x2_20261031/report.json`.
+
+### Round504: balanced population PPO continuation (training complete; evaluation running)
+
+- Continued from Round476 for 20,000 games with a broad, explicit opponent mix:
+  Random 10%, Max Damage 20%, Counterplay 20%, Public Counterplay 20%, and a
+  30% frozen-policy pool. The pool sampled five checkpoints uniformly, 6% of
+  total games each: the Round476 starting policy, Round430, Round473, Round485,
+  and historical Round102. Thus no one heuristic or policy checkpoint controls
+  the training target.
+- The strict audit accepted 20,000 trainable matches, 40,000 player-view rows,
+  and 166,610 trainable transitions. It detected one timed-out Max Damage match
+  and replaced it with a fresh seed before training. PPO completed 1,304
+  optimizer steps on CUDA; the latest checkpoint is
+  `training/outputs/phase12_headless/round504_round476_balanced_population_ppo_20k_20261031/checkpoints/latest.pt`.
+- Runtime: 512.70 s for rollouts (39.01 aggregate games/s over eight workers),
+  263.61 s strict audit and recovery, and 161.05 s PPO updates; 937.39 s total
+  (21.34 games/s end-to-end). Peak rollout RSS was 9.60 GB and average CPU use
+  was 7.54 cores. The 39 games/s rate is below Round476's 47.48 games/s because
+  the current mix devotes 40% to the slower Counterplay and Public Counterplay
+  opponents and 30% to PPO-vs-PPO games; do not compare rates across different
+  opponent mixes as if the simulator alone changed.
+- Instrumented per-match means were 181.38 ms end-to-end, 32.26 ms in the
+  headless engine, 27.00 ms in observation encoding, 86.52 ms in action
+  selection (including nested inference), 44.40 ms in policy inference, and
+  10.55 ms persisting trajectories. These components overlap: policy inference
+  is within action selection. The engine is about 18% of wall time; action
+  selection and observation encoding remain the primary speed targets.
+- Reproduction: `scripts/train_round504_round476_balanced_population_20k.sh`.
+  A fresh paired evaluation against Round430 is running on 128 new team clusters
+  against Random, Max Damage, Counterplay, Public Counterplay, and Round464,
+  Round468, Round472, and Round485 PPO checkpoints. Round464/468/472 were not
+  included in Round504's direct policy pool. The candidate remains unpromoted
+  until that screen and an independent repeat support a broad improvement.
+
+
+### Round505: Round504 fresh eight-class league screen (complete; not promoted)
+
+- Compared Round504 with the Round430 incumbent across Random, Max Damage,
+  Counterplay, Public Counterplay, and PPO rounds 464, 468, 472, and 485. Each
+  arm used 128 fresh team-pair clusters, one outcome repeat, side-swapped matches,
+  and matched teams, previews, and selectors. Bootstrap intervals resample team
+  clusters; Showdown battle RNG is server-side and not identical between arms.
+- Paired Round504 minus Round430 scores (score; delta pp [95% cluster CI]): Random
+  93.75% vs 94.53%; −0.78 [−3.13,+1.17]. Max Damage 44.92% vs 44.53%; +0.39
+  [−2.73,+3.91]. Counterplay 25.00% vs 24.22%; +0.78 [−3.13,+4.69]. Public
+  Counterplay 42.58% vs 42.97%; −0.39 [−3.52,+3.13]. Round464 38.28% vs
+  40.23%; −1.95 [−5.86,+1.95]. Round468 53.13% vs 51.95%; +1.17
+  [−1.56,+3.91]. Round472 39.68% vs 36.72%; +2.38 [−1.19,+5.95], with two
+  incomplete cases. Round485 55.08% vs 55.47%; −0.39 [−3.91,+2.74]. No paired
+  interval excludes zero; no action adjustments occurred. Round472 had two
+  Round504 timeouts/errors; all other checkpoint-opponent arms had none.
+- The fresh Max Damage sample puts both checkpoints near 45%; this is not evidence
+  for a large drop from previous lower absolute rates, which used different team
+  samples. The paired estimate is near zero and uncertain. The full league likewise
+  shows no established broad gain or regression. Keep Round430 as the validated
+  default; Round504 is not promoted. Run a higher-repeat independent screen before
+  making claims about small changes.
+- Across arms, throughput was about 1.97–8.07 games/s for Round430 and
+  2.68–7.51 games/s for Round504, eight CPU workers; rates vary by opponent
+  class and are not directly comparable as simulator speed.
+- Reproduction: `scripts/evaluate_round504_fresh_league_128x1.sh`; report:
+  `training/outputs/phase12_headless/round505_round504_fresh_league_128x1_20261031/report.json`.
