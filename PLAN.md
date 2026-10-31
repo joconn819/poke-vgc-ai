@@ -17570,9 +17570,24 @@ coverage, not another blind teacher-weight sweep.
   evaluation throughput was 1,024 matches / 230.11 s = 4.45 matches/s. Search
   adapter latency median/p95 was 248.8/337.8 ms; the inner Showdown advance
   median/p95 was 154.6/240.6 ms. Value inference median was 4.85 ms.
+- Added a second-opponent confirmation with Public Counterplay and the same
+  Round430 policy/search pair. Across 128 fresh paired clusters and both seats
+  (512 complete matches), policy-only scored 43.36% and learned search 40.63%,
+  a paired change of -2.73 pp (95% team-cluster bootstrap CI [-7.82,+2.34]).
+  Seat-specific changes were +2.34 pp and -7.81 pp, showing the value of the
+  overall paired estimate depends on seat balance. All 512 matches completed
+  with zero action corrections. The search matrix was returned in 253/256
+  search-side matches; 3 cases safely fell back on possible-Illusion or
+  publicly observed Transform states. Throughput was 3.42 complete matches/s;
+  adapter latency median/p95 was 245.7/332.0 ms.
+- The two-opponent picture is mixed: +2.54 pp vs Max Damage and -2.73 pp vs
+  Public Counterplay, with both cluster intervals including zero. Search is not
+  robustly improved by the Round480 evaluator and remains disabled by default.
+  The launcher supports both opponent classes through `OPPONENT_STRATEGY`.
 - Decision flow: the deployed/default PPO selects legal moves from masked
   policy logits. Its auxiliary win-probability head does not rank moves. A
   separate learned state-value model can influence a move only when optional
   search is explicitly enabled; it scores simulated successor states inside a
-  payoff matrix. Search remains off by default pending broader paired evidence
-  against the opponent pool.
+  payoff matrix. Search remains off by default because its results are mixed
+  across Max Damage and Public Counterplay; it must pass a broader opponent
+  league before default use.
