@@ -18609,3 +18609,55 @@ coverage, not another blind teacher-weight sweep.
   `venv/bin/python -m scripts.smoke_local_showdown_bot --bot VGC430Smoke
   --username VGC430SmokeOpp --showdown-path
   /home/justin/p/poke_learning/pokemon-showdown --host 127.0.0.1 --port 8000`.
+
+### Round502: fresh league screen of the Round476 PPO checkpoint (complete; not promoted)
+
+- Compared Round476 with the Round430 incumbent in six response classes:
+  random, Max Damage, legacy Counterplay, closed-sheet Public Counterplay,
+  historical Round102 PPO, and Round485 PPO. Round485 was not part of Round476's
+  opponent pool. Every arm used 128 fresh team-pair clusters, two outcomes per
+  cluster, both seats, the same teams and Round402 preview selectors, and 512
+  requested matches per checkpoint/opponent. Paired intervals bootstrap by
+  team-pair cluster. Server-side battle randomness is not seed-controlled.
+- Paired Round476 minus Round430 results (Round430 → Round476 score; delta and
+  95% team-cluster interval): Random 94.92% → 94.34%, −0.59 pp
+  [−1.56,+0.20]; Max Damage 28.32% → 27.34%, −0.98 pp [−4.10,+2.34]; legacy
+  Counterplay 36.52% → 36.22%, −0.39 pp [−3.13,+2.15]; Public Counterplay
+  32.42% → 33.59%, +1.17 pp [−1.76,+4.30]; Round102 PPO 54.49% → 56.05%,
+  +1.56 pp [−0.78,+4.10]; held-out Round485 PPO 42.38% → 46.09%, +3.71 pp
+  [+0.78,+6.84]. The Counterplay Round476 arm had two incomplete paired cases
+  (254 matched repeats); all other arms completed all 256 repeats. No action
+  adjustments occurred.
+- Only the Round485 comparison's interval excluded zero. It is one of six
+  opponent comparisons and needs independent confirmation; do not promote
+  Round476 on this exploratory screen. Its current Max Damage performance did
+  not improve. The five other comparisons are inconclusive. This is evidence
+  against using either a single Max Damage result or a single PPO checkpoint as
+  the policy-selection objective.
+- Full-match throughput across the 12 arms ranged from 2.22 to 6.59 games/s
+  with eight CPU workers. Counterplay was slowest; simple Max Damage and Public
+  Counterplay arms were faster. See the machine-readable scorecard for each
+  rate and completion count.
+- Reproduction: `scripts/evaluate_round476_fresh_league_128x2.sh`; outputs:
+  `training/outputs/phase12_headless/round502_round476_fresh_league_128x2_20261031/report.json`.
+  Round503 independently retested the only apparently positive opponent result
+  on 256 fresh clusters; the gain did not replicate.
+
+
+### Round503: independent Round485 PPO transfer confirmation (complete; not replicated)
+
+- After Round502's only interval above zero was against Round485 PPO, reran the
+  same Round430-versus-Round476 comparison against Round485 on 256 new team-pair
+  clusters, with two outcome repeats, side swaps, common teams/previews, and the
+  Round402 selectors. Round485 was not included in Round476's training pool.
+- Round430 scored 54.30%; Round476 scored 54.99%. The paired change was +0.78 pp
+  (95% team-cluster interval [−0.98,+2.54]) over 511 matched repeats. One
+  Round476 paired case timed out; all Round430 cases completed. Neither arm made
+  an action adjustment. Throughput was 3.97 games/s for Round430 and 3.85 for
+  Round476 across eight CPU workers.
+- The apparent +3.71 pp Round502 gain [ +0.78,+6.84 ] did not replicate. This
+  is consistent with selection noise across six opponent comparisons or a
+  team-sample-specific effect; the evidence does not distinguish those causes.
+  Do not promote Round476 on this basis. Keep Round430 as the validated default.
+- Reproduction: `scripts/evaluate_round476_round485_confirmation_256x2.sh`;
+  report: `training/outputs/phase12_headless/round503_round476_vs_round485_confirmation_256x2_20261031/report.json`.

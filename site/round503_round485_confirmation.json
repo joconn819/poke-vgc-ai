@@ -1,0 +1,25 @@
+{
+  "baseline": "Round430 hard-opponent auxiliary PPO",
+  "candidate": "Round476 refreshed-population PPO",
+  "games_per_checkpoint": 1024,
+  "matched_repeats": 511,
+  "matched_team_clusters": 256,
+  "method": "256 fresh team-pair clusters, two outcomes per cluster, side-swapped; common teams, previews, seed, and Round402 selectors; cluster-bootstrap paired interval.",
+  "opponent": "Round485 Max Damage exposure PPO; not included in the Round476 training pool",
+  "paired_cluster_ci95_pp": [
+    -0.977,
+    2.539
+  ],
+  "paired_delta_pp": 0.781,
+  "promotion": "Confirmation applies to one opponent checkpoint only; continue multi-family held-out league evaluation before promotion.",
+  "reproduction": "scripts/evaluate_round476_round485_confirmation_256x2.sh",
+  "round430_action_adjustments": 0,
+  "round430_games_per_second": 3.972,
+  "round430_score_pct": 54.297,
+  "round430_timeouts_or_errors": 0,
+  "round476_action_adjustments": 0,
+  "round476_games_per_second": 3.853,
+  "round476_score_pct": 54.99,
+  "round476_timeouts_or_errors": 1,
+  "status": "Independent fresh-seed confirmation of Round502 held-out PPO transfer signal"
+}

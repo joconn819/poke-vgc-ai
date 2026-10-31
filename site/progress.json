@@ -1395,7 +1395,7 @@
   "method": "Native self-play PPO for in-battle decisions. Terminal win/loss remains the main objective; win-probability and hidden-set prediction are auxiliary tasks. Search comes after a stronger policy.",
   "jax_decision": "Round430 has a confirmed self-play head-to-head lift over Round424, but external-opponent screens remain inconclusive. Prioritize measured inference batching, observation throughput, and rollouts; keep equilibrium-oriented opponent coverage and defer a JAX/GPU engine rewrite until its end-to-end payoff is measured.",
   "evaluation_note": "Round402\u2019s historical 77.15% is a team-preview selector benchmark against damage-preview selection, not an in-battle policy score against the Max Damage opponent. The latest in-battle Max Damage result is Round430 policy-only at 39.84% on 256 clusters; one-turn search scored 42.38% but its paired interval includes zero. Round485\u2019s 70%-Max-Damage training mix did not measurably improve that matchup or the broader opponent league. Compare only evaluations using matched tasks, selectors, teams, and seeds.",
-  "generated_at": "2026-10-31 21:00 UTC",
+  "generated_at": "2026-10-31 21:24 UTC",
   "round462_evaluation": {
     "status": "Round462 not promoted \u00b7 initial paired screen complete",
     "summary": "Round462 scored 44.82% against Max Damage [41.02%, 48.54%]. On the same teams and seeds, Round430 scored 44.73% and Round432 scored 44.43%; paired deltas were +0.10 pp [-1.37, +1.56] and +0.39 pp [-1.37, +2.05]. The update did not measurably change this weakness. Results against Public Counterplay and historical PPO are inconclusive; Random is an easy-baseline check.",
@@ -6510,5 +6510,160 @@
     },
     "interpretation": "Confirms one complete match through the local-server adapter and confirms the exact decision-index 1+4 option fired twice. A single game against random play is not evidence of competitive strength. Keep policy-only Round430 as default pending paired, side-swapped evaluation across the broader held-out league.",
     "reproduction": "scripts/run_lan_bot.py --max-damage-action-steps 1 4; scripts/smoke_local_showdown_bot.py"
+  },
+  "round502_round476_league": {
+    "baseline": "Round430 hard-opponent auxiliary PPO",
+    "candidate": "Round476 refreshed-population PPO",
+    "interpretation": "Only the separate Round485 PPO comparison had a 95% paired interval above zero (+3.711 pp [0.781, 6.836]); the other five include zero, and the Counterplay Round476 arm had two incomplete cases. This is an exploratory six-comparison screen, not promotion evidence; an independent Round485 confirmation is in progress.",
+    "method": "For each opponent, both checkpoints use the same fresh team seeds, preview selectors, side swaps, and two outcomes per team-pair cluster. Cluster-bootstrap paired intervals compare Round476 with Round430. Showdown battle randomness is generated server-side, so outcome pairing is by team cluster rather than identical random streams.",
+    "opponent_classes": [
+      "Random",
+      "Max Damage",
+      "Counterplay",
+      "Public Counterplay",
+      "historical Round102 PPO",
+      "held-out Round485 PPO"
+    ],
+    "opponents": {
+      "counterplay": {
+        "cluster_ci95_pp": [
+          -3.125,
+          2.148
+        ],
+        "interpretation": "Exploratory paired comparison; checkpoint changes are not promoted by this screen alone.",
+        "matched_repeats": 254,
+        "matched_team_clusters": 128,
+        "paired_delta_pp": -0.391,
+        "round430_action_adjustments": 0,
+        "round430_games_per_second": 2.863,
+        "round430_score_pct": 36.523,
+        "round430_timeouts_or_errors": 0,
+        "round476_action_adjustments": 0,
+        "round476_games_per_second": 2.223,
+        "round476_score_pct": 36.22,
+        "round476_timeouts_or_errors": 2
+      },
+      "heldout_ppo_round485": {
+        "cluster_ci95_pp": [
+          0.781,
+          6.836
+        ],
+        "interpretation": "Exploratory paired comparison; checkpoint changes are not promoted by this screen alone.",
+        "matched_repeats": 256,
+        "matched_team_clusters": 128,
+        "paired_delta_pp": 3.711,
+        "round430_action_adjustments": 0,
+        "round430_games_per_second": 4.068,
+        "round430_score_pct": 42.383,
+        "round430_timeouts_or_errors": 0,
+        "round476_action_adjustments": 0,
+        "round476_games_per_second": 4.079,
+        "round476_score_pct": 46.094,
+        "round476_timeouts_or_errors": 0
+      },
+      "historical_ppo": {
+        "cluster_ci95_pp": [
+          -0.781,
+          4.102
+        ],
+        "interpretation": "Exploratory paired comparison; checkpoint changes are not promoted by this screen alone.",
+        "matched_repeats": 256,
+        "matched_team_clusters": 128,
+        "paired_delta_pp": 1.562,
+        "round430_action_adjustments": 0,
+        "round430_games_per_second": 5.463,
+        "round430_score_pct": 54.492,
+        "round430_timeouts_or_errors": 0,
+        "round476_action_adjustments": 0,
+        "round476_games_per_second": 4.898,
+        "round476_score_pct": 56.055,
+        "round476_timeouts_or_errors": 0
+      },
+      "max_damage": {
+        "cluster_ci95_pp": [
+          -4.102,
+          2.344
+        ],
+        "interpretation": "Exploratory paired comparison; checkpoint changes are not promoted by this screen alone.",
+        "matched_repeats": 256,
+        "matched_team_clusters": 128,
+        "paired_delta_pp": -0.977,
+        "round430_action_adjustments": 0,
+        "round430_games_per_second": 6.382,
+        "round430_score_pct": 28.32,
+        "round430_timeouts_or_errors": 0,
+        "round476_action_adjustments": 0,
+        "round476_games_per_second": 5.111,
+        "round476_score_pct": 27.344,
+        "round476_timeouts_or_errors": 0
+      },
+      "public_counterplay": {
+        "cluster_ci95_pp": [
+          -1.758,
+          4.297
+        ],
+        "interpretation": "Exploratory paired comparison; checkpoint changes are not promoted by this screen alone.",
+        "matched_repeats": 256,
+        "matched_team_clusters": 128,
+        "paired_delta_pp": 1.172,
+        "round430_action_adjustments": 0,
+        "round430_games_per_second": 5.98,
+        "round430_score_pct": 32.422,
+        "round430_timeouts_or_errors": 0,
+        "round476_action_adjustments": 0,
+        "round476_games_per_second": 6.593,
+        "round476_score_pct": 33.594,
+        "round476_timeouts_or_errors": 0
+      },
+      "random": {
+        "cluster_ci95_pp": [
+          -1.562,
+          0.195
+        ],
+        "interpretation": "Exploratory paired comparison; checkpoint changes are not promoted by this screen alone.",
+        "matched_repeats": 256,
+        "matched_team_clusters": 128,
+        "paired_delta_pp": -0.586,
+        "round430_action_adjustments": 0,
+        "round430_games_per_second": 2.912,
+        "round430_score_pct": 94.922,
+        "round430_timeouts_or_errors": 0,
+        "round476_action_adjustments": 0,
+        "round476_games_per_second": 3.125,
+        "round476_score_pct": 94.336,
+        "round476_timeouts_or_errors": 0
+      }
+    },
+    "paired_cases_per_checkpoint_per_opponent": 256,
+    "promotion": "No promotion decision: this is a fresh screening league; repeat any apparent gain on independent teams and seeds before changing the active checkpoint.",
+    "reproduction": "scripts/evaluate_round476_fresh_league_128x2.sh",
+    "side_swapped_matches_per_checkpoint_per_opponent_requested": 512,
+    "status": "Complete; exploratory six-class paired league screen",
+    "workers": 8
+  },
+  "round503_round485_confirmation": {
+    "baseline": "Round430 hard-opponent auxiliary PPO",
+    "candidate": "Round476 refreshed-population PPO",
+    "games_per_checkpoint": 1024,
+    "matched_repeats": 511,
+    "matched_team_clusters": 256,
+    "method": "256 fresh team-pair clusters, two outcomes per cluster, side-swapped; common teams, previews, seed, and Round402 selectors; cluster-bootstrap paired interval.",
+    "opponent": "Round485 Max Damage exposure PPO; not included in the Round476 training pool",
+    "paired_cluster_ci95_pp": [
+      -0.977,
+      2.539
+    ],
+    "paired_delta_pp": 0.781,
+    "promotion": "Confirmation applies to one opponent checkpoint only; continue multi-family held-out league evaluation before promotion.",
+    "reproduction": "scripts/evaluate_round476_round485_confirmation_256x2.sh",
+    "round430_action_adjustments": 0,
+    "round430_games_per_second": 3.972,
+    "round430_score_pct": 54.297,
+    "round430_timeouts_or_errors": 0,
+    "round476_action_adjustments": 0,
+    "round476_games_per_second": 3.853,
+    "round476_score_pct": 54.99,
+    "round476_timeouts_or_errors": 1,
+    "status": "Independent fresh-seed confirmation of Round502 held-out PPO transfer signal"
   }
 }

@@ -1,0 +1,130 @@
+{
+  "baseline": "Round430 hard-opponent auxiliary PPO",
+  "candidate": "Round476 refreshed-population PPO",
+  "interpretation": "Only the separate Round485 PPO comparison had a 95% paired interval above zero (+3.711 pp [0.781, 6.836]); the other five include zero, and the Counterplay Round476 arm had two incomplete cases. This is an exploratory six-comparison screen, not promotion evidence; an independent Round485 confirmation is in progress.",
+  "method": "For each opponent, both checkpoints use the same fresh team seeds, preview selectors, side swaps, and two outcomes per team-pair cluster. Cluster-bootstrap paired intervals compare Round476 with Round430. Showdown battle randomness is generated server-side, so outcome pairing is by team cluster rather than identical random streams.",
+  "opponent_classes": [
+    "Random",
+    "Max Damage",
+    "Counterplay",
+    "Public Counterplay",
+    "historical Round102 PPO",
+    "held-out Round485 PPO"
+  ],
+  "opponents": {
+    "counterplay": {
+      "cluster_ci95_pp": [
+        -3.125,
+        2.148
+      ],
+      "interpretation": "Exploratory paired comparison; checkpoint changes are not promoted by this screen alone.",
+      "matched_repeats": 254,
+      "matched_team_clusters": 128,
+      "paired_delta_pp": -0.391,
+      "round430_action_adjustments": 0,
+      "round430_games_per_second": 2.863,
+      "round430_score_pct": 36.523,
+      "round430_timeouts_or_errors": 0,
+      "round476_action_adjustments": 0,
+      "round476_games_per_second": 2.223,
+      "round476_score_pct": 36.22,
+      "round476_timeouts_or_errors": 2
+    },
+    "heldout_ppo_round485": {
+      "cluster_ci95_pp": [
+        0.781,
+        6.836
+      ],
+      "interpretation": "Exploratory paired comparison; checkpoint changes are not promoted by this screen alone.",
+      "matched_repeats": 256,
+      "matched_team_clusters": 128,
+      "paired_delta_pp": 3.711,
+      "round430_action_adjustments": 0,
+      "round430_games_per_second": 4.068,
+      "round430_score_pct": 42.383,
+      "round430_timeouts_or_errors": 0,
+      "round476_action_adjustments": 0,
+      "round476_games_per_second": 4.079,
+      "round476_score_pct": 46.094,
+      "round476_timeouts_or_errors": 0
+    },
+    "historical_ppo": {
+      "cluster_ci95_pp": [
+        -0.781,
+        4.102
+      ],
+      "interpretation": "Exploratory paired comparison; checkpoint changes are not promoted by this screen alone.",
+      "matched_repeats": 256,
+      "matched_team_clusters": 128,
+      "paired_delta_pp": 1.562,
+      "round430_action_adjustments": 0,
+      "round430_games_per_second": 5.463,
+      "round430_score_pct": 54.492,
+      "round430_timeouts_or_errors": 0,
+      "round476_action_adjustments": 0,
+      "round476_games_per_second": 4.898,
+      "round476_score_pct": 56.055,
+      "round476_timeouts_or_errors": 0
+    },
+    "max_damage": {
+      "cluster_ci95_pp": [
+        -4.102,
+        2.344
+      ],
+      "interpretation": "Exploratory paired comparison; checkpoint changes are not promoted by this screen alone.",
+      "matched_repeats": 256,
+      "matched_team_clusters": 128,
+      "paired_delta_pp": -0.977,
+      "round430_action_adjustments": 0,
+      "round430_games_per_second": 6.382,
+      "round430_score_pct": 28.32,
+      "round430_timeouts_or_errors": 0,
+      "round476_action_adjustments": 0,
+      "round476_games_per_second": 5.111,
+      "round476_score_pct": 27.344,
+      "round476_timeouts_or_errors": 0
+    },
+    "public_counterplay": {
+      "cluster_ci95_pp": [
+        -1.758,
+        4.297
+      ],
+      "interpretation": "Exploratory paired comparison; checkpoint changes are not promoted by this screen alone.",
+      "matched_repeats": 256,
+      "matched_team_clusters": 128,
+      "paired_delta_pp": 1.172,
+      "round430_action_adjustments": 0,
+      "round430_games_per_second": 5.98,
+      "round430_score_pct": 32.422,
+      "round430_timeouts_or_errors": 0,
+      "round476_action_adjustments": 0,
+      "round476_games_per_second": 6.593,
+      "round476_score_pct": 33.594,
+      "round476_timeouts_or_errors": 0
+    },
+    "random": {
+      "cluster_ci95_pp": [
+        -1.562,
+        0.195
+      ],
+      "interpretation": "Exploratory paired comparison; checkpoint changes are not promoted by this screen alone.",
+      "matched_repeats": 256,
+      "matched_team_clusters": 128,
+      "paired_delta_pp": -0.586,
+      "round430_action_adjustments": 0,
+      "round430_games_per_second": 2.912,
+      "round430_score_pct": 94.922,
+      "round430_timeouts_or_errors": 0,
+      "round476_action_adjustments": 0,
+      "round476_games_per_second": 3.125,
+      "round476_score_pct": 94.336,
+      "round476_timeouts_or_errors": 0
+    }
+  },
+  "paired_cases_per_checkpoint_per_opponent": 256,
+  "promotion": "No promotion decision: this is a fresh screening league; repeat any apparent gain on independent teams and seeds before changing the active checkpoint.",
+  "reproduction": "scripts/evaluate_round476_fresh_league_128x2.sh",
+  "side_swapped_matches_per_checkpoint_per_opponent_requested": 512,
+  "status": "Complete; exploratory six-class paired league screen",
+  "workers": 8
+}
