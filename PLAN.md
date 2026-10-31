@@ -18729,30 +18729,28 @@ coverage, not another blind teacher-weight sweep.
   `training/outputs/phase12_headless/round505_round504_fresh_league_128x1_20261031/report.json`.
 
 
-### Round506: larger Max Damage weakness confirmation (complete; failure confirmed)
+### Round506: larger Max Damage weakness confirmation (provisional; protocol fault found)
 
 - Compared Round430 and Round504 against the same Max Damage policy on 512 fresh
-  team-pair clusters with two outcome repeats and side swaps. Paired intervals
+  team-pair clusters with two outcome repeats and side swaps. The apparent results
+  were Round430 39.06% (35.65–42.43%) and Round504 38.51% (35.06–41.90%); paired
+  change −0.59 pp (−2.10 to +0.98) over 1,023 matched cases. Paired intervals
   bootstrap team clusters; absolute-rate intervals use the same cluster unit.
   Showdown battle RNG is server-side and differs between arms.
-- Round430 scored 39.06% (absolute 95% cluster interval 35.65–42.43%); Round504
-  scored 38.51% (35.06–41.90%). The paired Round504 change was −0.59 percentage
-  points (95% cluster interval −2.10 to +0.98) over 1,023 matched cases in 512
-  clusters. The paired result does not establish that Round504 caused a decline;
-  both absolute intervals are wholly below 50%, confirming a substantial weakness
-  against this simple baseline. This is a direct failure for both policies, not a
-  neutral result just because their difference is uncertain. Round504 had one
-  timeout/error and no action adjustments; Round430 had zero errors and no action
-  adjustments.
-- The absolute rate shifted from about 45% in Round505's 128-cluster fresh screen
-  to about 39% on these new teams. This reinforces the need for broad team sampling
-  and prevents interpreting cross-round absolute rates on different samples as a
-  policy trend. Within each run, paired comparisons are the proper estimate of
-  training change.
-- No checkpoint promotion: Round504 has neither a broad league gain nor a Max
-  Damage improvement. Next, inspect battle/action traces on this failure suite,
-  identify the recurring tactical causes, and add targeted training/evaluation
-  cases without making Max Damage the sole training target.
+- Round512/507 trace debugging then found protocol errors on PP-less locked
+  `randomNormal` moves such as Outrage: the mask selected a targetless order, but
+  Showdown rejected it with `Can't move: Outrage needs a target`. Poke-env retried
+  the same stale request; traces could accumulate thousands of steps. Round506 had
+  one explicit timeout; other completed rounds may also include delayed or rejected
+  choices. Therefore its below-50% estimate is provisional and must not be used as
+  the final strength claim until repeated with the corrected action translator.
+- Cross-round absolute rates remain incomparable because team samples differ.
+  Within a corrected run, use paired team clusters to estimate training change,
+  and use absolute cluster intervals to determine whether each checkpoint itself
+  is below 50%.
+- No checkpoint promotion: Round504 has no broad league gain. Re-run the Max
+  Damage diagnostic with the corrected protocol before deciding whether the earlier
+  matchup failure estimate holds.
 - Reproduction: `scripts/evaluate_round505_maxdamage_confirmation_512x2.sh`; report:
   `training/outputs/phase12_headless/round506_maxdamage_512x2_20261031/report.json`.
 
@@ -18765,15 +18763,69 @@ coverage, not another blind teacher-weight sweep.
   sample and does not replace the larger Round506 result. No invalid-action
   adjustments occurred.
 - In both arms, two traces ran for 1,698–2,165 environment decision steps while
-  other matches had median 8 and 90th-percentile 11 steps. Those outliers included
-  long stretches of repeated actions with no HP-progress reward. Since Showdown has
-  a 100-turn cap, these step counts need an explicit per-turn/state audit before
-  any action-frequency interpretation. The evaluator currently records decision
-  step count but not Showdown turn number in each trace.
-- No recurring policy cause is established by this pilot. Next diagnostic work
-  should record turn numbers, request types, per-side active/fainted state, and
-  terminal reason for long matches, then inspect ordinary losses separately. Keep
-  the Round506 evidence: both absolute Max Damage intervals remain below 50%,
-  while the Round504-vs-Round430 paired difference is inconclusive.
+  other matches had median 8 and 90th-percentile 11 steps. Instrumentation of one
+  repeated team pair showed Showdown was rejecting Outrage with `needs a target`
+  while the PP-less lock exposed a targetless mask action. The runner retried the
+  same unchanged request, causing the step-count anomaly.
+- This is a confirmed protocol/action-translation defect, not evidence of a
+  strategic cause. The exact team-pair replay with the fix completed in 7–8 steps
+  and emitted no Outrage target errors. Turn number, request id, active move target,
+  legal orders, and replay-event deltas are now captured when trace mode is enabled.
+  Treat Round506's strength estimate as provisional until the corrected repeat.
 - Reproduction: `scripts/diagnose_round430_round504_maxdamage_traces.sh`; traces are
   under `training/outputs/phase12_headless/round507_maxdamage_trace_diagnostic_128_20261031/`.
+
+
+### Round512: locked `randomNormal` move target fix (complete; smoke passed)
+
+- Root cause: the trace showed a PP-less Outrage continuation. Poke-env represented
+  the locked move as `/choose move outrage` without a target, but local Showdown in
+  this doubles format rejects that command and requires an explicit target. The
+  runner repeatedly retried the same unchanged request. This explains long traces
+  and affects both the agent and Max Damage opponent when they use such a move.
+- Updated `ShowdownDoublesEnv.get_action_mask` to expose living foe slots as target
+  choices for locked `randomNormal` moves. Updated `action_to_order` to pass the
+  selected target through. Trace mode now records turn/request ids, target options,
+  valid orders, and incremental replay events; protocol error messages are enabled
+  during trace runs only.
+- Replayed the exact Round507 team pair on the local Showdown server. Before the
+  fix, it ran 682–2,165 environment steps and emitted thousands of
+  `Can't move: Outrage needs a target` errors. After the fix, both side-swapped
+  games completed in 7 and 8 steps, with zero Outrage protocol errors, zero action
+  adjustments, and Round430 won both legs. This is a mechanics smoke check, not a
+  strength estimate.
+
+### Round513: corrected Max Damage checkpoint comparison (incomplete; protocol still invalid)
+
+- The first corrected batch completed 1,024 Round430 outcomes at 33.89%
+  [29.30%, 38.67%] and 1,020 Round504 outcomes at 33.14% [28.61%, 37.89%].
+  The paired delta is -0.78 pp [-2.83, +1.27] over 510 matched cases. Both
+  checkpoints are below 50% in this run, which is a material weakness signal.
+- Do not treat the percentages as a valid strength estimate yet: Round504 has
+  two incomplete cases, and an exact replay of the Struggle failure found 390
+  and 2,796 environment steps in the two side-swapped legs, with 377 and 2,783
+  action corrections. The aggregate run's zero adjustment count did not catch
+  these invalid/incomplete paths. A result with that behavior is not a clean
+  match benchmark.
+- A first request-id deduplication experiment stalled because `DoublesEnv.step`
+  must drain its battle queues; that change was reverted. Do not use either
+  replay run as strength evidence. Next, instrument the queue/request lifecycle
+  and make duplicate update draining explicit without resubmitting orders, then
+  rerun the exact seed before restarting the 256-cluster comparison.
+- The Max Damage selector now has a fallback for target-specific `randomNormal`
+  actions when the current legal order is targetless (the Struggle failure mode).
+  This fixed the immediate exception in the exact replay, but did not fix the
+  repeated-step/correction anomaly.
+- Run: `scripts/evaluate_round513_fixed_maxdamage_256x2.sh`; provisional output:
+  `training/outputs/phase12_headless/round513_fixed_maxdamage_256x2_20261031/report.json`.
+
+### Round514: request/update synchronization diagnosis (in progress)
+
+- Expanded the stable-observation signature with request ID, force-switch fields,
+  active move IDs/PP, and legal orders. Reproduced a suspected duplicate-update
+  issue on Round513's exact Struggle seed. The proposed one-submit-per-request
+  guard stalled, so it was removed; queue behavior needs direct instrumentation.
+- Exact seed: `202611801`, team pair Luxray/Gliscor/Dragapult/Farigiraf/Scovillain-Mega/
+  Rampardos vs Chimecho/Bellibolt/Golisopod/Serperior/Flapple/Chandelure-Mega.
+  A clean replay should finish in a plausible number of requests with zero
+  corrections/errors before any benchmark score is accepted.
