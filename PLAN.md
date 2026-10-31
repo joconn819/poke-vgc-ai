@@ -18256,7 +18256,7 @@ coverage, not another blind teacher-weight sweep.
   hidden-set priors. Max Damage remains one diagnostic opponent, not the
   optimization objective.
 
-### Round499: expand held-out team coverage (running)
+### Round499: expand held-out team coverage (Showdown prior complete)
 
 - Round498's pooled-prior selector had only 17 held-out team clusters, so its
   confidence interval was too wide to establish a modest action-selection
@@ -18276,10 +18276,13 @@ coverage, not another blind teacher-weight sweep.
   same prior completed with 84/144 usable states, 336 hidden worlds, and 41,612
   branches in 634.29 seconds (65.604 matches/s across eight CPU workers). It
   skipped 57 forced-switch and three possible-Illusion states, with zero
-  rejected actions. Decision step 5 under the same prior is running; all eight
-  shards have reported 96/144 cluster attempts, 61 usable states, and 25,581
-  branches. These are partial counts, with no full-phase throughput yet.
-  The larger matched dataset will be fit jointly
+  rejected actions. Decision step 5 completed with 93/144 states, 372 worlds,
+  and 40,837 branches in 520.27 seconds (78.492 matches/s); 51 states were
+  skipped and no actions were rejected. Across all three Showdown-prior phases,
+  258/432 states were usable, 1,032 worlds were prepared, and 124,226 branches
+  ran in 2,206.90 seconds (56.290 aggregate matches/s), with zero rejected
+  candidates. The uniform full-set prior collection has now started at step 1.
+  The complete two-prior dataset will be fit jointly
   across both priors and all 14 opponent/prior heads, then compared to Round430
   on team-disjoint clusters. Promotion still requires fresh paired,
   side-swapped full-match evaluation across opponents.
