@@ -23,6 +23,25 @@ At inference, legal actions are selected from masked PPO policy logits; the
 win-probability head is an auxiliary training target and does not rank moves.
 The optional one-turn search can consult a state-value evaluator only when
 explicitly enabled; the default play path leaves search disabled.
+**Round482 equilibrium-target check (2026-10-31; reject both actor updates):**
+combined the independent Round479 256-team / 8-repeat and Round481 128-team /
+16-repeat counterfactual corpora (38,672 and 37,264 branch matches; 30.01 and
+34.49 aggregate matches/s). Trainer and audit now split chance outcomes per
+state (4/4 or 8/8) while holding out whole team clusters. The regret-matching
+target improved its offline mean over the incumbent against each sampled
+response class (+9.52 pp Max Damage, +6.19 pp Round476, +9.80 pp Public
+Counterplay), but made average statewise worst response worse by 4.29 pp
+(95% cluster CI [-6.09, -2.45]). After distillation, the held-out actor's
+candidate-restricted mixed distribution was -9.16 pp worst response
+([-12.07, -6.41]); argmax was -2.27 pp ([-4.71, -0.16]). The conservative
+positive-worst-advantage actor kept the incumbent argmax on 75/77 held-out
+states; its candidate-restricted mixture was -3.55 pp worst response
+([-5.00, -2.22]). These candidate-set scores are offline diagnostics, not
+full-match results. Neither candidate is promoted or sent to full-match
+evaluation. The target is sensitive to per-state downside, while both actor
+updates fail to transfer their training targets; investigate counterfactual
+data coverage / policy projection before repeating the same distillation.
+Reports are in `training/outputs/phase12_headless/round482_*`.
 **Round430 stochastic-action diagnostic (2026-10-30):** added `--stochastic`
 to paired evaluation and compared sampled PPO actions with deterministic
 argmax on identical teams, previews, and battle seeds (128 team-pair clusters,

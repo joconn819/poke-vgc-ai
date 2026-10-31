@@ -263,9 +263,9 @@
   ],
   "speed": {
     "games_per_second": "38.40 standard PPO rollout",
-    "context": "Round480 one-turn search: Max Damage 1,024 complete matches / 230.11 s = 4.45 matches/s; Public Counterplay 512 matches / 149.50 s = 3.42 matches/s at one chance sample. Four samples on Public Counterplay reduced speed to 1.80 matches/s and raised median decision latency to 782 ms (p95 1,107 ms). Separate from standard PPO rollout (38.40 games/s) and Round479 branch collection (30.01 matches/s).",
+    "context": "Round480 one-turn search: Max Damage 1,024 complete matches / 230.11 s = 4.45 matches/s; Public Counterplay 512 matches / 149.50 s = 3.42 matches/s at one chance sample. Four samples on Public Counterplay reduced speed to 1.80 matches/s and raised median decision latency to 782 ms (p95 1,107 ms). Separate from standard PPO rollout (38.40 games/s) and Round479 branch collection (30.01 matches/s). Round482 counterfactual collection ran at 30.01 games/s (Round479, 38,672 branches) and 34.49 games/s (Round481, 37,264 branches), across four CPU workers; these branch rates are not full-match evaluation or PPO rollout rates.",
     "decision_latency": "131–204 ms per episode across hard-opponent classes",
-    "current_bottleneck": "Round480 search has no reliable cross-opponent lift: +2.54 pp vs Max Damage [-0.78,+6.05], -2.73 pp vs Public Counterplay [-7.82,+2.34]. Raising chance samples from 1 to 4 made almost no action improvement, while cutting evaluation throughput in half. Focus next on better policy/action targets, not simply more search samples.",
+    "current_bottleneck": "Round482 counterfactual targets do not transfer to the actor: regret matching improves mean payoff vs each sampled response, but worsens held-out statewise worst response; conservative distillation mostly preserves incumbent actions. Focus next on policy projection / richer state coverage before large training. Search remains off by default.",
     "gpu_status": "RTX 4060 used for PPO optimization; rollout decisions and headless simulator remain CPU-side",
     "profile_context": "Round467 completed 20,000 rollouts: per-worker speed 7.53/5.34/4.84 games/s for Max Damage/policy/Public Counterplay. PPO preparation took 89 s; the KL-stopped CUDA optimizer ran about 5 s. Aggregate rollout wall time was not retained.",
     "active_training_profile": {
@@ -1360,7 +1360,7 @@
   "method": "Native self-play PPO for in-battle decisions. Terminal win/loss remains the main objective; win-probability and hidden-set prediction are auxiliary tasks. Search comes after a stronger policy.",
   "jax_decision": "Round430 has a confirmed self-play head-to-head lift over Round424, but external-opponent screens remain inconclusive. Prioritize measured inference batching, observation throughput, and rollouts; keep equilibrium-oriented opponent coverage and defer a JAX/GPU engine rewrite until its end-to-end payoff is measured.",
   "evaluation_note": "Round480 trained a recent-mixture value estimator (held-out Brier 0.15555, log loss 0.46713, ECE 0.01112). One-turn learned midgame maximin search changed score +2.54 pp vs Max Damage [−0.78,+6.05] over 256 clusters, but -2.73 pp vs Public Counterplay [−7.82,+2.34] over 128 clusters. Increasing chance samples to four vs Public Counterplay produced -3.13 pp [−8.20,+1.95], changed only 31/256 joint-action selections, and roughly halved throughput. These results do not establish robust improvement. Search remains off by default; default moves come from Round430 masked PPO logits, and the win-probability head remains auxiliary.",
-  "generated_at": "2026-10-31 11:37 UTC",
+  "generated_at": "2026-10-31 12:06 UTC",
   "round462_evaluation": {
     "status": "Round462 not promoted · initial paired screen complete",
     "summary": "Round462 scored 44.82% against Max Damage [41.02%, 48.54%]. On the same teams and seeds, Round430 scored 44.73% and Round432 scored 44.43%; paired deltas were +0.10 pp [-1.37, +1.56] and +0.39 pp [-1.37, +2.05]. The update did not measurably change this weakness. Results against Public Counterplay and historical PPO are inconclusive; Random is an easy-baseline check.",
@@ -4291,6 +4291,64 @@
         "decision_latency_p95_ms": 331.97
       },
       "interpretation": "Four chance samples did not improve the paired score or reduce uncertainty; only 31 of 256 decision selections changed. The higher sample budget roughly halved match throughput and tripled median search latency."
+    }
+  },
+  "round482_equilibrium_targets": {
+    "status": "Reject both actor updates; counterfactual target gains did not transfer",
+    "method": "Combined 384 independent early-game team clusters and split chance repeats within each state; held out entire teams.",
+    "corpus": {
+      "states": 384,
+      "round479_states": 256,
+      "round479_chance_repeats": 8,
+      "round479_branch_matches": 38672,
+      "round479_games_per_second": 30.01,
+      "round481_states": 128,
+      "round481_chance_repeats": 16,
+      "round481_branch_matches": 37264,
+      "round481_games_per_second": 34.49,
+      "train_validation_test_team_clusters": "246 / 61 / 77",
+      "chance_split": "Round479 states: 4 train / 4 held out; Round481 states: 8 train / 8 held out"
+    },
+    "regret_matching_target": {
+      "offline_mean_delta_by_response_pp": {
+        "Max Damage": 9.52,
+        "Round476 PPO": 6.19,
+        "Public Counterplay": 9.8
+      },
+      "offline_mean_statewise_worst_delta_pp": -4.29,
+      "offline_mean_statewise_worst_ci95_pp": [
+        -6.09,
+        -2.45
+      ]
+    },
+    "regret_matching_actor": {
+      "heldout_candidate_restricted_mixed_worst_delta_pp": -9.16,
+      "heldout_candidate_restricted_mixed_ci95_pp": [
+        -12.07,
+        -6.41
+      ],
+      "heldout_argmax_worst_delta_pp": -2.27,
+      "heldout_argmax_ci95_pp": [
+        -4.71,
+        -0.16
+      ]
+    },
+    "positive_worst_advantage_actor": {
+      "heldout_argmax_incumbent_states": "75 / 77",
+      "heldout_candidate_restricted_mixed_worst_delta_pp": -3.55,
+      "heldout_candidate_restricted_mixed_ci95_pp": [
+        -5.0,
+        -2.22
+      ]
+    },
+    "interpretation": "Offline action-set diagnostics only, not full-match performance. Neither update is promoted; default remains Round430 masked PPO logits, auxiliary win-probability head does not rank moves, and search is disabled.",
+    "artifact": "round482_equilibrium_targets.json",
+    "plan": "../PLAN.md",
+    "reproduction": {
+      "merge": "https://github.com/joconn819/poke-vgc-ai/blob/master/scripts/merge_round481_counterfactual_datasets.py",
+      "audit": "https://github.com/joconn819/poke-vgc-ai/blob/master/scripts/analyze_round481_regret_matching_targets.py",
+      "train": "https://github.com/joconn819/poke-vgc-ai/blob/master/scripts/train_round482_combined_regret_matching_policy.sh",
+      "trainer": "https://github.com/joconn819/poke-vgc-ai/blob/master/scripts/train_counterfactual_policy_update.py"
     }
   }
 }

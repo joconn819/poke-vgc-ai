@@ -1,0 +1,52 @@
+{
+  "status": "Reject both actor updates; counterfactual target gains did not transfer",
+  "method": "Combined 384 independent early-game team clusters and split chance repeats within each state; held out entire teams.",
+  "corpus": {
+    "states": 384,
+    "round479_states": 256,
+    "round479_chance_repeats": 8,
+    "round479_branch_matches": 38672,
+    "round479_games_per_second": 30.01,
+    "round481_states": 128,
+    "round481_chance_repeats": 16,
+    "round481_branch_matches": 37264,
+    "round481_games_per_second": 34.49,
+    "train_validation_test_team_clusters": "246 / 61 / 77",
+    "chance_split": "Round479 states: 4 train / 4 held out; Round481 states: 8 train / 8 held out"
+  },
+  "regret_matching_target": {
+    "offline_mean_delta_by_response_pp": {
+      "Max Damage": 9.52,
+      "Round476 PPO": 6.19,
+      "Public Counterplay": 9.8
+    },
+    "offline_mean_statewise_worst_delta_pp": -4.29,
+    "offline_mean_statewise_worst_ci95_pp": [
+      -6.09,
+      -2.45
+    ]
+  },
+  "regret_matching_actor": {
+    "heldout_candidate_restricted_mixed_worst_delta_pp": -9.16,
+    "heldout_candidate_restricted_mixed_ci95_pp": [
+      -12.07,
+      -6.41
+    ],
+    "heldout_argmax_worst_delta_pp": -2.27,
+    "heldout_argmax_ci95_pp": [
+      -4.71,
+      -0.16
+    ]
+  },
+  "positive_worst_advantage_actor": {
+    "heldout_argmax_incumbent_states": "75 / 77",
+    "heldout_candidate_restricted_mixed_worst_delta_pp": -3.55,
+    "heldout_candidate_restricted_mixed_ci95_pp": [
+      -5.0,
+      -2.22
+    ]
+  },
+  "interpretation": "Offline action-set diagnostics only, not full-match performance. Neither update is promoted; default remains Round430 masked PPO logits, auxiliary win-probability head does not rank moves, and search is disabled.",
+  "artifact": "round482_equilibrium_targets.json",
+  "plan": "../PLAN.md"
+}
