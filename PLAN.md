@@ -14,7 +14,7 @@ Pokémon Showdown remains the correctness reference and required battle platform
     "ci95": "[35.16%, 44.53%]",
     "games": 512,
     "clusters": 256,
-    "status": "Current default · search disabled",
+    "status": "Current default \u00b7 search disabled",
     "evaluation": "Latest full-match Max Damage screen: Round430 policy-only arm, 256 matched team-pair clusters, both seats, seed 202610480. The paired search arm scored 42.38% (+2.54 pp; 95% paired CI [-0.78,+6.05]), inconclusive and not enabled by default."
   },
   "speed": {
@@ -26,15 +26,172 @@ Pokémon Showdown remains the correctness reference and required battle platform
   },
   "latest_run": {
     "round": 485,
-    "status": "Max Damage exposure ablation · not promoted",
-    "summary": "Round485 used 70% Max Damage, 10% each heuristic Counterplay class, and 10% total policy-pool exposure. The five pool checkpoints split that 10% evenly (2% of all games each). It scored 39.45% vs Max Damage, −0.68 pp vs balanced Round473 (95% CI −3.12 to +1.76); five-opponent equal-weight change −0.49 pp [−1.39,+0.39]. No supported gain; Round430 stays default.",
+    "status": "Max Damage exposure ablation \u00b7 not promoted",
+    "summary": "Round485 used 70% Max Damage, 10% each heuristic Counterplay class, and 10% total policy-pool exposure. The five pool checkpoints split that 10% evenly (2% of all games each). It scored 39.45% vs Max Damage, \u22120.68 pp vs balanced Round473 (95% CI \u22123.12 to +1.76); five-opponent equal-weight change \u22120.49 pp [\u22121.39,+0.39]. No supported gain; Round430 stays default.",
     "games": "20,000 self-play outcomes",
     "epochs": "4 PPO passes",
     "evaluation": "No supported improvement across opponent pool"
   },
   "method": "Masked PPO action logits are the default move policy. Terminal win/loss is the primary PPO objective; win probability and hidden-set prediction are auxiliary targets. Optional search remains disabled unless a broader held-out league supports it.",
   "jax_decision": "Recent throughput gains came from policy/observation and rollout work; a GPU battle-engine rewrite remains gated on representative end-to-end profiling and parity against local Showdown.",
-  "evaluation_note": "Round402's historical 77.15% is a team-preview selector benchmark against damage-preview selection, not an in-battle policy score against Max Damage. The latest in-battle Max Damage result is Round430 policy-only at 39.84% on 256 clusters; optional search scored 42.38% but its paired interval includes zero. Round485's 70%-Max-Damage mix did not measurably improve that matchup or the broader league. Compare only matched tasks, selectors, teams, and seeds."
+  "evaluation_note": "Round402's historical 77.15% is a team-preview selector benchmark against damage-preview selection, not an in-battle policy score against Max Damage. The latest in-battle Max Damage result is Round430 policy-only at 39.84% on 256 clusters; optional search scored 42.38% but its paired interval includes zero. Round485's 70%-Max-Damage mix did not measurably improve that matchup or the broader league. Compare only matched tasks, selectors, teams, and seeds.",
+  "round499_policy_ensemble": {
+    "round": 499,
+    "status": "Uniform-prior step 3 complete; step 5 running",
+    "candidate_policy": "Round430 incumbent",
+    "requested_clusters_per_step_per_prior": 144,
+    "decision_steps": [
+      1,
+      3,
+      5
+    ],
+    "hidden_set_priors": [
+      "showdown_random_champions",
+      "uniform_unique_full_sets"
+    ],
+    "requested_states_total": 864,
+    "response_classes": [
+      "Round476 PPO",
+      "Round430 PPO",
+      "Round102 PPO",
+      "Max Damage",
+      "Public Counterplay",
+      "random legal",
+      "legacy Counterplay"
+    ],
+    "hidden_worlds_per_state": 4,
+    "chance_repeats_per_candidate": 2,
+    "workers": 8,
+    "device": "CPU",
+    "completed_phases": 5,
+    "total_phases": 6,
+    "current_phase": "Uniform Unique Full Sets prior, decision step 5",
+    "progress_note": "Uniform-prior decision step 1 complete: 75/144 states, 300 worlds, 38,803 branches in 1,040.33s (37.299 branch matches/s). Step 3 complete: 75/144 states, 300 worlds, 37,347 branches in 594.26s (62.846 branch matches/s); nine hidden-set support gaps and zero rejected actions. Step 5 is running.",
+    "reproduction": "scripts/collect_round499_policy_ensemble_144x4x2.sh",
+    "plan": "https://github.com/joconn819/poke-vgc-ai/blob/master/PLAN.md",
+    "partial_progress": {
+      "completed_worker_shards": 0,
+      "reported_worker_shards": 0,
+      "total_worker_shards": 8,
+      "cluster_attempts_processed": 0,
+      "states_captured": 0,
+      "branch_matches": 0,
+      "is_phase_total": false
+    },
+    "phase_results": [
+      {
+        "decision_step": 1,
+        "hidden_set_prior": "showdown_random_champions",
+        "states_requested": 144,
+        "states_captured": 81,
+        "hidden_worlds_prepared": 324,
+        "branch_matches": 41777,
+        "elapsed_seconds": 1052.339,
+        "matches_per_second": 39.699,
+        "world_preparation_seconds": 40.025,
+        "missing_states": 63,
+        "missing_reasons": {
+          "request_switch": 61,
+          "public_transform_state": 2
+        },
+        "rejected_actions": 0
+      },
+      {
+        "decision_step": 3,
+        "hidden_set_prior": "showdown_random_champions",
+        "states_requested": 144,
+        "states_captured": 84,
+        "hidden_worlds_prepared": 336,
+        "branch_matches": 41612,
+        "elapsed_seconds": 634.288,
+        "matches_per_second": 65.604,
+        "world_preparation_seconds": 43.206,
+        "missing_states": 60,
+        "missing_reasons": {
+          "request_switch": 57,
+          "possible_illusion_preview": 3
+        },
+        "rejected_actions": 0
+      },
+      {
+        "decision_step": 5,
+        "hidden_set_prior": "showdown_random_champions",
+        "states_requested": 144,
+        "states_captured": 93,
+        "hidden_worlds_prepared": 372,
+        "branch_matches": 40837,
+        "elapsed_seconds": 520.273,
+        "matches_per_second": 78.492,
+        "world_preparation_seconds": 48.456,
+        "missing_states": 51,
+        "missing_reasons": {
+          "decision_not_reached": 20,
+          "possible_illusion_preview": 3,
+          "public_transform_state": 2,
+          "request_switch": 26
+        },
+        "rejected_actions": 0
+      },
+      {
+        "decision_step": 1,
+        "hidden_set_prior": "uniform_unique_full_sets",
+        "states_requested": 144,
+        "states_captured": 75,
+        "hidden_worlds_prepared": 300,
+        "branch_matches": 38803,
+        "elapsed_seconds": 1040.327,
+        "matches_per_second": 37.299,
+        "world_preparation_seconds": 33.07,
+        "missing_states": 69,
+        "missing_reasons": {
+          "hidden_set_prior_support_gap": 6,
+          "public_transform_state": 2,
+          "request_switch": 61
+        },
+        "rejected_actions": 0
+      },
+      {
+        "decision_step": 3,
+        "hidden_set_prior": "uniform_unique_full_sets",
+        "states_requested": 144,
+        "states_captured": 75,
+        "hidden_worlds_prepared": 300,
+        "branch_matches": 37347,
+        "elapsed_seconds": 594.264,
+        "matches_per_second": 62.846,
+        "world_preparation_seconds": 34.779,
+        "missing_states": 69,
+        "missing_reasons": {
+          "hidden_set_prior_support_gap": 9,
+          "possible_illusion_preview": 3,
+          "request_switch": 57
+        },
+        "rejected_actions": 0
+      }
+    ],
+    "showdown_prior_summary": {
+      "states_requested": 432,
+      "states_captured": 258,
+      "hidden_worlds_prepared": 1032,
+      "branch_matches": 124226,
+      "elapsed_seconds": 2206.899,
+      "aggregate_matches_per_second": 56.29,
+      "rejected_actions": 0,
+      "interpretation": "All three step phases complete; this is action-counterfactual branch throughput, not full-match game throughput or a policy strength result."
+    },
+    "uniform_prior_summary": {
+      "phases_completed": 2,
+      "phases_total": 3,
+      "states_requested": 144,
+      "states_captured": 150,
+      "hidden_worlds_prepared": 600,
+      "branch_matches": 76150,
+      "elapsed_seconds": 1634.591,
+      "aggregate_matches_per_second": 46.587,
+      "support_gaps": 15,
+      "rejected_actions": 0
+    }
+  }
 }
 DASHBOARD_PROGRESS_JSON -->
 
@@ -18256,7 +18413,7 @@ coverage, not another blind teacher-weight sweep.
   hidden-set priors. Max Damage remains one diagnostic opponent, not the
   optimization objective.
 
-### Round499: expand held-out team coverage (Showdown prior complete)
+### Round499: expand held-out team coverage (5/6 collection phases complete)
 
 - Round498's pooled-prior selector had only 17 held-out team clusters, so its
   confidence interval was too wide to establish a modest action-selection
@@ -18284,8 +18441,7 @@ coverage, not another blind teacher-weight sweep.
   candidates. Uniform-prior decision step 1 completed with 75/144 usable
   states, 300 worlds, and 38,803 branches in 1,040.33 seconds (37.299
   matches/s). It skipped 61 forced-switch states, two public Transform states,
-  and six full-set support gaps; no actions were rejected. Decision step 3 under
-  the uniform prior is now running. The complete two-prior dataset will be fit jointly
+  and six full-set support gaps; no actions were rejected. Uniform-prior decision step 3 completed with 75/144 usable states, 300 hidden worlds, and 37,347 branches in 594.26 seconds (62.846 aggregate matches/s). It skipped 57 forced-switch states, nine full-set support gaps, and three possible-Illusion states; no actions were rejected. Step 5 under the uniform prior is now running. The complete two-prior dataset will be fit jointly
   across both priors and all 14 opponent/prior heads, then compared to Round430
   on team-disjoint clusters. Promotion still requires fresh paired,
   side-swapped full-match evaluation across opponents.
