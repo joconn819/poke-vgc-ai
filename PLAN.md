@@ -18795,37 +18795,45 @@ coverage, not another blind teacher-weight sweep.
   adjustments, and Round430 won both legs. This is a mechanics smoke check, not a
   strength estimate.
 
-### Round513: corrected Max Damage checkpoint comparison (incomplete; protocol still invalid)
+### Round513: first Max Damage rerun (superseded; Struggle protocol bug)
 
-- The first corrected batch completed 1,024 Round430 outcomes at 33.89%
-  [29.30%, 38.67%] and 1,020 Round504 outcomes at 33.14% [28.61%, 37.89%].
-  The paired delta is -0.78 pp [-2.83, +1.27] over 510 matched cases. Both
-  checkpoints are below 50% in this run, which is a material weakness signal.
-- Do not treat the percentages as a valid strength estimate yet: Round504 has
-  two incomplete cases, and an exact replay of the Struggle failure found 390
-  and 2,796 environment steps in the two side-swapped legs, with 377 and 2,783
-  action corrections. The aggregate run's zero adjustment count did not catch
-  these invalid/incomplete paths. A result with that behavior is not a clean
-  match benchmark.
-- A first request-id deduplication experiment stalled because `DoublesEnv.step`
-  must drain its battle queues; that change was reverted. Do not use either
-  replay run as strength evidence. Next, instrument the queue/request lifecycle
-  and make duplicate update draining explicit without resubmitting orders, then
-  rerun the exact seed before restarting the 256-cluster comparison.
-- The Max Damage selector now has a fallback for target-specific `randomNormal`
-  actions when the current legal order is targetless (the Struggle failure mode).
-  This fixed the immediate exception in the exact replay, but did not fix the
-  repeated-step/correction anomaly.
-- Run: `scripts/evaluate_round513_fixed_maxdamage_256x2.sh`; provisional output:
-  `training/outputs/phase12_headless/round513_fixed_maxdamage_256x2_20261031/report.json`.
+- The first rerun scored Round430 33.89% [29.30%, 38.67%] and Round504 33.14%
+  [28.61%, 37.89%], but had two incomplete cases and a reproduced Struggle
+  target error. These estimates were not accepted as final; see the fix and
+  clean confirmation in Rounds514–515.
+- Artifacts: `training/outputs/phase12_headless/round513_fixed_maxdamage_256x2_20261031/`.
 
-### Round514: request/update synchronization diagnosis (in progress)
+### Round514: Struggle target protocol fix (complete; exact replay passed)
 
-- Expanded the stable-observation signature with request ID, force-switch fields,
-  active move IDs/PP, and legal orders. Reproduced a suspected duplicate-update
-  issue on Round513's exact Struggle seed. The proposed one-submit-per-request
-  guard stalled, so it was removed; queue behavior needs direct instrumentation.
-- Exact seed: `202611801`, team pair Luxray/Gliscor/Dragapult/Farigiraf/Scovillain-Mega/
-  Rampardos vs Chimecho/Bellibolt/Golisopod/Serperior/Flapple/Chandelure-Mega.
-  A clean replay should finish in a plausible number of requests with zero
-  corrections/errors before any benchmark score is accepted.
+- Detailed traces showed the long replay came from `Struggle`, not duplicate
+  request updates. Its forced-move request had missing PP and `RANDOM_NORMAL`,
+  which the earlier fix treated like locked Outrage; Showdown rejects targeting
+  Struggle. The shared mask and action translator now treat Struggle as
+  targetless while retaining explicit targets for locked random-normal moves.
+- Replayed exact team seed `202611801` on the local server in both side-swapped
+  directions. Each match completed in 14 environment steps, with zero action
+  corrections, no protocol errors, and no timeout. The earlier 390–2,796-step
+  runs and 377–2,783 correction counts were invalid and must not be used as
+  performance evidence.
+- A request-ID deduplication attempt stalled because `DoublesEnv.step` must
+  drain its battle queues; it was removed. No evaluator request deduplication is
+  active. The root cause is fixed in action legality/translation.
+- Reproduction output: `training/outputs/phase12_headless/round514_struggle_fix_replay2_20261031/`.
+
+### Round515: fresh corrected Max Damage comparison (complete)
+
+- Re-evaluated Round430 vs Round504 after the Struggle fix on 256 fresh team-pair
+  clusters, two repeats, side swaps, and paired cluster bootstrap intervals.
+  Round430 scored 33.50% [28.81%, 38.18%]; Round504 scored 32.81%
+  [28.22%, 37.50%]. Both absolute intervals are far below 50%, confirming a
+  serious weakness against this simple policy. This is evidence of non-optimal
+  play, not a claim that Max Damage represents all strong opponents.
+- Paired Round504 change: -0.68 pp [-2.73, +1.37] over all 256 matched clusters
+  (512 matched side-swapped cases). The PPO update did not show a clear change;
+  retain Round430 as the default. Both arms completed 1,024 matches with zero
+  timeouts, errors, or action corrections.
+- Throughput was 9.20 games/s for Round430 and 9.36 games/s for Round504, each
+  using eight workers. This is a reproducible end-to-end local Showdown
+  evaluation rate; continue measuring simulator/rollout throughput separately.
+- Run: `OUTPUT_ROOT=training/outputs/phase12_headless/round515_fixed_maxdamage_256x2_20261031 SEED=202611515 bash scripts/evaluate_round513_fixed_maxdamage_256x2.sh`.
+  Report: `training/outputs/phase12_headless/round515_fixed_maxdamage_256x2_20261031/report.json`.

@@ -1,0 +1,38 @@
+{
+  "status": "Complete; confirmed weakness",
+  "baseline": "Round430 hard-opponent auxiliary PPO",
+  "candidate": "Round504 balanced-population PPO",
+  "opponent": "Max Damage",
+  "method": "256 fresh team-pair clusters, two repeats, side-swapped; cluster-bootstrap absolute and paired 95% intervals. Both arms used eight local evaluation workers.",
+  "round430": {
+    "score_pct": 33.496,
+    "ci95_cluster_pct": [
+      28.809,
+      38.184
+    ],
+    "complete_matches": 1024,
+    "games_per_second": 9.195,
+    "timeouts_or_errors": 0,
+    "action_adjustments": 0
+  },
+  "round504": {
+    "score_pct": 32.8125,
+    "ci95_cluster_pct": [
+      28.223,
+      37.5
+    ],
+    "complete_matches": 1024,
+    "games_per_second": 9.356,
+    "timeouts_or_errors": 0,
+    "action_adjustments": 0
+  },
+  "paired_delta_pp": -0.684,
+  "paired_ci95_pp": [
+    -2.734,
+    1.367
+  ],
+  "matched_team_clusters": 256,
+  "matched_cases": 512,
+  "interpretation": "Both policies are substantially below 50% against Max Damage, a serious play-quality weakness. The PPO update did not measurably change that result; keep Round430 as default. This does not by itself estimate performance against the broader opponent field.",
+  "reproduction": "OUTPUT_ROOT=training/outputs/phase12_headless/round515_fixed_maxdamage_256x2_20261031 SEED=202611515 bash scripts/evaluate_round513_fixed_maxdamage_256x2.sh"
+}

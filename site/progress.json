@@ -11,8 +11,8 @@
     "ci95": "[51.86%, 58.79%]",
     "games": "2,042",
     "label": "Current in-battle policy vs Round424 start",
-    "status": "Round430 remains validated default; Round485 70% Max Damage exposure and Round480 search did not establish robust gains.",
-    "note": "Round431 scored 49.36% [45.85%, 52.93%] against Round430, and Round432 scored 47.90% [44.29%, 51.61%]; neither showed a clear gain. Round430 remains the validated in-battle candidate. Round402's 77.15% result is a separate team-preview selector benchmark. Round432 external screens also showed no clear lift: all paired 95% intervals vs Round430 and Round431 include zero. Round432 cross-opponent equal-weight mean/median/p10/worst were 60.35%/48.83%/47.64%/47.46%; the mean is buoyed by random play. Round435 used a Round434 restricted-game mixture (31.7% Round430 / 68.3% Round432 in the policy pool) and scored 52.98% [49.41%, 56.59%] head-to-head with Round430; all matched external deltas vs Round430/432 included zero. Round430 remains the candidate. Round436 removed hidden-set auxiliary loss on the identical Round435 data; it scored 53.42% [49.80%, 56.93%] vs Round435 over 512 clusters (one incomplete game), an inconclusive ablation. Round430 remains the validated candidate. Round436 external screens at 256 clusters found no supported paired gain vs Round435: deltas on 128 shared clusters were +0.20 pp vs Max Damage [-0.59,+0.98], +0.39 pp vs public Counterplay [-0.59,+1.37], 0.00 pp vs random [-0.78,+0.78], and -0.20 pp vs Round102 [-0.98,+0.39]. Round436 remains unpromoted; Round430 is still the validated candidate. Round462’s latest full training run screened at 44.82% vs Max Damage [41.02%, 48.54%] and around 48% vs Public Counterplay/historical PPO. Do not promote it; the Max Damage interval is below 50% and performance vs stronger policy opponents is inconclusive. Exact-seed Max Damage controls found no measurable change from Round430: +0.10 pp [−1.37, +1.56]; Round432 control was +0.39 pp [−1.37, +2.05]. The weakness predates Round462. Round485 increased Max Damage exposure from Round473’s 25% to 70%, with all else held as planned. On the same held-out team-pair clusters it did not improve the Max Damage result or the five-opponent composite; retain Round430. Round488 covered three game phases, but its three-response robust action-value selector regressed on held-out Public Counterplay; five split fits show no robust overall selector gain, so Round430 remains the default. Round489 added Random and legacy Counterplay to the one-step response set, but neither maximin nor equal-weight action selection beat the incumbent on held-out clusters; the only learned-policy response was Round476."
+    "status": "Round430 remains the default baseline; Round515 confirms it is weak against Max Damage (33.50% on 256 held-out team clusters). No newer checkpoint is promoted.",
+    "note": "Round431 scored 49.36% [45.85%, 52.93%] against Round430, and Round432 scored 47.90% [44.29%, 51.61%]; neither showed a clear gain. Round430 remains the validated in-battle candidate. Round402's 77.15% result is a separate team-preview selector benchmark. Round432 external screens also showed no clear lift: all paired 95% intervals vs Round430 and Round431 include zero. Round432 cross-opponent equal-weight mean/median/p10/worst were 60.35%/48.83%/47.64%/47.46%; the mean is buoyed by random play. Round435 used a Round434 restricted-game mixture (31.7% Round430 / 68.3% Round432 in the policy pool) and scored 52.98% [49.41%, 56.59%] head-to-head with Round430; all matched external deltas vs Round430/432 included zero. Round430 remains the candidate. Round436 removed hidden-set auxiliary loss on the identical Round435 data; it scored 53.42% [49.80%, 56.93%] vs Round435 over 512 clusters (one incomplete game), an inconclusive ablation. Round430 remains the validated candidate. Round436 external screens at 256 clusters found no supported paired gain vs Round435: deltas on 128 shared clusters were +0.20 pp vs Max Damage [-0.59,+0.98], +0.39 pp vs public Counterplay [-0.59,+1.37], 0.00 pp vs random [-0.78,+0.78], and -0.20 pp vs Round102 [-0.98,+0.39]. Round436 remains unpromoted; Round430 is still the validated candidate. Round462’s latest full training run screened at 44.82% vs Max Damage [41.02%, 48.54%] and around 48% vs Public Counterplay/historical PPO. Do not promote it; the Max Damage interval is below 50% and performance vs stronger policy opponents is inconclusive. Exact-seed Max Damage controls found no measurable change from Round430: +0.10 pp [−1.37, +1.56]; Round432 control was +0.39 pp [−1.37, +2.05]. The weakness predates Round462. Round485 increased Max Damage exposure from Round473’s 25% to 70%, with all else held as planned. On the same held-out team-pair clusters it did not improve the Max Damage result or the five-opponent composite; retain Round430. Round488 covered three game phases, but its three-response robust action-value selector regressed on held-out Public Counterplay; five split fits show no robust overall selector gain, so Round430 remains the default. Round489 added Random and legacy Counterplay to the one-step response set, but neither maximin nor equal-weight action selection beat the incumbent on held-out clusters; the only learned-policy response was Round476. Round515 cleanly confirmed the Max Damage weakness: Round430 scored 33.50% [28.81%, 38.18%], Round504 32.81% [28.22%, 37.50%], paired change -0.68 pp [-2.73, +1.37]. Both arms had 1,024 matches, zero errors/timeouts/corrections, and approximately 9.2 games/s over eight workers. Neither policy is close to robust play against this simple baseline."
   },
   "evaluation_scorecard": [
     {
@@ -6847,39 +6847,63 @@
     "action_adjustments_after": 0
   },
   "round513_corrected_maxdamage_evaluation": {
-    "status": "Provisional scores below 50%; benchmark validity failed",
-    "method": "256 fresh team-pair clusters, two repeats, side-swapped; Round430 vs Round504 after the locked-move target fix.",
+    "status": "Superseded by clean Round515 rerun",
+    "first_run": "Provisional only: Struggle target protocol fault caused incomplete cases and thousands of repeated invalid choices.",
+    "artifact": "round513_maxdamage_diagnostic.json",
+    "note": "Do not use the first-run percentages as final estimates. The corrected Round515 results are reported separately."
+  },
+  "round514_struggle_protocol_fix": {
+    "status": "Exact replay passed",
+    "root_cause": "Struggle has a missing-PP forced request and RANDOM_NORMAL target metadata, but Showdown rejects any explicit Struggle target. The prior locked-move path incorrectly offered/translated target choices.",
+    "fix": "Mask Struggle as targetless and normalize the submitted order while preserving explicit targets for genuinely locked randomNormal moves.",
+    "exact_team_seed": 202611801,
+    "side_swapped_steps": [
+      14,
+      14
+    ],
+    "action_corrections": [
+      0,
+      0
+    ],
+    "protocol_errors": 0,
+    "timeouts": 0
+  },
+  "round515_corrected_maxdamage_evaluation": {
+    "status": "Complete; confirmed weakness",
+    "method": "256 fresh team-pair clusters, two outcome repeats, side-swapped; matched team previews and cluster-bootstrap confidence intervals.",
+    "opponent": "Max Damage",
     "round430": {
-      "score_pct": 33.887,
+      "score_pct": 33.496,
       "ci95_cluster_pct": [
-        29.297,
-        38.672
+        28.809,
+        38.184
       ],
       "complete_matches": 1024,
-      "games_per_second": 7.068,
-      "timeouts_or_errors": 0
+      "games_per_second": 9.195,
+      "timeouts_or_errors": 0,
+      "action_adjustments": 0
     },
     "round504": {
-      "score_pct": 33.137,
+      "score_pct": 32.8125,
       "ci95_cluster_pct": [
-        28.613,
-        37.891
+        28.223,
+        37.5
       ],
-      "complete_matches": 1020,
-      "games_per_second": 6.637,
-      "timeouts_or_errors": 2
+      "complete_matches": 1024,
+      "games_per_second": 9.356,
+      "timeouts_or_errors": 0,
+      "action_adjustments": 0
     },
-    "paired_change_pp": -0.781,
+    "paired_change_pp": -0.684,
     "paired_ci95_pp": [
-      -2.832,
-      1.27
+      -2.734,
+      1.367
     ],
-    "matched_clusters": 254,
-    "matched_outcomes": 1016,
-    "replay_anomaly": "Exact Struggle team-pair replay took 390 and 2796 environment steps and produced 377 and 2783 action corrections. The aggregate report undercounted this behavior; these scores are not accepted as valid strength estimates.",
-    "known_protocol_error": "Max Damage selector could choose explicit targets for RANDOM_NORMAL Struggle although the live legal order was targetless; a targetless fallback fixes the immediate exception but not the repeated-step anomaly.",
-    "next": "Instrument rqid, queue updates, submitted orders, and action corrections per step. Resolve request/update handling and replay the exact seed with plausible step counts and zero corrections before rerunning the full comparison.",
-    "script": "scripts/evaluate_round513_fixed_maxdamage_256x2.sh",
-    "artifact": "round513_maxdamage_diagnostic.json"
+    "matched_clusters": 256,
+    "matched_outcomes": 512,
+    "interpretation": "Both policies are substantially below 50% against Max Damage, a serious play-quality weakness. The PPO update did not measurably change that result; keep Round430 as default. This does not by itself estimate performance against the broader opponent field.",
+    "throughput": "8 workers; end-to-end local Showdown evaluation. Not the headless rollout simulator benchmark.",
+    "report": "round515_maxdamage_confirmation.json",
+    "plan_run": "OUTPUT_ROOT=training/outputs/phase12_headless/round515_fixed_maxdamage_256x2_20261031 SEED=202611515 bash scripts/evaluate_round513_fixed_maxdamage_256x2.sh"
   }
 }
