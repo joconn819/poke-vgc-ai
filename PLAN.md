@@ -16458,10 +16458,15 @@ team choice but does not change that conclusion.
   overridden. The strict cluster comparison verified exact team, preview,
   and battle-seed matches to the Round430 control.
 - Tested against a second PPO checkpoint, Round465, on the same 512 common
-  team/preview clusters and side-swapped seats. Round430 improved from 52.15%
-  to 62.11%, a +9.96 pp paired gain (95% cluster interval +5.76 to +14.16).
-  All 1,024 games completed without timeout or action correction; 5,048
-  actions were overridden at 4.35 matches/s.
+  team/preview clusters and side-swapped seats. **Orientation audit:** the
+  original raw file evaluated Round465, so its 52.15% checkpoint score cannot
+  serve as Round430's score; the two evaluations assign policies to seats
+  differently for the same seed values, so complementing that summary is not
+  valid. A direct Round430 control on the same 512 teams, previews, and battle
+  seeds scored 51.46%. The intervention scored 62.11%, a paired +10.64 pp
+  gain (95% team-cluster interval +6.64 to +14.65). All 1,024 matches
+  completed without timeout or action correction; 5,048 actions were
+  overridden at 4.35 matches/s.
 - Independent-seed confirmation against Round464 used 128 new team-pair
   clusters × two repeats (512 matches per arm, side-swapped). On the same
   teams, previews, and battle seeds, Round430 scored 42.58%; the intervention
@@ -16523,3 +16528,22 @@ team choice but does not change that conclusion.
   an individually beneficial action; a sequence interaction is possible but
   unproven. This remains a diagnostic heuristic, not a learned or promoted
   policy. Repeat the ablations before shaping PPO training around them.
+
+### Repeated single-decision attribution (2026-10-30)
+
+- Each isolated override was rerun on the same 128 team-pair clusters with two
+  side-swapped outcomes per cluster and matched exactly to the raw and
+  all-five controls. One index-1 timeout was recovered with the exact team,
+  preview, and battle seeds; the final comparison has 512 complete matches per
+  arm for every index.
+- Index 0: 50.59% vs 51.56% raw, −0.98 pp (95% cluster interval −7.23 to
+  +5.27). Index 1: 56.84%, +5.27 pp (0.00 to +10.74). Index 2: 55.08%,
+  +3.52 pp (−0.98 to +8.01). Index 3: 52.73%, +1.17 pp (−2.34 to +4.88).
+  Index 4: 55.08%, +3.52 pp (+0.59 to +6.64). The all-five intervention was
+  60.35%, +8.79 pp (+1.37 to +16.41) on those same seeds.
+- Index 4 is the clearest isolated lead; index 1 is positive but its interval
+  touches zero. Indices 0, 2, and 3 remain inconclusive. The next diagnostic
+  is the combined index-1/index-4 policy on fresh seeds and the varied local
+  opponent suite. Preserve the raw checkpoint and the all-five hybrid as
+  controls. Do not treat these heuristic results as trained PPO improvement
+  or evidence of optimal play.
