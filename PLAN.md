@@ -18755,3 +18755,25 @@ coverage, not another blind teacher-weight sweep.
   cases without making Max Damage the sole training target.
 - Reproduction: `scripts/evaluate_round505_maxdamage_confirmation_512x2.sh`; report:
   `training/outputs/phase12_headless/round506_maxdamage_512x2_20261031/report.json`.
+
+
+### Round507: Max Damage action-trace pilot (complete; anomaly follow-up needed)
+
+- Collected readable per-decision traces for Round430 and Round504 on 128 fresh
+  team clusters, one repeat, side swaps (256 outcomes per checkpoint). The raw
+  score rates were 30.47% and 27.73%, respectively; this is a small diagnostic
+  sample and does not replace the larger Round506 result. No invalid-action
+  adjustments occurred.
+- In both arms, two traces ran for 1,698–2,165 environment decision steps while
+  other matches had median 8 and 90th-percentile 11 steps. Those outliers included
+  long stretches of repeated actions with no HP-progress reward. Since Showdown has
+  a 100-turn cap, these step counts need an explicit per-turn/state audit before
+  any action-frequency interpretation. The evaluator currently records decision
+  step count but not Showdown turn number in each trace.
+- No recurring policy cause is established by this pilot. Next diagnostic work
+  should record turn numbers, request types, per-side active/fainted state, and
+  terminal reason for long matches, then inspect ordinary losses separately. Keep
+  the Round506 evidence: both absolute Max Damage intervals remain below 50%,
+  while the Round504-vs-Round430 paired difference is inconclusive.
+- Reproduction: `scripts/diagnose_round430_round504_maxdamage_traces.sh`; traces are
+  under `training/outputs/phase12_headless/round507_maxdamage_trace_diagnostic_128_20261031/`.

@@ -1395,7 +1395,7 @@
   "method": "Native self-play PPO for in-battle decisions. Terminal win/loss remains the main objective; win-probability and hidden-set prediction are auxiliary tasks. Search comes after a stronger policy.",
   "jax_decision": "Round430 has a confirmed self-play head-to-head lift over Round424, but external-opponent screens remain inconclusive. Prioritize measured inference batching, observation throughput, and rollouts; keep equilibrium-oriented opponent coverage and defer a JAX/GPU engine rewrite until its end-to-end payoff is measured.",
   "evaluation_note": "Round402\u2019s historical 77.15% is a team-preview selector benchmark against damage-preview selection, not an in-battle policy score against the Max Damage opponent. The latest in-battle Max Damage result is Round430 policy-only at 39.84% on 256 clusters; one-turn search scored 42.38% but its paired interval includes zero. Round485\u2019s 70%-Max-Damage training mix did not measurably improve that matchup or the broader opponent league. Compare only evaluations using matched tasks, selectors, teams, and seeds.",
-  "generated_at": "2026-10-31 23:00 UTC",
+  "generated_at": "2026-10-31 23:30 UTC",
   "round462_evaluation": {
     "status": "Round462 not promoted \u00b7 initial paired screen complete",
     "summary": "Round462 scored 44.82% against Max Damage [41.02%, 48.54%]. On the same teams and seeds, Round430 scored 44.73% and Round432 scored 44.43%; paired deltas were +0.10 pp [-1.37, +1.56] and +0.39 pp [-1.37, +2.05]. The update did not measurably change this weakness. Results against Public Counterplay and historical PPO are inconclusive; Random is an easy-baseline check.",
@@ -6820,5 +6820,16 @@
     "round504_errors": 1,
     "artifact": "round506_maxdamage_confirmation.json",
     "interpretation": "Both absolute intervals are below 50%; both policies have a confirmed serious matchup weakness. The paired checkpoint change is inconclusive."
+  },
+  "round507_maxdamage_trace_diagnostic": {
+    "status": "Completed exploratory trace pilot; long-match anomaly needs investigation",
+    "method": "128 fresh clusters, one outcome repeat, side-swapped (256 outcomes per checkpoint); per-decision traces enabled.",
+    "round430_score_pct": 30.469,
+    "round504_score_pct": 27.734,
+    "errors": 0,
+    "action_adjustments": 0,
+    "step_anomaly": "Two traces per checkpoint ran 1,698\u20132,165 environment decision steps; median was 8 and p90 was 11. The long traces included repeated actions with no HP-progress reward. Showdown turn number and terminal reason are not currently recorded per trace step.",
+    "interpretation": "Exploratory only; do not infer a policy cause from action frequencies. Instrument turn/request/terminal context before using the outliers as strategic evidence.",
+    "reproduction": "scripts/diagnose_round430_round504_maxdamage_traces.sh"
   }
 }
