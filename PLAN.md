@@ -184,6 +184,36 @@ comparison should include multiple PPO generations and a checkpoint family
 held out from fitting, and should compare predicted-action ranking against a
 regret-matched action distribution before PPO distillation. Reports:
 `training/outputs/phase12_headless/round489_wide_response_action_value_128x8_20261031/`.
+**Round490/491 PPO-generation holdout and opponent-family weighting audit
+(2026-10-31; selector rejected):** Round490 added two PPO generations to the
+fitting response set (Round476 and Round430) while holding Round102 out, alongside
+Max Damage, Random, legacy Counterplay, and Public Counterplay. Across 375 states
+and 134,655 branches (62.20 branch matches/s), five split fits produced a
+maximin delta of +2.13 pp [+0.05,+4.30] on the training response mixture, but
+the held-out Round102 PPO delta was only +0.81 pp [-1.78,+3.44], inconclusive.
+Round491 then scored those frozen fits on fresh seeds and 371 held-out team
+clusters across seven response types. The maximin selector regressed by -1.31 pp
+[-2.39,-0.28] on the worst response; equal-weight selection regressed -1.23 pp
+[-2.31,-0.20]. It lost against legacy Counterplay (-2.13 pp) and both fitted PPO
+checkpoints (-1.95 and -1.79 pp); held-out Round102 was -0.79 pp with an interval
+including zero. Thus the fresh evidence rejects the selector despite its
+positive internal Round490 result.
+
+To test checkpoint over-weighting directly, PPO predictions were averaged into
+one family before maximin and equal-weight action choice, then rescored on the
+same Round491 branches. This did not change maximin actions in any of the five
+fits; family maximin remained -1.31 pp [-2.43,-0.31]. Family equal-weight was
+-1.22 pp [-2.34,-0.22], essentially the same as per-checkpoint weighting. The
+selector's harm is therefore not explained by counting multiple PPO snapshots
+as separate opponent families. PPO represented 2/6 fitted heads, but treating
+checkpoints as one family did not recover performance. Keep Round430 as default;
+do not tune this selector further on the same data. Next, diagnose
+response-conditioned value ranking and candidate/action support. Any new method
+must avoid hidden-team oracle leakage and pass fresh-seed, held-out-family
+action-level and full-match comparisons before use. Reports:
+`training/outputs/phase12_headless/round490_ppo_generation_holdout_128x8_20261031/`
+and `training/outputs/phase12_headless/round491_external_ppo_generation_eval_128x8_20261031/`.
+
 **Round482 equilibrium-target check (2026-10-31; reject both actor updates):**
 combined the independent Round479 256-team / 8-repeat and Round481 128-team /
 16-repeat counterfactual corpora (38,672 and 37,264 branch matches; 30.01 and

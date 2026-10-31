@@ -1,0 +1,117 @@
+{
+  "schema_version": 1,
+  "round": 491,
+  "status": "Fresh validation rejects action-value selector; PPO family collapse does not fix it",
+  "summary": "On 371 fresh held-out team clusters, the maximin selector regressed against the incumbent. Collapsing PPO checkpoints into one opponent family produced nearly identical outcomes; Round430 remains the default.",
+  "corpus": {
+    "decision_steps": [
+      1,
+      3,
+      5
+    ],
+    "captured_states": 371,
+    "requested_states": 384,
+    "branch_matches": 131067,
+    "elapsed_seconds_sum": 2191.05,
+    "aggregate_matches_per_second": 59.819,
+    "response_classes": [
+      "max_damage",
+      "random",
+      "counterplay",
+      "public_counterplay",
+      "policy_round476",
+      "policy_round430",
+      "heldout_policy_round102"
+    ],
+    "chance_repeats": 8,
+    "rejected_candidates": 0,
+    "independent_team_clusters": 371
+  },
+  "maximin": {
+    "mean_delta_pp": -1.314,
+    "cluster_ci95_pp": [
+      -2.392,
+      -0.283
+    ]
+  },
+  "equal_weight": {
+    "mean_delta_pp": -1.233,
+    "cluster_ci95_pp": [
+      -2.305,
+      -0.202
+    ]
+  },
+  "family_maximin": {
+    "mean_delta_pp": -1.314,
+    "cluster_ci95_pp": [
+      -2.426,
+      -0.31
+    ],
+    "changed_actions_vs_incumbent": 1094
+  },
+  "family_equal_weight": {
+    "mean_delta_pp": -1.22,
+    "cluster_ci95_pp": [
+      -2.338,
+      -0.216
+    ]
+  },
+  "response_deltas": {
+    "counterplay": {
+      "mean_delta_pp": -2.129,
+      "cluster_ci95_pp": [
+        -3.342,
+        -0.97
+      ]
+    },
+    "max_damage": {
+      "mean_delta_pp": -0.128,
+      "cluster_ci95_pp": [
+        -2.001,
+        1.732
+      ]
+    },
+    "policy": {
+      "mean_delta_pp": -1.954,
+      "cluster_ci95_pp": [
+        -3.484,
+        -0.492
+      ]
+    },
+    "policy_round102": {
+      "mean_delta_pp": -0.788,
+      "cluster_ci95_pp": [
+        -2.325,
+        0.755
+      ]
+    },
+    "policy_round430": {
+      "mean_delta_pp": -1.792,
+      "cluster_ci95_pp": [
+        -3.376,
+        -0.27
+      ]
+    },
+    "public_counterplay": {
+      "mean_delta_pp": 0.02,
+      "cluster_ci95_pp": [
+        -1.685,
+        1.698
+      ]
+    },
+    "random": {
+      "mean_delta_pp": -0.95,
+      "cluster_ci95_pp": [
+        -2.305,
+        0.337
+      ]
+    }
+  },
+  "interpretation": "PPO checkpoints represented 2/6 fitted response heads. Averaging their predicted values as a single family did not change maximin choices across the five model fits and did not recover performance. The selector regressed against counterplay and fitted PPO checkpoints; this does not support checkpoint multiplicity as the cause. Diagnostic is one-step candidate-set evaluation, not a full-match result or Nash equilibrium.",
+  "artifacts": {
+    "external_eval": "round491_opponent_family_audit.json",
+    "family_weighting": "round491_opponent_family_audit.json",
+    "round490_internal": "https://github.com/joconn819/poke-vgc-ai/blob/master/PLAN.md",
+    "reproduction": "https://github.com/joconn819/poke-vgc-ai/blob/master/scripts/evaluate_external_action_value_selector.py"
+  }
+}

@@ -34,12 +34,14 @@ def main() -> None:
         raise SystemExit(f"Expected repeated split reports; found {len(paths)}")
     per_team: dict[int, list[dict[str, Any]]] = defaultdict(list)
     equal_weight_per_team: dict[int, list[dict[str, Any]]] = defaultdict(list)
+    family_maximin_per_team: dict[int, list[dict[str, Any]]] = defaultdict(list)
+    family_equal_weight_per_team: dict[int, list[dict[str, Any]]] = defaultdict(list)
     run_metrics = []
     response_names: tuple[str, ...] | None = None
     for path in paths:
         report = json.loads(path.read_text(encoding="utf-8"))
         metrics = report["metrics"]
-        run_responses = tuple(metrics["response_names"])
+        run_responses = tuple(metrics.get("evaluation_response_names", metrics["response_names"]))
         if response_names is None:
             response_names = run_responses
         elif run_responses != response_names:
@@ -48,6 +50,8 @@ def main() -> None:
             "report": str(path),
             "seed": int(report.get("seed", metrics.get("seed", 0))) if report.get("seed") else None,
             "test_team_clusters": metrics["team_split"]["test"],
+            "model_response_names": metrics["response_names"],
+            "heldout_response_names": metrics.get("heldout_response_names", []),
             "validation_brier": metrics["validation_action_outcome_brier"],
             "selector_worst_response_delta": metrics["robust_selection"]["selected_minus_policy_worst_response"],
             "selector_worst_response_ci95": metrics["robust_selection"]["selected_minus_policy_worst_response_95_ci"],
@@ -71,6 +75,19 @@ def main() -> None:
                 },
                 "worst": float(row["observed_worst_response"]["selected_minus_policy"]),
             })
+        for key, target in (
+            ("family_maximin_actions", family_maximin_per_team),
+            ("family_equal_weight_actions", family_equal_weight_per_team),
+        ):
+            for row in report.get(key, []):
+                target[int(row["team_cluster"])].append({
+                    "changed": row["selected_action"] != row["policy_action"],
+                    "responses": {
+                        name: float(row["observed_by_response"][name]["selected_minus_policy"])
+                        for name in response_names
+                    },
+                    "worst": float(row["observed_worst_response"]["selected_minus_policy"]),
+                })
 
     def summarize(per_team_values: dict[int, list[dict[str, Any]]], salt: int):
         team_means = []
@@ -100,6 +117,12 @@ def main() -> None:
     equal_weight_team_means, equal_weight_records, equal_weight_summary = summarize(
         equal_weight_per_team, 1000
     ) if equal_weight_per_team else ([], [], {})
+    family_maximin_team_means, family_maximin_records, family_maximin_summary = summarize(
+        family_maximin_per_team, 2000
+    ) if family_maximin_per_team else ([], [], {})
+    family_equal_weight_team_means, family_equal_weight_records, family_equal_weight_summary = summarize(
+        family_equal_weight_per_team, 3000
+    ) if family_equal_weight_per_team else ([], [], {})
     report = {
         "schema_version": 1,
         "experiment": "Repeated team-cluster splits for response-conditioned action-value selector",
@@ -120,6 +143,18 @@ def main() -> None:
             "heldout_selection_records": len(equal_weight_records),
             "selected_nonbaseline_action_records": sum(row["changed"] for row in equal_weight_records),
             "out_of_fold_paired_deltas": equal_weight_summary,
+        },
+        "family_maximin_selection": {
+            "unique_heldout_team_clusters": len(family_maximin_team_means),
+            "heldout_selection_records": len(family_maximin_records),
+            "selected_nonbaseline_action_records": sum(row["changed"] for row in family_maximin_records),
+            "out_of_fold_paired_deltas": family_maximin_summary,
+        },
+        "family_equal_weight_selection": {
+            "unique_heldout_team_clusters": len(family_equal_weight_team_means),
+            "heldout_selection_records": len(family_equal_weight_records),
+            "selected_nonbaseline_action_records": sum(row["changed"] for row in family_equal_weight_records),
+            "out_of_fold_paired_deltas": family_equal_weight_summary,
         },
         "interpretation_limit": (
             "A diagnostic on 128 opening states and the existing candidate set, not a full-match "
