@@ -16922,3 +16922,32 @@ coverage, not another blind teacher-weight sweep.
 
 - Replay artifacts:
   `training/outputs/phase12_headless/round467_teacher_weight2_lr2p5_replay_same_batch_20261030/`
+
+### Round467 opening-intervention transfer check (2026-10-30)
+
+- Evaluated raw Round467 and a hybrid that replaced its first five battle
+  decisions (indices 0–4) with legal Max Damage actions. Each opponent screen
+  used 128 fresh team-pair clusters, two outcomes per cluster, side-swapped
+  games, fixed common teams/previews/repeat indices between arms, and a
+  10,000-resample paired team-cluster bootstrap. Each arm completed 512 games
+  with zero action adjustments, timeouts, or errors.
+- Against Max Damage, raw scored 47.07% and the hybrid 53.91%; paired gain
+  +6.84 percentage points, 95% cluster interval [0.00, +13.67]. This is
+  suggestive but inconclusive at the 95% level.
+- Against public Counterplay, raw scored 38.09% and the hybrid 50.39%; paired
+  gain +12.30 points, 95% interval [+4.69, +19.73]. This is positive transfer
+  evidence on this held-out set, though it is still one 128-cluster screen.
+- Override counts were 2,530 vs Max Damage and 2,526 vs Counterplay. Aggregate
+  evaluation throughput was 9.50 / 9.95 games/s (raw/hybrid) vs Max Damage and
+  8.54 / 7.38 games/s vs Counterplay; the hybrid costs extra per decision
+  because the Max Damage scorer runs for the opening. This is inference speed,
+  not training rollout throughput.
+- This confirms that the opening intervention transfers from Round430 to the
+  Round467 checkpoint against these two opponents, but does not make it the
+  trained policy or prove robustness to the wider population. Keep the raw
+  Round467 action policy as the training checkpoint; next gather an independent
+  seed-set confirmation and add PPO populations before deciding whether the
+  intervention belongs in the default selector. The win-probability head is
+  not used to select actions in either arm.
+- Raw paired artifacts and comparisons:
+  `training/outputs/phase12_headless/round467_opening_first5_intervention_transfer_128x2_seed20261030/`.
