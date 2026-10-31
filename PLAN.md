@@ -17539,3 +17539,36 @@ coverage, not another blind teacher-weight sweep.
 - Reproduction: `scripts/collect_round479_robust_counterfactuals.sh` and
   `scripts/train_round479_robust_counterfactual_policy.sh`. Outputs are under
   `training/outputs/phase12_headless/` with `round479_` prefixes.
+
+### Round480: current-mixture value evaluator and learned midgame-search screen (2026-10-31; not promoted)
+
+- Trained a fresh closed-sheet value estimator from the Round472, Round473, and
+  Round476 recent mixed-policy rollout sets. It used 488,265 training states,
+  101,563 turn-stratified calibration states, and 210,342 held-out test states.
+  Best-checkpoint test metrics: accuracy 76.21%, Brier 0.15555, log loss
+  0.46713, and ECE 0.01112. The calibration split measured Brier 0.15764 and
+  ECE 0.00563. Turn-1 Brier was 0.22205, turns 2–3 Brier 0.17116, and turn 4+
+  Brier 0.12028. These outcomes describe the policies and opponent mixture in
+  the data; they are not a value estimate for ideal play.
+- Reproduction: `scripts/train_round480_current_policy_state_value.sh` and
+  `scripts/evaluate_round480_recent_value_search_screen.sh`.
+  Evaluator and disk-backed cache are under
+  `training/outputs/phase12_headless/round480_recent_mixed_state_value_20261031/`.
+- Screened the Round430 policy with learned one-turn midgame maximin search
+  against Max Damage, using the new value model, Round402 selector, two hidden
+  worlds, four candidates per side, and one chance sample. Across 32 paired
+  team clusters and both seat swaps (128 complete games), raw scored 48.44%
+  and search scored 42.19%, a paired change of -6.25 pp (95% cluster bootstrap
+  CI [-17.19,+4.69]). The screen is small and uncertain; it gives no evidence
+  to promote search. Keep the policy-only runner as default.
+- Search ran in 62 of 64 search opportunities. Median full adapter latency was
+  251 ms (p95 335 ms); inner Showdown rollout median was 153 ms. Aggregate
+  evaluation throughput was 4.31 complete matches/s. Search used the evaluator
+  at the frontier, but its higher predictive accuracy did not translate into a
+  measured win-rate gain in this screen.
+- Decision flow: the deployed/default PPO selects legal moves from masked
+  policy logits. Its auxiliary win-probability head does not rank moves. A
+  separate learned state-value model can influence a move only when optional
+  search is explicitly enabled; it scores simulated successor states inside a
+  payoff matrix. Search remains off by default pending stronger, multi-opponent
+  paired evidence.
