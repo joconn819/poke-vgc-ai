@@ -3894,6 +3894,30 @@
     "interpretation": "Approximate damage features are not game-state win values. The small outcome-stratified differences are descriptive, not causal, and do not establish a policy failure.",
     "next_step": "Compare complete legal joint actions on sampled states using controlled outcome sampling or an evaluated teacher before changing the learning objective."
   },
+  "round477_first5_league": {
+    "status": "First-five override improves average score but regresses against legacy Counterplay",
+    "candidate": "Round430 with the first five legal Max Damage actions",
+    "baseline": "Round430 masked PPO policy",
+    "method": "Five fresh opponent-specific seed sets; 256 team-pair clusters and two side-swapped outcomes per cluster; identical Round402 preview selector and matched teams per arm. Paired 95% intervals use complete common team clusters.",
+    "opponents": [
+      {"opponent":"Max Damage","baseline_score_percent":36.91,"first5_score_percent":45.51,"paired_delta_pp":8.59,"paired_ci95_pp":[4.00,13.18],"clusters":256,"games_per_arm":1024,"baseline_games_per_second":7.82,"first5_games_per_second":10.24},
+      {"opponent":"Legacy Counterplay","baseline_score_percent":34.08,"first5_score_percent":27.44,"paired_delta_pp":-6.64,"paired_ci95_pp":[-11.04,-2.15],"clusters":256,"games_per_arm":1024,"baseline_games_per_second":4.16,"first5_games_per_second":6.51},
+      {"opponent":"Public Counterplay","baseline_score_percent":39.16,"first5_score_percent":48.83,"paired_delta_pp":9.67,"paired_ci95_pp":[4.49,14.75],"clusters":256,"games_per_arm":1024,"baseline_games_per_second":7.40,"first5_games_per_second":9.23},
+      {"opponent":"Historical PPO · Round102","baseline_score_percent":49.80,"first5_score_percent":57.62,"paired_delta_pp":7.81,"paired_ci95_pp":[3.52,12.11],"clusters":256,"games_per_arm":1024,"baseline_games_per_second":4.60,"first5_games_per_second":7.18},
+      {"opponent":"Recent PPO · Round476","baseline_score_percent":51.67,"first5_score_percent":60.98,"paired_delta_pp":9.31,"paired_ci95_pp":[4.61,14.12],"clusters":255,"games_per_arm":1020,"baseline_games_per_second":3.08,"first5_games_per_second":4.45}
+    ],
+    "equal_weight_delta_pp":5.75,
+    "equal_weight_ci95_pp":[3.66,7.84],
+    "worst_opponent":"Legacy Counterplay",
+    "worst_opponent_delta_pp":-6.64,
+    "action_corrections":0,
+    "interpretation":"The fixed override is opponent-sensitive and is not a robust default despite a positive five-class mean. Keep raw Round430; use the result to guide mixed-response training.",
+    "next_step":"Train over mixed early-turn responses and evaluate the learned policy on fresh teams against this full pool, using worst-opponent and lower-tail results as promotion gates.",
+    "artifact":"round477_first5_intervention.json",
+    "plan":"https://github.com/joconn819/poke-vgc-ai/blob/master/PLAN.md",
+    "launcher":"https://github.com/joconn819/poke-vgc-ai/blob/master/scripts/evaluate_round430_first5_fresh_league_256x2.sh",
+    "summarizer":"https://github.com/joconn819/poke-vgc-ai/blob/master/scripts/summarize_round430_first5_fresh_league.py"
+  },
   "round476_evaluation": {
     "status": "Complete · no statistically supported gain; keep Round430",
     "summary": "Round476 was trained against a refreshed frozen policy pool and five-opponent held-out evaluation showed no significant overall improvement. The aggregate strategic-opponent change was slightly negative; do not promote.",

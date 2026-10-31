@@ -17429,3 +17429,45 @@ coverage, not another blind teacher-weight sweep.
   current action's estimated return ranks among alternatives. Change the
   learning objective only if this audit finds a repeatable failure mode.
 - Analyzer: `scripts/analyze_round476_action_patterns.py`.
+
+### Round477: fresh multi-opponent audit of Round430's first-five Max Damage override (2026-10-31)
+
+- Re-tested the same Round430 checkpoint with and without Max Damage actions at
+  decision indices 0–4. Every arm used the Round402 selector, fresh opponent-
+  specific team-seed ranges, 256 team-pair clusters, two side-swapped outcomes,
+  and the override only on the evaluated Round430 player. Paired cluster
+  bootstrap used common complete team/preview/repeat rows. Five opponent classes
+  were included: Max Damage, legacy Counterplay, Public Counterplay, historical
+  PPO Round102, and recent PPO Round476.
+- Paired score changes for the first-five override (95% cluster intervals):
+  Max Damage 36.91% to 45.51%, +8.59 pp [4.00,13.18] (256 clusters); legacy
+  Counterplay 34.08% to 27.44%, -6.64 pp [-11.04,-2.15] (256); Public
+  Counterplay 39.16% to 48.83%, +9.67 pp [4.49,14.75] (256); Round102
+  49.80% to 57.62%, +7.81 pp [3.52,12.11] (256); Round476 51.67% to 60.98%,
+  +9.31 pp [4.61,14.12] (255 common clusters, 1,020 games per arm matched).
+  All completed matches had zero action corrections. Two baseline Round476
+  outcomes were incomplete and excluded from paired rows.
+- Equal-weight mean over the five selected opponent classes was +5.75 pp
+  [3.66,7.84] by stratified cluster bootstrap. The worst-opponent point change
+  was -6.64 pp against legacy Counterplay. This is opponent sensitivity, not a
+  robust action rule: four intervals favor the override, while the legacy
+  Counterplay interval rules out zero in the negative direction. Retain raw
+  Round430 as the default; do not install a fixed first-five Max Damage rule.
+- Throughput in completed games/s, raw/override: Max Damage 7.82/10.24;
+  legacy Counterplay 4.16/6.51; Public Counterplay 7.40/9.23; Round102
+  4.60/7.18; Round476 3.08/4.45. Evaluation throughput is opponent- and
+  battle-length-dependent and differs from training throughput. The 5,076–
+  5,106 overridden actions across arms confirm the intended five-decision
+  intervention executed; all action-correction counters were zero.
+- Reproducible launcher:
+  `scripts/evaluate_round430_first5_fresh_league_256x2.sh`. Stratified paired
+  summary:
+  `scripts/summarize_round430_first5_fresh_league.py`.
+  Output:
+  `training/outputs/phase12_headless/round430_first5_fresh_league_256x2_20261031_retry1/league_summary.json`.
+- Next: use this result as supervision for a policy-level update over mixed
+  early-turn responses, not as a hidden-opponent detector or a fixed heuristic.
+  The update must include legacy Counterplay-like responses in the training
+  mixture, preserve randomized / self-play responses, and be evaluated on
+  fresh teams against the full opponent pool. Keep cross-play and lower-tail
+  results as the promotion gate; do not optimize only the equal-weight mean.
