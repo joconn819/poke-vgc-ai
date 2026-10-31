@@ -137,6 +137,7 @@
   "opening_1_and_4_transfer_screen": {
     "bootstrap_replicates": 20000,
     "description": "Public Max Damage overrides at Round430 decision indices 1 and 4 only, evaluated on the same 512 held-out team/preview clusters as raw Round430.",
+    "interpretation": "The decision-1-and-4 Max Damage override is positive on all four tested opponents and the 95% paired cluster intervals exclude zero on these matched samples. This supports a promising Round430-specific opening heuristic; it does not establish PPO improvement, generalization to new teams/seeds, or optimal play. Replicate on independent clusters before training or promotion.",
     "max_damage": {
       "action_adjustments": 0,
       "baseline_artifact": "training/outputs/phase12_headless/round430_464_465_common_preview_league_512x1_20261030/round430_vs_max_damage/paired_summary.json",
@@ -144,6 +145,7 @@
       "clusters": 512,
       "comparison_artifact": "training/outputs/phase12_headless/round430_opening1and4_intervention_vs_max_damage_512x1_seed2026103067_retry1/raw_vs_intervention_comparison.json",
       "complete_games": 1024,
+      "evaluation_games_per_second": 7.303102521386303,
       "intervention_artifact": "training/outputs/phase12_headless/round430_opening1and4_intervention_vs_max_damage_512x1_seed2026103067_retry1/paired_summary.json",
       "intervention_score_pct": 41.50390625,
       "overridden_actions": 2022,
@@ -162,6 +164,7 @@
       "clusters": 512,
       "comparison_artifact": "training/outputs/phase12_headless/round430_opening1and4_intervention_vs_public_counterplay_512x1_seed2026103067/raw_vs_intervention_comparison_recovered.json",
       "complete_games": 1024,
+      "evaluation_games_per_second": 6.239170658363178,
       "intervention_artifact": "training/outputs/phase12_headless/round430_opening1and4_intervention_vs_public_counterplay_512x1_seed2026103067/paired_summary_recovered.json",
       "intervention_score_pct": 42.578125,
       "overridden_actions": 2030,
@@ -171,6 +174,43 @@
       ],
       "paired_delta_pp": 4.00390625,
       "recovery_note": "One timed-out match was replayed in isolation with the exact team, preview, and evaluator seeds; all 512 clusters are complete in the recovered summary.",
+      "timeouts_or_errors": 0
+    },
+    "round464": {
+      "action_adjustments": 0,
+      "baseline_artifact": "training/outputs/phase12_headless/round430_vs_round464_common_selector_512x1_20261030/paired_summary.json",
+      "baseline_score_pct": 52.05078125,
+      "clusters": 512,
+      "comparison_artifact": "training/outputs/phase12_headless/round430_opening1and4_intervention_vs_round464_512x1_seed2026103067/raw_vs_intervention_comparison.json",
+      "complete_games": 1024,
+      "evaluation_games_per_second": 5.516607523987198,
+      "intervention_artifact": "training/outputs/phase12_headless/round430_opening1and4_intervention_vs_round464_512x1_seed2026103067/paired_summary_recovered.json",
+      "intervention_score_pct": 58.59375,
+      "overridden_actions": 2029,
+      "paired_cluster_bootstrap_95_pp": [
+        3.515625,
+        9.66796875
+      ],
+      "paired_delta_pp": 6.54296875,
+      "recovery_note": "One timed-out case was replayed with the exact team, preview, and evaluation seeds; final 512-cluster comparison has zero missing cases.",
+      "timeouts_or_errors": 0
+    },
+    "round465": {
+      "action_adjustments": 0,
+      "baseline_artifact": "training/outputs/phase12_headless/round430_direct_raw_vs_round465_commonseed_512x1_20261030/paired_summary.json",
+      "baseline_score_pct": 51.46484375,
+      "clusters": 512,
+      "comparison_artifact": "training/outputs/phase12_headless/round430_opening1and4_intervention_vs_round465_512x1_seed2026103067/raw_vs_intervention_comparison.json",
+      "complete_games": 1024,
+      "evaluation_games_per_second": 4.950889069049388,
+      "intervention_artifact": "training/outputs/phase12_headless/round430_opening1and4_intervention_vs_round465_512x1_seed2026103067/paired_summary.json",
+      "intervention_score_pct": 58.88671875,
+      "overridden_actions": 2029,
+      "paired_cluster_bootstrap_95_pp": [
+        4.296875,
+        10.546875
+      ],
+      "paired_delta_pp": 7.421875,
       "timeouts_or_errors": 0
     }
   },

@@ -16553,3 +16553,13 @@ team choice but does not change that conclusion.
 - Replacing only Round430 decision indices 1 and 4 with public Max Damage actions scored 41.50% against Max Damage versus 36.62% for raw Round430 on 512 shared team/preview clusters: +4.88 pp (95% paired team-cluster interval +1.76 to +8.01). The same intervention scored 42.58% against public Counterplay versus 38.57% raw: +4.00 pp (+0.88 to +7.13). Each arm completed 1,024 side-swapped games. Public Counterplay had one timeout that was recovered by replaying the exact team, preview, and evaluator seeds; final comparison has zero missing clusters or corrections.
 - The pairing matches team, preview, and evaluator-seed identities. Showdown battle RNG is generated server-side and remains independent between matches, so these intervals quantify team-cluster variation rather than common-random-number variance reduction.
 - This is a deterministic opening heuristic applied to Round430, not an improved PPO checkpoint or evidence of optimal play. It transfers against two fixed baselines; evaluate on fresh seeds and the PPO population before considering training use. Full result and artifacts are in `site/round430_opening_interventions.json`.
+
+- Extended the two-index [1,4] transfer screen to PPO opponents on the same
+  512 team/preview/evaluator-seed clusters. Against Round464, raw Round430
+  scored 52.05% and the hybrid 58.59% (+6.54 pp, 95% interval +3.52 to
+  +9.67); against Round465, raw Round430 scored 51.46% and the hybrid 58.89%
+  (+7.42 pp, +4.30 to +10.55). Each arm had 1,024 side-swapped games; the
+  Round464 case with a timeout was replayed exactly, yielding 512 complete
+  matched clusters. All four opponents screened so far have positive paired
+  intervals excluding zero. This remains one team/seed population and a
+  Round430-specific heuristic; independent replication is required.
