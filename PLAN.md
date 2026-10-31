@@ -18273,9 +18273,9 @@ coverage, not another blind teacher-weight sweep.
   324 worlds, and 41,777 branch matches in 1,052.34 seconds (39.699 matches/s
   across eight CPU workers). It skipped 61 forced-switch states and two public
   Transform states; no candidates were rejected. The next phase, decision
-  step 3 under the same prior, is running. Five worker shards have reported
-  40/144 cluster attempts, 24 usable states, and 11,600 branches; three other
-  workers have not reported a checkpoint. The larger matched dataset will be fit jointly
+  step 3 under the same prior, is running. All eight worker shards have
+  reported checkpoints totaling 64/144 cluster attempts, 40 usable states, and
+  19,760 branches; none has finished its assignment yet. The larger matched dataset will be fit jointly
   across both priors and all 14 opponent/prior heads, then compared to Round430
   on team-disjoint clusters. Promotion still requires fresh paired,
   side-swapped full-match evaluation across opponents.
