@@ -1,0 +1,102 @@
+{
+  "schema_version": 1,
+  "experiment": "Round486 Round484 action-value selector repeated cluster splits",
+  "method": "Each report trains on disjoint team clusters and the first four chance repeats, then selects on unseen team clusters and scores on their last four repeats. Results are first averaged within each held-out team cluster across the splits in which it appeared, then bootstrapped over unique team clusters.",
+  "runs": [
+    {
+      "report": "training/outputs/phase12_headless/round486_round484_candidate_value_transfer_20261031/report.json",
+      "seed": null,
+      "test_team_clusters": 26,
+      "validation_brier": 0.245340496301651,
+      "selector_worst_response_delta": 0.0673076923076923,
+      "selector_worst_response_ci95": [
+        -0.019230769230769232,
+        0.17307692307692307
+      ],
+      "selected_action_changed_states": 22
+    },
+    {
+      "report": "training/outputs/phase12_headless/round486_round484_candidate_value_transfer_seed202610487_20261031/report.json",
+      "seed": null,
+      "test_team_clusters": 26,
+      "validation_brier": 0.21817292273044586,
+      "selector_worst_response_delta": 0.009615384615384616,
+      "selector_worst_response_ci95": [
+        -0.038461538461538464,
+        0.0673076923076923
+      ],
+      "selected_action_changed_states": 14
+    },
+    {
+      "report": "training/outputs/phase12_headless/round486_round484_candidate_value_transfer_seed202610488_20261031/report.json",
+      "seed": null,
+      "test_team_clusters": 26,
+      "validation_brier": 0.21512307226657867,
+      "selector_worst_response_delta": -0.038461538461538464,
+      "selector_worst_response_ci95": [
+        -0.125,
+        0.04807692307692308
+      ],
+      "selected_action_changed_states": 14
+    },
+    {
+      "report": "training/outputs/phase12_headless/round486_round484_candidate_value_transfer_seed202610489_20261031/report.json",
+      "seed": null,
+      "test_team_clusters": 26,
+      "validation_brier": 0.24480047821998596,
+      "selector_worst_response_delta": -0.019230769230769232,
+      "selector_worst_response_ci95": [
+        -0.10576923076923077,
+        0.0673076923076923
+      ],
+      "selected_action_changed_states": 20
+    },
+    {
+      "report": "training/outputs/phase12_headless/round486_round484_candidate_value_transfer_seed202610490_20261031/report.json",
+      "seed": null,
+      "test_team_clusters": 26,
+      "validation_brier": 0.21679779887199402,
+      "selector_worst_response_delta": 0.028846153846153848,
+      "selector_worst_response_ci95": [
+        -0.038461538461538464,
+        0.125
+      ],
+      "selected_action_changed_states": 10
+    }
+  ],
+  "unique_heldout_team_clusters": 85,
+  "heldout_selection_records": 130,
+  "selected_nonbaseline_action_records": 80,
+  "out_of_fold_paired_deltas": {
+    "max_damage": {
+      "mean_delta_pp": 1.078,
+      "team_cluster_bootstrap_ci95_pp": [
+        -2.451,
+        4.657
+      ]
+    },
+    "policy": {
+      "mean_delta_pp": 1.961,
+      "team_cluster_bootstrap_ci95_pp": [
+        -3.529,
+        7.647
+      ]
+    },
+    "public_counterplay": {
+      "mean_delta_pp": 0.343,
+      "team_cluster_bootstrap_ci95_pp": [
+        -4.706,
+        5.343
+      ]
+    },
+    "worst": {
+      "mean_delta_pp": 0.637,
+      "team_cluster_bootstrap_ci95_pp": [
+        -3.039,
+        4.853
+      ]
+    }
+  },
+  "interpretation_limit": "A diagnostic on 128 opening states and the existing candidate set, not a full-match agent evaluation. Repeated random splits overlap, so records are clustered by team. The selector's opponent robustness is limited to three sampled response classes.",
+  "bootstrap_samples": 20000
+}

@@ -92,6 +92,35 @@ part. Next, build action-value supervision with cluster-disjoint train/validatio
 states and compare predicted rankings against these held-out counterfactuals
 before any large PPO run. Expand candidate and response coverage before claiming
 robustness beyond the three sampled response classes.
+**Round486 action-value transfer recheck (2026-10-31; no promotion):** trained
+five independent response-conditioned value models on Round484's 128 states,
+holding out whole team clusters and disjoint chance repeats. The 130 held-out
+selector records covered 85 unique team clusters. Although the model changed
+80 actions, the out-of-fold worst-response delta averaged only +0.64 pp
+(95% cluster CI [-3.04,+4.85]); per-response deltas were +1.08 pp vs Max Damage,
++1.96 vs Round476, and +0.34 vs Public Counterplay, all with intervals including
+zero. The repeatable +7–10 pp sample-oracle gain therefore does not transfer
+through the current shallow value model. Reports:
+`training/outputs/phase12_headless/round486_transfer_repeated_splits_20261031/report.json`.
+**Round487 state-coverage and sample-budget study (2026-10-31; diagnostic):**
+collected 256 fresh first-decision states, eight chance outcomes per candidate,
+and the same three response classes. Eight workers completed 37,712 branches
+in 736.63 s (51.20 aggregate matches/s), with zero missing states or rejected
+actions. A five-split response-conditioned value model again failed to transfer:
+across 177 unique held-out clusters, its worst-response delta was -0.25 pp
+(95% CI [-3.33,+2.86]); Max Damage was +0.61 pp [-2.64,+3.81]. In contrast,
+selecting actions directly from sampled counterfactual outcomes generalized
+within each state. With one sample per action/response, equal-weight selection
+gained +5.02 pp (95% cluster CI [+2.98,+7.09]) and maximin gained +3.72 pp
+[+2.08,+5.49] on held-out repeats. At two samples, equal-weight gain was
++7.51 pp [+5.43,+9.68]; at four samples, +8.98 pp [+6.77,+11.33]. Maximin's
+worst-response gain ranged from +5.36 pp with one sample to +8.98 pp with four.
+First-vs-last repeat splits agreed. These are one-step candidate-set ceilings
+with frozen-policy continuation, not full-match agent gains; the response set
+is only three policies. A next search prototype should spend one or two samples
+initially, add samples for close decisions, and be tested for decision latency
+and full-match performance. Do not replace the default until that full-match
+gate passes. Reports: `training/outputs/phase12_headless/round487_action_value_transfer_256x8_20261031/`.
 **Round482 equilibrium-target check (2026-10-31; reject both actor updates):**
 combined the independent Round479 256-team / 8-repeat and Round481 128-team /
 16-repeat counterfactual corpora (38,672 and 37,264 branch matches; 30.01 and

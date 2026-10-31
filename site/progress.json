@@ -4691,4 +4691,326 @@
     "interpretation_limit": "This measures a local candidate-action ceiling only. After the chosen first action, each branch continues with the reference policy; the three response classes are a finite league, not all legal opponent actions. It is neither a full-policy evaluation nor a Nash certificate.",
     "source_script": "scripts/analyze_round484_split_sample_action_selection.py"
   }
+,
+  "round486_action_value_transfer": {
+    "summary": "Five team-disjoint value-model fits changed 80/130 held-out actions, but out-of-fold worst-response improvement was only +0.64 pp (95% CI −3.04 to +4.85) across 85 unique held-out clusters. Learned action values did not transfer the oracle gains.",
+    "report_url": "round486_action_value_transfer.json",
+    "runs": 5,
+    "unique_heldout_clusters": 85,
+    "out_of_fold_paired_deltas": {
+      "max_damage": {
+        "mean_delta_pp": 1.078,
+        "team_cluster_bootstrap_ci95_pp": [
+          -2.451,
+          4.657
+        ]
+      },
+      "policy": {
+        "mean_delta_pp": 1.961,
+        "team_cluster_bootstrap_ci95_pp": [
+          -3.529,
+          7.647
+        ]
+      },
+      "public_counterplay": {
+        "mean_delta_pp": 0.343,
+        "team_cluster_bootstrap_ci95_pp": [
+          -4.706,
+          5.343
+        ]
+      },
+      "worst": {
+        "mean_delta_pp": 0.637,
+        "team_cluster_bootstrap_ci95_pp": [
+          -3.039,
+          4.853
+        ]
+      }
+    },
+    "interpretation_limit": "A diagnostic on 128 opening states and the existing candidate set, not a full-match agent evaluation. Repeated random splits overlap, so records are clustered by team. The selector's opponent robustness is limited to three sampled response classes.",
+    "analysis_script": "scripts/analyze_round486_transfer_repeated_splits.py"
+  },
+  "round487_action_value_search_budget": {
+    "summary": "Across 256 states and 8 chance repeats, direct candidate selection gained +5.02 pp with 1 sample, +7.51 pp with 2, and +8.98 pp with 4 (equal-weight response mean; held-out repeats). The five-fit value model remained flat at −0.25 pp worst response. This is an offline one-step ceiling, not full-match performance.",
+    "corpus": {
+      "states": 256,
+      "branches": 37712,
+      "seconds": 736.63,
+      "aggregate_games_per_second": 51.195,
+      "workers": 8,
+      "missing_states": 0,
+      "rejected_candidates": 0
+    },
+    "model_report_url": "round487_action_value_transfer.json",
+    "sample_budget_report_url": "round487_sample_budget.json",
+    "model_out_of_fold": {
+      "max_damage": {
+        "mean_delta_pp": 0.612,
+        "team_cluster_bootstrap_ci95_pp": [
+          -2.637,
+          3.814
+        ]
+      },
+      "policy": {
+        "mean_delta_pp": 0.071,
+        "team_cluster_bootstrap_ci95_pp": [
+          -3.037,
+          3.107
+        ]
+      },
+      "public_counterplay": {
+        "mean_delta_pp": -0.365,
+        "team_cluster_bootstrap_ci95_pp": [
+          -3.908,
+          3.178
+        ]
+      },
+      "worst": {
+        "mean_delta_pp": -0.247,
+        "team_cluster_bootstrap_ci95_pp": [
+          -3.331,
+          2.86
+        ]
+      }
+    },
+    "sample_budget": {
+      "1": {
+        "first_repeats_train": {
+          "equal_weight": {
+            "selected_nonbaseline_actions": 108,
+            "heldout_delta_by_response_pp": {
+              "max_damage": 6.138,
+              "public_counterplay": 5.58,
+              "policy": 3.348
+            },
+            "heldout_equal_weight_delta_pp": 5.022,
+            "heldout_equal_weight_ci95_pp": [
+              2.976,
+              7.087
+            ],
+            "heldout_statewise_worst_response_delta_pp": 5.971,
+            "heldout_statewise_worst_response_ci95_pp": [
+              3.46,
+              8.594
+            ]
+          },
+          "maximin": {
+            "selected_nonbaseline_actions": 51,
+            "heldout_delta_by_response_pp": {
+              "max_damage": 4.688,
+              "public_counterplay": 3.46,
+              "policy": 3.013
+            },
+            "heldout_equal_weight_delta_pp": 3.72,
+            "heldout_equal_weight_ci95_pp": [
+              2.083,
+              5.487
+            ],
+            "heldout_statewise_worst_response_delta_pp": 5.357,
+            "heldout_statewise_worst_response_ci95_pp": [
+              3.125,
+              7.645
+            ]
+          }
+        },
+        "last_repeats_train": {
+          "equal_weight": {
+            "selected_nonbaseline_actions": 95,
+            "heldout_delta_by_response_pp": {
+              "max_damage": 5.804,
+              "public_counterplay": 6.696,
+              "policy": 5.469
+            },
+            "heldout_equal_weight_delta_pp": 5.99,
+            "heldout_equal_weight_ci95_pp": [
+              4.111,
+              7.961
+            ],
+            "heldout_statewise_worst_response_delta_pp": 6.585,
+            "heldout_statewise_worst_response_ci95_pp": [
+              4.241,
+              9.096
+            ]
+          },
+          "maximin": {
+            "selected_nonbaseline_actions": 57,
+            "heldout_delta_by_response_pp": {
+              "max_damage": 4.688,
+              "public_counterplay": 4.074,
+              "policy": 4.129
+            },
+            "heldout_equal_weight_delta_pp": 4.297,
+            "heldout_equal_weight_ci95_pp": [
+              2.586,
+              6.138
+            ],
+            "heldout_statewise_worst_response_delta_pp": 5.971,
+            "heldout_statewise_worst_response_ci95_pp": [
+              3.627,
+              8.482
+            ]
+          }
+        }
+      },
+      "2": {
+        "first_repeats_train": {
+          "equal_weight": {
+            "selected_nonbaseline_actions": 131,
+            "heldout_delta_by_response_pp": {
+              "max_damage": 8.073,
+              "public_counterplay": 7.552,
+              "policy": 6.901
+            },
+            "heldout_equal_weight_delta_pp": 7.509,
+            "heldout_equal_weight_ci95_pp": [
+              5.425,
+              9.679
+            ],
+            "heldout_statewise_worst_response_delta_pp": 8.203,
+            "heldout_statewise_worst_response_ci95_pp": [
+              5.469,
+              11.133
+            ]
+          },
+          "maximin": {
+            "selected_nonbaseline_actions": 75,
+            "heldout_delta_by_response_pp": {
+              "max_damage": 5.794,
+              "public_counterplay": 5.078,
+              "policy": 3.971
+            },
+            "heldout_equal_weight_delta_pp": 4.948,
+            "heldout_equal_weight_ci95_pp": [
+              3.212,
+              6.793
+            ],
+            "heldout_statewise_worst_response_delta_pp": 6.771,
+            "heldout_statewise_worst_response_ci95_pp": [
+              4.297,
+              9.44
+            ]
+          }
+        },
+        "last_repeats_train": {
+          "equal_weight": {
+            "selected_nonbaseline_actions": 128,
+            "heldout_delta_by_response_pp": {
+              "max_damage": 7.031,
+              "public_counterplay": 8.464,
+              "policy": 6.38
+            },
+            "heldout_equal_weight_delta_pp": 7.292,
+            "heldout_equal_weight_ci95_pp": [
+              5.273,
+              9.418
+            ],
+            "heldout_statewise_worst_response_delta_pp": 7.487,
+            "heldout_statewise_worst_response_ci95_pp": [
+              4.948,
+              10.221
+            ]
+          },
+          "maximin": {
+            "selected_nonbaseline_actions": 73,
+            "heldout_delta_by_response_pp": {
+              "max_damage": 5.859,
+              "public_counterplay": 5.078,
+              "policy": 5.469
+            },
+            "heldout_equal_weight_delta_pp": 5.469,
+            "heldout_equal_weight_ci95_pp": [
+              3.624,
+              7.422
+            ],
+            "heldout_statewise_worst_response_delta_pp": 7.357,
+            "heldout_statewise_worst_response_ci95_pp": [
+              4.948,
+              9.961
+            ]
+          }
+        }
+      },
+      "4": {
+        "first_repeats_train": {
+          "equal_weight": {
+            "selected_nonbaseline_actions": 140,
+            "heldout_delta_by_response_pp": {
+              "max_damage": 8.984,
+              "public_counterplay": 9.961,
+              "policy": 8.008
+            },
+            "heldout_equal_weight_delta_pp": 8.984,
+            "heldout_equal_weight_ci95_pp": [
+              6.771,
+              11.328
+            ],
+            "heldout_statewise_worst_response_delta_pp": 10.156,
+            "heldout_statewise_worst_response_ci95_pp": [
+              7.129,
+              13.379
+            ]
+          },
+          "maximin": {
+            "selected_nonbaseline_actions": 94,
+            "heldout_delta_by_response_pp": {
+              "max_damage": 6.836,
+              "public_counterplay": 8.105,
+              "policy": 4.395
+            },
+            "heldout_equal_weight_delta_pp": 6.445,
+            "heldout_equal_weight_ci95_pp": [
+              4.46,
+              8.529
+            ],
+            "heldout_statewise_worst_response_delta_pp": 8.984,
+            "heldout_statewise_worst_response_ci95_pp": [
+              6.152,
+              12.012
+            ]
+          }
+        },
+        "last_repeats_train": {
+          "equal_weight": {
+            "selected_nonbaseline_actions": 135,
+            "heldout_delta_by_response_pp": {
+              "max_damage": 7.812,
+              "public_counterplay": 8.691,
+              "policy": 9.57
+            },
+            "heldout_equal_weight_delta_pp": 8.691,
+            "heldout_equal_weight_ci95_pp": [
+              6.673,
+              10.775
+            ],
+            "heldout_statewise_worst_response_delta_pp": 9.473,
+            "heldout_statewise_worst_response_ci95_pp": [
+              6.641,
+              12.5
+            ]
+          },
+          "maximin": {
+            "selected_nonbaseline_actions": 80,
+            "heldout_delta_by_response_pp": {
+              "max_damage": 8.203,
+              "public_counterplay": 6.152,
+              "policy": 6.934
+            },
+            "heldout_equal_weight_delta_pp": 7.096,
+            "heldout_equal_weight_ci95_pp": [
+              5.176,
+              9.147
+            ],
+            "heldout_statewise_worst_response_delta_pp": 9.57,
+            "heldout_statewise_worst_response_ci95_pp": [
+              6.836,
+              12.5
+            ]
+          }
+        }
+      }
+    },
+    "interpretation_limit": "Offline one-step action ceiling with reference-policy continuation and only three sampled response classes. Estimated latency extrapolates collection throughput and does not equal optimized in-process search latency.",
+    "collection_script": "scripts/collect_round487_action_value_transfer_256x8.sh",
+    "analysis_script": "scripts/analyze_round487_sample_budget_tradeoff.py"
+  }
 }

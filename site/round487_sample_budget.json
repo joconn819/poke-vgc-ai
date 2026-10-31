@@ -1,0 +1,271 @@
+{
+  "schema_version": 1,
+  "experiment": "Round487 candidate action chance-sample budget",
+  "source": "training/outputs/phase12_headless/round487_action_value_transfer_256x8_20261031/data.json",
+  "source_checkpoint": "training/outputs/phase12_headless/round430_hard_opponent_auxiliary_ppo_20k_20261030/checkpoints/latest.pt",
+  "states": 256,
+  "chance_repeats_available": 8,
+  "response_classes": [
+    "max_damage",
+    "public_counterplay",
+    "policy"
+  ],
+  "method": "For each state and each sample budget, choose a legal joint action by equal-weight mean or maximin over the three response classes using either the first or last k repeats. Evaluate on the disjoint remaining repeats. Confidence intervals bootstrap whole team clusters.",
+  "measured_collection_rate_games_per_second": 51.195,
+  "budgets": {
+    "1": {
+      "samples_per_action_response": 1,
+      "sample_split_sensitivity": {
+        "first_repeats_train": {
+          "equal_weight": {
+            "selected_nonbaseline_actions": 108,
+            "heldout_delta_by_response_pp": {
+              "max_damage": 6.138,
+              "public_counterplay": 5.58,
+              "policy": 3.348
+            },
+            "heldout_equal_weight_delta_pp": 5.022,
+            "heldout_equal_weight_ci95_pp": [
+              2.976,
+              7.087
+            ],
+            "heldout_statewise_worst_response_delta_pp": 5.971,
+            "heldout_statewise_worst_response_ci95_pp": [
+              3.46,
+              8.594
+            ]
+          },
+          "maximin": {
+            "selected_nonbaseline_actions": 51,
+            "heldout_delta_by_response_pp": {
+              "max_damage": 4.688,
+              "public_counterplay": 3.46,
+              "policy": 3.013
+            },
+            "heldout_equal_weight_delta_pp": 3.72,
+            "heldout_equal_weight_ci95_pp": [
+              2.083,
+              5.487
+            ],
+            "heldout_statewise_worst_response_delta_pp": 5.357,
+            "heldout_statewise_worst_response_ci95_pp": [
+              3.125,
+              7.645
+            ]
+          }
+        },
+        "last_repeats_train": {
+          "equal_weight": {
+            "selected_nonbaseline_actions": 95,
+            "heldout_delta_by_response_pp": {
+              "max_damage": 5.804,
+              "public_counterplay": 6.696,
+              "policy": 5.469
+            },
+            "heldout_equal_weight_delta_pp": 5.99,
+            "heldout_equal_weight_ci95_pp": [
+              4.111,
+              7.961
+            ],
+            "heldout_statewise_worst_response_delta_pp": 6.585,
+            "heldout_statewise_worst_response_ci95_pp": [
+              4.241,
+              9.096
+            ]
+          },
+          "maximin": {
+            "selected_nonbaseline_actions": 57,
+            "heldout_delta_by_response_pp": {
+              "max_damage": 4.688,
+              "public_counterplay": 4.074,
+              "policy": 4.129
+            },
+            "heldout_equal_weight_delta_pp": 4.297,
+            "heldout_equal_weight_ci95_pp": [
+              2.586,
+              6.138
+            ],
+            "heldout_statewise_worst_response_delta_pp": 5.971,
+            "heldout_statewise_worst_response_ci95_pp": [
+              3.627,
+              8.482
+            ]
+          }
+        }
+      },
+      "mean_candidate_actions_per_state": 6.055,
+      "estimated_counterfactual_branches_per_decision": 18.2,
+      "estimated_wall_seconds_at_measured_collection_rate": 0.355
+    },
+    "2": {
+      "samples_per_action_response": 2,
+      "sample_split_sensitivity": {
+        "first_repeats_train": {
+          "equal_weight": {
+            "selected_nonbaseline_actions": 131,
+            "heldout_delta_by_response_pp": {
+              "max_damage": 8.073,
+              "public_counterplay": 7.552,
+              "policy": 6.901
+            },
+            "heldout_equal_weight_delta_pp": 7.509,
+            "heldout_equal_weight_ci95_pp": [
+              5.425,
+              9.679
+            ],
+            "heldout_statewise_worst_response_delta_pp": 8.203,
+            "heldout_statewise_worst_response_ci95_pp": [
+              5.469,
+              11.133
+            ]
+          },
+          "maximin": {
+            "selected_nonbaseline_actions": 75,
+            "heldout_delta_by_response_pp": {
+              "max_damage": 5.794,
+              "public_counterplay": 5.078,
+              "policy": 3.971
+            },
+            "heldout_equal_weight_delta_pp": 4.948,
+            "heldout_equal_weight_ci95_pp": [
+              3.212,
+              6.793
+            ],
+            "heldout_statewise_worst_response_delta_pp": 6.771,
+            "heldout_statewise_worst_response_ci95_pp": [
+              4.297,
+              9.44
+            ]
+          }
+        },
+        "last_repeats_train": {
+          "equal_weight": {
+            "selected_nonbaseline_actions": 128,
+            "heldout_delta_by_response_pp": {
+              "max_damage": 7.031,
+              "public_counterplay": 8.464,
+              "policy": 6.38
+            },
+            "heldout_equal_weight_delta_pp": 7.292,
+            "heldout_equal_weight_ci95_pp": [
+              5.273,
+              9.418
+            ],
+            "heldout_statewise_worst_response_delta_pp": 7.487,
+            "heldout_statewise_worst_response_ci95_pp": [
+              4.948,
+              10.221
+            ]
+          },
+          "maximin": {
+            "selected_nonbaseline_actions": 73,
+            "heldout_delta_by_response_pp": {
+              "max_damage": 5.859,
+              "public_counterplay": 5.078,
+              "policy": 5.469
+            },
+            "heldout_equal_weight_delta_pp": 5.469,
+            "heldout_equal_weight_ci95_pp": [
+              3.624,
+              7.422
+            ],
+            "heldout_statewise_worst_response_delta_pp": 7.357,
+            "heldout_statewise_worst_response_ci95_pp": [
+              4.948,
+              9.961
+            ]
+          }
+        }
+      },
+      "mean_candidate_actions_per_state": 6.055,
+      "estimated_counterfactual_branches_per_decision": 36.3,
+      "estimated_wall_seconds_at_measured_collection_rate": 0.71
+    },
+    "4": {
+      "samples_per_action_response": 4,
+      "sample_split_sensitivity": {
+        "first_repeats_train": {
+          "equal_weight": {
+            "selected_nonbaseline_actions": 140,
+            "heldout_delta_by_response_pp": {
+              "max_damage": 8.984,
+              "public_counterplay": 9.961,
+              "policy": 8.008
+            },
+            "heldout_equal_weight_delta_pp": 8.984,
+            "heldout_equal_weight_ci95_pp": [
+              6.771,
+              11.328
+            ],
+            "heldout_statewise_worst_response_delta_pp": 10.156,
+            "heldout_statewise_worst_response_ci95_pp": [
+              7.129,
+              13.379
+            ]
+          },
+          "maximin": {
+            "selected_nonbaseline_actions": 94,
+            "heldout_delta_by_response_pp": {
+              "max_damage": 6.836,
+              "public_counterplay": 8.105,
+              "policy": 4.395
+            },
+            "heldout_equal_weight_delta_pp": 6.445,
+            "heldout_equal_weight_ci95_pp": [
+              4.46,
+              8.529
+            ],
+            "heldout_statewise_worst_response_delta_pp": 8.984,
+            "heldout_statewise_worst_response_ci95_pp": [
+              6.152,
+              12.012
+            ]
+          }
+        },
+        "last_repeats_train": {
+          "equal_weight": {
+            "selected_nonbaseline_actions": 135,
+            "heldout_delta_by_response_pp": {
+              "max_damage": 7.812,
+              "public_counterplay": 8.691,
+              "policy": 9.57
+            },
+            "heldout_equal_weight_delta_pp": 8.691,
+            "heldout_equal_weight_ci95_pp": [
+              6.673,
+              10.775
+            ],
+            "heldout_statewise_worst_response_delta_pp": 9.473,
+            "heldout_statewise_worst_response_ci95_pp": [
+              6.641,
+              12.5
+            ]
+          },
+          "maximin": {
+            "selected_nonbaseline_actions": 80,
+            "heldout_delta_by_response_pp": {
+              "max_damage": 8.203,
+              "public_counterplay": 6.152,
+              "policy": 6.934
+            },
+            "heldout_equal_weight_delta_pp": 7.096,
+            "heldout_equal_weight_ci95_pp": [
+              5.176,
+              9.147
+            ],
+            "heldout_statewise_worst_response_delta_pp": 9.57,
+            "heldout_statewise_worst_response_ci95_pp": [
+              6.836,
+              12.5
+            ]
+          }
+        }
+      },
+      "mean_candidate_actions_per_state": 6.055,
+      "estimated_counterfactual_branches_per_decision": 72.7,
+      "estimated_wall_seconds_at_measured_collection_rate": 1.419
+    }
+  },
+  "interpretation_limit": "Offline one-step action ceiling with reference-policy continuation and only three sampled response classes. Estimated latency extrapolates collection throughput and does not equal optimized in-process search latency.",
+  "bootstrap_samples": 20000
+}
