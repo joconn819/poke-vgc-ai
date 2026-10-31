@@ -263,9 +263,9 @@
   ],
   "speed": {
     "games_per_second": "38.30 rollout · 21.20 end-to-checkpoint",
-    "context": "Round476: 20,000 audited hard-opponent PPO games; rollout generation 522.25 s; input-to-checkpoint 943.29 s; peak aggregate rollout RSS 9.59 GiB.",
+    "context": "Round476: 20,000 audited games, 522.25 s rollouts, 943.29 s input-to-checkpoint, 9.59 GiB peak aggregate RSS. Held-out complete-match evaluation: 3.88–5.95 games/s across eight-worker opponent arms.",
     "decision_latency": "131–204 ms per episode across hard-opponent classes",
-    "current_bottleneck": "Public Counterplay scoring 78 ms/episode; policy-pool action selection 79–85 ms including 67–72 ms inference; observation encoding 25–29 ms; Showdown engine 29–35 ms.",
+    "current_bottleneck": "Training: action selection and policy inference (33–72 ms/episode), public Counterplay action scoring (~78 ms), observation encoding (25–29 ms); Showdown engine round-trip 28–35 ms. Complete-match eval is 3.88–5.95 games/s across opponent arms.",
     "gpu_status": "RTX 4060 used for PPO optimization; rollout decisions and headless simulator remain CPU-side",
     "profile_context": "Round467 completed 20,000 rollouts: per-worker speed 7.53/5.34/4.84 games/s for Max Damage/policy/Public Counterplay. PPO preparation took 89 s; the KL-stopped CUDA optimizer ran about 5 s. Aggregate rollout wall time was not retained.",
     "active_training_profile": {
@@ -1351,11 +1351,11 @@
   },
   "latest_run": {
     "round": 476,
-    "status": "Fresh population-response PPO · evaluation in progress",
-    "summary": "Training audit passed after one valid replacement: 20,000 games, 167,878 transitions, 4 PPO passes, 1,312 updates. New checkpoint is matched against five held-out opponents before promotion.",
+    "status": "Refreshed policy-pool PPO · evaluated, not promoted",
+    "summary": "20,000 audited games and 1,312 PPO steps. Fresh five-opponent paired league found no significant aggregate improvement; Round430 remains the default.",
     "games": "20,000 validated",
     "epochs": "4 passes · 1,312 optimizer steps",
-    "evaluation": "256 team clusters × 2 outcomes · running"
+    "evaluation": "256 clusters × 2 outcomes · complete"
   },
   "method": "Native self-play PPO for in-battle decisions. Terminal win/loss remains the main objective; win-probability and hidden-set prediction are auxiliary tasks. Search comes after a stronger policy.",
   "jax_decision": "Round430 has a confirmed self-play head-to-head lift over Round424, but external-opponent screens remain inconclusive. Prioritize measured inference batching, observation throughput, and rollouts; keep equilibrium-oriented opponent coverage and defer a JAX/GPU engine rewrite until its end-to-end payoff is measured.",
@@ -3863,15 +3863,7 @@
     "pooled_artifact": "round475_pooled_population.json"
   },
   "round476_in_progress": {
-    "status": "Training complete · held-out evaluation in progress",
-    "opponents": "25% Max Damage · 25% legacy Counterplay · 25% Public Counterplay · 25% policy pool",
-    "policy_pool": [
-      "Round430",
-      "Round465",
-      "Round472",
-      "Round473",
-      "Historical Round102"
-    ],
+    "status": "Training and evaluation complete · no promotion",
     "trainable_games": 20000,
     "trainable_transitions": 167878,
     "optimizer_steps": 1312,
@@ -3881,26 +3873,95 @@
     "rollout_wall_seconds": 522.25,
     "input_to_checkpoint_seconds": 943.29,
     "peak_aggregate_rss_gib": 9.59,
-    "per_worker_speed_games_per_second": {
-      "max_damage": [
-        7.47,
-        7.54
-      ],
-      "legacy_counterplay": [
-        5.12,
-        5.22
-      ],
-      "public_counterplay": [
-        4.83,
-        4.84
-      ],
-      "policy_pool": [
-        4.84,
-        5.28
-      ]
-    },
     "launcher": "scripts/train_round476_refreshed_population_ppo_20k.sh",
     "evaluation_launcher": "scripts/evaluate_round476_fresh_seed_league_256x2.sh",
     "output": "training/outputs/phase12_headless/round476_refreshed_population_ppo_20k_20261031/"
+  },
+  "round476_evaluation": {
+    "status": "Complete · no statistically supported gain; keep Round430",
+    "summary": "Round476 was trained against a refreshed frozen policy pool and five-opponent held-out evaluation showed no significant overall improvement. The aggregate strategic-opponent change was slightly negative; do not promote.",
+    "opponents": [
+      {
+        "opponent": "Max Damage",
+        "round430_score_percent": 35.25,
+        "round476_score_percent": 34.67,
+        "paired_delta_pp": -0.59,
+        "paired_ci95_pp": [
+          -2.44,
+          1.27
+        ],
+        "clusters": 256,
+        "round430_games_per_second": 5.8,
+        "round476_games_per_second": 5.37
+      },
+      {
+        "opponent": "Legacy Counterplay",
+        "round430_score_percent": 34.86,
+        "round476_score_percent": 34.25,
+        "paired_delta_pp": -0.59,
+        "paired_ci95_pp": [
+          -2.15,
+          0.98
+        ],
+        "clusters": 256,
+        "round430_games_per_second": 4.44,
+        "round476_games_per_second": 4.44
+      },
+      {
+        "opponent": "Public Counterplay",
+        "round430_score_percent": 36.13,
+        "round476_score_percent": 37.01,
+        "paired_delta_pp": 0.88,
+        "paired_ci95_pp": [
+          -1.07,
+          2.93
+        ],
+        "clusters": 256,
+        "round430_games_per_second": 4.5,
+        "round476_games_per_second": 5.95
+      },
+      {
+        "opponent": "Random",
+        "round430_score_percent": 94.62,
+        "round476_score_percent": 94.9,
+        "paired_delta_pp": 0.29,
+        "paired_ci95_pp": [
+          -0.68,
+          1.27
+        ],
+        "clusters": 256,
+        "round430_games_per_second": 5.46,
+        "round476_games_per_second": 4.9
+      },
+      {
+        "opponent": "Historical PPO · Round102",
+        "round430_score_percent": 46.48,
+        "round476_score_percent": 47.65,
+        "paired_delta_pp": 0.98,
+        "paired_ci95_pp": [
+          -0.88,
+          2.93
+        ],
+        "clusters": 256,
+        "round430_games_per_second": 3.88,
+        "round476_games_per_second": 4.8
+      }
+    ],
+    "equal_weight_delta_pp": 0.18,
+    "equal_weight_ci95_pp": [
+      -0.67,
+      1.01
+    ],
+    "hard_opponent_delta_pp": -0.13,
+    "hard_opponent_ci95_pp": [
+      -1.22,
+      0.93
+    ],
+    "candidate": "Round476 · refreshed five-policy pool",
+    "method": "Fresh seed 20680476; matched team-pair clusters, Round402 selectors for both seats, two side-swapped outcomes, 20,000 paired team-cluster bootstrap resamples. Incomplete outcomes excluded from paired comparisons.",
+    "interpretation": "All per-opponent and aggregate intervals include zero. Round476 is not promoted; Round430 remains the validated default.",
+    "artifact": "round476_evaluation.json",
+    "launcher": "scripts/evaluate_round476_fresh_seed_league_256x2.sh",
+    "output": "training/outputs/phase12_headless/round476_fresh_seed_league_256x2_20261031/"
   }
 }

@@ -17340,7 +17340,7 @@ coverage, not another blind teacher-weight sweep.
   `scripts/summarize_round474_475_pooled_population.py`; output:
   `training/outputs/phase12_headless/round475_policy_population_512x2_20261031/pooled_round474_475_summary.json`.
 
-### Round476: refreshed policy-population response (training complete; evaluation in progress; 2026-10-31)
+### Round476: refreshed policy-population response (complete; not promoted; 2026-10-31)
 
 - Started a fresh 20,000-game PPO response run from Round430. It preserves
   Round473's learner, PPO optimizer, 25% each Max Damage/legacy Counterplay/
@@ -17365,10 +17365,35 @@ coverage, not another blind teacher-weight sweep.
   engine round-trip was roughly 29–35 ms per episode. The initial malformed
   Max Damage game was saved to `rollouts/rejected_round_0001.jsonl`; the fresh
   valid replacement is recorded separately.
-- The candidate is undergoing a fresh-seed, five-opponent evaluation against
-  Max Damage, legacy Counterplay, Public Counterplay, random, and historical
-  Round102 PPO, matched to Round430 on 256 team-pair clusters, two outcomes,
-  side swaps, and Round402 selectors. Do not promote before the evaluation.
+- Fresh-seed evaluation compared Round476 with Round430 against Max Damage,
+  legacy Counterplay, Public Counterplay, random, and historical Round102 PPO.
+  Both sides used the Round402 selector; each opponent screen used 256 matched
+  team-pair clusters, two side-swapped outcomes, and 20,000 paired cluster
+  bootstrap resamples. Round430/Round476 scores and candidate-minus-Round430
+  deltas (95% paired intervals) were: Max Damage 35.25%/34.67%, −0.59 pp
+  [−2.44,+1.27]; legacy Counterplay 34.77%/34.18%, −0.59 pp
+  [−2.15,+0.98]; Public Counterplay 36.13%/37.01%, +0.88 pp
+  [−1.07,+2.93]; random 94.53%/94.82%, +0.29 pp [−0.68,+1.27]; and
+  historical Round102 46.68%/47.66%, +0.98 pp [−0.88,+2.93]. Every interval
+  includes zero. The equal-weight mean delta was +0.18 pp across all five
+  opponent classes [−0.67,+1.01], +0.15 pp excluding random
+  [−0.87,+1.17], and −0.13 pp across the three hard heuristic opponents
+  [−1.22,+0.93], each bootstrapped on 252 complete common team clusters.
+- The fresh population mix has no demonstrated robustness gain. Retain
+  Round430 as the default; keep Round476 as a useful response-pool member only
+  if later cross-play shows distinct value. Raw arm aggregate throughput was
+  3.88–5.80 complete games/s and candidate throughput 4.44–5.95 games/s across
+  eight workers. There were zero action adjustments. One legacy-counterplay,
+  two random, and one historical-policy outcomes were incomplete for Round476;
+  the matched paired comparison excludes them. Two controls also had one
+  incomplete outcome each (random and historical PPO).
+- Reproducible evaluation launcher:
+  `scripts/evaluate_round476_fresh_seed_league_256x2.sh`. Clustered aggregate
+  report: `training/outputs/phase12_headless/round476_fresh_seed_league_256x2_20261031/league_summary.json`.
+- Next, do not repeat the same PPO settings with only another small pool
+  substitution. Use targeted action-trace analysis or test a materially
+  different robust-response update against the frozen population before
+  allocating another 20,000-game iteration.
 - Launcher: `scripts/train_round476_refreshed_population_ppo_20k.sh`.
   Evaluation launcher: `scripts/evaluate_round476_fresh_seed_league_256x2.sh`.
   Output: `training/outputs/phase12_headless/round476_refreshed_population_ppo_20k_20261031/`.

@@ -1,0 +1,104 @@
+{
+  "method": "Paired Round476-minus-Round430 score deltas on shared team-pair clusters. Average the two side-swapped repeats within each cluster, then bootstrap common clusters. Opponent classes are equally weighted.",
+  "bootstrap_replicates": 20000,
+  "seed": 2068048276,
+  "opponents": {
+    "max_damage": {
+      "round430_score_percent": 35.25,
+      "round476_score_percent": 34.67,
+      "paired_delta_pp": -0.59,
+      "paired_interval95_pp": [
+        -2.44,
+        1.27
+      ],
+      "matched_clusters": 256,
+      "matched_cases": 512
+    },
+    "counterplay": {
+      "round430_score_percent": 34.77,
+      "round476_score_percent": 34.18,
+      "paired_delta_pp": -0.59,
+      "paired_interval95_pp": [
+        -2.15,
+        0.98
+      ],
+      "matched_clusters": 256,
+      "matched_cases": 511
+    },
+    "public_counterplay": {
+      "round430_score_percent": 36.13,
+      "round476_score_percent": 37.01,
+      "paired_delta_pp": 0.88,
+      "paired_interval95_pp": [
+        -1.07,
+        2.93
+      ],
+      "matched_clusters": 256,
+      "matched_cases": 512
+    },
+    "random": {
+      "round430_score_percent": 94.53,
+      "round476_score_percent": 94.82,
+      "paired_delta_pp": 0.29,
+      "paired_interval95_pp": [
+        -0.68,
+        1.27
+      ],
+      "matched_clusters": 256,
+      "matched_cases": 510
+    },
+    "policy": {
+      "round430_score_percent": 46.68,
+      "round476_score_percent": 47.66,
+      "paired_delta_pp": 0.98,
+      "paired_interval95_pp": [
+        -0.88,
+        2.93
+      ],
+      "matched_clusters": 256,
+      "matched_cases": 510
+    }
+  },
+  "aggregate_all_five": {
+    "mean_delta_pp": 0.17857142857142852,
+    "interval95_team_cluster_bootstrap_pp": [
+      -0.6746031746031744,
+      1.0119047619047619
+    ],
+    "opponents_equal_weighted": [
+      "max_damage",
+      "counterplay",
+      "public_counterplay",
+      "random",
+      "policy"
+    ],
+    "common_team_pair_clusters": 252
+  },
+  "aggregate_without_random": {
+    "mean_delta_pp": 0.1488095238095238,
+    "interval95_team_cluster_bootstrap_pp": [
+      -0.8680555555555556,
+      1.1656746031746033
+    ],
+    "opponents_equal_weighted": [
+      "max_damage",
+      "counterplay",
+      "public_counterplay",
+      "policy"
+    ],
+    "common_team_pair_clusters": 252
+  },
+  "hard_heuristic_only": {
+    "mean_delta_pp": -0.1322751322751322,
+    "interval95_team_cluster_bootstrap_pp": [
+      -1.2235449735449735,
+      0.9259259259259258
+    ],
+    "opponents_equal_weighted": [
+      "max_damage",
+      "counterplay",
+      "public_counterplay"
+    ],
+    "common_team_pair_clusters": 252
+  }
+}
