@@ -18195,3 +18195,16 @@ coverage, not another blind teacher-weight sweep.
   one unreached decision; no candidate actions were rejected. Across the first
   two phases, 58/96 states were usable and 28,154 branches ran in 592.23
   seconds (47.54 aggregate matches/s).
+- Decision step 5 under the Showdown prior completed with 36/48 usable states,
+  144 worlds, and 14,812 branches in 226.11 seconds (65.509 matches/s). Twelve
+  states were skipped (five forced switches, seven unreached decisions); no
+  actions were rejected. The full Showdown-prior batch captured 94/144 states
+  and ran 42,966 branches in 818.34 seconds (52.504 aggregate matches/s), with
+  376 worlds and no rejected actions.
+- The seven-response model fit on those 94 states used 60/15/19 train,
+  validation, and test clusters, stopped at epoch 1, and had validation Brier
+  0.2190. On 19 test clusters, maximin's paired worst-response delta was 0.00
+  pp [-6.58,+7.89]; equal-weight was -1.32 pp [-7.89,+6.58]. It changed
+  actions in 16 states without showing a strength gain. Held-out response Brier
+  beat a constant-rate baseline for all seven heads, but this better prediction
+  did not improve action selection. Do not promote from this fit.
