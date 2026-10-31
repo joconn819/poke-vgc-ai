@@ -18269,8 +18269,11 @@ coverage, not another blind teacher-weight sweep.
   workers. Seeds are distinct from Round498 and aligned between priors. The
   output is written to `training/outputs/phase12_headless/round499_policy_ensemble_144x4x2_20261031`.
 - Reproduction: `scripts/collect_round499_policy_ensemble_144x4x2.sh`.
-  Collection started with the Showdown-prior step-1 phase; no usable-state or
-  throughput total is available yet. The larger matched dataset will be fit
-  jointly across both priors and all 14 opponent/prior heads, then compared to
-  Round430 on team-disjoint clusters. Promotion still requires fresh paired,
+  Collection started with the Showdown-prior step-1 phase. At the latest
+  checkpoint, four of eight worker shards each completed eight requested
+  clusters: 32 attempts yielded 11 usable states and 5,475 branch matches.
+  These are partial counts, not a phase throughput result; the remaining
+  shards are still running. The larger matched dataset will be fit jointly
+  across both priors and all 14 opponent/prior heads, then compared to Round430
+  on team-disjoint clusters. Promotion still requires fresh paired,
   side-swapped full-match evaluation across opponents.

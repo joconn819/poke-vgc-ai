@@ -6170,8 +6170,16 @@
     "completed_phases": 0,
     "total_phases": 6,
     "current_phase": "Showdown Random Champions prior, decision step 1",
-    "progress_note": "Round498 had only 17 held-out team clusters. Round499 triples collection size to improve the precision of the team-disjoint comparison. No Round499 outcome or throughput result is available yet.",
+    "progress_note": "Four of eight worker shards reported their first checkpoint: 32 cluster attempts yielded 11 usable states and 5,475 branches. Other shards remain active; these are partial counts, not a phase throughput result.",
     "reproduction": "scripts/collect_round499_policy_ensemble_144x4x2.sh",
-    "plan": "https://github.com/joconn819/poke-vgc-ai/blob/master/PLAN.md"
+    "plan": "https://github.com/joconn819/poke-vgc-ai/blob/master/PLAN.md",
+    "partial_progress": {
+      "completed_worker_shards": 4,
+      "total_worker_shards": 8,
+      "clusters_attempted_in_completed_shards": 32,
+      "states_captured_in_completed_shards": 11,
+      "branch_matches_in_completed_shards": 5475,
+      "is_phase_total": false
+    }
   }
 }
