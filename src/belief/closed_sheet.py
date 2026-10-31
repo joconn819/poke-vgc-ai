@@ -557,6 +557,7 @@ def sample_showdown_hidden_teams(
     format_id: str,
     count: int,
     seed: int,
+    set_prior: str = "showdown_random_champions",
     showdown_path: str | Path | None = None,
     attempts_per_team: int = 500,
     sampler: ShowdownHiddenTeamSampler | None = None,
@@ -573,19 +574,27 @@ def sample_showdown_hidden_teams(
         "attempts_per_team": attempts_per_team,
         "seed": int(seed),
         "count": int(count),
+        "set_prior": set_prior,
     }
     if sampler is not None:
         if sampler.format_id != format_id or sampler.showdown_path != root.resolve():
             raise ValueError("persistent sampler format or local Showdown path mismatch")
         return sampler.sample(request, timeout_seconds=timeout_seconds)
-    result = subprocess.run(
-        ["node", str(Path(__file__).resolve().parents[2] / "scripts" / "showdown_sample_hidden_teams.js"), format_id, str(seed), str(count)],
-        input=json.dumps(request),
-        check=True,
-        capture_output=True,
-        text=True,
-        timeout=timeout_seconds,
-        env={**os.environ, "POKEMON_SHOWDOWN_PATH": str(root.resolve())},
-    )
+    try:
+        result = subprocess.run(
+            ["node", str(Path(__file__).resolve().parents[2] / "scripts" / "showdown_sample_hidden_teams.js"), format_id, str(seed), str(count)],
+            input=json.dumps(request),
+            check=True,
+            capture_output=True,
+            text=True,
+            timeout=timeout_seconds,
+            env={**os.environ, "POKEMON_SHOWDOWN_PATH": str(root.resolve())},
+        )
+    except subprocess.CalledProcessError as error:
+        detail = (error.stderr or error.stdout or "no sampler output").strip()
+        raise RuntimeError(
+            f"Showdown hidden-team sampling failed for prior={set_prior}, "
+            f"seed={seed}: {detail}"
+        ) from error
     payload = json.loads(result.stdout)
     return payload["teams"]

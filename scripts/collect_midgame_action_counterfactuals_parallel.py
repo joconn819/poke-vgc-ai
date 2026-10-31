@@ -38,6 +38,11 @@ def main() -> None:
     parser.add_argument("--states-per-cluster", type=int, default=2)
     parser.add_argument("--chance-repeats", type=int, default=4)
     parser.add_argument("--hidden-worlds", type=int, default=0)
+    parser.add_argument(
+        "--hidden-set-prior",
+        choices=("showdown_random_champions", "uniform_unique_full_sets"),
+        default="showdown_random_champions",
+    )
     parser.add_argument("--decision-step", type=int, default=3)
     parser.add_argument(
         "--candidate-mode", choices=("broad", "policy_vs_max_damage"),
@@ -98,6 +103,7 @@ def main() -> None:
             "--states-per-cluster", str(args.states_per_cluster),
             "--chance-repeats", str(args.chance_repeats),
             "--hidden-worlds", str(args.hidden_worlds),
+            "--hidden-set-prior", args.hidden_set_prior,
             "--decision-step", str(args.decision_step),
             "--candidate-mode", args.candidate_mode,
             "--seed", str(args.seed), "--device", args.device,
@@ -214,7 +220,7 @@ def main() -> None:
             p["hidden_world_preparation_seconds"] for p in shard_payloads
         ),
         "hidden_world_prior": (
-            "local_showdown_random_champions_conditioned_on_public_facts"
+            args.hidden_set_prior
             if args.hidden_worlds else "actual_captured_battle_world"
         ),
         "candidate_mode": args.candidate_mode,

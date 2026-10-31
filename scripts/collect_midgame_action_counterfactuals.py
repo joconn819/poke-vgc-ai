@@ -41,7 +41,7 @@ from poke_env.data.normalize import to_id_str
 def public_world_branches(
     *, worker: HeadlessShowdownWorker, data: dict, teams: tuple[list[dict], list[dict]],
     preview: tuple[int, int], format_id: str, showdown_path: Path,
-    count: int, seed: int,
+    count: int, seed: int, set_prior: str,
 ) -> list[dict]:
     """Prepare resumed snapshots from sampled worlds conditioned on public facts."""
     if count < 1:
@@ -72,7 +72,7 @@ def public_world_branches(
             raise ValueError("no public-compatible opponent selection remains")
         hypotheses = sample_showdown_hidden_teams(
             species, belief.public_facts(), format_id=format_id, count=count,
-            seed=seed, showdown_path=showdown_path,
+            seed=seed, set_prior=set_prior, showdown_path=showdown_path,
         )
         rng = np.random.default_rng(seed ^ 0x6A09E667)
         try:
@@ -306,6 +306,12 @@ def main() -> None:
               "0 keeps the legacy actual-world branches"),
     )
     parser.add_argument(
+        "--hidden-set-prior",
+        choices=("showdown_random_champions", "uniform_unique_full_sets"),
+        default="showdown_random_champions",
+        help="distribution for sampled hidden sets; the uniform option weights observed full-set variants equally",
+    )
+    parser.add_argument(
         "--candidate-mode", choices=(
             "broad", "policy_vs_max_damage", "policy_vs_max_damage_and_hybrids"
         ),
@@ -487,12 +493,17 @@ def main() -> None:
                             format_id=args.format, showdown_path=args.showdown_path,
                             count=args.hidden_worlds,
                             seed=args.seed + cluster * 10007 + state_repeat * 1009 + 0x51ED,
+                            set_prior=args.hidden_set_prior,
                         )
                     except RuntimeError as error:
                         if "Transform" not in str(error):
-                            raise
+                            if "uniform full-set prior has no variants compatible with the revealed facts" not in str(error):
+                                raise
+                            reason = "hidden_set_prior_support_gap"
+                        else:
+                            reason = "public_transform_state"
                         missing_states += 1
-                        missing_state_reasons["public_transform_state"] = missing_state_reasons.get("public_transform_state", 0) + 1
+                        missing_state_reasons[reason] = missing_state_reasons.get(reason, 0) + 1
                         continue
                     hidden_world_preparation_seconds += time.perf_counter() - world_started
                     hidden_worlds_prepared += len(branches)
@@ -891,7 +902,7 @@ def main() -> None:
         "hidden_worlds_prepared": hidden_worlds_prepared,
         "hidden_world_preparation_seconds": hidden_world_preparation_seconds,
         "hidden_world_prior": (
-            "local_showdown_random_champions_conditioned_on_public_facts"
+            args.hidden_set_prior
             if args.hidden_worlds else "actual_captured_battle_world"
         ),
         "candidate_mode": args.candidate_mode,

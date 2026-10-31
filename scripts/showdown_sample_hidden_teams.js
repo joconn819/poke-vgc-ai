@@ -4,6 +4,7 @@
 // Sample legal hidden-set hypotheses conditioned only on visible species and
 // observed set facts. This is a hypothesis generator, not an opponent model.
 const path = require("path");
+const fs = require("fs");
 const root = process.env.POKEMON_SHOWDOWN_PATH;
 if (!root) throw new Error("Set POKEMON_SHOWDOWN_PATH to the local Showdown checkout");
 const { Dex, TeamValidator, toID } = require(path.join(root, "dist/sim"));
@@ -11,8 +12,127 @@ const { PRNG } = require(path.join(root, "dist/sim/prng"));
 const { RandomChampionsTeams } = require(path.join(
   root, "dist/data/random-battles/champions/teams"
 ));
+const fullSetPriorPath = path.resolve(__dirname, "..", "src", "features", "randomteam_full_set_priors.json");
+let fullSetPrior = null;
 
 const formatId = process.argv[2] || "gen9championsdoubles2026mcclosed";
+
+function loadFullSetPrior() {
+  if (fullSetPrior) return fullSetPrior;
+  fullSetPrior = JSON.parse(fs.readFileSync(fullSetPriorPath, "utf8"));
+  if (fullSetPrior.format_id !== formatId || !fullSetPrior.full_species_sets) {
+    throw new Error(`full-set prior does not match format ${formatId}`);
+  }
+  return fullSetPrior;
+}
+
+function shuffled(prng, rows) {
+  const output = [...rows];
+  prng.shuffle(output);
+  return output;
+}
+
+function fullPriorSetCandidates(name, facts) {
+  const species = Dex.species.get(name);
+  const prior = loadFullSetPrior();
+  let rows = prior.full_species_sets[species.id];
+  if (!rows && species.baseSpecies) {
+    rows = prior.full_species_sets[toID(species.baseSpecies)];
+  }
+  if (!Array.isArray(rows) || !rows.length) {
+    throw new Error(`uniform full-set prior has no entries for ${species.name}`);
+  }
+  const knownMoves = [...new Set((facts.moves || []).map(toID).filter(move => move !== "struggle"))];
+  if (knownMoves.length > 4) {
+    throw new Error(`more than four distinct moves were publicly revealed for ${species.name}`);
+  }
+  const requiredMoves = new Set(knownMoves);
+  const exactMoves = Boolean(facts.moves_exact);
+  return rows.filter(row => {
+    const moves = new Set((row.moves || []).map(toID));
+    if (exactMoves && (moves.size !== requiredMoves.size
+        || [...requiredMoves].some(move => !moves.has(move)))) return false;
+    if (!exactMoves && [...requiredMoves].some(move => !moves.has(move))) return false;
+    if (facts.item && toID(row.item) !== toID(facts.item)) return false;
+    if (facts.ability && toID(row.ability) !== toID(facts.ability)) return false;
+    return true;
+  }).map(row => {
+    const set = structuredClone(row);
+    delete set.count;
+    set.species = species.name;
+    set.speciesId = species.id;
+    set.moves = (row.moves || []).map(move => {
+      const entry = Dex.moves.get(move);
+      if (!entry.exists) throw new Error(`unknown move ${move} in full-set prior`);
+      return entry.name;
+    });
+    if (set.ability) set.ability = Dex.abilities.get(set.ability).name;
+    if (set.item) set.item = Dex.items.get(set.item).name;
+    if (facts.tera_type) set.teraType = Dex.types.get(facts.tera_type).name;
+    return set;
+  });
+}
+
+function sampleUniformFullSetTeam(roster, factsBySpecies, validator, seed, teamIndex, attempts) {
+  const candidates = roster.map(name => {
+    const species = Dex.species.get(name);
+    return fullPriorSetCandidates(name, factsBySpecies?.[species.id] || {});
+  });
+  if (candidates.some(rows => !rows.length)) {
+    throw new Error("uniform full-set prior has no variants compatible with the revealed facts");
+  }
+  let lastValidationErrors = null;
+  for (let attempt = 0; attempt < attempts; attempt++) {
+    const base = seed + teamIndex * attempts + attempt;
+    const prng = new PRNG([base, seed + 1, seed + 2, seed + 3]);
+    const order = shuffled(prng, candidates.map((_, index) => index));
+    const selected = new Array(roster.length);
+    function assign(depth) {
+      if (depth === order.length) return true;
+      const slot = order[depth];
+      for (const set of shuffled(prng, candidates[slot])) {
+        selected[slot] = structuredClone(set);
+        if (assign(depth + 1)) return true;
+      }
+      return false;
+    }
+    if (!assign(0)) continue;
+    const itemOwners = new Map();
+    let itemClauseValid = true;
+    for (const set of selected) {
+      const item = toID(set.item || "");
+      if (!item) continue;
+      const prior = itemOwners.get(item) || [];
+      if (!prior.length) {
+        itemOwners.set(item, [set]);
+        continue;
+      }
+      const currentKnown = Boolean(factsBySpecies?.[toID(set.speciesId || set.species)]?.item);
+      const priorKnown = prior.some(owner =>
+        Boolean(factsBySpecies?.[toID(owner.speciesId || owner.species)]?.item)
+      );
+      if (currentKnown && priorKnown) {
+        itemClauseValid = false;
+        break;
+      }
+      if (currentKnown) {
+        for (const owner of prior) owner.item = "";
+        itemOwners.set(item, [set]);
+      } else {
+        set.item = "";
+      }
+    }
+    if (!itemClauseValid) continue;
+    const errors = validator.validateTeam(selected);
+    if (!errors) return selected;
+    lastValidationErrors = errors.map(error => String(error.message || error));
+  }
+  throw new Error(
+    `could not sample a TeamValidator-legal uniform full-set world after ${attempts} attempts; `
+    + `last_errors=${JSON.stringify(lastValidationErrors)}`
+  );
+}
+
 function sample(request) {
   const seed = Number(request.seed || 1);
   const count = Number(request.count || 1);
@@ -29,7 +149,22 @@ function sample(request) {
     const validator = TeamValidator.get(formatId);
     const teams = [];
     const attemptsPerTeam = Number(request.attempts_per_team || 500);
+    const setPrior = request.set_prior || "showdown_random_champions";
+    if (!["showdown_random_champions", "uniform_unique_full_sets"].includes(setPrior)) {
+      throw new Error(`unsupported hidden-set prior ${setPrior}`);
+    }
     for (let teamIndex = 0; teamIndex < count; teamIndex++) {
+      if (setPrior === "uniform_unique_full_sets") {
+        teams.push(sampleUniformFullSetTeam(
+          request.preview_species,
+          request.revealed_facts || {},
+          validator,
+          seed,
+          teamIndex,
+          attemptsPerTeam,
+        ));
+        continue;
+      }
       let accepted = null;
       let lastRejection = null;
       let rejectionCounts = {knownMoves: 0, conditionedMoves: 0, teamItemClause: 0, teamValidator: 0};
@@ -169,7 +304,7 @@ function sample(request) {
       }
         teams.push(accepted);
     }
-    return {format: formatId, seed, teams};
+    return {format: formatId, seed, set_prior: setPrior, teams};
   } catch (error) {
     if (process.env.POKE_SEARCH_PERSISTENT === "1") {
       return {error: String(error), stack: error.stack || ""};

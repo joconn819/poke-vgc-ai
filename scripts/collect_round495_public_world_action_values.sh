@@ -10,6 +10,7 @@ SHOWDOWN_PATH="${POKEMON_SHOWDOWN_PATH:-/home/justin/p/poke_learning/pokemon-sho
 CLUSTERS="${CLUSTERS:-24}"
 WORKERS="${WORKERS:-8}"
 HIDDEN_WORLDS="${HIDDEN_WORLDS:-4}"
+HIDDEN_SET_PRIOR="${HIDDEN_SET_PRIOR:-showdown_random_champions}"
 CHANCE_REPEATS="${CHANCE_REPEATS:-2}"
 
 for file in "$POLICY" "$OPPONENT" "$SELECTOR"; do
@@ -32,6 +33,7 @@ for STEP in 1 3 5; do
       --output-dir "$OUT/step_${STEP}" --clusters "$CLUSTERS" --workers "$WORKERS" \
       --states-per-cluster 1 --chance-repeats "$CHANCE_REPEATS" \
       --hidden-worlds "$HIDDEN_WORLDS" --decision-step "$STEP" \
+      --hidden-set-prior "$HIDDEN_SET_PRIOR" \
       --candidate-mode broad --seed "$SEED" --device cpu \
       --include-public-counterplay-response --include-random-response \
       --include-legacy-counterplay-response --showdown-path "$SHOWDOWN_PATH"
