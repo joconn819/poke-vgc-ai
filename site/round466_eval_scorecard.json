@@ -1,0 +1,111 @@
+{
+  "round": 466,
+  "status": "Complete · challenger not promoted",
+  "summary": "Round466 completed a 20,000-game PPO update from Round430 and passed strict perspective-safe rollout audit. On fresh 128-cluster, two-repeat screens it scored 40.82% vs Max Damage, 37.70% vs Public Counterplay, 57.23% vs Round464, and 51.17% vs Round465. Same-seed Round430 comparisons showed +0.59 pp vs Max Damage [-1.95, +3.32] and 0.00 pp vs Public Counterplay [-2.73, +2.93]; neither establishes hard-opponent improvement. Round430 remains the validated incumbent.",
+  "method": "Each matchup: 128 held-out team-pair clusters × two repeated side-swapped local Showdown games (512 games). Cluster-bootstrap 95% intervals resample team-pair clusters. Same-seed controls use the same team pairs and evaluation seed schedule. No evaluation timeouts or action adjustments.",
+  "opponents": [
+    {
+      "opponent": "Max Damage",
+      "score_percent": 40.82,
+      "cluster_bootstrap_95_pct": [
+        33.79,
+        47.85
+      ],
+      "games": 512,
+      "clusters": 128,
+      "evaluation_games_per_second": 4.39,
+      "action_adjustments": 0,
+      "timeouts": 0
+    },
+    {
+      "opponent": "Public Counterplay",
+      "score_percent": 37.7,
+      "cluster_bootstrap_95_pct": [
+        30.66,
+        44.73
+      ],
+      "games": 512,
+      "clusters": 128,
+      "evaluation_games_per_second": 5.23,
+      "action_adjustments": 0,
+      "timeouts": 0
+    },
+    {
+      "opponent": "PPO Round464",
+      "score_percent": 57.23,
+      "cluster_bootstrap_95_pct": [
+        50.0,
+        64.45
+      ],
+      "games": 512,
+      "clusters": 128,
+      "evaluation_games_per_second": 2.67,
+      "action_adjustments": 0,
+      "timeouts": 0
+    },
+    {
+      "opponent": "PPO Round465",
+      "score_percent": 51.17,
+      "cluster_bootstrap_95_pct": [
+        43.95,
+        58.4
+      ],
+      "games": 512,
+      "clusters": 128,
+      "evaluation_games_per_second": 2.88,
+      "action_adjustments": 0,
+      "timeouts": 0
+    }
+  ],
+  "matched_round430_controls": [
+    {
+      "control": "Round430",
+      "opponent": "Max Damage",
+      "control_score_percent": 40.23,
+      "round466_score_percent": 40.82,
+      "paired_delta_percentage_points": 0.59,
+      "paired_delta_cluster_bootstrap_95_pp": [
+        -1.95,
+        3.32
+      ],
+      "clusters": 128
+    },
+    {
+      "control": "Round430",
+      "opponent": "Public Counterplay",
+      "control_score_percent": 37.7,
+      "round466_score_percent": 37.7,
+      "paired_delta_percentage_points": 0.0,
+      "paired_delta_cluster_bootstrap_95_pp": [
+        -2.73,
+        2.93
+      ],
+      "clusters": 128
+    }
+  ],
+  "training": {
+    "games": 20000,
+    "opponent_mix": {
+      "Max Damage": 6000,
+      "Public Counterplay": 6000,
+      "historical policy pool": 8000
+    },
+    "transitions": 162363,
+    "ppo_optimizer_steps": 1272,
+    "passes": 4,
+    "sample_preparation_seconds": 90.2,
+    "optimizer_seconds": 53.0,
+    "approx_kl": 0.009431,
+    "win_probability_loss": 0.475338,
+    "gpu": "RTX 4060 Laptop GPU; about 84% utilization and 1.3 GB VRAM during PPO optimization",
+    "rollout_per_worker_games_per_second_range": [
+      4.51,
+      7.53
+    ],
+    "end_to_end_throughput_note": "Exact aggregate rollout wall time was not retained because the first run stopped at a false-positive audit failure; no exact full-iteration games/s is claimed."
+  },
+  "move_selection": "Masked PPO action logits select moves. The win-probability head is an auxiliary training target; it does not rank normal actions. Search with a separate state evaluator is optional and disabled by default.",
+  "report": "round466_eval_scorecard.json",
+  "matched_comparison_report": "round466_matched_control_comparison.json",
+  "training_report": "round466_training_summary.json"
+}

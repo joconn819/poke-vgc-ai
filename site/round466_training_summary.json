@@ -1,0 +1,21 @@
+{
+  "games": 20000,
+  "opponent_mix": {
+    "Max Damage": 6000,
+    "Public Counterplay": 6000,
+    "historical policy pool": 8000
+  },
+  "transitions": 162363,
+  "ppo_optimizer_steps": 1272,
+  "passes": 4,
+  "sample_preparation_seconds": 90.2,
+  "optimizer_seconds": 53.0,
+  "approx_kl": 0.009431,
+  "win_probability_loss": 0.475338,
+  "gpu": "RTX 4060 Laptop GPU; about 84% utilization and 1.3 GB VRAM during PPO optimization",
+  "rollout_per_worker_games_per_second_range": [
+    4.51,
+    7.53
+  ],
+  "end_to_end_throughput_note": "Exact aggregate rollout wall time was not retained because the first run stopped at a false-positive audit failure; no exact full-iteration games/s is claimed."
+}

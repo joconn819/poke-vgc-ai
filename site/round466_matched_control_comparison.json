@@ -1,0 +1,28 @@
+{
+  "max_damage": {
+    "candidate_score": 0.408203125,
+    "round430_score": 0.40234375,
+    "delta_pp": 0.5859375,
+    "paired_cluster_bootstrap_95_ci_pp": [
+      -1.953125,
+      3.3203125
+    ],
+    "team_clusters": 128,
+    "matched_results": 256,
+    "candidate_timeouts": 0,
+    "round430_timeouts": 0
+  },
+  "public_counterplay": {
+    "candidate_score": 0.376953125,
+    "round430_score": 0.376953125,
+    "delta_pp": 0.0,
+    "paired_cluster_bootstrap_95_ci_pp": [
+      -2.734375,
+      2.9296875
+    ],
+    "team_clusters": 128,
+    "matched_results": 256,
+    "candidate_timeouts": 0,
+    "round430_timeouts": 0
+  }
+}

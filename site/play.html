@@ -42,14 +42,14 @@
     </header>
 
     <section class="card" aria-labelledby="checkpoint-title">
-      <span class="badge">Latest completed policy: Round465</span>
+      <span class="badge">Latest completed policy: Round466</span>
       <h2 id="checkpoint-title">Checkpoint used for matches</h2>
-      <p>Round465 is the newest completed checkpoint. Its held-out evaluation is complete, but it did not establish a reliable gain over Round430, which remains the validated strength incumbent. The page targets Round465 as the latest trained policy. The bot loads a checkpoint only between matches, so each match keeps the policy version it started with.</p>
+      <p>Round466 is the newest completed checkpoint. Its held-out evaluation is complete, but it did not establish a reliable gain over Round430, which remains the validated strength incumbent. The page targets Round466 as the latest trained policy. The bot loads a checkpoint only between matches, so each match keeps the policy version it started with.</p>
     </section>
 
     <section class="card" aria-labelledby="connect-title">
       <h2 id="connect-title">Start your match</h2>
-      <p>Enter the private address of the machine running the local Showdown server and Round465 bot. This page opens that server and prepares the challenge command.</p>
+      <p>Enter the private address of the machine running the local Showdown server and Round466 bot. This page opens that server and prepares the challenge command.</p>
       <label for="server">Showdown server address</label>
       <input id="server" inputmode="url" autocomplete="url" placeholder="192.168.1.153:8001" aria-describedby="server-help">
       <p class="note" id="server-help">Use the host IP and port, for example <code>192.168.1.153:8001</code>. This connection stays on your configured server; this page does not connect to public Pokémon Showdown.</p>
@@ -63,7 +63,7 @@
     <section class="card" aria-labelledby="steps-title">
       <h2 id="steps-title">Play a random team matchup</h2>
       <ol>
-        <li>Start the local Showdown server and bot once (commands below). The bot uses Round465 and the Round402 team selector.</li>
+        <li>Start the local Showdown server and bot once (commands below). The bot uses Round466 and the Round402 team selector.</li>
         <li>Open the server, sign in, and choose a legal team for <code>gen9championsdoubles2026mcclosed</code>. To vary your side between games, select or build a different legal team in Showdown.</li>
         <li>Use the copied challenge command in the Showdown lobby. The bot prepares a fresh team for each match and selects four Pokémon.</li>
       </ol>
@@ -81,9 +81,9 @@ scripts/run_local_showdown_lan.sh "$HOST_IP" 8001</pre>
   venv/bin/python scripts/run_lan_bot.py \
   --server-host "$HOST_IP" --port 8001 \
   --username VGCCheckpointBot \
-  --checkpoint training/outputs/phase12_headless/round465_round464_continue_pool430_464_lr5e5_20k_20261030/checkpoints/latest.pt \
+  --checkpoint training/outputs/phase12_headless/round466_round430_opening14_teacher_pool430_464_465_20k_20261031/checkpoints/latest.pt \
   --team-selection-checkpoint training/outputs/phase12_headless/round402_selector_currentdata_8ep_20261030/selector_candidate.pt</pre>
-      <p class="note">The published progress site cannot host the Showdown battle process or access checkpoint files on the training machine, so the server and bot need to be running on a machine you control. These commands use the Round465 checkpoint shown above.</p>
+      <p class="note">The published progress site cannot host the Showdown battle process or access checkpoint files on the training machine, so the server and bot need to be running on a machine you control. These commands use the Round466 checkpoint shown above.</p>
     </section>
     <footer><a href="./">← Back to training progress</a></footer>
   </main>

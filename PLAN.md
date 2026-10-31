@@ -16,16 +16,25 @@ over Round424, so Round430 is the current in-battle continuation candidate:
 55.32% cluster-weighted score (95% CI [51.86%, 58.79%]) across 512 clusters.
 This head-to-head result alone does not establish robust strength against
 external policies. Search remains conditional on stronger held-out performance.
-
-**Action-selection diagnostic (Round430, 2026-10-30):** paired deterministic
-argmax and sampled PPO actions on identical teams, previews, and battle seeds
-(128 team-pair clusters, two repeated outcomes per pair). The equal-weight
-Max Damage/Public Counterplay score moved from 39.45% deterministic to 36.62%
-sampled; paired change -2.83 percentage points (95% cluster interval
-[-7.52, +1.86]). Individual intervals also included zero. Keep deterministic
-action selection as the default; this one seed set does not establish that
-randomization is generally harmful. The [full summary](site/round430_stochastic_action_selection.json)
-includes per-opponent results, paired intervals, and timeout handling.
+At inference, legal actions are selected from masked PPO policy logits; the
+win-probability head is an auxiliary training target and does not rank moves.
+The optional one-turn search can consult a state-value evaluator only when
+explicitly enabled; the default play path leaves search disabled.
+**Round430 stochastic-action diagnostic (2026-10-30):** added `--stochastic`
+to paired evaluation and compared sampled PPO actions with deterministic
+argmax on identical teams, previews, and battle seeds (128 team-pair clusters,
+two repeated outcomes per pair). The equal-weight Max Damage/Public
+Counterplay composite changed from 39.45% deterministic to 36.62% sampled;
+the paired cluster-bootstrap difference was -2.83 percentage points (95% CI
+[-7.52, +1.86]). Per-opponent differences were -1.37 pp vs Max Damage
+([-6.84, +4.10]) and -4.30 pp vs Public Counterplay ([-9.96, +1.17]); all
+intervals include zero. Random-play guardrail was 95.67% vs 94.49% on 127
+fully matched clusters. No timeout or action correction occurred in adversarial
+games; one random-arm timeout was excluded only from its matched-cluster
+comparison. Roster and preview equality was verified for all 256 case rows per
+opponent. Keep deterministic action selection as the default; this sample is
+not evidence that stochastic play is globally worse. Report:
+`training/outputs/phase12_headless/round430_stochastic_action_eval_128x2_20261030_retry1/comparison.json`.
 Preserve existing workspace changes while implementing and evaluating this
 direction.
 
@@ -16420,6 +16429,161 @@ team choice but does not change that conclusion.
   game outcome diagnostics; they did not feed the probability head into move
   selection or alter a checkpoint.
 
+### Round465 full-match first-action override check (2026-10-30)
+
+- Compared the frozen Round465 direct PPO policy against the same policy with
+  its first joint action replaced by the Max Damage action. Both arms used the
+  same 256 generated team-pair clusters, previews, and two repeat indices per
+  cluster, side-swapped for 1,024 full matches per arm. The Max Damage policy
+  controlled every later decision. No timeouts or protocol errors occurred.
+- Control scored 43.16%; first-action override scored 46.29%, a +3.13
+  percentage-point difference. Paired team-cluster bootstrap 95% interval:
+  −1.27 to +7.52 pp (74 clusters favored the override, 62 favored control,
+  120 tied). This is suggestive but inconclusive.
+- Showdown battle RNG is server-side and not fixed by evaluator seeds, so arms
+  share teams/previews/repeat indices but not identical battle randomness.
+  This is a single-opponent, exploratory intervention result, not evidence
+  for a robust action-selection rule or promotion. The checkpoint and default
+  PPO move selection remain unchanged; the auxiliary win-probability head is
+  still not used to rank moves.
+- Next: test the same first-action override against Public Counterplay and a
+  frozen historical PPO under the identical side-swapped paired design. If a
+  gain appears only against Max Damage, report it as a matchup-specific
+  counterplay diagnostic rather than as a general policy improvement.
+- Outputs:
+  `training/outputs/phase12_headless/round465_opening_override_fullmatch_maxdamage_control_256x2_20261030_retry1/paired_summary.json`
+  `training/outputs/phase12_headless/round465_opening_override_fullmatch_maxdamage_candidate_256x2_20261030/paired_summary.json`
+  `training/outputs/phase12_headless/round465_opening_override_fullmatch_maxdamage_comparison_256x2_20261030.json`
+
+### Round465 full-match first-action override against Public Counterplay (2026-10-30)
+
+- Repeated the side-swapped full-match comparison against Public Counterplay
+  with the same 256 team-pair clusters, previews, and two outcome repeats.
+  The control completed 1,022 matches (one timeout); the override completed
+  all 1,024. The paired comparison used the 511 fully matched clusters.
+- Both the control and override scored 45.12%. Paired difference was 0.00 pp
+  with a 95% cluster-bootstrap interval of −3.81 to +3.91 pp (53 clusters
+  favored the override, 61 favored control, 142 tied). No override benefit is
+  supported against this opponent.
+- Across Max Damage and Public Counterplay, this first-action override has no
+  demonstrated broad benefit: the Max Damage difference was suggestive but
+  inconclusive, and the Public Counterplay difference was centered at zero.
+  Do not deploy the Max Damage action as a global policy rule. PPO logits
+  remain the default move selector; the win-probability head remains auxiliary.
+- Outputs:
+  `training/outputs/phase12_headless/round465_opening_override_fullmatch_public_counterplay_control_256x2_20261030/paired_summary.json`
+  `training/outputs/phase12_headless/round465_opening_override_fullmatch_public_counterplay_candidate_256x2_20261030/paired_summary.json`
+  `training/outputs/phase12_headless/round465_opening_override_fullmatch_public_counterplay_comparison_256x2_20261030.json`
+
+### Round465 full-match first-action override against historical PPO (2026-10-30)
+
+- Compared against frozen Round464 PPO, including its team-preview selector.
+  On 256 clusters × 2 repeats, the control scored 46.09%; the Max Damage
+  first-action override scored 53.32%. The matched estimate was +7.23 pp
+  (95% cluster-bootstrap interval +2.93 to +11.43 pp) over 511 matched cases;
+  one control case was incomplete and excluded.
+- Replicated with fresh team seeds on 128 clusters × 2 repeats. The control
+  scored 56.25%, the override 59.96%, a +3.71 pp difference (95% interval
+  −1.56 to +9.18 pp). This direction agrees, but the replication alone is
+  inconclusive.
+- Combining the independent seed sets at the team-cluster level gives an
+  exploratory +6.05 pp estimate (95% bootstrap interval +2.67 to +9.44 pp)
+  across 384 clusters. This is evidence for an opening-action advantage in
+  this Round465-vs-Round464 matchup, not a general improvement: the same
+  override was inconclusive vs Max Damage and exactly 0.00 pp vs Public
+  Counterplay. It is not a substitute for learning from diverse legal
+  responses. No checkpoint or default action selector changed.
+- Follow-up: add more fresh clusters against several frozen historical PPO
+  versions and counterplay policies before considering opponent-conditioned
+  opening logic. Keep any such selector separate from the auxiliary
+  win-probability head and verify it on an untouched opponent mixture.
+- Outputs:
+  `training/outputs/phase12_headless/round465_opening_override_fullmatch_round464_control_256x2_20261030/paired_summary.json`
+  `training/outputs/phase12_headless/round465_opening_override_fullmatch_round464_candidate_256x2_20261030/paired_summary.json`
+  `training/outputs/phase12_headless/round465_opening_override_fullmatch_round464_comparison_256x2_20261030.json`
+  `training/outputs/phase12_headless/round465_opening_override_fullmatch_round464_replication_comparison_128x2_20261030.json`
+
+### Round465 full-match first-action override against Round430 (2026-10-30)
+
+- Against the validated Round430 PPO and its team-preview selector, 128
+  clusters × 2 repeats gave a control score of 45.12% and override score of
+  46.68%. Paired difference was +1.56 pp (95% cluster interval −4.30 to
+  +7.23) over 255 matched repeats; one candidate case was incomplete.
+- This does not replicate the apparent Round464-specific gain. Together with
+  the null Public Counterplay result and inconclusive Max Damage result, the
+  current evidence does not support deploying a fixed Max Damage opening
+  action or replacing PPO move selection. The Round464 matchup signal remains
+  hypothesis-generating and may reflect response-specific interaction.
+- Output:
+  `training/outputs/phase12_headless/round465_opening_override_fullmatch_round430_control_128x2_20261030/paired_summary.json`
+  `training/outputs/phase12_headless/round465_opening_override_fullmatch_round430_candidate_128x2_20261030/paired_summary.json`
+  `training/outputs/phase12_headless/round465_opening_override_fullmatch_round430_comparison_128x2_20261030.json`
+
+### Restricted population matrix for Round430, Round464, and Round465 (2026-10-30)
+
+- **Superseded point-solution note:** the first matrix pooled matchup estimates
+  from unrelated team-seed sets and suggested pure Round430. A later same-team
+  matrix changed that point solution. Do not treat the earlier support estimate
+  as evidence for choosing a checkpoint or training mixture; retain it only as
+  a record of why common held-out seeds are necessary.
+- Completed the missing Round430-vs-Round464 full-match cell on 256 generated
+  team-pair clusters × 2 repeats (1,024 matches, no timeouts, 5.55 games/s).
+  Round430 scored 54.98%; team-cluster bootstrap 95% interval was
+  50.10–59.77%.
+- Combining this with recent direct-policy control screens gives the following
+  point estimates: Round430 vs Round464 54.98%; Round430 vs Round465 54.88%;
+  Round464 vs Round465 54.00%. The Round430-vs-Round465 interval includes
+  50% (derived from the Round465-vs-Round430 screen: 47.66–61.91% for Round430).
+  The Round464-vs-Round465 interval also includes 50% (49.12–58.89% for
+  Round464). The Round430-vs-Round464 lower endpoint is only 0.10 pp above
+  50%, so the ranking is fragile.
+- On the three-policy point-estimate matrix, Round430 is the pure restricted
+  game equilibrium: it scores at least 50% against every member, and any
+  opponent choosing Round430 limits the row player's payoff to at most 50%.
+  This is only a small empirical population result with broad sampling error;
+  it neither certifies a global Nash strategy nor proves robustness to novel
+  responses. It supports retaining Round430 as incumbent rather than
+  promoting Round465.
+- The public progress site now includes the matrix and its limitations. Next
+  step: add independent, newly trained response policies to the population,
+  measure their cross-play and best responses, then recompute the restricted
+  equilibrium. Do not train against this three-policy point solution alone.
+- Output:
+  `training/outputs/phase12_headless/round430_vs_round464_crossplay_256x2_20261030/paired_summary.json`
+  `site/round465_policy_population_matrix.json` in the Pages checkout.
+
+### Matched-seed PPO population matrix (2026-10-30; no supported winner)
+
+- Re-evaluated Round430, Round464, and Round465 with the same Round402
+  team-preview selector, identical team seeds and previews across all three
+  matchups, and side-swapped local Showdown games. The primary fresh set used
+  512 team-pair clusters × one repeat (1,024 matches per matchup, zero
+  timeouts). An earlier independent common-selector set used 128 clusters ×
+  two repeats; its teams were also shared across all three matchup cells.
+- Pooling the two independent team-seed sets at the cluster level gives 640
+  team clusters per edge. Point estimates were Round430 vs Round464 50.16%
+  (95% interval 46.80–53.55%), Round465 vs Round430 50.78% (47.34–54.14%),
+  and Round465 vs Round464 50.43% (47.11–53.83%). All intervals include 50%.
+  The 512-cluster seed set alone put Round465 around 52% against both peers,
+  while the 128-cluster set put it around 42–45%; the ranking is seed-set
+  sensitive. Combining the clusters centers the estimates near 50%.
+- The point-estimate matrix would favor Round465 by less than one point, but
+  the bootstrap intervals do not support a strength difference. Do not use a
+  pure empirical equilibrium from these noisy points as a training mixture.
+  Keep Round430 as the validated incumbent and gather more independent team
+  sets or improve the response-learning signal before promoting Round465.
+- This restricted game covers three related PPO checkpoints only. It is not a
+  Nash-equilibrium certificate for VGC and does not include novel trained
+  responses. The prior separate-seed matrix published before this check is
+  superseded by these shared-seed measurements.
+- Outputs:
+  `training/outputs/phase12_headless/round430_vs_round464_common_selector_128x2_20261030/paired_summary.json`
+  `training/outputs/phase12_headless/round465_vs_round430_common_selector_128x2_20261030/paired_summary.json`
+  `training/outputs/phase12_headless/round465_vs_round464_common_selector_128x2_20261030/paired_summary.json`
+  `training/outputs/phase12_headless/round430_vs_round464_common_selector_512x1_20261030/paired_summary.json`
+  `training/outputs/phase12_headless/round465_vs_round430_common_selector_512x1_20261030/paired_summary.json`
+  `training/outputs/phase12_headless/round465_vs_round464_common_selector_512x1_20261030/paired_summary.json`
+
 ### Round430 common-preview response matrix and opening intervention (2026-10-30)
 
 - Completed a common-preview comparison for Round430, Round464, and Round465
@@ -16460,13 +16624,14 @@ team choice but does not change that conclusion.
 - Tested against a second PPO checkpoint, Round465, on the same 512 common
   team/preview clusters and side-swapped seats. **Orientation audit:** the
   original raw file evaluated Round465, so its 52.15% checkpoint score cannot
-  serve as Round430's score; the two evaluations assign policies to seats
-  differently for the same seed values, so complementing that summary is not
-  valid. A direct Round430 control on the same 512 teams, previews, and battle
-  seeds scored 51.46%. The intervention scored 62.11%, a paired +10.64 pp
-  gain (95% team-cluster interval +6.64 to +14.65). All 1,024 matches
+  serve as Round430's score; the two evaluations assign different policies to
+  seats for the same seed values, so complementing that summary is not valid.
+  A direct Round430 control was run on the same 512 teams, previews, and battle
+  seeds. It scored 51.46%; the first-five intervention scored 62.11%, a paired
+  +10.64 pp gain (95% team-cluster interval +6.64 to +14.65). All 1,024 games
   completed without timeout or action correction; 5,048 actions were
-  overridden at 4.35 matches/s.
+  overridden at 4.35 matches/s. The separate 128-cluster Round465 replication
+  remains +9.38 pp [+2.54, +16.21].
 - Independent-seed confirmation against Round464 used 128 new team-pair
   clusters × two repeats (512 matches per arm, side-swapped). On the same
   teams, previews, and battle seeds, Round430 scored 42.58%; the intervention
@@ -16484,17 +16649,19 @@ team choice but does not change that conclusion.
   pp vs Max Damage (95% CI +5.00 to +12.19; 640 clusters) and +7.85 pp vs
   Counterplay (+4.34 to +11.45; 640 clusters).
 - The repeated positive differences across Max Damage, public Counterplay,
-  Round464, Round465, and historical Round102 suggest a general first-five-
-  action weakness in Round430, not an effect limited to a single opponent.
-  Independent team-seed replications confirm it against all five.
+  Round464, Round465, and historical PPO Round102 suggest a general
+  first-five-action weakness in Round430, not an effect limited to one
+  opponent. Independent team-seed replications confirm it against all five.
   However, older Round173 hybrid tests sometimes regressed against PPO, so the
   present evidence is checkpoint-specific and the override is still a
   heuristic, not a learned policy or a guarantee against novel responses.
-- Next: quantify the individual contribution of opening decisions 0–4 with
-  repeated paired ablations; the first one-repeat attribution screen was
-  inconclusive. Preserve raw Round430 and the intervention as separate
-  controls. Defer teacher-label PPO until attribution is stable and a training
-  method can reproduce the gain under multi-opponent held-out evaluation.
+- Next: inspect the per-decision contribution to the opening improvement and
+  replicate against Round102 on fresh seeds or another distinct frozen PPO /
+  held-out response. Preserve raw Round430 and the intervention as separate
+  controls. Only then decide whether to expose a deployment hybrid; defer
+  teacher-label PPO until a training method improves on the earlier failed
+  imitation/continuation attempts and passes the same multi-opponent held-out
+  gate.
 - Outputs:
   `training/outputs/phase12_headless/round430_464_465_common_preview_league_512x1_20261030/league_comparison.json`
   `training/outputs/phase12_headless/round430_464_465_common_preview_league_512x1_20261030/league_matrix.json`
@@ -16509,71 +16676,139 @@ team choice but does not change that conclusion.
   `training/outputs/phase12_headless/round430_raw_vs_public_counterplay_128x2_seed2026103068_selector_both/paired_summary.json`
   `training/outputs/phase12_headless/round430_opening0to4_maxdamage_intervention_vs_round465_512x1_20261030/paired_summary.json`
 
-### Round102 PPO transfer replication and decision attribution (2026-10-30)
+**Independent transfer check vs Round102 (2026-10-30):** on a fresh 128
+team-pair-cluster set with two side-swapped repeats per cluster, the first-five
+Max Damage intervention scored 55.86% against historical PPO Round102 versus
+48.24% for raw Round430, a paired gain of +7.62 percentage points (95%
+team-cluster bootstrap interval +1.37 to +14.06). All 256 pair/repeat records
+(512 matches per arm) matched exactly on team pair, previews, and both battle
+seeds. There were no timeouts, errors, or action corrections; 2,531 opening
+actions were overridden. This adds a less-related historical PPO transfer
+case, but still only validates a Round430-specific heuristic intervention.
+It is not evidence that PPO learned the opening policy or that the hybrid is
+globally robust. Keep Round430 as the checkpoint incumbent. The fresh-seed
+Round102 replication and pooled results are recorded below. Next, run paired
+single-index ablations to estimate which of decisions 0–4 contributes to the
+gain before attempting to distill the intervention into PPO.
 
-- On a fresh 128-team-cluster × 2-repeat set, replacing Round430 decisions
-  0–4 with public Max Damage actions improved its score versus historical PPO
-  Round102 from 48.24% to 55.86%, +7.62 pp (95% cluster interval +1.37 to
-  +14.06). A second disjoint set improved from 51.56% to 60.35%, +8.79 pp
-  (+1.37 to +16.41). Pooling both sets (256 clusters) gives 49.90% raw vs
-  58.11% intervention, +8.20 pp (+3.32 to +13.09). Each arm used 512 matches
-  per set, side-swapped, matched teams/previews/battle seeds, and had zero
-  errors, timeouts, or action corrections.
-- An isolated one-repeat screen on 128 matched clusters replaced only one
-  decision index at a time. Paired deltas for indices 0–4 were −3.13, −0.39,
-  −1.95, −1.17, and +1.17 pp, with all 95% cluster intervals crossing zero.
-  The all-five intervention was +7.03 pp on this subset, also inconclusive
-  (95% interval −1.17 to +15.23); the disjoint two-repeat all-five screen
-  remained +8.79 pp with its interval above zero. These data do not identify
-  an individually beneficial action; a sequence interaction is possible but
-  unproven. This remains a diagnostic heuristic, not a learned or promoted
-  policy. Repeat the ablations before shaping PPO training around them.
+Artifact: `training/outputs/phase12_headless/round430_opening0to4_maxdamage_intervention_vs_round102_128x2_seed20264304/paired_summary.json`;
+paired control: `training/outputs/phase12_headless/round430_hard_opponent_auxiliary_ppo_20k_20261030/eval_round102_128x2/paired_summary.json`.
 
-### Repeated single-decision attribution (2026-10-30)
+**Fresh-seed transfer replication vs Round102 (2026-10-30):** on a second,
+disjoint set of 128 team-pair clusters × two side-swapped repeats, raw Round430
+scored 51.56% and the intervention 60.35%, a +8.79 pp paired gain. Exact
+team, preview, and both battle-seed identities matched across 256
+pair/repeats; there were zero timeouts, errors, or action corrections. The
+paired cluster-bootstrap interval is +1.37 to +16.41. Pooling
+the two independent Round102 seed sets (256 clusters) gives raw 49.90%,
+intervention 58.11%, +8.20 pp (95% cluster interval +3.32 to +13.09). Both
+seed sets support transfer, but the hybrid is still a hand-coded opening
+intervention. Continue to inspect the five decisions and then train a policy
+to reproduce the gain under held-out evaluation.
 
-- Each isolated override was rerun on the same 128 team-pair clusters with two
-  side-swapped outcomes per cluster and matched exactly to the raw and
-  all-five controls. One index-1 timeout was recovered with the exact team,
-  preview, and battle seeds; the final comparison has 512 complete matches per
-  arm for every index.
-- Index 0: 50.59% vs 51.56% raw, −0.98 pp (95% cluster interval −7.23 to
-  +5.27). Index 1: 56.84%, +5.27 pp (0.00 to +10.74). Index 2: 55.08%,
-  +3.52 pp (−0.98 to +8.01). Index 3: 52.73%, +1.17 pp (−2.34 to +4.88).
-  Index 4: 55.08%, +3.52 pp (+0.59 to +6.64). The all-five intervention was
-  60.35%, +8.79 pp (+1.37 to +16.41) on those same seeds.
-- Index 4 is the clearest isolated lead; index 1 is positive but its interval
-  touches zero. Indices 0, 2, and 3 remain inconclusive. The next diagnostic
-  is the combined index-1/index-4 policy on fresh seeds and the varied local
-  opponent suite. Preserve the raw checkpoint and the all-five hybrid as
-  controls. Do not treat these heuristic results as trained PPO improvement
-  or evidence of optimal play.
+Artifacts: control `training/outputs/phase12_headless/round430_raw_vs_round102_128x2_seed20265000_selector_both_retry1/paired_summary.json`;
+intervention `training/outputs/phase12_headless/round430_opening0to4_maxdamage_intervention_vs_round102_128x2_seed20265000/paired_summary.json`.
 
-### Two-index opening transfer screen (2026-10-30)
+**Single-decision attribution screen (2026-10-30):** on the same fresh
+128-cluster, one-repeat Round102 seed set, raw Round430 scored 55.08%. Replacing
+only one decision at a time yielded: index 0, 51.95% (−3.13 pp; 95% cluster
+CI −10.94 to +4.69); index 1, 54.69% (−0.39; −5.86 to +5.08); index 2,
+53.13% (−1.95; −7.81 to +3.52); index 3, 53.91% (−1.17; −6.25 to +3.91);
+and index 4, 56.25% (+1.17; −3.13 to +5.47). Each interval includes zero.
+The all-five intervention on this exact one-repeat set scored 62.11%, +7.03
+pp versus raw, but its interval also includes zero (−1.17 to +15.23); the
+separate two-repeat seed set still showed +8.79 pp [+1.37, +16.41]. No test
+had timeouts or action corrections. The evidence does not identify one
+individually beneficial action; the full-sequence gain may depend on
+interactions, but these ablations are too noisy to establish that. Preserve
+the full-sequence intervention as an evaluation lead, not a deployment
+promotion. Next repeat the attribution with more outcomes or team clusters,
+then use those labels to train and evaluate a policy without hard-coded
+Max-Damage actions.
 
-- Replacing only Round430 decision indices 1 and 4 with public Max Damage actions scored 41.50% against Max Damage versus 36.62% for raw Round430 on 512 shared team/preview clusters: +4.88 pp (95% paired team-cluster interval +1.76 to +8.01). The same intervention scored 42.58% against public Counterplay versus 38.57% raw: +4.00 pp (+0.88 to +7.13). Each arm completed 1,024 side-swapped games. Public Counterplay had one timeout that was recovered by replaying the exact team, preview, and evaluator seeds; final comparison has zero missing clusters or corrections.
-- The pairing matches team, preview, and evaluator-seed identities. Showdown battle RNG is generated server-side and remains independent between matches, so these intervals quantify team-cluster variation rather than common-random-number variance reduction.
-- This is a deterministic opening heuristic applied to Round430, not an improved PPO checkpoint or evidence of optimal play. It transfers against two fixed baselines; evaluate on fresh seeds and the PPO population before considering training use. Full result and artifacts are in `site/round430_opening_interventions.json`.
+Artifacts: raw control
+`training/outputs/phase12_headless/round430_raw_vs_round102_128x1_seed20265000/paired_summary.json`;
+single-index runs `training/outputs/phase12_headless/round430_single_decision_{0..4}_round102_128x1_seed20265000/paired_summary.json`;
+all-five run `training/outputs/phase12_headless/round430_opening0to4_maxdamage_intervention_vs_round102_128x1_seed20265000/paired_summary.json`.
 
-- Extended the two-index [1,4] transfer screen to PPO opponents on the same
-  512 team/preview/evaluator-seed clusters. Against Round464, raw Round430
-  scored 52.05% and the hybrid 58.59% (+6.54 pp, 95% interval +3.52 to
-  +9.67); against Round465, raw Round430 scored 51.46% and the hybrid 58.89%
-  (+7.42 pp, +4.30 to +10.55). Each arm had 1,024 side-swapped games; the
-  Round464 case with a timeout was replayed exactly, yielding 512 complete
-  matched clusters. All four opponents screened so far have positive paired
-  intervals excluding zero. This remains one team/seed population and a
-  Round430-specific heuristic; independent replication is required.
+**Repeated attribution follow-up (2026-10-30):** reran each isolated decision
+override on the same 128 team-pair clusters with two side-swapped outcomes per
+cluster, exactly matched to the raw Round430 and all-five controls. After
+recovering one timed-out index-1 repeat with the exact saved teams, previews,
+and battle seeds, all five screens include 128 complete clusters (512 matches
+per arm): index 0 scored 50.59% vs 51.56% raw (−0.98 pp; 95% CI −7.23 to
++5.27); index 1 scored 56.84% (+5.27; 0.00 to +10.74); index 2 scored 55.08%
+(+3.52; −0.98 to +8.01); index 3 scored 52.73% (+1.17; −2.34 to +4.88);
+index 4 scored 55.08% (+3.52; +0.59 to +6.64). The full five-decision
+intervention scored 60.35% (+8.79; +1.37 to +16.41) on these same seeds.
+Indices 1 and 4 are the strongest isolated leads; index 4 has the clearest
+positive interval, while index 1's lower bound is exactly zero. The sample is
+still only 128 teams and does not prove a general action value. Next test the
+two-index [1,4] hybrid on fresh held-out seeds and the existing opponent set;
+keep raw and all-five controls. Do not promote a heuristic or begin PPO
+distillation from a single seed population.
 
-- An independent fresh set of 128 team clusters × two side-swapped repeats
-  confirmed transfer for the [1,4] override. Pooled with the disjoint first
-  512-cluster screen, the cluster-level paired results are: Max Damage
-  36.80% raw vs 42.03% hybrid, +5.23 pp (95% CI +2.50 to +7.97); public
-  Counterplay 38.32% vs 42.58%, +4.26 pp (+1.56 to +6.95); Round465 PPO
-  50.94% vs 58.79%, +7.85 pp (+5.20 to +10.59). These pool 640 independent
-  team clusters, averaging repeated outcomes within the fresh clusters before
-  bootstrap. Round464 was also replicated independently, so all four opponents now have pooled 640-cluster estimates. Both seed sets
-  use the Round402 team selector and public random-team source; this remains
-  targeted evidence for an opening heuristic, not broad optimal-play proof.
+Artifacts: raw control
+`training/outputs/phase12_headless/round430_raw_vs_round102_128x2_seed20265000_selector_both_retry1/paired_summary.json`;
+index ablations under `training/outputs/phase12_headless/round430_single_decision_{0..4}_round102_128x2_seed20265000_retry1/paired_summary.json`;
+recovered index-1 pair `training/outputs/phase12_headless/round430_single_decision_1_round102_pair55_repeat0_recovery/paired_summary.json`;
+all-five control `training/outputs/phase12_headless/round430_opening0to4_maxdamage_intervention_vs_round102_128x2_seed20265000/paired_summary.json`.
+
+**Two-index hybrid check (2026-10-30):** replacing only decision indices 1
+and 4 scored 59.77% vs Round102 on the same fresh 128-cluster × 2-repeat
+seed set, compared with 51.56% raw Round430: +8.20 pp (95% cluster interval
++2.73 to +13.87). The full five-index intervention scored 60.35%; its paired
+advantage over the two-index hybrid was only +0.59 pp (95% interval −5.66 to
++6.84). All 512 matches completed without action corrections or timeouts.
+This is promising evidence that two opening decisions may retain most of the
+full override's benefit, but it is one held-out opponent and team sample.
+Next compare the [1,4] hybrid against Max Damage, public Counterplay, and
+historical PPO on matched held-out sets before considering deployment or
+training from this policy.
+
+Artifacts: `training/outputs/phase12_headless/round430_opening1and4_intervention_vs_round102_128x2_seed20265000/paired_summary.json`;
+raw and all-five paired controls are listed above.
+
+**Two-index transfer against heuristic baselines (2026-10-30):** On 512
+matched team/preview clusters, replacing only decisions 1 and 4 with public
+Max Damage actions scored 41.50% vs Max Damage versus 36.62% raw Round430,
+for +4.88 pp (95% paired cluster interval +1.76 to +8.01). Against public
+Counterplay, the two-index hybrid scored 42.58% vs 38.57% raw, +4.00 pp
+(+0.88 to +7.13). Both arms completed 1,024 side-swapped games. One public
+Counterplay timeout was recovered by replaying the exact team, preview, and
+evaluator seeds; the final comparison has all 512 clusters and no corrections.
+Team, preview, and evaluator-seed identities are paired, but Showdown battle
+randomness is generated independently server-side. These intervals therefore
+measure team-cluster variation, not common-random-number variance reduction.
+This is a Round430 opening heuristic, not PPO learning or evidence of optimal
+play. Test on fresh seeds and PPO opponents before considering training use.
+See `site/round430_opening_interventions.json` in the Pages checkout for raw
+artifacts and score intervals.
+
+**PPO population transfer (2026-10-30):** On the same 512 clusters, the
+decision-1-and-4 hybrid scored 58.59% against Round464 versus 52.05% raw
+Round430 (+6.54 pp; 95% paired cluster interval +3.52 to +9.67). Against
+Round465 it scored 58.89% versus 51.46% raw (+7.42 pp; +4.30 to +10.55).
+Both comparisons contain 1,024 complete side-swapped matches; one Round464
+timeout was replayed with its exact teams, previews, and evaluator seeds.
+Across Max Damage, public Counterplay, Round464, and Round465, each paired
+cluster interval excludes zero on this one matched team/preview set. This is
+promising transfer evidence for the Round430-specific heuristic, but not
+independent-seed confirmation or improvement of the underlying PPO policy.
+Keep the raw checkpoint and require fresh clusters before any promotion.
+
+**Independent seed-set replication:** A disjoint 128-team set with two
+side-swapped repeats per cluster confirmed the [1,4] override. Pooling with the
+initial 512-cluster set, while averaging repeated outcomes within each cluster,
+gives Max Damage 36.80% raw vs 42.03% hybrid, +5.23 pp (95% CI +2.50 to
++7.97); public Counterplay 38.32% vs 42.58%, +4.26 pp (+1.56 to +6.95);
+Round465 PPO 50.94% vs 58.79%, +7.85 pp (+5.20 to +10.59). Each pooled
+comparison has 640 disjoint team clusters. Round464's independent 128-cluster
+seed set also replicated positively; pooled evidence is reported above. Both
+seed sets use the same Round402 team selector and
+public random-team source, so this is meaningful targeted replication but not
+broad optimal-play validation. Pooled artifacts are recorded under
+`training/outputs/phase12_headless/round430_opening1and4_*_pooled_seed_sets_640clusters.json`.
 
 
 - Fresh Round464 replication: on 128 new team clusters × two side-swapped
@@ -16583,3 +16818,45 @@ team choice but does not change that conclusion.
   replayed exactly. All four opponent classes now have a second seed set and
   pooled confidence interval; this remains a heuristic comparison, not learned
   PPO improvement or proof of optimal play.
+
+### Round466 PPO update and held-out screen (2026-10-30)
+
+- Resumed from Round430 for 20,000 matches: 6,000 vs Max Damage (half with
+  teacher labels on P1 decisions 1 and 4), 6,000 vs public Counterplay, and
+  8,000 against Round430/Round464/Round465 in equal policy-pool proportions.
+  PPO used terminal outcomes, 4 epochs, minibatch 512, learning rate 5e-5,
+  and the existing win-probability and hidden-set auxiliary losses. Teacher
+  actions were excluded from PPO loss and weighted 0.1 as teacher targets.
+- The first audit falsely rejected all 11,999 mirrored rule-based opponent
+  records because they have no PPO behavior log probabilities. Fixed the audit
+  and recovery validation to require those logs only on the trainable
+  perspective. Replayed the one identical-team match with a disjoint rollout
+  seed while retaining its record ID. Strict audit then passed: 40,000 safe
+  player-view rows, 20,000 complete games, opponent mix 6k/6k/8k, and 162,363
+  trainable transitions.
+- PPO completed 1,272 optimizer steps (4 passes), approximate KL 0.00943,
+  win-probability loss 0.4753. GPU optimization used the RTX 4060 Laptop GPU
+  at about 84% utilization and 1.3 GB of 8 GB VRAM. Sample preparation took
+  about 90 seconds; the optimizer took about 53 seconds. Episode-weighted
+  per-worker rollout rates were 7.43 games/s for Max Damage, 5.41 for the
+  policy pool, and 4.86 for public Counterplay. Mean action selection was
+  48/78/120 ms respectively; observation encoding 25–26 ms, engine roundtrip
+  29–33 ms, and trajectory persistence 9–13 ms. The slowest run shard took
+  about 509 seconds. The earlier preflight failure prevented retaining an
+  exact aggregate rollout wall-time metric, so report per-shard rates only.
+- Fresh held-out screen: 128 team-pair clusters, two side-swapped outcomes
+  per cluster (512 games per opponent), deterministic policies, no timeouts or
+  action adjustments. Scores and 95% cluster-bootstrap intervals: Max Damage
+  40.82% [33.79, 47.85], Public Counterplay 37.70% [30.66, 44.73], Round464
+  57.23% [50.00, 64.45], Round465 51.17% [43.95, 58.40]. On identical
+  Max Damage and Counterplay teams/seeds, Round466 vs Round430 deltas were
+  +0.59 pp [-1.95, +3.32] and 0.00 pp [-2.73, +2.93], respectively. Neither
+  provides evidence of a hard-opponent improvement. Keep Round430 as the
+  validated strength incumbent; Round466 is a completed challenger only.
+- The trained checkpoint is atomically available at
+  `training/outputs/phase12_headless/round466_round430_opening14_teacher_pool430_464_465_20k_20261031/checkpoints/latest.pt`.
+  Raw evaluations and repaired audit are in the same run directory. Round466
+  did not replace the incumbent based on these small screens.
+- The win-probability head remained auxiliary: default move choice still
+  comes directly from masked PPO action logits. Search/evaluator-based action
+  selection remains opt-in and disabled in the default policy.
