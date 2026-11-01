@@ -1,0 +1,97 @@
+{
+  "title": "Matched opening decision diagnostic: Round430 vs Round574",
+  "method": "128 fresh team-pair clusters, side-swapped, one repeat; traces summarize the checkpoint's first decision and resulting turn state.",
+  "paired_score_comparison": {
+    "baseline_score_pct": 41.406,
+    "candidate_score_pct": 39.453,
+    "candidate_minus_baseline_pp": -1.953,
+    "cluster_ci95_pp": [
+      -5.859,
+      1.172
+    ],
+    "matched_team_clusters": 128
+  },
+  "round430": {
+    "trace_directory": "training/outputs/phase12_headless/round577_round430_maxdamage_traces_128_20261101",
+    "games": 256,
+    "wins": 106,
+    "score_pct": 41.406,
+    "protect_family_available": 224,
+    "protect_family_used": 6,
+    "protect_use_rate_when_available_pct": 2.679,
+    "first_turn_active_faint": {
+      "False": {
+        "games": 136,
+        "wins": 66,
+        "score_pct": 48.529
+      },
+      "True": {
+        "games": 120,
+        "wins": 40,
+        "score_pct": 33.333
+      }
+    },
+    "first_turn_opponent_active_faint": {
+      "False": {
+        "games": 168,
+        "wins": 59,
+        "score_pct": 35.119
+      },
+      "True": {
+        "games": 88,
+        "wins": 47,
+        "score_pct": 53.409
+      }
+    },
+    "first_turn_action_kinds": {
+      "move+move": {
+        "games": 256,
+        "wins": 106,
+        "score_pct": 41.406
+      }
+    },
+    "interpretation_limit": "Associational only: team selection, lead matchup, move legality, hidden sets, and chance outcomes confound action/result comparisons. Protect availability does not imply that Protect was the best action."
+  },
+  "round574": {
+    "trace_directory": "training/outputs/phase12_headless/round576_round574_maxdamage_traces_128_20261101",
+    "games": 256,
+    "wins": 101,
+    "score_pct": 39.453,
+    "protect_family_available": 224,
+    "protect_family_used": 4,
+    "protect_use_rate_when_available_pct": 1.786,
+    "first_turn_active_faint": {
+      "False": {
+        "games": 134,
+        "wins": 65,
+        "score_pct": 48.507
+      },
+      "True": {
+        "games": 122,
+        "wins": 36,
+        "score_pct": 29.508
+      }
+    },
+    "first_turn_opponent_active_faint": {
+      "False": {
+        "games": 171,
+        "wins": 57,
+        "score_pct": 33.333
+      },
+      "True": {
+        "games": 85,
+        "wins": 44,
+        "score_pct": 51.765
+      }
+    },
+    "first_turn_action_kinds": {
+      "move+move": {
+        "games": 256,
+        "wins": 101,
+        "score_pct": 39.453
+      }
+    },
+    "interpretation_limit": "Associational only: team selection, lead matchup, move legality, hidden sets, and chance outcomes confound action/result comparisons. Protect availability does not imply that Protect was the best action."
+  },
+  "finding": "The low Max Damage score is present in both checkpoints; doubling PPO passes did not resolve it. Early active-Pokemon knockouts are associated with worse match outcomes, while protective moves are rarely selected even when available. These data identify an opening-survival diagnostic target, not a proven action fix."
+}

@@ -1,0 +1,66 @@
+{
+  "status": "Complete; stochastic-action diagnostic",
+  "candidate": "Round430 with stochastic masked action sampling",
+  "baseline": "Round430 with deterministic argmax actions",
+  "method": "128 fresh team-pair clusters per opponent, both seat orders, identical seeds/team selectors; one outcome repeat per cluster. Only in-battle action sampling changes.",
+  "opponents": {
+    "counterplay": {
+      "deterministic_score_pct": 33.465,
+      "stochastic_score_pct": 27.344,
+      "paired_delta_pp": -6.693,
+      "cluster_ci95_pp": [
+        -12.992,
+        -0.787
+      ],
+      "clusters": 127,
+      "deterministic_errors": 1,
+      "stochastic_errors": 0,
+      "stochastic_action_adjustments": 0
+    },
+    "max_damage": {
+      "deterministic_score_pct": 41.797,
+      "stochastic_score_pct": 38.281,
+      "paired_delta_pp": -3.516,
+      "cluster_ci95_pp": [
+        -8.984,
+        1.953
+      ],
+      "clusters": 128,
+      "deterministic_errors": 0,
+      "stochastic_errors": 0,
+      "stochastic_action_adjustments": 0
+    },
+    "public_counterplay": {
+      "deterministic_score_pct": 41.406,
+      "stochastic_score_pct": 41.016,
+      "paired_delta_pp": -0.391,
+      "cluster_ci95_pp": [
+        -6.641,
+        5.859
+      ],
+      "clusters": 128,
+      "deterministic_errors": 0,
+      "stochastic_errors": 0,
+      "stochastic_action_adjustments": 0
+    },
+    "random": {
+      "deterministic_score_pct": 91.016,
+      "stochastic_score_pct": 92.188,
+      "paired_delta_pp": 1.172,
+      "cluster_ci95_pp": [
+        -2.734,
+        5.469
+      ],
+      "clusters": 128,
+      "deterministic_errors": 0,
+      "stochastic_errors": 0,
+      "stochastic_action_adjustments": 0
+    }
+  },
+  "checkpoint": "/home/justin/p/poke_learning_2/training/outputs/phase12_headless/round430_hard_opponent_auxiliary_ppo_20k_20261030/checkpoints/latest.pt",
+  "clusters_per_opponent": 128,
+  "workers": 8,
+  "seed_start": 202611581,
+  "interpretation": "This measures whether sampling from the existing policy distribution improves these held-out matchups. It does not train a new policy or prove Nash-equilibrium play.",
+  "reproduction": "scripts/evaluate_round581_stochastic_policy_128x1.sh"
+}

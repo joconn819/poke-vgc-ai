@@ -1405,16 +1405,15 @@
     }
   },
   "latest_run": {
-    "round": 575,
-    "status": "Fresh eight-opponent evaluation complete; Round574 not promoted",
-    "summary": "Round574 used 8 PPO passes on 20,000 games. Against Round430, paired deltas on 128 fresh team-pair clusters were inconclusive across all eight opponents. Absolute scores remained 40.23% vs Max Damage, 28.13% vs Counterplay, and 44.14% vs Public Counterplay. These sub-50% scores are substantive exploitability failures; Round430 remains incumbent only as the validated baseline.",
-    "games": "20,000 training games; 128 fresh team-pair clusters per opponent, both seats",
-    "epochs": "8 PPO passes \u00b7 2,696 optimizer steps \u00b7 approximate KL 0.00608",
-    "evaluation": "Paired team-cluster bootstrap; one baseline Public Counterplay cluster excluded; no promotion"
+    "round": 581,
+    "status": "Stochastic action sampling screen complete; rejected as general fix",
+    "summary": "Sampling Round430 masked actions did not improve direct-heuristic performance. It scored 38.28% vs Max Damage (\u22123.52 pp paired vs deterministic), 27.34% vs Counterplay (\u22126.69 pp, 95% paired CI [\u221212.99,\u22120.79]), and 41.02% vs Public Counterplay (\u22120.39 pp). All remain below 50%, direct evidence of exploitable play.",
+    "games": "128 fresh team-pair clusters per opponent, both seats; one repeat; one deterministic Counterplay cluster excluded",
+    "evaluation": "Paired team-cluster bootstrap; no model training; sampling significantly harmed Counterplay and was not promoted"
   },
   "method": "Native self-play PPO for in-battle decisions. Terminal win/loss remains the main objective; win-probability and hidden-set prediction are auxiliary tasks. Search comes after a stronger policy.",
   "jax_decision": "Round430 has a confirmed self-play head-to-head lift over Round424, but external-opponent screens remain inconclusive. Prioritize measured inference batching, observation throughput, and rollouts; keep equilibrium-oriented opponent coverage and defer a JAX/GPU engine rewrite until its end-to-end payoff is measured.",
-  "evaluation_note": "A reproducible score below 50% against a legal simple heuristic is direct evidence of exploitable, non-optimal play on that opponent/team distribution; it is not by itself a measurement of distance from global equilibrium. Round575: Round574 scored 40.23% vs Max Damage, 28.13% vs Counterplay, 44.14% vs Public Counterplay on fresh teams. None of its paired deltas vs Round430 excluded zero. Round430 remains only the incumbent baseline; neither checkpoint is close to robust play.",
+  "evaluation_note": "A reproducible score below 50% against a legal simple heuristic is direct evidence of exploitable, non-optimal play on that matchup distribution. Round581 deterministic Round430 scored 41.80% vs Max Damage, 33.47% vs Counterplay, and 41.41% vs Public Counterplay. Sampling produced 38.28%, 27.34%, and 41.02%, respectively; the Counterplay decline was significant (paired 95% team-cluster CI \u221212.99 to \u22120.79 pp). Keep deterministic Round430 only as a reference baseline, not as a strong policy. The next step is payoff-based robust policy learning, with every direct-heuristic absolute score reported as a failure gate.",
   "generated_at": "2026-11-01",
   "round462_evaluation": {
     "status": "Round462 not promoted \u00b7 initial paired screen complete",
@@ -8831,5 +8830,71 @@
       }
     },
     "promotion": "Not promoted; no paired interval excludes zero and absolute scores vs simple heuristics remain below 50%."
+  },
+  "round581_stochastic_action_evaluation": {
+    "status": "Complete; stochastic-action diagnostic",
+    "candidate": "Round430 with stochastic masked action sampling",
+    "baseline": "Round430 with deterministic argmax actions",
+    "method": "128 fresh team-pair clusters per opponent, both seat orders, identical seeds/team selectors; one outcome repeat per cluster. Only in-battle action sampling changes.",
+    "opponents": {
+      "counterplay": {
+        "deterministic_score_pct": 33.465,
+        "stochastic_score_pct": 27.344,
+        "paired_delta_pp": -6.693,
+        "cluster_ci95_pp": [
+          -12.992,
+          -0.787
+        ],
+        "clusters": 127,
+        "deterministic_errors": 1,
+        "stochastic_errors": 0,
+        "stochastic_action_adjustments": 0
+      },
+      "max_damage": {
+        "deterministic_score_pct": 41.797,
+        "stochastic_score_pct": 38.281,
+        "paired_delta_pp": -3.516,
+        "cluster_ci95_pp": [
+          -8.984,
+          1.953
+        ],
+        "clusters": 128,
+        "deterministic_errors": 0,
+        "stochastic_errors": 0,
+        "stochastic_action_adjustments": 0
+      },
+      "public_counterplay": {
+        "deterministic_score_pct": 41.406,
+        "stochastic_score_pct": 41.016,
+        "paired_delta_pp": -0.391,
+        "cluster_ci95_pp": [
+          -6.641,
+          5.859
+        ],
+        "clusters": 128,
+        "deterministic_errors": 0,
+        "stochastic_errors": 0,
+        "stochastic_action_adjustments": 0
+      },
+      "random": {
+        "deterministic_score_pct": 91.016,
+        "stochastic_score_pct": 92.188,
+        "paired_delta_pp": 1.172,
+        "cluster_ci95_pp": [
+          -2.734,
+          5.469
+        ],
+        "clusters": 128,
+        "deterministic_errors": 0,
+        "stochastic_errors": 0,
+        "stochastic_action_adjustments": 0
+      }
+    },
+    "checkpoint": "/home/justin/p/poke_learning_2/training/outputs/phase12_headless/round430_hard_opponent_auxiliary_ppo_20k_20261030/checkpoints/latest.pt",
+    "clusters_per_opponent": 128,
+    "workers": 8,
+    "seed_start": 202611581,
+    "interpretation": "This measures whether sampling from the existing policy distribution improves these held-out matchups. It does not train a new policy or prove Nash-equilibrium play.",
+    "reproduction": "scripts/evaluate_round581_stochastic_policy_128x1.sh"
   }
 }

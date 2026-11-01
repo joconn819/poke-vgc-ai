@@ -1,0 +1,190 @@
+{
+  "baseline": "Round430 hard-opponent auxiliary PPO",
+  "candidate": "Round579 bootstrap-weighted robust-response PPO",
+  "method": "128 fresh team-pair clusters per opponent, one outcome repeat per cluster, side-swapped, identical seeds/teams/previews/selectors for both checkpoints. Paired confidence intervals bootstrap team-pair clusters. Server randomness is not identical between candidate and baseline arms.",
+  "opponent_classes": [
+    "Random",
+    "Max Damage",
+    "Counterplay",
+    "Public Counterplay",
+    "Round473 PPO",
+    "Round476 PPO",
+    "Round485 PPO",
+    "Round524 PPO"
+  ],
+  "opponents": {
+    "counterplay": {
+      "cluster_ci95_pp": [
+        -4.688,
+        3.125
+      ],
+      "matched_cases": 128,
+      "matched_team_clusters": 128,
+      "paired_delta_pp": -0.781,
+      "round430_action_adjustments": 0,
+      "round430_games_per_second": 4.169,
+      "round430_score_pct": 35.156,
+      "round430_timeouts_or_errors": 0,
+      "round579_action_adjustments": 0,
+      "round579_games_per_second": 3.811,
+      "round579_score_pct": 34.375,
+      "round579_timeouts_or_errors": 0
+    },
+    "max_damage": {
+      "cluster_ci95_pp": [
+        -2.734,
+        4.688
+      ],
+      "matched_cases": 128,
+      "matched_team_clusters": 128,
+      "paired_delta_pp": 0.781,
+      "round430_action_adjustments": 0,
+      "round430_games_per_second": 4.7,
+      "round430_score_pct": 35.156,
+      "round430_timeouts_or_errors": 0,
+      "round579_action_adjustments": 0,
+      "round579_games_per_second": 2.881,
+      "round579_score_pct": 35.938,
+      "round579_timeouts_or_errors": 0
+    },
+    "public_counterplay": {
+      "cluster_ci95_pp": [
+        -4.297,
+        2.734
+      ],
+      "matched_cases": 128,
+      "matched_team_clusters": 128,
+      "paired_delta_pp": -0.781,
+      "round430_action_adjustments": 0,
+      "round430_games_per_second": 6.534,
+      "round430_score_pct": 34.375,
+      "round430_timeouts_or_errors": 0,
+      "round579_action_adjustments": 0,
+      "round579_games_per_second": 4.328,
+      "round579_score_pct": 33.594,
+      "round579_timeouts_or_errors": 0
+    },
+    "random": {
+      "cluster_ci95_pp": [
+        -2.344,
+        2.344
+      ],
+      "matched_cases": 128,
+      "matched_team_clusters": 128,
+      "paired_delta_pp": 0.0,
+      "round430_action_adjustments": 0,
+      "round430_games_per_second": 3.601,
+      "round430_score_pct": 92.578,
+      "round430_timeouts_or_errors": 0,
+      "round579_action_adjustments": 0,
+      "round579_games_per_second": 2.178,
+      "round579_score_pct": 92.578,
+      "round579_timeouts_or_errors": 0
+    },
+    "round473": {
+      "cluster_ci95_pp": [
+        -3.906,
+        1.562
+      ],
+      "matched_cases": 128,
+      "matched_team_clusters": 128,
+      "paired_delta_pp": -1.172,
+      "round430_action_adjustments": 0,
+      "round430_games_per_second": 3.529,
+      "round430_score_pct": 52.734,
+      "round430_timeouts_or_errors": 0,
+      "round579_action_adjustments": 0,
+      "round579_games_per_second": 2.986,
+      "round579_score_pct": 51.562,
+      "round579_timeouts_or_errors": 0
+    },
+    "round476": {
+      "cluster_ci95_pp": [
+        -3.906,
+        4.297
+      ],
+      "matched_cases": 128,
+      "matched_team_clusters": 128,
+      "paired_delta_pp": 0.391,
+      "round430_action_adjustments": 0,
+      "round430_games_per_second": 1.641,
+      "round430_score_pct": 44.531,
+      "round430_timeouts_or_errors": 0,
+      "round579_action_adjustments": 0,
+      "round579_games_per_second": 2.302,
+      "round579_score_pct": 44.922,
+      "round579_timeouts_or_errors": 0
+    },
+    "round485": {
+      "cluster_ci95_pp": [
+        -3.937,
+        2.756
+      ],
+      "matched_cases": 127,
+      "matched_team_clusters": 127,
+      "paired_delta_pp": -0.394,
+      "round430_action_adjustments": 0,
+      "round430_games_per_second": 2.155,
+      "round430_score_pct": 50.394,
+      "round430_timeouts_or_errors": 1,
+      "round579_action_adjustments": 0,
+      "round579_games_per_second": 2.946,
+      "round579_score_pct": 49.609,
+      "round579_timeouts_or_errors": 0
+    },
+    "round524": {
+      "cluster_ci95_pp": [
+        -7.812,
+        -0.391
+      ],
+      "matched_cases": 128,
+      "matched_team_clusters": 128,
+      "paired_delta_pp": -3.906,
+      "round430_action_adjustments": 0,
+      "round430_games_per_second": 2.003,
+      "round430_score_pct": 47.656,
+      "round430_timeouts_or_errors": 0,
+      "round579_action_adjustments": 0,
+      "round579_games_per_second": 1.498,
+      "round579_score_pct": 43.75,
+      "round579_timeouts_or_errors": 0
+    }
+  },
+  "paired_cases_per_checkpoint_per_opponent": 128,
+  "promotion": "Screening evidence only; do not promote without independent confirmation and held-out-team evaluation.",
+  "reproduction": "scripts/evaluate_round579_fresh_league_128x1.sh",
+  "round430_checkpoint": "/home/justin/p/poke_learning_2/training/outputs/phase12_headless/round430_hard_opponent_auxiliary_ppo_20k_20261030/checkpoints/latest.pt",
+  "round579_checkpoint": "/home/justin/p/poke_learning_2/training/outputs/phase12_headless/round579_robust_ppo_2x_lr_20k_20261101/checkpoints/latest.pt",
+  "side_swapped_matches_per_checkpoint_per_opponent_requested": 256,
+  "status": "Complete; fresh eight-class screen",
+  "workers": 8,
+  "round": 580,
+  "training_checkpoint": "training/outputs/phase12_headless/round579_robust_ppo_2x_lr_20k_20261101/checkpoints/latest.pt",
+  "training_summary": {
+    "games": 20000,
+    "trainable_transitions": 172083,
+    "ppo_passes": 4,
+    "optimizer_steps": 1348,
+    "approx_kl": 0.0074646287,
+    "clip_fraction": 0.09724186,
+    "rollout_seconds": 659.8763,
+    "rollout_games_per_second": 30.309,
+    "input_to_checkpoint_seconds": 1074.194,
+    "input_to_checkpoint_games_per_second": 18.618,
+    "preflight_seconds": 251.65649414400104,
+    "recovery_seconds": 122.31293890601955,
+    "ppo_seconds": 162.61980974196922,
+    "raw_rollout_bytes": 4004356476,
+    "compressed_rollout_bytes": 228941686,
+    "mean_cpu_cores": 6.348977034432416,
+    "peak_aggregate_rss_mb": 9701.40625,
+    "audit": {
+      "opponent_view_rows": 20000,
+      "player_view_rows": 40000,
+      "ppo_valid_rows": 20000,
+      "safe_rows": 40000,
+      "trainable_games": 20000,
+      "trainable_transitions": 172083
+    }
+  }
+}
