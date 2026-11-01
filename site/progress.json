@@ -7953,6 +7953,9 @@
       4.75,
       4.39,
       6.3
-    ]
+    ],
+    "completed_games": 3326,
+    "timeouts_or_errors": 1,
+    "action_adjustments": 0
   }
 }
