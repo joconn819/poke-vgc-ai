@@ -19011,6 +19011,23 @@ and OUT set to the Round524 checkpoint and output paths.
   Reproduction: scripts/evaluate_round528_policy_population_matrix.sh;
   summarizer: scripts/summarize_round528_policy_population_matrix.py.
 
+### Round529: checkpoint policies versus fixed heuristic responses (running)
+
+- Extend Round528's checkpoint-only results with a rectangular payoff matrix:
+  seven candidate checkpoint policies against seven prior policy checkpoints and
+  three fixed heuristic responses (Max Damage, Counterplay, Public Counterplay).
+  The checkpoint-vs-checkpoint columns reuse Round528's 127 common-cluster data.
+- Each new policy-vs-heuristic cell uses 128 team-pair clusters, both seats, the
+  same preview selector and seed schedule. This tests whether any available
+  checkpoint mixture improves its worst-case score when the simple strategies
+  are included as adversarial responses. It does not predict opponent habits.
+- Output: training/outputs/phase12_headless/round529_checkpoint_heuristic_payoffs_128x1_20261031/.
+  Reproduction: scripts/evaluate_round529_checkpoint_heuristic_payoffs.sh;
+  summarizer: scripts/summarize_round529_checkpoint_heuristic_payoffs.py.
+- Status: started with eight CPU workers. Report per-cell speed, completion,
+  errors, common-cluster count, matrix uncertainty, and whether the robust mix
+  is stable before selecting a training target.
+
 ### Next training direction after Round528
 
 - Do not repeat the first-five Max Damage teacher recipe, the positive-minimum
