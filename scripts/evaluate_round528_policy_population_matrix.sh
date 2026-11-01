@@ -101,9 +101,10 @@ def solve(A):
  p=np.maximum(res.x[:-1],0);p/=p.sum();return p,float(res.x[-1])
 point_mix,point_value=solve(M)
 rng=np.random.default_rng(seed+528);B=2000;mixes=np.zeros((B,n));values=np.zeros(B)
-seed_ix=rng.integers(0,len(common),(B,len(common)))
+common_arr=np.asarray(common,dtype=np.int64)
+seed_ix=rng.integers(0,len(common_arr),(B,len(common_arr)))
 for k in range(B):
- sample=common_arr=seed_ix[k]
+ sample=common_arr[seed_ix[k]]
  A=np.full((n,n),.5,dtype=np.float64)
  for (i,j),scores in cluster_scores.items():
   vals=np.asarray([scores[x] for x in common],dtype=np.float64)
