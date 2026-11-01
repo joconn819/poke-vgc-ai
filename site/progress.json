@@ -8472,10 +8472,10 @@
     ],
     "training_script": "scripts/train_round532_maxdamage_floor_20k.sh",
     "note": "One-factor mixture ablation raises Max Damage from 11.25% to 30%, preserving the policy pool and relative weighting between Counterplay and Public Counterplay.",
-    "stage": "Rollout generation running; 10,105 of 20,000 completed episodes reported. Strict audit and PPO update follow.",
+    "stage": "Rollout generation running; 15,105 of 20,000 completed episodes reported. Strict audit and PPO update follow.",
     "started_at": "2026-10-31",
-    "rollout_episodes_reported_complete": 10105,
-    "rollout_progress_percent_reported_complete": 50.525,
+    "rollout_episodes_reported_complete": 15105,
+    "rollout_progress_percent_reported_complete": 75.525,
     "evaluation_script": "scripts/evaluate_round532_repeated_fresh_league_128x2.sh",
     "speed_reference": {
       "round": "Round531",
@@ -8485,19 +8485,19 @@
       "current_bottleneck": "Action selection at 103 ms per episode; Round532 own profile pending."
     },
     "provisional_speed": {
-      "completed_episodes": 10105,
-      "elapsed_seconds_since_training_process_start": 433,
-      "reported_completed_shard_games_per_second_lower_bound": 23.34,
+      "completed_episodes": 15105,
+      "elapsed_seconds_since_training_process_start": 529,
+      "reported_completed_shard_games_per_second_lower_bound": 28.55,
       "note": "Includes startup and counts completed shard summaries only; unfinished shards are not counted. Not the final rollout throughput."
     },
     "provisional_profile_ms_per_episode": {
-      "sampled_completed_shards": 18,
-      "end_to_end_episode": 167.9,
-      "action_selection": 71.0,
-      "policy_inference": 43.0,
-      "headless_engine_roundtrip": 33.5,
-      "observation_encoding": 27.5,
-      "baseline_action": 12.8
+      "sampled_completed_shards": 20,
+      "end_to_end_episode": 177.0,
+      "action_selection": 80.5,
+      "baseline_action": 23.8,
+      "policy_inference": 41.2,
+      "headless_engine_roundtrip": 34.0,
+      "observation_encoding": 27.9
     }
   }
 }
