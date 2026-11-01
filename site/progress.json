@@ -8740,15 +8740,15 @@
     "next": "Targeted loss-state action-regret diagnosis against multiple legal responses; do not repeat broad opponent-mixture changes without a measured failure mechanism."
   },
   "latest_diagnostic": {
-    "round": 554,
-    "title": "Robust-dominance ranker did not improve Max Damage performance",
-    "status": "Fresh full-match screen complete; rejected",
-    "summary": "Round554: 40.04% vs Max Damage (95% team-cluster CI [33.01%, 47.46%]); its Round542 source scored exactly the same. Paired candidate-minus-source delta: 0.00 pp [\u22120.59,+0.59]. Absolute score below 50% signals exploitable, non-optimal play even when a paired change is statistically unresolved. The ranker is rejected; Round430 remains the active policy.",
-    "clusters": 128,
-    "branch_matches": 512,
-    "matches_per_second": 4.476,
-    "metric_note": "Round554: 40.04% vs Max Damage (95% team-cluster CI [33.01%, 47.46%]); its Round542 source scored exactly the same. Paired candidate-minus-source delta: 0.00 pp [\u22120.59,+0.59].",
-    "information_note": "Absolute score below 50% signals exploitable, non-optimal play even when a paired change is statistically unresolved. The ranker is rejected; Round430 remains the active policy.",
-    "report": "round554_robust_dominance_ranker.json"
+    "round": 562,
+    "title": "Local midgame action headroom found; deployable search still unproven",
+    "status": "Counterfactual and full-match search screens complete; no promotion",
+    "summary": "Round562 selected actions on one half of sampled outcomes and tested on the other: equal-response gains +5.00 pp [0.58, 9.54] and +8.37 pp [3.84, 13.14] across two splits; maximin gains were smaller and unresolved. This is an outcome-informed local oracle, not agent strength. Round563/564 equilibrium search changed many actions but scored 0.00 pp aggregate delta on 64 clusters against each opponent. Round430 remains active; search stays disabled.",
+    "clusters": 43,
+    "branch_matches": 15187,
+    "matches_per_second": 48.966,
+    "metric_note": "Round562 selected actions on one half of sampled outcomes and tested on the other: equal-response gains +5.00 pp [0.58, 9.54] and +8.37 pp [3.84, 13.14] across two splits; maximin gains were smaller and unresolved.",
+    "information_note": "This is an outcome-informed local oracle, not agent strength. Round563/564 equilibrium search changed many actions but scored 0.00 pp aggregate delta on 64 clusters against each opponent. Round430 remains active; search stays disabled.",
+    "report": "round562_midgame_action_diagnostic.json"
   }
 }

@@ -1,0 +1,168 @@
+{
+  "schema_version": 1,
+  "round": 562,
+  "title": "Local midgame action headroom found; deployable search still unproven",
+  "status": "Counterfactual and full-match search screens complete; no promotion",
+  "format": "gen9championsdoubles2026mcclosed",
+  "requested_team_clusters": 64,
+  "states_captured": 43,
+  "hidden_worlds_prepared": 172,
+  "counterfactual_branches": 15187,
+  "matches_per_second": 48.966,
+  "rejected_actions": 0,
+  "missing_states": 21,
+  "missing_state_reasons": {
+    "forced_switch": 20,
+    "public_transform": 1
+  },
+  "responses": [
+    "max_damage",
+    "policy",
+    "public_counterplay",
+    "random",
+    "counterplay"
+  ],
+  "heldout_action_selection": {
+    "first_half_train_last_half_test": {
+      "mean": {
+        "states": 43,
+        "changed_actions": 27,
+        "equal_weight_delta_pp": 5.0,
+        "cluster_bootstrap_ci95_pp": [
+          0.581,
+          9.535
+        ],
+        "delta_by_response_pp": {
+          "max_damage": 4.651,
+          "policy": 7.558,
+          "public_counterplay": 9.884,
+          "random": -2.907,
+          "counterplay": 5.814
+        }
+      },
+      "maximin": {
+        "states": 43,
+        "changed_actions": 14,
+        "equal_weight_delta_pp": 3.256,
+        "cluster_bootstrap_ci95_pp": [
+          -0.116,
+          7.093
+        ],
+        "delta_by_response_pp": {
+          "max_damage": 4.07,
+          "policy": 4.651,
+          "public_counterplay": 1.744,
+          "random": 0.0,
+          "counterplay": 5.814
+        }
+      }
+    },
+    "even_train_odd_test": {
+      "mean": {
+        "states": 43,
+        "changed_actions": 26,
+        "equal_weight_delta_pp": 8.372,
+        "cluster_bootstrap_ci95_pp": [
+          3.837,
+          13.14
+        ],
+        "delta_by_response_pp": {
+          "max_damage": 12.791,
+          "policy": 8.721,
+          "public_counterplay": 10.465,
+          "random": 3.488,
+          "counterplay": 6.395
+        }
+      },
+      "maximin": {
+        "states": 43,
+        "changed_actions": 14,
+        "equal_weight_delta_pp": 2.674,
+        "cluster_bootstrap_ci95_pp": [
+          -1.395,
+          6.977
+        ],
+        "delta_by_response_pp": {
+          "max_damage": 5.814,
+          "policy": 1.744,
+          "public_counterplay": 0.581,
+          "random": -0.581,
+          "counterplay": 5.814
+        }
+      }
+    }
+  },
+  "round560_active_policy_trace": {
+    "team_clusters": 64,
+    "games": 256,
+    "win_rate_pct": 42.578,
+    "cluster_ci95_pct": [
+      32.813,
+      52.734
+    ],
+    "exploratory": true
+  },
+  "round561_opening_action_screen": {
+    "team_clusters": 64,
+    "repeats_per_cluster": 2,
+    "matches": 1832,
+    "matches_per_second": 8.144,
+    "versus_max_damage": {
+      "policy_rate_pct": 47.656,
+      "policy_ci95_pct": [
+        37.5,
+        57.813
+      ],
+      "max_damage_opening_rate_pct": 42.969,
+      "max_damage_opening_ci95_pct": [
+        32.813,
+        53.125
+      ],
+      "max_damage_opening_minus_policy_pp": -4.688,
+      "paired_ci95_pp": [
+        -12.5,
+        3.906
+      ]
+    }
+  },
+  "round563_equilibrium_search_max_damage": {
+    "clusters": 64,
+    "raw_rate_pct": 36.719,
+    "search_rate_pct": 36.719,
+    "paired_delta_pp": 0,
+    "paired_ci95_pp": [
+      -7.031,
+      7.031
+    ],
+    "action_change_rate_pct": 81.25,
+    "latency_median_ms": 243.806,
+    "latency_p95_ms": 360.573,
+    "search_failures": 2,
+    "matches_per_second": 4.253
+  },
+  "round564_equilibrium_search_public_counterplay": {
+    "clusters": 64,
+    "raw_rate_pct": 46.094,
+    "search_rate_pct": 46.094,
+    "paired_delta_pp": 0,
+    "paired_ci95_pp": [
+      -7.813,
+      7.813
+    ],
+    "action_change_rate_pct": 72.656,
+    "latency_median_ms": 253.326,
+    "latency_p95_ms": 354.266,
+    "search_failures": 1,
+    "matches_per_second": 3.276
+  },
+  "interpretation": "The held-out action oracle is not a deployable policy: it selects actions using observed counterfactual outcomes, and its branches revert to Round430 after the first action. The current learned equilibrium search changes many moves but has no measured full-match lift in these small screens. Keep Round430 active and search disabled; next improve how local payoff information transfers into an information-safe policy or frontier value.",
+  "source_data": "training/outputs/phase12_headless/round562_round430_midgame_action_screen_64x4x2_20261101/data.json",
+  "action_selection_report": "training/outputs/phase12_headless/round562_round430_midgame_action_screen_64x4x2_20261101/heldout_action_selection_all5.json",
+  "search_reports": [
+    "training/outputs/phase12_headless/round563_round430_equilibrium_search_maxdamage_64_20261101/report.json",
+    "training/outputs/phase12_headless/round564_round430_equilibrium_search_public_counterplay_64_20261101/report.json"
+  ],
+  "metric_note": "Round562 selected actions on one half of sampled outcomes and tested on the other: equal-response gains +5.00 pp [0.58, 9.54] and +8.37 pp [3.84, 13.14] across two splits; maximin gains were smaller and unresolved.",
+  "information_note": "This is an outcome-informed local oracle, not agent strength. Round563/564 equilibrium search changed many actions but scored 0.00 pp aggregate delta on 64 clusters against each opponent. Round430 remains active; search stays disabled.",
+  "report": "round562_midgame_action_diagnostic.json"
+}
