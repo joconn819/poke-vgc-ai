@@ -1,0 +1,33 @@
+{
+  "schema_version": 1,
+  "round": 554,
+  "title": "Robust-dominance ranker did not improve Max Damage performance",
+  "status": "Fresh full-match screen complete; rejected",
+  "format": "gen9championsdoubles2026mcclosed",
+  "seed": 202611554,
+  "clusters": 128,
+  "outcome_repeats_per_cluster": 2,
+  "matches": 512,
+  "wins": 205,
+  "losses": 307,
+  "absolute_win_rate_pct": 40.039,
+  "absolute_cluster_bootstrap_ci95_pct": [
+    33.008,
+    47.461
+  ],
+  "source_win_rate_pct": 40.039,
+  "candidate_minus_source_pp": 0.0,
+  "paired_cluster_ci95_pp": [
+    -0.586,
+    0.586
+  ],
+  "paired_clusters_tied": 126,
+  "timeouts_or_errors": 0,
+  "action_adjustments": 0,
+  "matches_per_second": 4.476,
+  "candidate_checkpoint": "training/outputs/phase12_headless/round554_round551_robust_dominance_ranker_20261101/candidate.pt",
+  "source_checkpoint": "training/outputs/phase12_headless/round542_opening14_response_20k_20261101_retry1/checkpoints/latest.pt",
+  "report": "round554_robust_dominance_ranker.json",
+  "metric_note": "Round554: 40.04% vs Max Damage (95% team-cluster CI [33.01%, 47.46%]); its Round542 source scored exactly the same. Paired candidate-minus-source delta: 0.00 pp [\u22120.59,+0.59].",
+  "information_note": "Absolute score below 50% signals exploitable, non-optimal play even when a paired change is statistically unresolved. The ranker is rejected; Round430 remains the active policy."
+}
