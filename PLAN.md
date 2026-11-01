@@ -19120,7 +19120,7 @@ and OUT set to the Round524 checkpoint and output paths.
 - Historical `pilot_clean` 96.2% vs Max Damage remains unreproduced because its
   checkpoint and match records are absent; it is not a current baseline.
 
-### Round531: iterative robust response PPO (running)
+### Round531: iterative robust response PPO (complete; nine-class evaluation running)
 
 - Started a fresh 20,000-game update from Round530's completed checkpoint, keeping
   the measured Round529 heuristic mixture and adding Round530 to the historical
@@ -19133,7 +19133,28 @@ and OUT set to the Round524 checkpoint and output paths.
   the current policy while preserving the past policy population.
 - Output: `training/outputs/phase12_headless/round531_iterative_robust_response_20k_20261031/`.
   Reproduction: `scripts/train_round531_iterative_robust_response_20k.sh`.
-- Evaluate only after the strict perspective audit and checkpoint complete. Use
-  fresh team seeds and repeat stochastic outcomes for the key weak classes;
-  compare against Round430 on the same teams and report paired cluster
-  intervals, speed, memory, action corrections, and protocol failures.
+- The strict audit accepted all 20,000 episodes and produced 40,000 safe
+  player-view rows with 172,257 trainable transitions. One malformed or
+  timed-out Counterplay episode was replaced with a fresh seed. No invalid
+  actions were recorded in the accepted data.
+- Rollout took 661.52 seconds (30.23 games/s); input-to-checkpoint took
+  1,077.92 seconds (18.55 games/s). Preflight and recovery took 252.69 seconds,
+  including 122.38 seconds for recovery; PPO and checkpoint writing took
+  163.67 seconds. Eight workers averaged 6.37 CPU cores and peaked at 9.51 GiB
+  aggregate RSS. The largest measured per-episode costs were action selection
+  (103.0 ms), baseline action scoring (47.6 ms), policy inference (39.9 ms),
+  Showdown engine round trips (34.3 ms), and observation encoding (27.8 ms).
+- PPO completed 1,348 optimizer steps. Approximate KL was 0.00510, policy loss
+  -0.00376, value loss 0.17971, and win-probability loss 0.42276. These are
+  training diagnostics, not evidence of stronger play.
+- The fresh paired league is running as
+  `training/outputs/phase12_headless/round532_round531_iterative_fresh_league_128x1_20261031/`.
+  It compares Round531 with Round530 over 128 new side-swapped team-pair
+  clusters per opponent, one stochastic outcome per cluster, for Random, Max
+  Damage, Counterplay, Public Counterplay, and rounds 430, 473, 476, 485, and
+  524. Evaluation script:
+  `scripts/evaluate_round531_iterative_fresh_league_128x1.sh`.
+- Round530 is still the control. Round531 will not be promoted based on training
+  loss; inspect per-opponent paired cluster intervals and failures when the
+  screen completes. Below-50% performance against a simple legal policy is a
+  concrete weakness even when a small comparison is statistically uncertain.

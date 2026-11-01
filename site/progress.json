@@ -8338,7 +8338,13 @@
       "public_counterplay": 0.322,
       "prior_policy_pool": 0.1065
     },
-    "opponent_policy_pool": ["round430", "round473", "round476", "round485", "round524"],
+    "opponent_policy_pool": [
+      "round430",
+      "round473",
+      "round476",
+      "round485",
+      "round524"
+    ],
     "speed": {
       "rollout_games_per_second": 30.33,
       "rollout_wall_seconds": 659.48,
@@ -8354,7 +8360,7 @@
     "evaluation_report": "round531_fresh_league.json"
   },
   "round531_training": {
-    "status": "Running",
+    "status": "Training complete; fresh nine-class evaluation running",
     "run": "training/outputs/phase12_headless/round531_iterative_robust_response_20k_20261031",
     "starting_checkpoint": "round530",
     "episodes": 20000,
@@ -8363,12 +8369,46 @@
     "learning_rate": 5e-05,
     "device": "cuda",
     "rollout_workers": 8,
-    "opponent_fractions": {"max_damage": 0.1125, "counterplay": 0.459, "public_counterplay": 0.322, "prior_policy_pool": 0.1065},
-    "opponent_policy_pool": ["round530", "round430", "round473", "round476", "round485", "round524"],
+    "opponent_fractions": {
+      "max_damage": 0.1125,
+      "counterplay": 0.459,
+      "public_counterplay": 0.322,
+      "prior_policy_pool": 0.1065
+    },
+    "opponent_policy_pool": [
+      "round530",
+      "round430",
+      "round473",
+      "round476",
+      "round485",
+      "round524"
+    ],
     "training_script": "scripts/train_round531_iterative_robust_response_20k.sh",
-    "rollout_episodes_reported_complete": 15000,
-    "rollout_progress_percent_reported_complete": 75.0,
-    "stage": "Rollout generation; strict audit and PPO update remain.",
-    "note": "Iterative response to the Round529 empirical adversary mixture; Round530 is now included in the past-policy pool. Progress counts completed shards, with additional jobs still active."
+    "rollout_episodes_reported_complete": 20000,
+    "rollout_progress_percent_reported_complete": 100.0,
+    "stage": "Strict audit passed; checkpoint complete; nine-class paired evaluation is running.",
+    "note": "All 20,000 episodes passed strict audit after one malformed or timed-out match was replaced. The paired screen compares Round531 with Round530 on fresh seeds; Round530 remains the control pending results.",
+    "speed": {
+      "rollout_wall_seconds": 661.52,
+      "rollout_games_per_second": 30.23,
+      "input_to_checkpoint_wall_seconds": 1077.92,
+      "input_to_checkpoint_games_per_second": 18.55,
+      "preflight_seconds": 252.69,
+      "recovery_seconds": 122.38,
+      "ppo_and_checkpoint_seconds": 163.67,
+      "mean_cpu_cores": 6.37,
+      "peak_aggregate_rss_gib": 9.51,
+      "weighted_per_episode_profile_ms": {
+        "action_selection_seconds": 103.0,
+        "baseline_action_seconds": 47.6,
+        "policy_inference_seconds": 39.9,
+        "headless_engine_roundtrip_seconds": 34.3,
+        "observation_encoding_seconds": 27.8,
+        "trajectory_persist_seconds": 10.1
+      },
+      "current_bottleneck": "Action selection (103.0 ms/game), followed by baseline opponent scoring (47.6 ms), policy inference (39.9 ms), Showdown round trips (34.3 ms), and observation encoding (27.8 ms)."
+    },
+    "training_report": "round531_training.json",
+    "evaluation_script": "scripts/evaluate_round531_iterative_fresh_league_128x1.sh"
   }
 }
