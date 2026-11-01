@@ -7929,5 +7929,21 @@
     "trace_analysis_round524": "round527_raw_trace_analysis.json",
     "reproduction": "CHECKPOINT=training/outputs/phase12_headless/round524_opening5_teacher_low_lr_20k_20261031/checkpoints/latest.pt OUT=training/outputs/phase12_headless/round527_round524_opening_traces_128x2_20261031 SEED=202611528 bash scripts/evaluate_round523_round520_opening_traces_128x2.sh",
     "report": "round527_teacher_uptake.json"
+  },
+  "round528_policy_population_matrix": {
+    "status": "Running",
+    "purpose": "Measure pairwise outcomes across seven policy checkpoints and estimate a restricted robust mixture; this is not a Nash solution for the full VGC game.",
+    "matchups_total": 21,
+    "matchups_complete": 4,
+    "team_clusters_per_matchup": 128,
+    "seats": "Both seats, common team and preview selector",
+    "measured_games_per_second_first_four_matchups": [
+      4.6,
+      4.42,
+      3.8,
+      2.46
+    ],
+    "reproduction": "scripts/evaluate_round528_policy_population_matrix.sh",
+    "output": "training/outputs/phase12_headless/round528_policy_population_matrix_128x1_20261031"
   }
 }
