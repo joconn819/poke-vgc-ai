@@ -1,0 +1,85 @@
+{
+  "round": 541,
+  "status": "complete_confirmation_no_promotion",
+  "candidate": "Round430 with Max Damage actions at decision indices 1 and 4",
+  "baseline": "Raw Round430",
+  "method": "Fresh 128 team-pair clusters per matchup, two outcomes per cluster, both sides, paired teams/previews/selectors/seeds. Confidence intervals bootstrap team clusters; Showdown RNG is server-side and independent across arms.",
+  "format": "gen9championsdoubles2026mcclosed",
+  "opponents": {
+    "counterplay": {
+      "raw_score_pct": 34.375,
+      "opening14_score_pct": 42.969,
+      "paired_delta_pp": 8.594,
+      "paired_cluster_ci95_pp": [
+        3.906,
+        13.477
+      ],
+      "matched_clusters": 128,
+      "matched_cases": 256,
+      "raw_games_per_second": 7.918,
+      "opening14_games_per_second": 8.045,
+      "raw_timeouts_or_errors": 0,
+      "opening14_timeouts_or_errors": 0,
+      "raw_action_adjustments": 0,
+      "opening14_action_adjustments": 0
+    },
+    "max_damage": {
+      "raw_score_pct": 42.773,
+      "opening14_score_pct": 45.898,
+      "paired_delta_pp": 3.125,
+      "paired_cluster_ci95_pp": [
+        -2.148,
+        8.203
+      ],
+      "matched_clusters": 128,
+      "matched_cases": 256,
+      "raw_games_per_second": 4.482,
+      "opening14_games_per_second": 9.534,
+      "raw_timeouts_or_errors": 0,
+      "opening14_timeouts_or_errors": 0,
+      "raw_action_adjustments": 0,
+      "opening14_action_adjustments": 0
+    },
+    "public_counterplay": {
+      "raw_score_pct": 43.555,
+      "opening14_score_pct": 47.266,
+      "paired_delta_pp": 3.711,
+      "paired_cluster_ci95_pp": [
+        -0.977,
+        8.203
+      ],
+      "matched_clusters": 128,
+      "matched_cases": 256,
+      "raw_games_per_second": 4.304,
+      "opening14_games_per_second": 7.068,
+      "raw_timeouts_or_errors": 0,
+      "opening14_timeouts_or_errors": 0,
+      "raw_action_adjustments": 0,
+      "opening14_action_adjustments": 0
+    },
+    "round476": {
+      "raw_score_pct": 48.047,
+      "opening14_score_pct": 53.906,
+      "paired_delta_pp": 5.859,
+      "paired_cluster_ci95_pp": [
+        0.391,
+        11.328
+      ],
+      "matched_clusters": 128,
+      "matched_cases": 256,
+      "raw_games_per_second": 5.263,
+      "opening14_games_per_second": 5.46,
+      "raw_timeouts_or_errors": 0,
+      "opening14_timeouts_or_errors": 0,
+      "raw_action_adjustments": 0,
+      "opening14_action_adjustments": 0
+    }
+  },
+  "pairs_per_opponent": 128,
+  "outcome_repeats": 2,
+  "workers": 8,
+  "seed_base": 202611810,
+  "reproduction": "scripts/evaluate_round541_opening14_confirmation_128x2.sh",
+  "promotion": "Promotion requires fresh confirmation plus local-client action parity and a wider evaluation; the fixed heuristic remains an experimental overlay, not an optimal policy.",
+  "interpretation": "The opening overlay produced supported paired gains against Counterplay and Round476 on fresh teams. Against Max Damage and Public Counterplay the gains are unresolved. Its absolute scores against all three simple heuristics remain below 50%, which signals exploitable, non-optimal play; do not promote as an optimal or robust policy."
+}

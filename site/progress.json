@@ -1385,12 +1385,12 @@
     }
   },
   "latest_run": {
-    "round": 540,
-    "status": "nine-class opening hybrid screen complete \u00b7 fresh confirmation running",
-    "summary": "Round430 with Max Damage actions at decisions 1 and 4 gained +7.42 pp vs Max Damage [+0.78,+14.06], +5.08 vs Public Counterplay [\u22120.39,+10.94], and +10.24 vs Round476 PPO [+3.94,+16.54]. The worst score over the three simple heuristics rose only 33.98%\u219236.72%, so play remains exploitable and the hybrid is not promoted. Round541 is checking four key matchups on fresh teams with two outcomes.",
-    "games": "128 team clusters \u00d7 1 outcome; nine opponent classes, both arms",
+    "round": 541,
+    "status": "fresh confirmation complete \u00b7 overlay not promoted",
+    "summary": "On fresh teams, the 1+4 Max Damage opening overlay gained +8.59 pp vs Counterplay [+3.91,+13.48] and +5.86 pp vs Round476 PPO [+0.39,+11.33]. It scored 45.90% vs Max Damage, 42.97% vs Counterplay, and 47.27% vs Public Counterplay. Every direct heuristic result remains below 50%, signaling exploitable, non-optimal play; candidate gains do not establish optimality.",
+    "games": "128 team clusters \u00d7 2 outcomes \u00d7 both sides; four opponent classes",
     "epochs": "No training in this evaluation",
-    "evaluation": "Paired, side-swapped cluster bootstrap; fresh confirmation in progress"
+    "evaluation": "Paired fresh-team confirmation; zero errors, timeouts, or action adjustments"
   },
   "method": "Native self-play PPO for in-battle decisions. Terminal win/loss remains the main objective; win-probability and hidden-set prediction are auxiliary tasks. Search comes after a stronger policy.",
   "jax_decision": "Round430 has a confirmed self-play head-to-head lift over Round424, but external-opponent screens remain inconclusive. Prioritize measured inference batching, observation throughput, and rollouts; keep equilibrium-oriented opponent coverage and defer a JAX/GPU engine rewrite until its end-to-end payoff is measured.",
@@ -8673,7 +8673,7 @@
   },
   "round540_opening14_summary": {
     "report": "round540_opening14_league.json",
-    "status": "screen_complete_confirmation_in_progress",
+    "status": "screen_and_confirmation_complete_no_promotion",
     "raw_equal_weight_mean_pct": 51.602,
     "opening14_equal_weight_mean_pct": 56.034,
     "raw_heuristic_worst_pct": 33.984,
@@ -8683,6 +8683,7 @@
       0.781,
       14.062
     ],
-    "confirmation": "Round541 fresh teams, two outcomes, four opponent classes"
+    "confirmation_report": "round541_opening14_confirmation.json",
+    "confirmation": "Fresh 128 clusters \u00d7 2 outcomes vs Max Damage, Counterplay, Public Counterplay, and Round476. Overlay absolute scores: 45.90%, 42.97%, 47.27%, 53.91%; only Counterplay and Round476 paired gains excluded zero. All simple heuristic scores below 50%; overlay remains experimental."
   }
 }
