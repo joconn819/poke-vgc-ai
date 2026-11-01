@@ -14,27 +14,27 @@ Pokémon Showdown remains the correctness reference and required battle platform
     "ci95": "[35.16%, 44.53%]",
     "games": 512,
     "clusters": 256,
-    "status": "Round430 remains incumbent; Round568–573 action-transfer selectors failed. No new checkpoint promoted.",
-    "evaluation": "Latest full-match Max Damage screen: Round430 policy-only arm, 256 matched team-pair clusters, both seats, seed 202610480. The paired search arm scored 42.38% (+2.54 pp; 95% paired CI [-0.78,+6.05]), inconclusive and not enabled by default. Round567 expanded midgame data to 283 team clusters; the outcome-informed maximin oracle gained +4.77 pp [+3.16,+6.45], but the oracle is not deployable. Round568 selected actions were −7.89 pp [−13.60,−3.07] on held-out worst-response outcomes. Round569 paired advantage selection was −13.16 pp [−19.74,−7.46]. Sub-50% results against simple policies are substantive weaknesses; keep Max Damage as an independent scorecard metric. Fresh Round571/572 testing on 173 held-out team clusters confirmed local maximin oracle headroom (+4.62 pp [+1.95,+7.66]) but the anchored learned selector lost 2.17 pp [−3.90,−0.87]. The candidate remains unpromoted. Round573 shared action ranker changed 63/173 exploratory choices and lost 10.84 pp worst-response value [−14.60,−7.23]; its teams had already informed Round572, so this is not independent confirmation."
+    "status": "Round430 remains incumbent only as the validated baseline; Round574 was not promoted after a fresh eight-opponent screen. All candidates remain below 50% against direct heuristics.",
+    "evaluation": "Round575 compared Round574 with Round430 on 128 fresh team-pair clusters/opponent, both seats. Round574 scores: Max Damage 40.23% (+1.56 pp [\u22121.56,+4.69]); Counterplay 28.13% (+0.39 [\u22122.73,+3.13]); Public Counterplay 44.14% (\u22121.57 [\u22125.51,+2.36]); Random 95.31%; Round473 41.41%; Round476 53.91%; Round485 46.09%; Round524 52.73%. No paired delta was significant. Below 50% against any direct heuristic is a real exploitability failure; Round574 is not promoted."
   },
   "speed": {
-    "games_per_second": "34.71 rollout / 20.41 input-to-checkpoint",
-    "context": "Round542: 20,000 games; 576.18 s rollout and 979.74 s input-to-checkpoint. Eight workers averaged 6.69 CPU cores and peaked at 9.31 GiB aggregate RSS.",
-    "decision_latency": "Fresh policy decision latency pending separate measurement",
-    "current_bottleneck": "Action selection (89.4 ms/episode), then policy inference (38.2 ms), baseline action scoring (36.1 ms), engine round trips (32.4 ms), and observation encoding (26.7 ms). Strict preflight and one-match recovery took 243.48 s; PPO/checkpointing took 160.03 s.",
-    "gpu_status": "CUDA PPO; Showdown battle simulation on CPU"
+    "games_per_second": "30.39 rollout / 17.72 input-to-checkpoint",
+    "context": "Round574: 20,000 audited games; rollouts 658.15 s; input-to-checkpoint 1,128.45 s. 20 shards compressed from 4.01 GB to 229 MB (5.72%).",
+    "decision_latency": "Round542 weighted profile remains the latest detailed rollout breakdown.",
+    "current_bottleneck": "Round542: action selection 89.4 ms/episode, then inference 38.2 ms, baseline scoring 36.1 ms, engine roundtrip 32.4 ms, observation encoding 26.7 ms. Round574 speed includes slower policy-pool opponents and remains CPU simulation.",
+    "gpu_status": "CUDA PPO; headless battle simulation on CPU"
   },
   "latest_run": {
-    "round": 543,
-    "status": "eight-opponent evaluation complete · Round542 not promoted",
-    "summary": "Round542 trained against PPO opponents using Max Damage actions at decisions 1 and 4. On 128 fresh clusters × 2 outcomes × both sides, it improved +3.32 pp vs Counterplay [ +0.20,+6.84 ], but the other seven paired intervals include zero. Its absolute scores vs Max Damage, Counterplay, and Public Counterplay were 36.86%, 30.08%, and 38.43%—all below 50%, signaling exploitable, non-optimal play. Round430 remains the validated default.",
-    "games": "20,000 training games; 8-opponent held-out evaluation, 128 clusters × 2 outcomes × both sides",
-    "epochs": "4 PPO passes · 1,304 optimizer steps",
-    "evaluation": "Paired team-cluster bootstrap; one incomplete match excluded in several cells; no action corrections"
+    "round": 575,
+    "status": "Fresh eight-opponent evaluation complete; Round574 not promoted",
+    "summary": "Round574 used 8 PPO passes on 20,000 games. Against Round430, paired deltas on 128 fresh team-pair clusters were inconclusive across all eight opponents. Absolute scores remained 40.23% vs Max Damage, 28.13% vs Counterplay, and 44.14% vs Public Counterplay. These sub-50% scores are substantive exploitability failures; Round430 remains incumbent only as the validated baseline.",
+    "games": "20,000 training games; 128 fresh team-pair clusters per opponent, both seats",
+    "epochs": "8 PPO passes \u00b7 2,696 optimizer steps \u00b7 approximate KL 0.00608",
+    "evaluation": "Paired team-cluster bootstrap; one baseline Public Counterplay cluster excluded; no promotion"
   },
   "method": "Masked PPO action logits are the default move policy. Terminal win/loss is the primary PPO objective; win probability and hidden-set prediction are auxiliary targets. Optional search remains disabled unless a broader held-out league supports it.",
   "jax_decision": "Recent throughput gains came from policy/observation and rollout work; a GPU battle-engine rewrite remains gated on representative end-to-end profiling and parity against local Showdown.",
-  "evaluation_note": "Round402's historical 77.15% is a team-preview selector benchmark against damage-preview selection, not an in-battle policy score against Max Damage. The latest in-battle Max Damage result is Round430 policy-only at 39.84% on 256 clusters; optional search scored 42.38% but its paired interval includes zero. Round485's 70%-Max-Damage mix did not measurably improve that matchup or the broader league. Compare only matched tasks, selectors, teams, and seeds.",
+  "evaluation_note": "A repeatable score below 50% against a legal simple heuristic is direct evidence of exploitable, non-optimal play on that opponent/team distribution; it is not by itself a measurement of distance from global equilibrium. Round575: Round574 scored 40.23% vs Max Damage, 28.13% vs Counterplay, 44.14% vs Public Counterplay on fresh teams. None of its paired deltas vs Round430 excluded zero. Round430 remains only the incumbent baseline; neither checkpoint is close to robust play.",
   "round499_policy_ensemble": {
     "round": 499,
     "status": "Collection and held-out fits complete; selector not promoted",
@@ -279,7 +279,7 @@ Pokémon Showdown remains the correctness reference and required battle platform
   "round539_group_norm_league": {
     "report": "site/round539_group_norm_league.json",
     "status": "complete_no_promotion",
-    "max_damage": "Round536 29.30%; Round538 30.27%; +0.98 pp [−1.17,+3.32]",
+    "max_damage": "Round536 29.30%; Round538 30.27%; +0.98 pp [\u22121.17,+3.32]",
     "interpretation": "Both remain clearly below 50%; candidate delta inconclusive."
   },
   "round540_opening14_summary": {
@@ -295,7 +295,7 @@ Pokémon Showdown remains the correctness reference and required battle platform
       14.062
     ],
     "confirmation_report": "round541_opening14_confirmation.json",
-    "confirmation": "Fresh 128 clusters × 2 outcomes vs Max Damage, Counterplay, Public Counterplay, and Round476. Overlay absolute scores: 45.90%, 42.97%, 47.27%, 53.91%; only Counterplay and Round476 paired gains excluded zero. All simple heuristic scores below 50%; overlay remains experimental."
+    "confirmation": "Fresh 128 clusters \u00d7 2 outcomes vs Max Damage, Counterplay, Public Counterplay, and Round476. Overlay absolute scores: 45.90%, 42.97%, 47.27%, 53.91%; only Counterplay and Round476 paired gains excluded zero. All simple heuristic scores below 50%; overlay remains experimental."
   },
   "round542_training": {
     "round": 542,
@@ -334,7 +334,7 @@ Pokémon Showdown remains the correctness reference and required battle platform
     "round": 573,
     "title": "Shared pairwise action ranker overfits and worsens held-out selection",
     "status": "Rejected offline; no promotion",
-    "summary": "The shared pairwise action ranker overfit: validation loss worsened after epoch 4, and its selected actions reduced worst-response outcomes by 10.84 pp [−14.60,−7.23]. The test teams were reused for exploration, not independent confirmation.",
+    "summary": "The shared pairwise action ranker overfit: validation loss worsened after epoch 4, and its selected actions reduced worst-response outcomes by 10.84 pp [\u221214.60,\u22127.23]. The test teams were reused for exploration, not independent confirmation.",
     "clusters": 173,
     "branch_matches": 64269,
     "matches_per_second": 63.85,
@@ -19428,3 +19428,11 @@ and OUT set to the Round524 checkpoint and output paths.
 - Round572 trained the anchored model using the previous 283 states and reserved all 173 Round571 clusters for fresh testing. The 226/57 old-cluster train/validation split selected epoch 5. On the fresh set, learned selection reduced worst-response value by 2.17 pp (95% team-cluster CI [−3.90,−0.87]); mean deltas were −0.14 pp vs Counterplay, −0.43 pp vs Max Damage, +1.30 pp vs Round476 policy, −1.30 pp vs Public Counterplay, and +0.29 pp vs Random. It selected the incumbent-equivalent action on most states and did not transfer the oracle gains. Reject before full-match evaluation; do not promote.
 - Round573 implemented the proposed shared action encoder and within-state pairwise ranker, with incumbent-anchored scores. Validation pairwise loss began rising after epoch 4; on the 173 Round571 clusters, reused here only as an exploratory diagnostic, it changed 63 actions and reduced the measured statewise worst-response outcome by 10.84 pp [−14.60,−7.23]. Reject this architecture/objective before full-match evaluation. Because the fresh set informed Round572 and Round573, neither result is a prospective confirmation set.
 - Diagnosis: lack of local action headroom is not the primary failure. More counterfactual rows, a baseline-anchored MLP, and this shared action ranker did not transfer local improvements. Stop adding action-value heads to Round430 for now. Next test a policy-level update driven by full-match PPO returns against an explicit equilibrium/league mixture, then measure absolute Max Damage and broad-opponent performance on an untouched set. Keep forced-switch capture as a separate coverage task. Reports: `training/outputs/phase12_headless/round571_round430_midgame_action_screen_256x4x2_20261101/data.json`, `.../heldout_action_selection_all5.json`, `training/outputs/phase12_headless/round572_anchored_advantage_fresh_holdout_173_20261101/report.json`, and `training/outputs/phase12_headless/round573_structured_pairwise_ranker_20261101/report.json`.
+
+
+### Round574–575: 8-pass PPO and fresh eight-opponent screen (not promoted)
+
+- Round574 repeated the Round530 robust opponent mixture from Round430 for 20,000 audited games. The sole intended optimization change was eight PPO passes instead of four. Audit: 20,000 games, 40,000 safe player views, 172,220 transitions; no audit errors. Training reached 2,696/2,696 optimizer steps with approximate KL 0.00608, so doubling passes still produced a modest policy shift. Rollouts took 658.15 s (30.39 games/s); input-to-checkpoint took 1,128.45 s (17.72 games/s). The 20 rollout shards compressed from 4.01 GB to 229 MB (5.72%).
+- Round575 compared Round574 with Round430 on fresh team-pair clusters, side-swapped, one outcome repeat, with 128 requested clusters per opponent. Paired score deltas were: Max Damage 38.67%→40.23%, +1.56 pp [−1.56,+4.69]; Counterplay 27.73%→28.13%, +0.39 [−2.73,+3.13]; Public Counterplay 46.06%→44.14%, −1.57 [−5.51,+2.36]; Random 95.31%→95.31%, 0.00 [−2.34,+2.34]; Round473 42.58%→41.41%, −1.17 [−5.08,+2.73]; Round476 52.34%→53.91%, +1.56 [−1.17,+4.30]; Round485 43.36%→46.09%, +2.73 [−0.78,+6.25]; Round524 53.52%→52.73%, −0.78 [−3.52,+1.56]. No paired interval excludes zero. One incomplete baseline Public Counterplay cluster was excluded; other cells completed without errors.
+- Crucially, Round574 remains below 50% against all three direct heuristics. That is evidence of exploitable, non-optimal play, independent of whether its paired delta from Round430 is statistically resolved. Do not promote it. Round430 remains the incumbent only as the least-regressed validated checkpoint, not as a strong or near-optimal agent.
+- Next iteration must diagnose concrete state/action failures against Max Damage and Counterplay, then target those failures in policy-level training. Keep absolute scores against each simple heuristic and fresh paired deltas as mandatory gates. Do not declare progress from gains against a historical PPO opponent if simple-heuristic performance remains below 50%. Full report: `site/round575_round574_fresh_league.json`; reproduction: `scripts/evaluate_round574_fresh_league_128x1.sh`.
