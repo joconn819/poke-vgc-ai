@@ -7934,7 +7934,7 @@
     "status": "Running",
     "purpose": "Measure pairwise outcomes across seven policy checkpoints and estimate a restricted robust mixture; this is not a Nash solution for the full VGC game.",
     "matchups_total": 21,
-    "matchups_complete": 8,
+    "matchups_complete": 9,
     "team_clusters_per_matchup": 128,
     "seats": "Both seats, common team and preview selector",
     "reproduction": "scripts/evaluate_round528_policy_population_matrix.sh",
@@ -7947,7 +7947,8 @@
       2.46,
       4.95,
       4.74,
-      5.16
+      5.16,
+      4.14
     ]
   }
 }
