@@ -1,0 +1,957 @@
+{
+  "status": "Complete; fresh restricted empirical policy game",
+  "method": "Eight historical PPO policies as candidate rows; those policies plus Max Damage, Counterplay, and Public Counterplay as response columns. Each matchup uses the same 128 team-pair clusters and both seat orders; each cluster score averages the two side-swapped outcomes. Team-cluster bootstrap accounts for matchup variation. This is a restricted game over checkpoint policies and three fixed heuristics, not a full VGC Nash certificate.",
+  "policies": [
+    "round430",
+    "round530",
+    "round531",
+    "round532",
+    "round536",
+    "round542",
+    "round574",
+    "round579"
+  ],
+  "opponents": [
+    "round430",
+    "round530",
+    "round531",
+    "round532",
+    "round536",
+    "round542",
+    "round574",
+    "round579",
+    "max_damage",
+    "counterplay",
+    "public_counterplay"
+  ],
+  "heuristics": [
+    "max_damage",
+    "counterplay",
+    "public_counterplay"
+  ],
+  "checkpoints": {
+    "round430": "training/outputs/phase12_headless/round430_hard_opponent_auxiliary_ppo_20k_20261030/checkpoints/latest.pt",
+    "round530": "training/outputs/phase12_headless/round530_rectangular_robust_response_20k_20261031/checkpoints/latest.pt",
+    "round531": "training/outputs/phase12_headless/round531_iterative_robust_response_20k_20261031/checkpoints/latest.pt",
+    "round532": "training/outputs/phase12_headless/round532_maxdamage_floor_20k_20261031/checkpoints/latest.pt",
+    "round536": "training/outputs/phase12_headless/round536_opponent_balanced_loss_20k_20261031/checkpoints/latest.pt",
+    "round542": "training/outputs/phase12_headless/round542_opening14_response_20k_20261101_retry1/checkpoints/latest.pt",
+    "round574": "training/outputs/phase12_headless/round574_robust_ppo_8pass_20k_20261101/checkpoints/latest.pt",
+    "round579": "training/outputs/phase12_headless/round579_robust_ppo_2x_lr_20k_20261101/checkpoints/latest.pt"
+  },
+  "requested_clusters_per_matchup": 128,
+  "outcome_repeats": 1,
+  "workers": 8,
+  "seed": 202611582,
+  "common_team_clusters": 127,
+  "payoff_matrix_candidate_score_rate": [
+    [
+      0.5,
+      0.5039370078740157,
+      0.531496062992126,
+      0.531496062992126,
+      0.5275590551181102,
+      0.531496062992126,
+      0.5,
+      0.5236220472440944,
+      0.421259842519685,
+      0.3543307086614173,
+      0.40551181102362205
+    ],
+    [
+      0.49606299212598426,
+      0.5,
+      0.515748031496063,
+      0.5275590551181102,
+      0.531496062992126,
+      0.5196850393700787,
+      0.5078740157480315,
+      0.515748031496063,
+      0.4330708661417323,
+      0.3425196850393701,
+      0.4015748031496063
+    ],
+    [
+      0.468503937007874,
+      0.484251968503937,
+      0.5,
+      0.5236220472440944,
+      0.5393700787401575,
+      0.5354330708661418,
+      0.5236220472440944,
+      0.5196850393700787,
+      0.4251968503937008,
+      0.35039370078740156,
+      0.38188976377952755
+    ],
+    [
+      0.468503937007874,
+      0.47244094488188976,
+      0.4763779527559055,
+      0.5,
+      0.5196850393700787,
+      0.5433070866141733,
+      0.5118110236220472,
+      0.515748031496063,
+      0.40551181102362205,
+      0.3661417322834646,
+      0.37401574803149606
+    ],
+    [
+      0.47244094488188976,
+      0.468503937007874,
+      0.46062992125984253,
+      0.48031496062992124,
+      0.5,
+      0.5354330708661418,
+      0.49606299212598426,
+      0.5078740157480315,
+      0.40551181102362205,
+      0.36220472440944884,
+      0.38188976377952755
+    ],
+    [
+      0.468503937007874,
+      0.48031496062992124,
+      0.4645669291338583,
+      0.4566929133858268,
+      0.4645669291338583,
+      0.5,
+      0.4881889763779528,
+      0.5039370078740157,
+      0.4015748031496063,
+      0.3661417322834646,
+      0.4094488188976378
+    ],
+    [
+      0.5,
+      0.4921259842519685,
+      0.4763779527559055,
+      0.4881889763779528,
+      0.5039370078740157,
+      0.5118110236220472,
+      0.5,
+      0.5078740157480315,
+      0.452755905511811,
+      0.35826771653543305,
+      0.4015748031496063
+    ],
+    [
+      0.4763779527559055,
+      0.484251968503937,
+      0.48031496062992124,
+      0.484251968503937,
+      0.4921259842519685,
+      0.49606299212598426,
+      0.4921259842519685,
+      0.5,
+      0.44881889763779526,
+      0.3464566929133858,
+      0.3858267716535433
+    ]
+  ],
+  "payoff_matrix_ci95_by_cell": {
+    "round430_vs_round530": [
+      0.42913385826771655,
+      0.5787401574803149
+    ],
+    "round430_vs_round531": [
+      0.452755905511811,
+      0.610236220472441
+    ],
+    "round430_vs_round532": [
+      0.4566929133858268,
+      0.610236220472441
+    ],
+    "round430_vs_round536": [
+      0.452755905511811,
+      0.6023622047244095
+    ],
+    "round430_vs_round542": [
+      0.452755905511811,
+      0.6062992125984252
+    ],
+    "round430_vs_round574": [
+      0.421259842519685,
+      0.5787401574803149
+    ],
+    "round430_vs_round579": [
+      0.44881889763779526,
+      0.5984251968503937
+    ],
+    "round430_vs_max_damage": [
+      0.3464566929133858,
+      0.49606299212598426
+    ],
+    "round430_vs_counterplay": [
+      0.28346456692913385,
+      0.4251968503937008
+    ],
+    "round430_vs_public_counterplay": [
+      0.33070866141732286,
+      0.48031496062992124
+    ],
+    "round530_vs_round430": [
+      0.421259842519685,
+      0.5708661417322834
+    ],
+    "round530_vs_round531": [
+      0.43700787401574803,
+      0.5905511811023622
+    ],
+    "round530_vs_round532": [
+      0.44881889763779526,
+      0.6062992125984252
+    ],
+    "round530_vs_round536": [
+      0.4566929133858268,
+      0.6062992125984252
+    ],
+    "round530_vs_round542": [
+      0.4409448818897638,
+      0.5984251968503937
+    ],
+    "round530_vs_round574": [
+      0.4330708661417323,
+      0.5866141732283464
+    ],
+    "round530_vs_round579": [
+      0.4409448818897638,
+      0.5905511811023622
+    ],
+    "round530_vs_max_damage": [
+      0.35826771653543305,
+      0.5039370078740157
+    ],
+    "round530_vs_counterplay": [
+      0.27165354330708663,
+      0.41732283464566927
+    ],
+    "round530_vs_public_counterplay": [
+      0.33070866141732286,
+      0.47244094488188976
+    ],
+    "round531_vs_round430": [
+      0.38976377952755903,
+      0.547244094488189
+    ],
+    "round531_vs_round530": [
+      0.4094488188976378,
+      0.562992125984252
+    ],
+    "round531_vs_round532": [
+      0.4448818897637795,
+      0.5984251968503937
+    ],
+    "round531_vs_round536": [
+      0.46062992125984253,
+      0.6141732283464567
+    ],
+    "round531_vs_round542": [
+      0.46062992125984253,
+      0.610236220472441
+    ],
+    "round531_vs_round574": [
+      0.4448818897637795,
+      0.5984251968503937
+    ],
+    "round531_vs_round579": [
+      0.4409448818897638,
+      0.5984251968503937
+    ],
+    "round531_vs_max_damage": [
+      0.3543307086614173,
+      0.49606299212598426
+    ],
+    "round531_vs_counterplay": [
+      0.2795275590551181,
+      0.4251968503937008
+    ],
+    "round531_vs_public_counterplay": [
+      0.30708661417322836,
+      0.4566929133858268
+    ],
+    "round532_vs_round430": [
+      0.38976377952755903,
+      0.547244094488189
+    ],
+    "round532_vs_round530": [
+      0.39763779527559057,
+      0.5511811023622047
+    ],
+    "round532_vs_round531": [
+      0.39763779527559057,
+      0.5551181102362205
+    ],
+    "round532_vs_round536": [
+      0.4448818897637795,
+      0.594488188976378
+    ],
+    "round532_vs_round542": [
+      0.4645669291338583,
+      0.6220472440944882
+    ],
+    "round532_vs_round574": [
+      0.4330708661417323,
+      0.5866141732283464
+    ],
+    "round532_vs_round579": [
+      0.43700787401574803,
+      0.594488188976378
+    ],
+    "round532_vs_max_damage": [
+      0.3346456692913386,
+      0.4763779527559055
+    ],
+    "round532_vs_counterplay": [
+      0.29133858267716534,
+      0.4409448818897638
+    ],
+    "round532_vs_public_counterplay": [
+      0.3031496062992126,
+      0.452755905511811
+    ],
+    "round536_vs_round430": [
+      0.39763779527559057,
+      0.547244094488189
+    ],
+    "round536_vs_round530": [
+      0.3937007874015748,
+      0.547244094488189
+    ],
+    "round536_vs_round531": [
+      0.3858267716535433,
+      0.5393700787401575
+    ],
+    "round536_vs_round532": [
+      0.40551181102362205,
+      0.5551181102362205
+    ],
+    "round536_vs_round542": [
+      0.4566929133858268,
+      0.610236220472441
+    ],
+    "round536_vs_round574": [
+      0.421259842519685,
+      0.5708661417322834
+    ],
+    "round536_vs_round579": [
+      0.42913385826771655,
+      0.5866141732283464
+    ],
+    "round536_vs_max_damage": [
+      0.33070866141732286,
+      0.48031496062992124
+    ],
+    "round536_vs_counterplay": [
+      0.29133858267716534,
+      0.43700787401574803
+    ],
+    "round536_vs_public_counterplay": [
+      0.3110236220472441,
+      0.4566929133858268
+    ],
+    "round542_vs_round430": [
+      0.38976377952755903,
+      0.547244094488189
+    ],
+    "round542_vs_round530": [
+      0.4015748031496063,
+      0.5590551181102362
+    ],
+    "round542_vs_round531": [
+      0.38976377952755903,
+      0.5433070866141733
+    ],
+    "round542_vs_round532": [
+      0.3779527559055118,
+      0.5354330708661418
+    ],
+    "round542_vs_round536": [
+      0.38976377952755903,
+      0.5433070866141733
+    ],
+    "round542_vs_round574": [
+      0.4094488188976378,
+      0.5669291338582677
+    ],
+    "round542_vs_round579": [
+      0.4251968503937008,
+      0.5826771653543307
+    ],
+    "round542_vs_max_damage": [
+      0.33070866141732286,
+      0.47244094488188976
+    ],
+    "round542_vs_counterplay": [
+      0.2952755905511811,
+      0.4409448818897638
+    ],
+    "round542_vs_public_counterplay": [
+      0.3346456692913386,
+      0.484251968503937
+    ],
+    "round574_vs_round430": [
+      0.421259842519685,
+      0.5787401574803149
+    ],
+    "round574_vs_round530": [
+      0.41732283464566927,
+      0.5708661417322834
+    ],
+    "round574_vs_round531": [
+      0.39763779527559057,
+      0.5551181102362205
+    ],
+    "round574_vs_round532": [
+      0.4094488188976378,
+      0.5669291338582677
+    ],
+    "round574_vs_round536": [
+      0.42913385826771655,
+      0.5787401574803149
+    ],
+    "round574_vs_round542": [
+      0.43700787401574803,
+      0.5905511811023622
+    ],
+    "round574_vs_round579": [
+      0.4330708661417323,
+      0.5866141732283464
+    ],
+    "round574_vs_max_damage": [
+      0.3779527559055118,
+      0.531496062992126
+    ],
+    "round574_vs_counterplay": [
+      0.2874015748031496,
+      0.42913385826771655
+    ],
+    "round574_vs_public_counterplay": [
+      0.32677165354330706,
+      0.4763779527559055
+    ],
+    "round579_vs_round430": [
+      0.39763779527559057,
+      0.5551181102362205
+    ],
+    "round579_vs_round530": [
+      0.4094488188976378,
+      0.5590551181102362
+    ],
+    "round579_vs_round531": [
+      0.4015748031496063,
+      0.5590551181102362
+    ],
+    "round579_vs_round532": [
+      0.40551181102362205,
+      0.562992125984252
+    ],
+    "round579_vs_round536": [
+      0.41338582677165353,
+      0.5669291338582677
+    ],
+    "round579_vs_round542": [
+      0.41732283464566927,
+      0.5748031496062992
+    ],
+    "round579_vs_round574": [
+      0.41338582677165353,
+      0.5669291338582677
+    ],
+    "round579_vs_max_damage": [
+      0.37401574803149606,
+      0.5236220472440944
+    ],
+    "round579_vs_counterplay": [
+      0.2755905511811024,
+      0.41732283464566927
+    ],
+    "round579_vs_public_counterplay": [
+      0.31496062992125984,
+      0.46062992125984253
+    ]
+  },
+  "restricted_maximin_mix": {
+    "round430": 0.0,
+    "round530": 0.0,
+    "round531": 0.0,
+    "round532": 1.0,
+    "round536": 0.0,
+    "round542": 0.0,
+    "round574": 0.0,
+    "round579": 0.0
+  },
+  "restricted_maximin_value": 0.3661417322834646,
+  "restricted_adversary_mix": {
+    "round430": 0.0,
+    "round530": 0.0,
+    "round531": 0.0,
+    "round532": 0.0,
+    "round536": 0.0,
+    "round542": 0.0,
+    "round574": 0.0,
+    "round579": 0.0,
+    "max_damage": 0.0,
+    "counterplay": 1.0,
+    "public_counterplay": 0.0
+  },
+  "restricted_adversary_value": 0.6338582677165354,
+  "bootstrap_equilibrium_row_mix_mean": {
+    "round430": 0.1546987132478874,
+    "round530": 0.03423300212892553,
+    "round531": 0.020927419904991165,
+    "round532": 0.14266179536970455,
+    "round536": 0.08265458203296536,
+    "round542": 0.36241212948434126,
+    "round574": 0.1553966178943662,
+    "round579": 0.04701573993681805
+  },
+  "bootstrap_equilibrium_row_mix_ci95": {
+    "round430": [
+      1.25e-05,
+      0.9998324546905938
+    ],
+    "round530": [
+      1.25e-05,
+      0.5383148850103021
+    ],
+    "round531": [
+      1.25e-05,
+      0.3134916228561313
+    ],
+    "round532": [
+      1.25e-05,
+      0.9993685111937052
+    ],
+    "round536": [
+      1.25e-05,
+      0.9991406470809049
+    ],
+    "round542": [
+      1.25e-05,
+      0.9997162035584212
+    ],
+    "round574": [
+      1.25e-05,
+      0.9997595294896282
+    ],
+    "round579": [
+      1.25e-05,
+      0.914732744503861
+    ]
+  },
+  "bootstrap_equilibrium_response_mix_mean": {
+    "round430": 0.00459932132259104,
+    "round530": 0.0009463190406322986,
+    "round531": 0.001388257415114099,
+    "round532": 0.00045967825499789616,
+    "round536": 2.2971571310414535e-05,
+    "round542": 9.09090909090909e-06,
+    "round574": 9.23759890103357e-06,
+    "round579": 9.549690012776544e-06,
+    "max_damage": 0.04586013039071069,
+    "counterplay": 0.784110995651333,
+    "public_counterplay": 0.1625844481553057
+  },
+  "bootstrap_equilibrium_response_mix_ci95": {
+    "round430": [
+      9.090909090909091e-06,
+      0.02819369923427728
+    ],
+    "round530": [
+      9.090909090909091e-06,
+      2.7324894070986975e-05
+    ],
+    "round531": [
+      9.090909090909091e-06,
+      1.9866036603759675e-05
+    ],
+    "round532": [
+      9.090909090909091e-06,
+      9.157071661797551e-06
+    ],
+    "round536": [
+      9.090909090909091e-06,
+      9.090909090909091e-06
+    ],
+    "round542": [
+      9.090909090909091e-06,
+      9.090909090909091e-06
+    ],
+    "round574": [
+      9.090909090909091e-06,
+      1.1390429053646867e-05
+    ],
+    "round579": [
+      9.090909090909091e-06,
+      1.5162259242731689e-05
+    ],
+    "max_damage": [
+      9.090909090909091e-06,
+      0.43161682716107497
+    ],
+    "counterplay": [
+      0.00013018718586161918,
+      0.9998754942519182
+    ],
+    "public_counterplay": [
+      1.6412941918154403e-05,
+      0.9996364490564659
+    ]
+  },
+  "bootstrap_restricted_value_ci95": [
+    0.3029442890616351,
+    0.43420684517597463
+  ],
+  "bootstrap_equilibrium_gap_mean": 8.552255967101278e-05,
+  "direct_heuristic_scores": {
+    "max_damage": {
+      "round430": 0.421259842519685,
+      "round530": 0.4330708661417323,
+      "round531": 0.4251968503937008,
+      "round532": 0.40551181102362205,
+      "round536": 0.40551181102362205,
+      "round542": 0.4015748031496063,
+      "round574": 0.452755905511811,
+      "round579": 0.44881889763779526
+    },
+    "counterplay": {
+      "round430": 0.3543307086614173,
+      "round530": 0.3425196850393701,
+      "round531": 0.35039370078740156,
+      "round532": 0.3661417322834646,
+      "round536": 0.36220472440944884,
+      "round542": 0.3661417322834646,
+      "round574": 0.35826771653543305,
+      "round579": 0.3464566929133858
+    },
+    "public_counterplay": {
+      "round430": 0.40551181102362205,
+      "round530": 0.4015748031496063,
+      "round531": 0.38188976377952755,
+      "round532": 0.37401574803149606,
+      "round536": 0.38188976377952755,
+      "round542": 0.4094488188976378,
+      "round574": 0.4015748031496063,
+      "round579": 0.3858267716535433
+    }
+  },
+  "timeouts_errors_and_speed": {
+    "round430_vs_round530": {
+      "games_completed": 256,
+      "timeouts_or_errors": 0,
+      "action_adjustments": 0,
+      "games_per_second": 3.2250898300269886
+    },
+    "round430_vs_round531": {
+      "games_completed": 256,
+      "timeouts_or_errors": 0,
+      "action_adjustments": 0,
+      "games_per_second": 3.6527267323865984
+    },
+    "round430_vs_round532": {
+      "games_completed": 256,
+      "timeouts_or_errors": 0,
+      "action_adjustments": 0,
+      "games_per_second": 1.8899397663049629
+    },
+    "round430_vs_round536": {
+      "games_completed": 256,
+      "timeouts_or_errors": 0,
+      "action_adjustments": 0,
+      "games_per_second": 3.3464562164568035
+    },
+    "round430_vs_round542": {
+      "games_completed": 256,
+      "timeouts_or_errors": 0,
+      "action_adjustments": 0,
+      "games_per_second": 3.8700475712563325
+    },
+    "round430_vs_round574": {
+      "games_completed": 256,
+      "timeouts_or_errors": 0,
+      "action_adjustments": 0,
+      "games_per_second": 2.605311462265874
+    },
+    "round430_vs_round579": {
+      "games_completed": 256,
+      "timeouts_or_errors": 0,
+      "action_adjustments": 0,
+      "games_per_second": 3.126382540055075
+    },
+    "round430_vs_max_damage": {
+      "games_completed": 256,
+      "timeouts_or_errors": 0,
+      "action_adjustments": 0,
+      "games_per_second": 8.29096783337185
+    },
+    "round430_vs_counterplay": {
+      "games_completed": 256,
+      "timeouts_or_errors": 0,
+      "action_adjustments": 0,
+      "games_per_second": 4.606828143066327
+    },
+    "round430_vs_public_counterplay": {
+      "games_completed": 256,
+      "timeouts_or_errors": 0,
+      "action_adjustments": 0,
+      "games_per_second": 3.3229532861297475
+    },
+    "round530_vs_round531": {
+      "games_completed": 256,
+      "timeouts_or_errors": 0,
+      "action_adjustments": 0,
+      "games_per_second": 2.8123355540440627
+    },
+    "round530_vs_round532": {
+      "games_completed": 256,
+      "timeouts_or_errors": 0,
+      "action_adjustments": 0,
+      "games_per_second": 2.537110680352178
+    },
+    "round530_vs_round536": {
+      "games_completed": 256,
+      "timeouts_or_errors": 0,
+      "action_adjustments": 0,
+      "games_per_second": 2.9142057749066557
+    },
+    "round530_vs_round542": {
+      "games_completed": 256,
+      "timeouts_or_errors": 0,
+      "action_adjustments": 0,
+      "games_per_second": 2.3534586397499577
+    },
+    "round530_vs_round574": {
+      "games_completed": 256,
+      "timeouts_or_errors": 0,
+      "action_adjustments": 0,
+      "games_per_second": 2.3413943309015703
+    },
+    "round530_vs_round579": {
+      "games_completed": 256,
+      "timeouts_or_errors": 0,
+      "action_adjustments": 0,
+      "games_per_second": 2.09978531720155
+    },
+    "round530_vs_max_damage": {
+      "games_completed": 256,
+      "timeouts_or_errors": 0,
+      "action_adjustments": 0,
+      "games_per_second": 7.207539473346917
+    },
+    "round530_vs_counterplay": {
+      "games_completed": 256,
+      "timeouts_or_errors": 0,
+      "action_adjustments": 0,
+      "games_per_second": 4.8619350855422425
+    },
+    "round530_vs_public_counterplay": {
+      "games_completed": 256,
+      "timeouts_or_errors": 0,
+      "action_adjustments": 0,
+      "games_per_second": 6.8445298371239085
+    },
+    "round531_vs_round532": {
+      "games_completed": 256,
+      "timeouts_or_errors": 0,
+      "action_adjustments": 0,
+      "games_per_second": 1.6863009152423476
+    },
+    "round531_vs_round536": {
+      "games_completed": 254,
+      "timeouts_or_errors": 1,
+      "action_adjustments": 0,
+      "games_per_second": 1.7625711234573853
+    },
+    "round531_vs_round542": {
+      "games_completed": 256,
+      "timeouts_or_errors": 0,
+      "action_adjustments": 0,
+      "games_per_second": 2.6862751311748565
+    },
+    "round531_vs_round574": {
+      "games_completed": 256,
+      "timeouts_or_errors": 0,
+      "action_adjustments": 0,
+      "games_per_second": 1.8516028808201932
+    },
+    "round531_vs_round579": {
+      "games_completed": 256,
+      "timeouts_or_errors": 0,
+      "action_adjustments": 0,
+      "games_per_second": 2.0482496561852974
+    },
+    "round531_vs_max_damage": {
+      "games_completed": 256,
+      "timeouts_or_errors": 0,
+      "action_adjustments": 0,
+      "games_per_second": 5.820634079624933
+    },
+    "round531_vs_counterplay": {
+      "games_completed": 256,
+      "timeouts_or_errors": 0,
+      "action_adjustments": 0,
+      "games_per_second": 3.371850741217968
+    },
+    "round531_vs_public_counterplay": {
+      "games_completed": 256,
+      "timeouts_or_errors": 0,
+      "action_adjustments": 0,
+      "games_per_second": 7.962150040219474
+    },
+    "round532_vs_round536": {
+      "games_completed": 256,
+      "timeouts_or_errors": 0,
+      "action_adjustments": 0,
+      "games_per_second": 2.736018482482833
+    },
+    "round532_vs_round542": {
+      "games_completed": 256,
+      "timeouts_or_errors": 0,
+      "action_adjustments": 0,
+      "games_per_second": 2.0279241358282736
+    },
+    "round532_vs_round574": {
+      "games_completed": 256,
+      "timeouts_or_errors": 0,
+      "action_adjustments": 0,
+      "games_per_second": 1.9518167930819992
+    },
+    "round532_vs_round579": {
+      "games_completed": 256,
+      "timeouts_or_errors": 0,
+      "action_adjustments": 0,
+      "games_per_second": 3.1118785716367476
+    },
+    "round532_vs_max_damage": {
+      "games_completed": 256,
+      "timeouts_or_errors": 0,
+      "action_adjustments": 0,
+      "games_per_second": 6.968389805099593
+    },
+    "round532_vs_counterplay": {
+      "games_completed": 256,
+      "timeouts_or_errors": 0,
+      "action_adjustments": 0,
+      "games_per_second": 2.6382529596115685
+    },
+    "round532_vs_public_counterplay": {
+      "games_completed": 256,
+      "timeouts_or_errors": 0,
+      "action_adjustments": 0,
+      "games_per_second": 7.430663479134733
+    },
+    "round536_vs_round542": {
+      "games_completed": 256,
+      "timeouts_or_errors": 0,
+      "action_adjustments": 0,
+      "games_per_second": 2.1388958287613784
+    },
+    "round536_vs_round574": {
+      "games_completed": 256,
+      "timeouts_or_errors": 0,
+      "action_adjustments": 0,
+      "games_per_second": 2.818156494105491
+    },
+    "round536_vs_round579": {
+      "games_completed": 256,
+      "timeouts_or_errors": 0,
+      "action_adjustments": 0,
+      "games_per_second": 2.9749920825860827
+    },
+    "round536_vs_max_damage": {
+      "games_completed": 256,
+      "timeouts_or_errors": 0,
+      "action_adjustments": 0,
+      "games_per_second": 7.779704048377144
+    },
+    "round536_vs_counterplay": {
+      "games_completed": 256,
+      "timeouts_or_errors": 0,
+      "action_adjustments": 0,
+      "games_per_second": 3.559783142990215
+    },
+    "round536_vs_public_counterplay": {
+      "games_completed": 256,
+      "timeouts_or_errors": 0,
+      "action_adjustments": 0,
+      "games_per_second": 3.6278169041043022
+    },
+    "round542_vs_round574": {
+      "games_completed": 256,
+      "timeouts_or_errors": 0,
+      "action_adjustments": 0,
+      "games_per_second": 2.7388877752592196
+    },
+    "round542_vs_round579": {
+      "games_completed": 256,
+      "timeouts_or_errors": 0,
+      "action_adjustments": 0,
+      "games_per_second": 1.8707032951541909
+    },
+    "round542_vs_max_damage": {
+      "games_completed": 256,
+      "timeouts_or_errors": 0,
+      "action_adjustments": 0,
+      "games_per_second": 7.296522210267259
+    },
+    "round542_vs_counterplay": {
+      "games_completed": 256,
+      "timeouts_or_errors": 0,
+      "action_adjustments": 0,
+      "games_per_second": 3.3735854795532867
+    },
+    "round542_vs_public_counterplay": {
+      "games_completed": 256,
+      "timeouts_or_errors": 0,
+      "action_adjustments": 0,
+      "games_per_second": 6.391144840018843
+    },
+    "round574_vs_round579": {
+      "games_completed": 256,
+      "timeouts_or_errors": 0,
+      "action_adjustments": 0,
+      "games_per_second": 2.474963109699041
+    },
+    "round574_vs_max_damage": {
+      "games_completed": 256,
+      "timeouts_or_errors": 0,
+      "action_adjustments": 0,
+      "games_per_second": 4.652145292509629
+    },
+    "round574_vs_counterplay": {
+      "games_completed": 256,
+      "timeouts_or_errors": 0,
+      "action_adjustments": 0,
+      "games_per_second": 4.737741252453839
+    },
+    "round574_vs_public_counterplay": {
+      "games_completed": 256,
+      "timeouts_or_errors": 0,
+      "action_adjustments": 0,
+      "games_per_second": 5.484509301572369
+    },
+    "round579_vs_max_damage": {
+      "games_completed": 256,
+      "timeouts_or_errors": 0,
+      "action_adjustments": 0,
+      "games_per_second": 8.938676653349386
+    },
+    "round579_vs_counterplay": {
+      "games_completed": 256,
+      "timeouts_or_errors": 0,
+      "action_adjustments": 0,
+      "games_per_second": 3.6203757309944367
+    },
+    "round579_vs_public_counterplay": {
+      "games_completed": 256,
+      "timeouts_or_errors": 0,
+      "action_adjustments": 0,
+      "games_per_second": 3.9541769928578208
+    }
+  },
+  "interpretation": "Use this fresh matrix to select an opponent mixture for the next best-response PPO iteration and to identify whether any current checkpoint mixture approaches 50% against the available responses. A value below 50% confirms that this restricted population remains exploitable; it does not estimate exploitability against policies absent from the matrix.",
+  "reproduction": "scripts/evaluate_round582_current_policy_meta_game.sh",
+  "summarizer": "scripts/summarize_round582_current_policy_meta_game.py"
+}

@@ -300,7 +300,7 @@
     "games_per_second": "30.39 rollout / 17.72 input-to-checkpoint",
     "context": "Round574: 20,000 audited games; rollouts 658.15 s; input-to-checkpoint 1,128.45 s. 20 shards compressed from 4.01 GB to 229 MB (5.72%).",
     "decision_latency": "Round542 weighted profile remains the latest detailed rollout breakdown.",
-    "current_bottleneck": "Round542: action selection 89.4 ms/episode, then inference 38.2 ms, baseline scoring 36.1 ms, engine roundtrip 32.4 ms, observation encoding 26.7 ms. Round574 speed includes slower policy-pool opponents and remains CPU simulation.",
+    "current_bottleneck": "Round542: action selection 89.4 ms/episode, then inference 38.2 ms, baseline scoring 36.1 ms, engine roundtrip 32.4 ms, observation encoding 26.7 ms. Round574 speed includes slower policy-pool opponents and remains CPU simulation. Round582 matchup evaluation is limited by a slow worker tail in PPO-vs-PPO cells (one 16-cluster shard took up to 152 seconds); direct heuristic cells were faster. This suggests dynamically scheduling team-pair clusters instead of fixed 16-pair shards for evaluation.",
     "gpu_status": "CUDA PPO; headless battle simulation on CPU",
     "profile_context": "Round542 weighted per-episode rollout profile from 20,000 episodes across Max Damage, Counterplay, Public Counterplay, and six frozen PPO opponents with the 1+4 overlay.",
     "active_training_profile": {
@@ -1402,18 +1402,19 @@
         "observation_encoding_ms": 26.7,
         "trajectory_persist_ms": 9.7
       }
-    }
+    },
+    "round582_evaluation_games_per_second": "3.93 mean per matchup cell across 52 cells; individual cells 1.69\u20138.94 games/s"
   },
   "latest_run": {
-    "round": 581,
-    "status": "Stochastic action sampling screen complete; rejected as general fix",
-    "summary": "Sampling Round430 masked actions did not improve direct-heuristic performance. It scored 38.28% vs Max Damage (\u22123.52 pp paired vs deterministic), 27.34% vs Counterplay (\u22126.69 pp, 95% paired CI [\u221212.99,\u22120.79]), and 41.02% vs Public Counterplay (\u22120.39 pp). All remain below 50%, direct evidence of exploitable play.",
-    "games": "128 fresh team-pair clusters per opponent, both seats; one repeat; one deterministic Counterplay cluster excluded",
-    "evaluation": "Paired team-cluster bootstrap; no model training; sampling significantly harmed Counterplay and was not promoted"
+    "round": 583,
+    "status": "PSRO best-response PPO training in progress; Round582 payoff matrix complete",
+    "summary": "Round582 fresh 8-policy empirical game: all eight checkpoints scored below 50% against Max Damage, Counterplay, and Public Counterplay. Restricted maximin value 36.61% (95% team-cluster bootstrap CI 30.29\u201343.42%); point adversary is Counterplay. Round583 is training a PSRO-style best response from Round532 using a bootstrap dual response mixture plus the empirical row mixture. No candidate promotion until fresh direct-strategy evaluation.",
+    "games": "Round582: 52 payoff cells \u00d7 128 requested team-pair clusters; 127 common clusters. Round583: 20,000-game training run",
+    "evaluation": "All Round582 cells had zero protocol errors, timeouts, or action adjustments. One incomplete cluster was excluded from every matrix cell."
   },
   "method": "Native self-play PPO for in-battle decisions. Terminal win/loss remains the main objective; win-probability and hidden-set prediction are auxiliary tasks. Search comes after a stronger policy.",
   "jax_decision": "Round430 has a confirmed self-play head-to-head lift over Round424, but external-opponent screens remain inconclusive. Prioritize measured inference batching, observation throughput, and rollouts; keep equilibrium-oriented opponent coverage and defer a JAX/GPU engine rewrite until its end-to-end payoff is measured.",
-  "evaluation_note": "A reproducible score below 50% against a legal simple heuristic is direct evidence of exploitable, non-optimal play on that matchup distribution. Round581 deterministic Round430 scored 41.80% vs Max Damage, 33.47% vs Counterplay, and 41.41% vs Public Counterplay. Sampling produced 38.28%, 27.34%, and 41.02%, respectively; the Counterplay decline was significant (paired 95% team-cluster CI \u221212.99 to \u22120.79 pp). Keep deterministic Round430 only as a reference baseline, not as a strong policy. The next step is payoff-based robust policy learning, with every direct-heuristic absolute score reported as a failure gate.",
+  "evaluation_note": "A reproducible score below 50% against a legal simple heuristic is direct evidence of exploitable, non-optimal play on that matchup distribution. Round582 found every current checkpoint below 50% against Max Damage, Counterplay, and Public Counterplay; the best restricted mix value was only 36.61% (bootstrap 95% interval 30.29\u201343.42%). Round583 is training a best response to the fresh restricted empirical response mixture; no strength claim until its held-out evaluation.",
   "generated_at": "2026-11-01",
   "round462_evaluation": {
     "status": "Round462 not promoted \u00b7 initial paired screen complete",
@@ -8896,5 +8897,125 @@
     "seed_start": 202611581,
     "interpretation": "This measures whether sampling from the existing policy distribution improves these held-out matchups. It does not train a new policy or prove Nash-equilibrium play.",
     "reproduction": "scripts/evaluate_round581_stochastic_policy_128x1.sh"
+  },
+  "round582_empirical_policy_game": {
+    "report": "round582_current_policy_meta_game.json",
+    "payoff_matrix": "round582_payoff_matrix.csv",
+    "policies": [
+      "round430",
+      "round530",
+      "round531",
+      "round532",
+      "round536",
+      "round542",
+      "round574",
+      "round579"
+    ],
+    "opponents": [
+      "round430",
+      "round530",
+      "round531",
+      "round532",
+      "round536",
+      "round542",
+      "round574",
+      "round579",
+      "max_damage",
+      "counterplay",
+      "public_counterplay"
+    ],
+    "common_team_clusters": 127,
+    "restricted_maximin_value_pct": 36.614,
+    "restricted_maximin_ci95_pct": [
+      30.294,
+      43.421
+    ],
+    "restricted_maximin_mix": {
+      "round430": 0.0,
+      "round530": 0.0,
+      "round531": 0.0,
+      "round532": 1.0,
+      "round536": 0.0,
+      "round542": 0.0,
+      "round574": 0.0,
+      "round579": 0.0
+    },
+    "restricted_adversary_mix": {
+      "round430": 0.0,
+      "round530": 0.0,
+      "round531": 0.0,
+      "round532": 0.0,
+      "round536": 0.0,
+      "round542": 0.0,
+      "round574": 0.0,
+      "round579": 0.0,
+      "max_damage": 0.0,
+      "counterplay": 1.0,
+      "public_counterplay": 0.0
+    },
+    "bootstrap_response_mix_mean": {
+      "round430": 0.00459932132259104,
+      "round530": 0.0009463190406322986,
+      "round531": 0.001388257415114099,
+      "round532": 0.00045967825499789616,
+      "round536": 2.2971571310414535e-05,
+      "round542": 9.09090909090909e-06,
+      "round574": 9.23759890103357e-06,
+      "round579": 9.549690012776544e-06,
+      "max_damage": 0.04586013039071069,
+      "counterplay": 0.784110995651333,
+      "public_counterplay": 0.1625844481553057
+    },
+    "direct_heuristic_scores_pct": {
+      "max_damage": {
+        "round430": 42.126,
+        "round530": 43.307,
+        "round531": 42.52,
+        "round532": 40.551,
+        "round536": 40.551,
+        "round542": 40.157,
+        "round574": 45.276,
+        "round579": 44.882
+      },
+      "counterplay": {
+        "round430": 35.433,
+        "round530": 34.252,
+        "round531": 35.039,
+        "round532": 36.614,
+        "round536": 36.22,
+        "round542": 36.614,
+        "round574": 35.827,
+        "round579": 34.646
+      },
+      "public_counterplay": {
+        "round430": 40.551,
+        "round530": 40.157,
+        "round531": 38.189,
+        "round532": 37.402,
+        "round536": 38.189,
+        "round542": 40.945,
+        "round574": 40.157,
+        "round579": 38.583
+      }
+    },
+    "cell_count": 52,
+    "timeouts_errors": 1,
+    "action_adjustments": 0,
+    "mean_cell_games_per_second": 3.931,
+    "training_target": "90% empirical dual-response mixture plus 10% empirical row mixture; Round532 initialization",
+    "interpretation": "Restricted empirical game only; not a full-game Nash guarantee. Every direct heuristic point score remains below 50%."
+  },
+  "round583_psro_training": {
+    "status": "in progress",
+    "run": "training/outputs/phase12_headless/round583_psro_response_mix_20k_20261101_retry1",
+    "starting_policy": "Round532",
+    "episodes_requested": 20000,
+    "opponent_mix": "90% bootstrap empirical response mixture plus 10% bootstrap row mixture",
+    "heuristic_fractions": {
+      "max_damage": 0.041274117351639626,
+      "counterplay": 0.7056998960861998,
+      "public_counterplay": 0.14632600333977513
+    },
+    "reproduction": "scripts/train_round583_psro_response_mix_20k.sh"
   }
 }
