@@ -1,0 +1,49 @@
+{
+  "schema_version": 1,
+  "round": 573,
+  "title": "Shared pairwise action ranker overfits and worsens held-out selection",
+  "status": "Rejected offline; experimental split previously inspected",
+  "format": "gen9championsdoubles2026mcclosed",
+  "source_checkpoint": "training/outputs/phase12_headless/round430_hard_opponent_auxiliary_ppo_20k_20261030/checkpoints/latest.pt",
+  "candidate_checkpoint": "training/outputs/phase12_headless/round573_structured_pairwise_ranker_20261101/structured_action_ranker.pt",
+  "candidate_role": "experimental diagnostic only",
+  "team_split": {
+    "train": 226,
+    "validation": 57,
+    "test": 173
+  },
+  "best_epoch": 4,
+  "best_validation_pairwise_loss": 0.13087632641882488,
+  "validation_loss_first_epoch": 0.13094998045371062,
+  "validation_loss_best_epoch": 0.13087632641882488,
+  "test_selected_action_changes": 63,
+  "test_candidate_counts": {
+    "hybrid_damage0_policy1,policy": 35,
+    "hybrid_damage0_policy1,hybrid_policy0_damage1,max_damage,policy": 14,
+    "policy": 45,
+    "hybrid_policy0_damage1,max_damage": 6,
+    "legal_perturbation_1": 9,
+    "hybrid_damage0_policy1": 12,
+    "hybrid_policy0_damage1,policy": 16,
+    "max_damage": 13,
+    "hybrid_policy0_damage1": 9,
+    "hybrid_damage0_policy1,max_damage": 5,
+    "legal_perturbation_0": 7,
+    "setup_slot1_nastyplot": 1,
+    "switch_slot0_politoed": 1
+  },
+  "test_paired_delta_by_response": {
+    "counterplay": -0.02601156069364162,
+    "max_damage": -0.014450867052023121,
+    "policy": 0.0072254335260115606,
+    "public_counterplay": 0.015895953757225433,
+    "random": -0.010115606936416185
+  },
+  "test_worst_response_delta": -0.10838150289017341,
+  "test_worst_response_cluster_bootstrap_95_ci": [
+    -0.14595375722543352,
+    -0.07225433526011561
+  ],
+  "interpretation": "The 173-team outcome set had already informed Round572 model selection and is reused here only for exploration, not independent confirmation. Validation loss worsened after epoch 4; the selector changed 63/173 actions and harmed worst-response outcomes. Reject before full-match evaluation.",
+  "next": "Stop extending action-value selectors. Return to full-match PPO policy updates against an equilibrium-oriented league mix and evaluate on a newly collected untouched team set."
+}
