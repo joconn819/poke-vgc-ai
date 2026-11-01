@@ -1385,16 +1385,16 @@
     }
   },
   "latest_run": {
-    "round": 539,
-    "status": "completed controlled ablations \u00b7 no promotion",
-    "summary": "Round536/538 scored 29.30%/30.27% vs Max Damage. Round538 paired lift +0.98 pp [\u22121.17,+3.32] over 128 clusters; unresolved. Both policies remain exploitable against simple heuristics; Round430 remains the validated default.",
-    "games": "20,000 training games (Round536); Round538 reused the same audited games",
-    "epochs": "1,308 PPO optimizer steps",
-    "evaluation": "Repeated six-class league: 128 team clusters \u00d7 2 outcomes, side-swapped"
+    "round": 540,
+    "status": "nine-class opening hybrid screen complete \u00b7 fresh confirmation running",
+    "summary": "Round430 with Max Damage actions at decisions 1 and 4 gained +7.42 pp vs Max Damage [+0.78,+14.06], +5.08 vs Public Counterplay [\u22120.39,+10.94], and +10.24 vs Round476 PPO [+3.94,+16.54]. The worst score over the three simple heuristics rose only 33.98%\u219236.72%, so play remains exploitable and the hybrid is not promoted. Round541 is checking four key matchups on fresh teams with two outcomes.",
+    "games": "128 team clusters \u00d7 1 outcome; nine opponent classes, both arms",
+    "epochs": "No training in this evaluation",
+    "evaluation": "Paired, side-swapped cluster bootstrap; fresh confirmation in progress"
   },
   "method": "Native self-play PPO for in-battle decisions. Terminal win/loss remains the main objective; win-probability and hidden-set prediction are auxiliary tasks. Search comes after a stronger policy.",
   "jax_decision": "Round430 has a confirmed self-play head-to-head lift over Round424, but external-opponent screens remain inconclusive. Prioritize measured inference batching, observation throughput, and rollouts; keep equilibrium-oriented opponent coverage and defer a JAX/GPU engine rewrite until its end-to-end payoff is measured.",
-  "evaluation_note": "A reproducible score below 50% against a legal Max Damage policy is direct evidence that the evaluated agent is exploitable on that team and opponent distribution. It does not by itself prove the size of the gap to the global equilibrium strategy. Round532 scored 31.25% vs Max Damage; increasing training exposure to that policy did not help. Round430 remains the default because no later checkpoint has demonstrated a reliable broad improvement. Round537/539 also show absolute weakness: Round536 and Round538 each score about 30% against Max Damage. Uncertainty in the candidate delta does not change the evidence that both are exploitable and non-optimal on these teams.",
+  "evaluation_note": "A reproducible score below 50% against a legal Max Damage policy is direct evidence that the evaluated agent is exploitable on that team and opponent distribution. It does not by itself prove the size of the gap to the global equilibrium strategy. Round532 scored 31.25% vs Max Damage; increasing training exposure to that policy did not help. Round430 remains the default because no later checkpoint has demonstrated a reliable broad improvement. Round537/539 also show absolute weakness: Round536 and Round538 each score about 30% against Max Damage. Uncertainty in the candidate delta does not change the evidence that both are exploitable and non-optimal on these teams. Round540 gives fresh evidence that the 1+4 Max Damage opening rule improves some matchups, but its worst score against the simple heuristic pool is still only 36.72%; this is measurable progress, not optimal play.",
   "generated_at": "2026-10-31 23:50 UTC",
   "round462_evaluation": {
     "status": "Round462 not promoted \u00b7 initial paired screen complete",
@@ -8670,5 +8670,19 @@
       ]
     },
     "conclusion": "No paired improvement is established; both policies remain clearly below 50% versus simple legal heuristics. Round430 remains project default."
+  },
+  "round540_opening14_summary": {
+    "report": "round540_opening14_league.json",
+    "status": "screen_complete_confirmation_in_progress",
+    "raw_equal_weight_mean_pct": 51.602,
+    "opening14_equal_weight_mean_pct": 56.034,
+    "raw_heuristic_worst_pct": 33.984,
+    "opening14_heuristic_worst_pct": 36.719,
+    "max_damage_delta_pp": 7.422,
+    "max_damage_delta_ci95_pp": [
+      0.781,
+      14.062
+    ],
+    "confirmation": "Round541 fresh teams, two outcomes, four opponent classes"
   }
 }
