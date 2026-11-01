@@ -7891,5 +7891,43 @@
       1.562
     ],
     "interpretation": "256 fresh team clusters, two repeats, side swapped. Round524 absolute 95% interval is below 50%, confirming non-robust play against this simple opponent. Paired change vs Round430 is inconclusive."
+  },
+  "round527_teacher_uptake": {
+    "status": "Complete; teacher-uptake diagnostic",
+    "method": "Round520 and Round524 raw/first-five-override traces on the same 128 team-pair clusters, two repeats, side-swapped; seed 202611528.",
+    "round520": {
+      "raw_score_pct": 44.727,
+      "first5_score_pct": 44.336,
+      "paired_delta_pp": -0.391,
+      "paired_ci95_pp": [
+        -7.813,
+        7.227
+      ],
+      "first_turn_slots_matching_max_damage": 288,
+      "first_turn_action_slots": 1024,
+      "max_damage_match_rate_pct": 28.125,
+      "action_adjustments": 0,
+      "timeouts_or_errors": 0
+    },
+    "round524": {
+      "raw_score_pct": 43.359,
+      "first5_score_pct": 44.922,
+      "paired_delta_pp": 1.562,
+      "paired_ci95_pp": [
+        -6.055,
+        9.375
+      ],
+      "first_turn_slots_matching_max_damage": 292,
+      "first_turn_action_slots": 1024,
+      "max_damage_match_rate_pct": 28.516,
+      "action_adjustments": 0,
+      "timeouts_or_errors": 0
+    },
+    "round520_vs_round524_raw_first_turn_slots_changed": 36,
+    "interpretation": "The teacher-supervised lower-learning-rate update changed only 3.52% of first-turn action slots and raised exact agreement with Max Damage from 28.13% to 28.52%. The first-five override's paired lift on Round524 is inconclusive. This shows weak direct teacher uptake, not that Max Damage imitation is the right robust target.",
+    "trace_analysis_round520": "round523_raw_trace_analysis.json",
+    "trace_analysis_round524": "round527_raw_trace_analysis.json",
+    "reproduction": "CHECKPOINT=training/outputs/phase12_headless/round524_opening5_teacher_low_lr_20k_20261031/checkpoints/latest.pt OUT=training/outputs/phase12_headless/round527_round524_opening_traces_128x2_20261031 SEED=202611528 bash scripts/evaluate_round523_round520_opening_traces_128x2.sh",
+    "report": "round527_teacher_uptake.json"
   }
 }

@@ -18963,22 +18963,59 @@ coverage, not another blind teacher-weight sweep.
 - Checkpoint: `training/outputs/phase12_headless/round524_opening5_teacher_low_lr_20k_20261031/checkpoints/latest.pt`.
   Training command: `scripts/train_round524_opening5_teacher_low_lr_20k.sh`.
 
-### Next training direction after Round524
+### Round527: teacher-uptake trace diagnostic (complete)
 
-- Stop treating Max Damage action imitation or a modest learning-rate change as
-  sufficient. Round522's first-five lift failed to replicate in Round523, and
-  Round524 failed to beat Round430 despite more PPO steps.
-- Diagnose the first two turns with state-conditioned, counterfactual action
-  values across legal simultaneous action pairs and varied opponent responses.
-  Rank candidate actions by expected payoff across outcomes/opponents, then
-  build high-confidence teacher targets only where the ranking is stable; keep
-  equilibrium or robust response coverage instead of copying a single policy.
-- Before a large run, validate target labels on held-out team pairs and check
-  action/rules correctness. Train a controlled candidate from Round430 with a
-  conservative PPO update plus masked action-value/teacher loss on these
-  decisions, preserving the broad opponent mixture. Track KL, teacher loss,
-  optimizer steps, and held-out Max Damage win rate each iteration.
-- Require a larger paired test against Max Damage and the six-class league. The
-  target is improving worst-class and lower-tail performance, not a specific
-  opponent's habits. Do not promote until a candidate shows replicated positive
-  paired changes and clears the <50% weakness against Max Damage.
+- Compared Round520 and Round524 raw policies against first-five Max Damage
+overrides on the same 128 clusters, two repeats and side-swaps. Round520
+moved from 44.73% raw to 44.34% overridden (paired -0.39 pp, 95% CI
+[-7.81,+7.23]); Round524 moved from 43.36% to 44.92% (+1.56 pp,
+[-6.06,+9.38]). Neither effect is decisive.
+- Exact first-turn action-slot agreement with Max Damage was 28.13% for Round520
+and 28.52% for Round524; the two checkpoints differed on only 36/1,024 slots
+(3.52%). The lower-learning-rate update barely changed targeted opening
+choices. This does not explain all losses, but the teacher recipe failed to
+produce a measurable opening-policy shift.
+- No timeouts, errors, or action adjustments. Reports:
+  `site/round527_teacher_uptake.json`, `site/round527_raw_trace_analysis.json`,
+and `site/round527_first5_trace_analysis.json`. Reproduction:
+  `scripts/evaluate_round523_round520_opening_traces_128x2.sh` with CHECKPOINT
+and OUT set to the Round524 checkpoint and output paths.
+
+### Round528: policy-population payoff matrix (running)
+
+- Measuring all pairwise head-to-head outcomes among Round430, 472, 473, 476,
+485, 524, and historical Round102, using 128 shared team clusters per pair,
+both seats, and the same preview selector. The goal is to test whether this
+finite population has a stable robust mixture before using it to train.
+- This is a restricted empirical matrix, not a Nash solution for VGC. Even a
+stable mix will need fresh-team validation against heuristic opponents and
+the full league before it changes the training mixture.
+- Reproduction: `scripts/evaluate_round528_policy_population_matrix.sh`.
+
+### Next training direction after Round527
+
+- Do not repeat the first-five Max Damage teacher recipe, the positive-minimum
+  action-value distillation from Rounds478–479, or the response-conditioned
+  selector from Rounds495–499. Those attempts either barely changed action
+  choices, failed to reproduce, or did not improve full-match play.
+- PPO updates from Rounds520/524 used 20,000 games but only one optimization
+  pass sequence. Round524 changed 3.52% of first-turn action slots and did not
+  measurably change the held-out league. Another same-recipe 20,000-game run is
+  not justified without a new learning signal.
+- Shift to a population-based response loop: evaluate a diverse set of policy
+  checkpoints against one another on common held-out teams, estimate the
+  payoff matrix with cluster bootstrap uncertainty, and compute a robust mixed
+  strategy over this restricted population. Treat the matrix as a training
+  opponent mixture, not a model of behavioral tendencies. Include heuristic
+  opponents as fixed regression coverage, then train a fresh response against
+  the mixture with on-policy data refreshed between updates.
+- First verify whether the estimated mixture is stable under seed/team
+  resampling and leave-one-policy-out analysis. If the restricted population
+  has no identifiable cycles or robust mixture, increase policy diversity
+  before PPO rather than overinterpreting noise. Compare the candidate against
+  Round430 on a fresh, larger Max Damage screen and the full opponent league;
+  report worst-class and lower-tail results and keep Round430 unless a gain
+  replicates.
+- The historical `pilot_clean` 96.2% claim remains unreproduced because its
+  checkpoint and match records are absent. Do not treat it as a current agent
+  baseline.
