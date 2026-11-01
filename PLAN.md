@@ -19185,3 +19185,23 @@ and OUT set to the Round524 checkpoint and output paths.
   `scripts/train_round532_maxdamage_floor_20k.sh`. It increases Max Damage
   exposure to 30% while preserving the policy pool and the relative mixture of
   the other two heuristics; its result must be evaluated before any promotion.
+
+### Round532: higher Max Damage exposure (running)
+
+- Started from the Round531 checkpoint for 20,000 episodes. Max Damage receives
+  30% of training episodes, Counterplay 34.873%, Public Counterplay 24.477%,
+  and the six-policy pool 10.65%. The Counterplay/Public Counterplay ratio and
+  pool are held fixed from Round531, making heuristic exposure the experimental
+  change.
+- As of the current progress update, 3,153/20,000 episodes have completed
+  rollout generation. Strict audit and PPO update remain. Run directory:
+  `training/outputs/phase12_headless/round532_maxdamage_floor_20k_20261031/`.
+  Training script: `scripts/train_round532_maxdamage_floor_20k.sh`.
+- The nearest completed speed reference is Round531: 30.23 rollout games/s,
+  18.55 input-to-checkpoint games/s, and 9.51 GiB peak aggregate RSS across
+  eight workers. Action selection was the largest measured cost at 103 ms per
+  episode. Round532's own speed and profile will replace this reference after
+  its run completes.
+- The planned repeated comparison is 128 fresh team-pair clusters and two
+  stochastic outcome repeats against six opponent classes, with side swaps:
+  `scripts/evaluate_round532_repeated_fresh_league_128x2.sh`.
