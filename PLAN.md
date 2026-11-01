@@ -19217,3 +19217,21 @@ and OUT set to the Round524 checkpoint and output paths.
 - The repeated comparison completed on 128 fresh team-pair clusters, two stochastic outcomes per cluster, with side swaps. All per-class paired confidence intervals include zero. Round531 → Round532: Max Damage 31.45% → 31.25% (Δ −0.20 pp, 95% cluster CI [−2.93,+2.54]); Counterplay 37.11% → 35.74% (−1.37 [−3.32,+0.59]); Public Counterplay 32.81% → 32.62% (−0.20 [−2.73,+2.34]); Random 95.29% → 95.49% (+0.20 [−0.59,+1.17]); Round430 PPO 51.18% → 51.56% (+0.59 [−1.56,+2.73]); Round473 PPO 40.59% → 41.57% (+0.98 [−1.18,+3.15]). Thus raising Max Damage exposure to 30% did not improve that matchup, and both policies remain clearly exploitable against simple strategies. Round532 is not promoted. Round430 remains the project default pending a stronger validated candidate.
 - A 32-team-cluster, two-repeat traced diagnostic (256 matches combined) scored 43.75% overall with a wide 95% cluster interval [30.08%,57.42%]. Losing games tended to have lower team HP and fewer surviving Pokémon from early snapshots. Action-use differences are descriptive and cannot identify which choices caused losses. Next diagnosis should measure per-state action counterfactuals under varied legal opponent responses, then turn confirmed errors into targeted regression cases.
 - Repeated league report: `site/round533_league.json`. Trace report: `site/round534_trace_analysis.md` and `site/round534_trace_analysis.json`. Trace run: `training/outputs/phase12_headless/round534_maxdamage_trace_round531_round532_32x2_20261031/`.
+
+
+### Round535: deterministic versus sampled policy actions (complete; no promotion)
+
+- Tested the Round532 checkpoint against Max Damage with deterministic argmax
+  actions and with sampled PPO actions. Each mode used the same 128 team-pair
+  clusters, two outcomes per cluster, side swaps, and team selector. There were
+  512 matches per mode and no timeouts or action adjustments.
+- Deterministic scored 30.08% (95% team-cluster bootstrap interval
+  [24.02%,36.52%]); sampled scored 27.54% [22.66%,32.62%]. The paired
+  sampled-minus-deterministic change was -2.54 percentage points
+  [−7.23,+2.15] over 128 clusters. The mode difference is unresolved;
+  sampling does not address the large gap below 50%.
+- Conclusion: deterministic argmax at evaluation is not a sufficient
+  explanation for this exploit. Keep the evaluated Round430 baseline unchanged;
+  do not promote Round532 or change inference mode based on this run.
+- Results: `site/round535_action_selection.json`; raw summaries and comparison
+  are in `training/outputs/phase12_headless/round535_round532_stochastic_vs_deterministic_maxdamage_128x2_20261031/`.
