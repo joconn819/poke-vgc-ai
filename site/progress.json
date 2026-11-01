@@ -8084,7 +8084,7 @@
     "summarizer": "scripts/summarize_round528_policy_population_matrix.py"
   },
   "round529_checkpoint_heuristic_payoffs": {
-    "status": "Running",
+    "status": "Complete; rectangular policy-vs-opponent payoff screen",
     "candidate_policies": [
       "round430",
       "round472",
@@ -8101,7 +8101,7 @@
     ],
     "opponent_columns": "Seven policy checkpoints plus three fixed heuristic responses; policy-vs-policy outcomes reuse Round528 data.",
     "new_matchups_total": 21,
-    "new_matchups_complete": 18,
+    "new_matchups_complete": 21,
     "team_clusters_per_matchup": 128,
     "repeats_per_cluster": 1,
     "workers": 8,
@@ -8110,7 +8110,7 @@
     "reproduction": "scripts/evaluate_round529_checkpoint_heuristic_payoffs.sh",
     "summarizer": "scripts/summarize_round529_checkpoint_heuristic_payoffs.py",
     "purpose": "Estimate a checkpoint mixture against past policies and fixed Max Damage, Counterplay, and Public Counterplay responses; this restricted maximin is not a full-game Nash solution.",
-    "completed_games": 4608,
+    "completed_games": 5376,
     "matchups": [
       {
         "name": "round430_vs_counterplay",
@@ -8260,6 +8260,89 @@
     "measured_games_per_second_range": [
       3.7,
       8.455
-    ]
+    ],
+    "common_team_clusters": 126,
+    "timeouts_or_errors": 0,
+    "action_adjustments": 0,
+    "sequential_end_to_end_games_per_second": 6.123,
+    "restricted_maximin_mix": {
+      "round430": 0.833333333333335,
+      "round472": 0.0,
+      "round473": 0.1666666666666649,
+      "round476": 0.0,
+      "round485": 0.0,
+      "round524": 0.0,
+      "round102": 0.0
+    },
+    "restricted_maximin_value": 0.3875661375661375,
+    "bootstrap_maximin_value_ci95": [
+      0.32033853275791424,
+      0.45203146857876325
+    ],
+    "restricted_adversary_mix": {
+      "round430": 0.0,
+      "round472": 0.0,
+      "round473": 0.0,
+      "round476": 0.0,
+      "round485": 0.0,
+      "round524": 0.0,
+      "round102": 0.0,
+      "max_damage": 0.0,
+      "counterplay": 0.6666666666666723,
+      "public_counterplay": 0.33333333333332776
+    },
+    "bootstrap_mean_adversary_strategy": {
+      "round430": 0.006740298778152021,
+      "round472": 5.1223147900202e-06,
+      "round473": 5.089275391140563e-06,
+      "round476": 5.035157080806494e-06,
+      "round485": 5.094610934257453e-06,
+      "round524": 0.00010423809103069377,
+      "round102": 5e-06,
+      "max_damage": 0.1249191762783632,
+      "counterplay": 0.5100059687718183,
+      "public_counterplay": 0.3582049767224397
+    },
+    "adversary_support_frequency_gt_5pct": {
+      "round430": 0.02,
+      "round472": 0.0,
+      "round473": 0.0,
+      "round476": 0.0,
+      "round485": 0.0,
+      "round524": 0.0,
+      "round102": 0.0,
+      "max_damage": 0.345,
+      "counterplay": 0.77,
+      "public_counterplay": 0.6
+    },
+    "result": "All existing checkpoints scored below 50% against the three heuristic columns; no candidate promotion.",
+    "report": "round529_checkpoint_heuristic_payoffs.json",
+    "matrix_csv": "round529_payoff_matrix.csv"
+  },
+  "round530_training": {
+    "status": "Running",
+    "run": "training/outputs/phase12_headless/round530_rectangular_robust_response_20k_20261031",
+    "starting_checkpoint": "round430",
+    "episodes": 20000,
+    "optimizer_epochs": 4,
+    "minibatch_size": 512,
+    "learning_rate": 5e-05,
+    "device": "cuda",
+    "rollout_workers": 8,
+    "opponent_fractions": {
+      "max_damage": 0.1125,
+      "counterplay": 0.459,
+      "public_counterplay": 0.322,
+      "prior_policy_pool": 0.1065
+    },
+    "opponent_policy_pool": [
+      "round430",
+      "round473",
+      "round476",
+      "round485",
+      "round524"
+    ],
+    "training_signal": "90% scaled bootstrap mean minimizer from Round529, with 10% past-policy opponent pool.",
+    "reproduction": "scripts/train_round530_rectangular_robust_response_20k.sh"
   }
 }

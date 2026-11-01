@@ -19011,52 +19011,63 @@ and OUT set to the Round524 checkpoint and output paths.
   Reproduction: scripts/evaluate_round528_policy_population_matrix.sh;
   summarizer: scripts/summarize_round528_policy_population_matrix.py.
 
-### Round529: checkpoint policies versus fixed heuristic responses (running)
+### Round529: checkpoint policies versus heuristic responses (complete)
 
-- Extend Round528's checkpoint-only results with a rectangular payoff matrix:
-  seven candidate checkpoint policies against seven prior policy checkpoints and
-  three fixed heuristic responses (Max Damage, Counterplay, Public Counterplay).
-  The checkpoint-vs-checkpoint columns reuse Round528's 127 common-cluster data.
-- Each new policy-vs-heuristic cell uses 128 team-pair clusters, both seats, the
-  same preview selector and seed schedule. This tests whether any available
-  checkpoint mixture improves its worst-case score when the simple strategies
-  are included as adversarial responses. It does not predict opponent habits.
-- Output: training/outputs/phase12_headless/round529_checkpoint_heuristic_payoffs_128x1_20261031/.
+- Evaluated all seven checkpoint policies against Max Damage, Counterplay, and
+  Public Counterplay on 128 team-pair clusters each, both seats. All 21 cells
+  completed 5,376 games with zero timeouts/errors or action adjustments. Using
+  Round528 shared policy-vs-policy data, 126 team clusters were common across
+  the 7 candidate rows and 10 opponent columns.
+- Across the common clusters every checkpoint scored below 50% against all
+  three heuristics. Round430 scored 39.3% vs Max Damage [31.7,47.2], 38.9% vs
+  Counterplay [31.3,46.4], and 38.5% vs Public Counterplay [31.0,46.4].
+  Round524 was highest against Max Damage at 42.5% [34.5,50.0], but was
+  37.7% [30.6,44.8] vs Counterplay and 39.3% [31.7,46.8] vs Public
+  Counterplay. The matrix and intervals cover the other checkpoints too.
+- The rectangular maximin point mix over existing policies was 83.3% Round430
+  and 16.7% Round473, with worst-case score 38.76%. The team-cluster bootstrap
+  interval was [32.03,45.20] across the restricted opponent columns. This shows
+  the available checkpoint pool has no mixture reaching 50% on this sample.
+  It is not a statement about every possible policy or full-game Nash play.
+- The point adversary mixture was 66.7% Counterplay and 33.3% Public
+  Counterplay. Bootstrap mean weights were 12.5% Max Damage, 51.0%
+  Counterplay, and 35.8% Public Counterplay; heuristic support varied across
+  bootstrap resamples, so this is a practical training prior, not a precisely
+  identified equilibrium.
+- Total sequential matrix throughput was 6.12 games/s over 5,376 games;
+  individual matchups ranged from 3.70 to 8.45 games/s with eight workers.
+  Reports: site/round529_checkpoint_heuristic_payoffs.json,
+  site/round529_payoff_matrix.csv, and
+  training/outputs/phase12_headless/round529_checkpoint_heuristic_payoffs_128x1_20261031/.
   Reproduction: scripts/evaluate_round529_checkpoint_heuristic_payoffs.sh;
   summarizer: scripts/summarize_round529_checkpoint_heuristic_payoffs.py.
-- Status: 18/21 cells and 4,608 games complete. Round430 scored 39.84% vs Max
-  Damage and 39.06% vs Counterplay and Public Counterplay. Round472 scored
-  37.11%, 36.72%, and 40.23%; Round473 scored 40.23%, 37.89%, and 40.62%
-  against those respective opponents. Round476 scored 39.06%, 38.67%, and 38.28%; Round485 scored 41.02%,
-  37.89%, and 39.06%; Round524 scored 42.58%, 37.50%, and 39.45%,
-  respectively. No errors or action adjustments so far;
-  throughput was 3.70–8.45 games/s. These are early point scores; evaluate
-  confidence intervals after the full matrix completes.
 
-### Next training direction after Round528
+### Round530: bootstrap-weighted robust response PPO (running)
 
-- Do not repeat the first-five Max Damage teacher recipe, the positive-minimum
-  action-value distillation from Rounds478–479, or the response-conditioned
-  selector from Rounds495–499. Those attempts either barely changed action
-  choices, failed to reproduce, or did not improve full-match play.
-- PPO updates from Rounds520/524 used 20,000 games but only one optimization
-  pass sequence. Round524 changed 3.52% of first-turn action slots and did not
-  measurably change the held-out league. Another same-recipe 20,000-game run is
-  not justified without a new learning signal.
-- Round528 completed the internal policy matrix but did not identify a stable
-  mix: the Round430 pure point solution is sensitive to team resampling and
-  several bootstrap strategy intervals span [0,1]. Do not train against this
-  point mix or describe the 50% restricted value as measured strength.
-- Next, diversify the response population using separate fresh PPO runs with
-  different seeds and opponent mixtures that include Max Damage, Counterplay,
-  Public Counterplay, Round430, and past PPO checkpoints. Use the matrix only
-  to select training opponents by robust payoff coverage, not by inferred
-  behavioral tendencies. Refresh on-policy data each update and retain
-  heuristic opponents as regression coverage.
-- Evaluate each new response on held-out teams with side swaps and enough
-  clusters to resolve the uncertainty in Round528. Keep Round430 as the control;
-  require a replicated gain against Max Damage and the broader opponent league,
-  including worst-class and lower-tail performance, before promotion.
+- Started from Round430 for 20,000 games, with 11.25% Max Damage, 45.9%
+  Counterplay, 32.2% Public Counterplay, and the remaining 10.65% against a
+  uniform pool of Round430/473/476/485/524 checkpoints. The heuristic weights
+  approximate 90% of Round529's bootstrap mean adversary mix; the prior-policy
+  share preserves response diversity.
+- Use four PPO epochs, minibatches of 512, learning rate 5e-5, eight rollout
+  workers and CUDA. This changes the opponent mix based on the measured
+  rectangular game rather than repeating Round473/524's equal-hard-opponent
+  recipe.
+- Output: training/outputs/phase12_headless/round530_rectangular_robust_response_20k_20261031/.
+  Reproduction: scripts/train_round530_rectangular_robust_response_20k.sh.
+  Promote only after a fresh side-swapped league and sufficiently large
+  Max Damage evaluation with uncertainty estimates.
+
+### Next training direction after Round530
+
+- Round530 tests a new adversary-weighted response distribution from the
+  rectangular payoff screen. Compare the checkpoint against Round430 on fresh
+  teams, all three heuristic opponents, the historical policy pool, and the
+  full opponent league. Report absolute and paired cluster intervals, worst
+  class, invalid actions, runtime and opponent-mixture results.
+- If Round530 does not show a replicated gain, do not repeat the same mixture
+  with a new seed. Inspect policy changes and rollout advantages, then improve
+  policy diversity or the PPO learning signal before another large run.
 - The historical `pilot_clean` 96.2% claim remains unreproduced because its
   checkpoint and match records are absent. Do not treat it as a current agent
   baseline.

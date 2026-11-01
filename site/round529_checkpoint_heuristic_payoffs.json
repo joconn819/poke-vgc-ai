@@ -1,0 +1,643 @@
+{
+  "status": "Complete; checkpoint policies vs fixed heuristic and policy responses",
+  "method": "Seven policy checkpoints are the candidate strategy rows. Opponent columns are those seven checkpoints plus Max Damage, Counterplay, and Public Counterplay. Scores use both player seats, shared team/preview selection, 128 requested team clusters, and a common team-cluster bootstrap. This restricted maximin is not a full-game Nash solution.",
+  "policies": [
+    "round430",
+    "round472",
+    "round473",
+    "round476",
+    "round485",
+    "round524",
+    "round102"
+  ],
+  "opponents": [
+    "round430",
+    "round472",
+    "round473",
+    "round476",
+    "round485",
+    "round524",
+    "round102",
+    "max_damage",
+    "counterplay",
+    "public_counterplay"
+  ],
+  "heuristics": [
+    "max_damage",
+    "counterplay",
+    "public_counterplay"
+  ],
+  "candidate_checkpoints": {
+    "round430": "training/outputs/phase12_headless/round430_hard_opponent_auxiliary_ppo_20k_20261030/checkpoints/latest.pt",
+    "round472": "training/outputs/phase12_headless/round472_fresh_robust_mixed_ppo_20k_20261031/checkpoints/latest.pt",
+    "round473": "training/outputs/phase12_headless/round473_fresh_hard_mixed_ppo_20k_20261031/checkpoints/latest.pt",
+    "round476": "training/outputs/phase12_headless/round476_refreshed_population_ppo_20k_20261031/checkpoints/latest.pt",
+    "round485": "training/outputs/phase12_headless/round485_maxdamage_exposure_ppo_20k_20261031/checkpoints/latest.pt",
+    "round524": "training/outputs/phase12_headless/round524_opening5_teacher_low_lr_20k_20261031/checkpoints/latest.pt",
+    "round102": "training/outputs/phase12_headless/direct_policy_round102_round101_class_balanced_round94_value_gae_ppo_20k_20261024/checkpoints/latest.pt"
+  },
+  "pairs_requested_per_matchup": 128,
+  "repeats_per_team_cluster": 1,
+  "workers": 8,
+  "seed": 2026115290,
+  "common_team_clusters": 126,
+  "payoff_matrix_candidate_score_rate": [
+    [
+      0.5,
+      0.5158730158730159,
+      0.503968253968254,
+      0.503968253968254,
+      0.5119047619047619,
+      0.5079365079365079,
+      0.5674603174603174,
+      0.39285714285714285,
+      0.3888888888888889,
+      0.38492063492063494
+    ],
+    [
+      0.48412698412698413,
+      0.5,
+      0.47619047619047616,
+      0.49603174603174605,
+      0.4801587301587302,
+      0.4880952380952381,
+      0.5436507936507936,
+      0.36507936507936506,
+      0.36507936507936506,
+      0.3968253968253968
+    ],
+    [
+      0.49603174603174605,
+      0.5238095238095238,
+      0.5,
+      0.49206349206349204,
+      0.4880952380952381,
+      0.49603174603174605,
+      0.5634920634920635,
+      0.3968253968253968,
+      0.38095238095238093,
+      0.4007936507936508
+    ],
+    [
+      0.49603174603174605,
+      0.503968253968254,
+      0.5079365079365079,
+      0.5,
+      0.49206349206349204,
+      0.48412698412698413,
+      0.5634920634920635,
+      0.3888888888888889,
+      0.3888888888888889,
+      0.376984126984127
+    ],
+    [
+      0.4880952380952381,
+      0.5198412698412699,
+      0.5119047619047619,
+      0.5079365079365079,
+      0.5,
+      0.49603174603174605,
+      0.5714285714285714,
+      0.4087301587301587,
+      0.38095238095238093,
+      0.3888888888888889
+    ],
+    [
+      0.49206349206349204,
+      0.5119047619047619,
+      0.503968253968254,
+      0.5158730158730159,
+      0.503968253968254,
+      0.5,
+      0.5555555555555556,
+      0.4246031746031746,
+      0.376984126984127,
+      0.39285714285714285
+    ],
+    [
+      0.43253968253968256,
+      0.45634920634920634,
+      0.4365079365079365,
+      0.4365079365079365,
+      0.42857142857142855,
+      0.4444444444444444,
+      0.5,
+      0.3531746031746032,
+      0.35714285714285715,
+      0.373015873015873
+    ]
+  ],
+  "payoff_matrix_ci95_by_pair": {
+    "round430_vs_round430": [
+      0.5,
+      0.5
+    ],
+    "round430_vs_round472": [
+      0.4365079365079365,
+      0.5952380952380952
+    ],
+    "round430_vs_round473": [
+      0.42857142857142855,
+      0.5794642857142843
+    ],
+    "round430_vs_round476": [
+      0.42857142857142855,
+      0.5793650793650794
+    ],
+    "round430_vs_round485": [
+      0.4364087301587303,
+      0.5912698412698413
+    ],
+    "round430_vs_round524": [
+      0.43253968253968256,
+      0.5793650793650794
+    ],
+    "round430_vs_round102": [
+      0.49206349206349204,
+      0.6388888888888888
+    ],
+    "round430_vs_max_damage": [
+      0.31746031746031744,
+      0.4722222222222222
+    ],
+    "round430_vs_counterplay": [
+      0.3134920634920635,
+      0.4642857142857143
+    ],
+    "round430_vs_public_counterplay": [
+      0.30952380952380953,
+      0.4642857142857143
+    ],
+    "round472_vs_round430": [
+      0.40476190476190477,
+      0.5634920634920635
+    ],
+    "round472_vs_round472": [
+      0.5,
+      0.5
+    ],
+    "round472_vs_round473": [
+      0.40476190476190477,
+      0.5515873015873016
+    ],
+    "round472_vs_round476": [
+      0.42063492063492064,
+      0.5714285714285714
+    ],
+    "round472_vs_round485": [
+      0.40476190476190477,
+      0.5555555555555556
+    ],
+    "round472_vs_round524": [
+      0.4205357142857144,
+      0.5595238095238095
+    ],
+    "round472_vs_round102": [
+      0.46825396825396826,
+      0.6190476190476191
+    ],
+    "round472_vs_max_damage": [
+      0.2896825396825397,
+      0.44047619047619047
+    ],
+    "round472_vs_counterplay": [
+      0.29365079365079366,
+      0.44047619047619047
+    ],
+    "round472_vs_public_counterplay": [
+      0.32142857142857145,
+      0.4722222222222222
+    ],
+    "round473_vs_round430": [
+      0.42063492063492064,
+      0.5753968253968254
+    ],
+    "round473_vs_round472": [
+      0.44841269841269843,
+      0.5992063492063492
+    ],
+    "round473_vs_round473": [
+      0.5,
+      0.5
+    ],
+    "round473_vs_round476": [
+      0.4166666666666667,
+      0.5674603174603174
+    ],
+    "round473_vs_round485": [
+      0.4126984126984127,
+      0.5674603174603174
+    ],
+    "round473_vs_round524": [
+      0.4246031746031746,
+      0.5714285714285714
+    ],
+    "round473_vs_round102": [
+      0.4880952380952381,
+      0.6388888888888888
+    ],
+    "round473_vs_max_damage": [
+      0.32142857142857145,
+      0.4722222222222222
+    ],
+    "round473_vs_counterplay": [
+      0.30952380952380953,
+      0.4523809523809524
+    ],
+    "round473_vs_public_counterplay": [
+      0.32936507936507936,
+      0.47619047619047616
+    ],
+    "round476_vs_round430": [
+      0.4166666666666667,
+      0.5714285714285714
+    ],
+    "round476_vs_round472": [
+      0.42857142857142855,
+      0.5793650793650794
+    ],
+    "round476_vs_round473": [
+      0.43253968253968256,
+      0.5833333333333334
+    ],
+    "round476_vs_round476": [
+      0.5,
+      0.5
+    ],
+    "round476_vs_round485": [
+      0.4166666666666667,
+      0.5674603174603174
+    ],
+    "round476_vs_round524": [
+      0.4126984126984127,
+      0.5555555555555556
+    ],
+    "round476_vs_round102": [
+      0.4880952380952381,
+      0.6388888888888888
+    ],
+    "round476_vs_max_damage": [
+      0.3134920634920635,
+      0.4642857142857143
+    ],
+    "round476_vs_counterplay": [
+      0.31746031746031744,
+      0.4603174603174603
+    ],
+    "round476_vs_public_counterplay": [
+      0.30158730158730157,
+      0.45634920634920634
+    ],
+    "round485_vs_round430": [
+      0.4087301587301587,
+      0.5674603174603174
+    ],
+    "round485_vs_round472": [
+      0.4444444444444444,
+      0.5952380952380952
+    ],
+    "round485_vs_round473": [
+      0.4365079365079365,
+      0.5873015873015873
+    ],
+    "round485_vs_round476": [
+      0.43253968253968256,
+      0.5873015873015873
+    ],
+    "round485_vs_round485": [
+      0.5,
+      0.5
+    ],
+    "round485_vs_round524": [
+      0.42063492063492064,
+      0.5714285714285714
+    ],
+    "round485_vs_round102": [
+      0.49603174603174605,
+      0.6468253968253969
+    ],
+    "round485_vs_max_damage": [
+      0.3333333333333333,
+      0.48412698412698413
+    ],
+    "round485_vs_counterplay": [
+      0.30952380952380953,
+      0.4523809523809524
+    ],
+    "round485_vs_public_counterplay": [
+      0.3134920634920635,
+      0.4642857142857143
+    ],
+    "round524_vs_round430": [
+      0.4166666666666667,
+      0.5674603174603174
+    ],
+    "round524_vs_round472": [
+      0.44047619047619047,
+      0.5833333333333334
+    ],
+    "round524_vs_round473": [
+      0.43253968253968256,
+      0.5793650793650794
+    ],
+    "round524_vs_round476": [
+      0.4444444444444444,
+      0.5873015873015873
+    ],
+    "round524_vs_round485": [
+      0.42857142857142855,
+      0.5793650793650794
+    ],
+    "round524_vs_round524": [
+      0.5,
+      0.5
+    ],
+    "round524_vs_round102": [
+      0.4801587301587302,
+      0.6309523809523809
+    ],
+    "round524_vs_max_damage": [
+      0.34523809523809523,
+      0.5
+    ],
+    "round524_vs_counterplay": [
+      0.3055555555555556,
+      0.44841269841269843
+    ],
+    "round524_vs_public_counterplay": [
+      0.31746031746031744,
+      0.46825396825396826
+    ],
+    "round102_vs_round430": [
+      0.36101190476190487,
+      0.503968253968254
+    ],
+    "round102_vs_round472": [
+      0.38095238095238093,
+      0.5317460317460317
+    ],
+    "round102_vs_round473": [
+      0.3611111111111111,
+      0.5119047619047619
+    ],
+    "round102_vs_round476": [
+      0.3611111111111111,
+      0.5158730158730159
+    ],
+    "round102_vs_round485": [
+      0.3531746031746032,
+      0.503968253968254
+    ],
+    "round102_vs_round524": [
+      0.36894841269841283,
+      0.5198412698412699
+    ],
+    "round102_vs_round102": [
+      0.5,
+      0.5
+    ],
+    "round102_vs_max_damage": [
+      0.2777777777777778,
+      0.42857142857142855
+    ],
+    "round102_vs_counterplay": [
+      0.2857142857142857,
+      0.42857142857142855
+    ],
+    "round102_vs_public_counterplay": [
+      0.2976190476190476,
+      0.4523809523809524
+    ]
+  },
+  "restricted_maximin_mix": {
+    "round430": 0.833333333333335,
+    "round472": 0.0,
+    "round473": 0.1666666666666649,
+    "round476": 0.0,
+    "round485": 0.0,
+    "round524": 0.0,
+    "round102": 0.0
+  },
+  "restricted_maximin_value": 0.3875661375661375,
+  "restricted_adversary_mix": {
+    "round430": 0.0,
+    "round472": 0.0,
+    "round473": 0.0,
+    "round476": 0.0,
+    "round485": 0.0,
+    "round524": 0.0,
+    "round102": 0.0,
+    "max_damage": 0.0,
+    "counterplay": 0.6666666666666723,
+    "public_counterplay": 0.33333333333332776
+  },
+  "restricted_adversary_value": 0.6124338624338624,
+  "bootstrap_adversary_value_ci95": [
+    0.5478563311577493,
+    0.6795299844061626
+  ],
+  "bootstrap_mean_adversary_strategy": {
+    "round430": 0.006740298778152021,
+    "round472": 5.1223147900202e-06,
+    "round473": 5.089275391140563e-06,
+    "round476": 5.035157080806494e-06,
+    "round485": 5.094610934257453e-06,
+    "round524": 0.00010423809103069377,
+    "round102": 5e-06,
+    "max_damage": 0.1249191762783632,
+    "counterplay": 0.5100059687718183,
+    "public_counterplay": 0.3582049767224397
+  },
+  "adversary_strategy_weight_ci95": {
+    "round430": [
+      5e-06,
+      3.3150715212114785e-05
+    ],
+    "round472": [
+      5e-06,
+      6.33796618604292e-06
+    ],
+    "round473": [
+      5e-06,
+      5.971748211818478e-06
+    ],
+    "round476": [
+      5e-06,
+      5e-06
+    ],
+    "round485": [
+      5e-06,
+      6.157194686099401e-06
+    ],
+    "round524": [
+      5e-06,
+      8.617940701000163e-06
+    ],
+    "round102": [
+      5e-06,
+      5e-06
+    ],
+    "max_damage": [
+      1.2048422649321342e-05,
+      0.7562701134363088
+    ],
+    "counterplay": [
+      1.7849679006570684e-05,
+      0.9999194174210128
+    ],
+    "public_counterplay": [
+      1.2574097453490007e-05,
+      0.999873473098551
+    ]
+  },
+  "adversary_support_frequency_gt_5pct": {
+    "round430": 0.02,
+    "round472": 0.0,
+    "round473": 0.0,
+    "round476": 0.0,
+    "round485": 0.0,
+    "round524": 0.0,
+    "round102": 0.0,
+    "max_damage": 0.345,
+    "counterplay": 0.77,
+    "public_counterplay": 0.6
+  },
+  "bootstrap_replicates": 200,
+  "bootstrap_regret_matching_iterations": 20000,
+  "bootstrap_equilibrium_gap_mean": 8.75378117119649e-05,
+  "bootstrap_equilibrium_gap_ci95": [
+    8.175970534753108e-06,
+    0.00028537897130994917
+  ],
+  "bootstrap_maximin_value_ci95": [
+    0.32033853275791424,
+    0.45203146857876325
+  ],
+  "bootstrap_mean_strategy": {
+    "round430": 0.14305198287494117,
+    "round472": 0.047698926532882054,
+    "round473": 0.22056433181799245,
+    "round476": 0.11485109655900975,
+    "round485": 0.1606574944503216,
+    "round524": 0.24182750954813625,
+    "round102": 0.07134865821671235
+  },
+  "strategy_weight_ci95": {
+    "round430": [
+      7.142857142857143e-06,
+      0.9998647071573579
+    ],
+    "round472": [
+      7.142857142857143e-06,
+      0.6859610729609453
+    ],
+    "round473": [
+      7.142857142857143e-06,
+      0.9997986549304012
+    ],
+    "round476": [
+      7.142857142857143e-06,
+      0.981393849489028
+    ],
+    "round485": [
+      7.142857142857143e-06,
+      0.9998639207189927
+    ],
+    "round524": [
+      7.142857142857143e-06,
+      0.9998972851478204
+    ],
+    "round102": [
+      7.142857142857143e-06,
+      0.6960835104574848
+    ]
+  },
+  "strategy_support_frequency_gt_5pct": {
+    "round430": 0.25,
+    "round472": 0.11,
+    "round473": 0.325,
+    "round476": 0.22,
+    "round485": 0.265,
+    "round524": 0.425,
+    "round102": 0.145
+  },
+  "timeouts_or_errors_by_matchup": {
+    "round430_vs_max_damage": 0,
+    "round430_vs_counterplay": 0,
+    "round430_vs_public_counterplay": 0,
+    "round472_vs_max_damage": 0,
+    "round472_vs_counterplay": 0,
+    "round472_vs_public_counterplay": 0,
+    "round473_vs_max_damage": 0,
+    "round473_vs_counterplay": 0,
+    "round473_vs_public_counterplay": 0,
+    "round476_vs_max_damage": 0,
+    "round476_vs_counterplay": 0,
+    "round476_vs_public_counterplay": 0,
+    "round485_vs_max_damage": 0,
+    "round485_vs_counterplay": 0,
+    "round485_vs_public_counterplay": 0,
+    "round524_vs_max_damage": 0,
+    "round524_vs_counterplay": 0,
+    "round524_vs_public_counterplay": 0,
+    "round102_vs_max_damage": 0,
+    "round102_vs_counterplay": 0,
+    "round102_vs_public_counterplay": 0
+  },
+  "action_adjustments_by_matchup": {
+    "round430_vs_max_damage": 0,
+    "round430_vs_counterplay": 0,
+    "round430_vs_public_counterplay": 0,
+    "round472_vs_max_damage": 0,
+    "round472_vs_counterplay": 0,
+    "round472_vs_public_counterplay": 0,
+    "round473_vs_max_damage": 0,
+    "round473_vs_counterplay": 0,
+    "round473_vs_public_counterplay": 0,
+    "round476_vs_max_damage": 0,
+    "round476_vs_counterplay": 0,
+    "round476_vs_public_counterplay": 0,
+    "round485_vs_max_damage": 0,
+    "round485_vs_counterplay": 0,
+    "round485_vs_public_counterplay": 0,
+    "round524_vs_max_damage": 0,
+    "round524_vs_counterplay": 0,
+    "round524_vs_public_counterplay": 0,
+    "round102_vs_max_damage": 0,
+    "round102_vs_counterplay": 0,
+    "round102_vs_public_counterplay": 0
+  },
+  "matchup_games_per_second": {
+    "round430_vs_max_damage": 7.529647853486715,
+    "round430_vs_counterplay": 6.552032500221463,
+    "round430_vs_public_counterplay": 6.2286366249001635,
+    "round472_vs_max_damage": 7.01072088310778,
+    "round472_vs_counterplay": 6.821365696432554,
+    "round472_vs_public_counterplay": 7.486530612176077,
+    "round473_vs_max_damage": 8.454502474592463,
+    "round473_vs_counterplay": 6.176707573080556,
+    "round473_vs_public_counterplay": 6.265558922275916,
+    "round476_vs_max_damage": 3.6996661337142283,
+    "round476_vs_counterplay": 6.793994232442376,
+    "round476_vs_public_counterplay": 4.537351977135585,
+    "round485_vs_max_damage": 7.022505485381768,
+    "round485_vs_counterplay": 7.932304389886316,
+    "round485_vs_public_counterplay": 5.221919228704601,
+    "round524_vs_max_damage": 5.622705704483475,
+    "round524_vs_counterplay": 4.935721278336891,
+    "round524_vs_public_counterplay": 6.0271215698358915,
+    "round102_vs_max_damage": 5.49285681020643,
+    "round102_vs_counterplay": 6.76987187383567,
+    "round102_vs_public_counterplay": 6.795518937181843
+  },
+  "aggregate_games_completed": 5376,
+  "sum_matchup_worker_wall_seconds": 878.0060855190386,
+  "sequential_end_to_end_games_per_second": 6.122964394742144,
+  "matchups_completed": 21,
+  "interpretation": "Use this matrix to ask whether any empirical checkpoint mixture can raise its lower bound against both past policies and fixed heuristic responses. Bootstrap support must be stable before using the mixture for training. It does not imply Nash equilibrium in full VGC.",
+  "reproduction": "scripts/evaluate_round529_checkpoint_heuristic_payoffs.sh",
+  "summarizer": "scripts/summarize_round529_checkpoint_heuristic_payoffs.py",
+  "heuristic_response_result": "All seven checkpoint policies scored below 50% against every fixed heuristic column on the 126 shared team clusters; all corresponding 95% cluster intervals have upper bounds at or below 50%.",
+  "training_signal": "The bootstrap mean minimizing response is approximately 12.5% Max Damage, 51.0% Counterplay, and 35.8% Public Counterplay, with broad support uncertainty. Round530 scales that heuristic mixture to 90% of training games and retains 10% past-policy opponents.",
+  "limited_scope": "The lower-confidence finding applies only to the seven evaluated checkpoints, three fixed heuristics, current team-selection checkpoint, format, and sampled teams. It is not a proof about all legal VGC policies or full Nash play."
+}

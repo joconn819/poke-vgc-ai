@@ -45,6 +45,39 @@ def maximin_mix(payoff):
     return best_p, best_value
 
 
+
+def approximate_equilibria(matrices, iterations=20000):
+    """Batched regret matching for bootstrap matrices; returns mixtures and bounds."""
+    batch, n, m = matrices.shape
+    row_regrets = np.zeros((batch, n))
+    col_regrets = np.zeros((batch, m))
+    row_sum = np.zeros((batch, n))
+    col_sum = np.zeros((batch, m))
+    uniform_row = np.full((batch, n), 1.0 / n)
+    uniform_col = np.full((batch, m), 1.0 / m)
+    col_payoff = 1.0 - matrices.transpose(0, 2, 1)
+    for _ in range(iterations):
+        positive = np.maximum(row_regrets, 0.0)
+        denom = positive.sum(axis=1, keepdims=True)
+        row_strategy = np.divide(positive, denom, out=uniform_row.copy(), where=denom > 0)
+        positive = np.maximum(col_regrets, 0.0)
+        denom = positive.sum(axis=1, keepdims=True)
+        col_strategy = np.divide(positive, denom, out=uniform_col.copy(), where=denom > 0)
+        row_payoffs = np.einsum('bij,bj->bi', matrices, col_strategy)
+        row_current = np.einsum('bi,bi->b', row_strategy, row_payoffs)
+        row_regrets += row_payoffs - row_current[:, None]
+        col_payoffs = np.einsum('bij,bj->bi', col_payoff, row_strategy)
+        col_current = np.einsum('bi,bi->b', col_strategy, col_payoffs)
+        col_regrets += col_payoffs - col_current[:, None]
+        row_sum += row_strategy
+        col_sum += col_strategy
+    row_mix = row_sum / iterations
+    col_mix = col_sum / iterations
+    lower = np.min(np.einsum('bi,bij->bj', row_mix, matrices), axis=1)
+    upper = np.max(np.einsum('bij,bj->bi', matrices, col_mix), axis=1)
+    return row_mix, col_mix, lower, upper
+
+
 def read_cluster_scores(path):
     d = json.loads(path.read_text())
     rows = {}
@@ -117,22 +150,28 @@ def main():
             ]
 
     point_mix, point_value = maximin_mix(matrix)
+    point_adversary_mix, point_adversary_value = maximin_mix(1.0 - matrix.T)
     bootstrap_replicates = 200
+    regret_matching_iterations = 20000
     rng = np.random.default_rng(seed + 529)
     sample_ix = rng.integers(0, len(common), (bootstrap_replicates, len(common)))
-    mixes = np.zeros((bootstrap_replicates, n))
-    values = np.zeros(bootstrap_replicates)
-    for b, ix in enumerate(sample_ix):
-        sampled = np.empty_like(matrix)
-        for i in range(n):
-            for j in range(m):
-                sampled[i, j] = float(cells[(i, j)][ix].mean())
-        mixes[b], values[b] = maximin_mix(sampled)
+    bootstrap_matrices = np.empty((bootstrap_replicates, n, m), dtype=np.float64)
+    for i in range(n):
+        for j in range(m):
+            bootstrap_matrices[:, i, j] = cells[(i, j)][sample_ix].mean(axis=1)
+    mixes, adversary_mixes, lower_values, upper_values = approximate_equilibria(
+        bootstrap_matrices, iterations=regret_matching_iterations
+    )
+    values = lower_values
+    adversary_values = 1.0 - upper_values
+    equilibrium_gaps = np.maximum(upper_values - lower_values, 0.0)
 
     total_games = 0
+    total_seconds = 0.0
     for dpath in root.glob("*/paired_summary.json"):
         d = json.loads(dpath.read_text())
         total_games += int(d["games_completed"])
+        total_seconds += float(d["parallel_wall_seconds"])
 
     result = {
         "status": "Complete; checkpoint policies vs fixed heuristic and policy responses",
@@ -158,7 +197,27 @@ def main():
             name: float(point_mix[i]) for i, name in enumerate(policies)
         },
         "restricted_maximin_value": point_value,
+        "restricted_adversary_mix": {
+            name: float(point_adversary_mix[j]) for j, name in enumerate(opponents)
+        },
+        "restricted_adversary_value": point_adversary_value,
+        "bootstrap_adversary_value_ci95": [
+            float(x) for x in np.quantile(adversary_values, [0.025, 0.975])
+        ],
+        "bootstrap_mean_adversary_strategy": {
+            name: float(adversary_mixes[:, j].mean()) for j, name in enumerate(opponents)
+        },
+        "adversary_strategy_weight_ci95": {
+            name: [float(x) for x in np.quantile(adversary_mixes[:, j], [0.025, 0.975])]
+            for j, name in enumerate(opponents)
+        },
+        "adversary_support_frequency_gt_5pct": {
+            name: float((adversary_mixes[:, j] > 0.05).mean()) for j, name in enumerate(opponents)
+        },
         "bootstrap_replicates": bootstrap_replicates,
+        "bootstrap_regret_matching_iterations": regret_matching_iterations,
+        "bootstrap_equilibrium_gap_mean": float(equilibrium_gaps.mean()),
+        "bootstrap_equilibrium_gap_ci95": [float(x) for x in np.quantile(equilibrium_gaps, [0.025, 0.975])],
         "bootstrap_maximin_value_ci95": [
             float(x) for x in np.quantile(values, [0.025, 0.975])
         ],
@@ -176,6 +235,9 @@ def main():
         "action_adjustments_by_matchup": adjustments,
         "matchup_games_per_second": throughput,
         "aggregate_games_completed": total_games,
+        "sum_matchup_worker_wall_seconds": total_seconds,
+        "sequential_end_to_end_games_per_second": total_games / max(total_seconds, 1e-9),
+        "matchups_completed": len(throughput),
         "interpretation": (
             "Use this matrix to ask whether any empirical checkpoint mixture can "
             "raise its lower bound against both past policies and fixed heuristic "
@@ -196,8 +258,12 @@ def main():
         key: result[key] for key in [
             "common_team_clusters", "restricted_maximin_mix",
             "restricted_maximin_value", "bootstrap_maximin_value_ci95",
+            "restricted_adversary_mix", "restricted_adversary_value",
+            "bootstrap_adversary_value_ci95", "bootstrap_mean_adversary_strategy",
+            "adversary_support_frequency_gt_5pct",
             "bootstrap_mean_strategy", "strategy_weight_ci95",
-            "aggregate_games_completed",
+            "aggregate_games_completed", "sequential_end_to_end_games_per_second",
+            "bootstrap_equilibrium_gap_mean", "bootstrap_equilibrium_gap_ci95",
         ]
     }, indent=2))
 
