@@ -8740,51 +8740,32 @@
     "next": "Targeted loss-state action-regret diagnosis against multiple legal responses; do not repeat broad opponent-mixture changes without a measured failure mechanism."
   },
   "latest_diagnostic": {
-    "round": 552,
-    "title": "Public-world action gaps confirmed; fitted selector rejected",
-    "status": "Round550 oracle gains; Round551 model failed; Round552 full-match regression vs Max Damage",
-    "summary": "Round550 found +8.56 pp equal-response and +5.28 pp maximin action-oracle gains across 166 usable states. With 269 training clusters, the player-view model reached only +0.51 pp equal-response action gain [\u22121.81,+2.82] and \u22122.08 pp worst-response [\u22126.02,+1.62]. In 256 fresh full-match clusters, the selector changed Round542 score by \u22123.91 pp vs Max Damage [\u22127.81,\u22120.39], +2.34 pp vs Round476 PPO [\u22122.34,+7.03], and \u22120.78 pp overall [\u22123.71,+2.34].",
-    "clusters": 166,
-    "branch_matches": 121302,
-    "matches_per_second": 58.58,
-    "equal_weight_delta_pp": 8.562,
-    "equal_weight_ci95_pp": [
-      6.679,
-      10.595
+    "round": 553,
+    "title": "Action-margin gate limits harm but does not improve play",
+    "status": "Fresh 256-cluster screen complete; no promotion",
+    "summary": "A 0.05 maximin-predicted-advantage gate was evaluated on fresh teams. It changed Round542 score by \u22120.20 pp overall [\u22121.37,+0.98], +0.78 pp vs Max Damage [\u22121.17,+2.73], and \u22121.17 pp vs Round476 PPO [\u22123.13,+0.39]. Both matchup scores remain below 50%; Round430 stays active.",
+    "clusters": 256,
+    "branch_matches": 1024,
+    "matches_per_second": 7.529,
+    "action_margin_threshold": 0.05,
+    "overall_delta_pp": -0.195,
+    "overall_ci95_pp": [
+      -1.367,
+      0.977
     ],
-    "maximin_equal_weight_delta_pp": 5.279,
-    "maximin_ci95_pp": [
-      3.66,
-      6.973
+    "max_damage_delta_pp": 0.781,
+    "max_damage_ci95_pp": [
+      -1.172,
+      2.734
     ],
-    "model_equal_weight_delta_pp": 0.509,
-    "model_equal_weight_ci95_pp": [
-      -1.806,
-      2.824
+    "round476_delta_pp": -1.172,
+    "round476_ci95_pp": [
+      -3.125,
+      0.391
     ],
-    "model_worst_response_delta_pp": -2.083,
-    "model_worst_response_ci95_pp": [
-      -6.019,
-      1.62
-    ],
-    "model_test_clusters": 54,
-    "full_match_overall_delta_pp": -0.781,
-    "full_match_overall_ci95_pp": [
-      -3.711,
-      2.344
-    ],
-    "full_match_max_damage_delta_pp": -3.906,
-    "full_match_max_damage_ci95_pp": [
-      -7.813,
-      -0.391
-    ],
-    "full_match_round476_delta_pp": 2.344,
-    "full_match_round476_ci95_pp": [
-      -2.344,
-      7.031
-    ],
-    "full_match_clusters": 256,
-    "information_note": "The local action oracle uses counterfactual outcome labels; the fitted player-view model did not transfer the gain. The full-match screen rejects the selector. Round430 remains active.",
-    "report": "round550_publicworld_action_screen.json"
+    "decision_reach_rate": 0.992,
+    "max_damage_actions_changed": 60,
+    "information_note": "The gate reduces some harmful overrides, but no measured lift is supported. This was one fixed threshold screen; do not tune further on these seeds.",
+    "report": "round553_action_margin_gate.json"
   }
 }

@@ -46,6 +46,12 @@ def main() -> None:
     parser.add_argument("--seed", type=int, default=2026102806)
     parser.add_argument("--clusters", type=int, default=128)
     parser.add_argument("--decision-step", type=int, default=5)
+    parser.add_argument(
+        "--min-predicted-advantage", type=float, default=0.0,
+        help=("only override the policy action when the selected action's "
+              "aggregated predicted win probability exceeds the policy action "
+              "by at least this margin"),
+    )
     parser.add_argument("--device", choices=("cpu", "cuda"), default="cpu")
     args = parser.parse_args()
     if args.clusters < 1 or args.decision_step < 1:
@@ -137,16 +143,61 @@ def main() -> None:
             raise ValueError(f"unsupported action-value aggregation: {aggregation}")
         best_index = int(np.argmax(probabilities))
         selected_name, selected_action = legal_candidates[best_index]
+        policy_action_list = policy_action.astype(int).tolist()
+        policy_index = next((index for index, (_, action) in enumerate(legal_candidates)
+                             if action == policy_action_list), None)
+        if policy_index is None:
+            policy_index = len(legal_candidates)
+            legal_candidates.append(("policy", policy_action_list))
+            policy_log_probability = None
+            if model_payload.get("use_policy_log_probability") and acting_policy is not None:
+                try:
+                    policy_log_probability = acting_policy.log_prob_native_actions(
+                        observation, mask, [policy_action_list]
+                    )[0]
+                except (ValueError, RuntimeError):
+                    policy_log_probability = None
+            policy_features = _inputs(
+                observation.tolist(), policy_action_list, action_width,
+                action_features if model_payload.get("action_feature_dim", 0) else None,
+                context_features if model_payload.get("context_dim", 0) else None,
+                policy_log_probability,
+                bool(model_payload.get("use_policy_log_probability", False)),
+            )
+            with torch.no_grad():
+                policy_probabilities = torch.sigmoid(action_model(
+                    torch.as_tensor(policy_features, dtype=torch.float32,
+                                    device=args.device)
+                )).cpu().numpy()
+            if policy_probabilities.ndim == 1:
+                policy_probabilities = policy_probabilities[None, :]
+            response_probabilities = np.concatenate(
+                (response_probabilities, policy_probabilities), axis=0
+            )
+            if aggregation == "minimum":
+                probabilities = response_probabilities.min(axis=1)
+            else:
+                probabilities = response_probabilities.mean(axis=1)
+        predicted_advantage = float(probabilities[best_index] - probabilities[policy_index])
+        margin_fallback = predicted_advantage < args.min_predicted_advantage
+        if margin_fallback:
+            selected_name, selected_action = "policy", policy_action_list
+            selected_index = policy_index
+        else:
+            selected_index = best_index
         report = {
-            "selected_source": "action_value_model",
+            "selected_source": "policy_margin_fallback" if margin_fallback else "action_value_model",
             "selected_candidate": selected_name,
             "selected_action": selected_action,
-            "policy_action": policy_action.astype(int).tolist(),
+            "policy_action": policy_action_list,
             "max_damage_action": damage_action,
-            "selected_probability": float(probabilities[best_index]),
+            "selected_probability": float(probabilities[selected_index]),
+            "predicted_policy_probability": float(probabilities[policy_index]),
+            "predicted_advantage_over_policy": predicted_advantage,
+            "minimum_predicted_advantage": float(args.min_predicted_advantage),
             "aggregation": aggregation,
             "response_names": response_names,
-            "selected_response_probabilities": response_probabilities[best_index].tolist(),
+            "selected_response_probabilities": response_probabilities[selected_index].tolist(),
             "candidates": [
                 {"name": name, "action": action,
                  "predicted_probability": float(prob),
@@ -290,6 +341,7 @@ def main() -> None:
         "format": args.format,
         "seed": args.seed,
         "decision_step": args.decision_step,
+        "min_predicted_advantage": args.min_predicted_advantage,
         "matches_executed": matches,
         "elapsed_seconds": elapsed,
         "matches_per_second": matches / max(elapsed, 1e-9),
