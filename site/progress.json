@@ -297,11 +297,11 @@
     }
   ],
   "speed": {
-    "games_per_second": "47.48 rollout / 24.70 full iteration",
-    "context": "Round485: 20,000 games in 421.24 s rollouts; 809.82 s input-to-checkpoint. The full-iteration rate includes strict audit/recovery and PPO; not comparable to search branch throughput.",
-    "decision_latency": "Round484 one-step branch latency; full-match profile pending",
-    "current_bottleneck": "Round485 strict preflight and one-match recovery took 235.72 s; rollout generation 421.24 s; PPO 152.81 s. Reduce repeated rollout scanning/recovery cost next.",
-    "gpu_status": "RTX 4060 used for PPO optimization; rollout decisions and Showdown simulation remained CPU-side",
+    "games_per_second": "34.48 rollout / 20.34 input-to-checkpoint",
+    "context": "Round536: 20,000 games; 580.04 s rollout, 983.40 s input-to-checkpoint including preflight/recovery and PPO. Eight workers averaged 6.69 CPU cores and peaked at 9.24 GiB aggregate RSS.",
+    "decision_latency": "Fresh profile pending",
+    "current_bottleneck": "Per episode: policy inference 38.9 ms, baseline action scoring 36.1 ms, engine round trips 32.8 ms, observation encoding 26.8 ms. Full iteration additionally spent 244.24 s preflight, 119.48 s recovery, and 159.08 s PPO/checkpointing.",
+    "gpu_status": "CUDA PPO; battle simulation on CPU",
     "profile_context": "Round467 completed 20,000 rollouts: per-worker speed 7.53/5.34/4.84 games/s for Max Damage/policy/Public Counterplay. PPO preparation took 89 s; the KL-stopped CUDA optimizer ran about 5 s. Aggregate rollout wall time was not retained.",
     "active_training_profile": {
       "round": "473",
@@ -1385,13 +1385,16 @@
     }
   },
   "latest_run": {
-    "round": 535,
-    "status": "evaluation_complete_no_promotion",
-    "summary": "Round532 scored 30.08% vs Max Damage under argmax and 27.54% with sampled actions. Paired \u0394 \u22122.54 pp [\u22127.23,+2.15], so the difference is unresolved. Absolute cluster-bootstrap intervals are 24.02\u201336.52% and 22.66\u201332.62%. Sampled actions do not explain away the exploitable result; Round532 remains unpromoted and Round430 remains project default."
+    "round": 539,
+    "status": "completed controlled ablations \u00b7 no promotion",
+    "summary": "Round536/538 scored 29.30%/30.27% vs Max Damage. Round538 paired lift +0.98 pp [\u22121.17,+3.32] over 128 clusters; unresolved. Both policies remain exploitable against simple heuristics; Round430 remains the validated default.",
+    "games": "20,000 training games (Round536); Round538 reused the same audited games",
+    "epochs": "1,308 PPO optimizer steps",
+    "evaluation": "Repeated six-class league: 128 team clusters \u00d7 2 outcomes, side-swapped"
   },
   "method": "Native self-play PPO for in-battle decisions. Terminal win/loss remains the main objective; win-probability and hidden-set prediction are auxiliary tasks. Search comes after a stronger policy.",
   "jax_decision": "Round430 has a confirmed self-play head-to-head lift over Round424, but external-opponent screens remain inconclusive. Prioritize measured inference batching, observation throughput, and rollouts; keep equilibrium-oriented opponent coverage and defer a JAX/GPU engine rewrite until its end-to-end payoff is measured.",
-  "evaluation_note": "A reproducible score below 50% against a legal Max Damage policy is direct evidence that the evaluated agent is exploitable on that team and opponent distribution. It does not by itself prove the size of the gap to the global equilibrium strategy. Round532 scored 31.25% vs Max Damage; increasing training exposure to that policy did not help. Round430 remains the default because no later checkpoint has demonstrated a reliable broad improvement.",
+  "evaluation_note": "A reproducible score below 50% against a legal Max Damage policy is direct evidence that the evaluated agent is exploitable on that team and opponent distribution. It does not by itself prove the size of the gap to the global equilibrium strategy. Round532 scored 31.25% vs Max Damage; increasing training exposure to that policy did not help. Round430 remains the default because no later checkpoint has demonstrated a reliable broad improvement. Round537/539 also show absolute weakness: Round536 and Round538 each score about 30% against Max Damage. Uncertainty in the candidate delta does not change the evidence that both are exploitable and non-optimal on these teams.",
   "generated_at": "2026-10-31 23:50 UTC",
   "round462_evaluation": {
     "status": "Round462 not promoted \u00b7 initial paired screen complete",
@@ -8633,5 +8636,39 @@
     "paired_clusters": 128,
     "conclusion": "Sampling does not improve measured score; the paired interval includes zero and both modes remain far below 50% against Max Damage. Deterministic inference is not a sufficient explanation for the exploit. Neither result changes the policy checkpoint or training mixture.",
     "output": "training/outputs/phase12_headless/round535_round532_stochastic_vs_deterministic_maxdamage_128x2_20261031/"
+  },
+  "round539_group_norm_summary": {
+    "status": "complete_no_promotion",
+    "report": "round539_group_norm_league.json",
+    "clusters_per_opponent": 128,
+    "outcome_repeats": 2,
+    "max_damage": {
+      "round536_pct": 29.297,
+      "round538_pct": 30.273,
+      "delta_pp": 0.977,
+      "ci95_pp": [
+        -1.172,
+        3.32
+      ]
+    },
+    "counterplay": {
+      "round536_pct": 34.18,
+      "round538_pct": 34.902,
+      "delta_pp": 0.586,
+      "ci95_pp": [
+        -1.367,
+        2.734
+      ]
+    },
+    "public_counterplay": {
+      "round536_pct": 32.031,
+      "round538_pct": 32.617,
+      "delta_pp": 0.586,
+      "ci95_pp": [
+        -1.367,
+        2.734
+      ]
+    },
+    "conclusion": "No paired improvement is established; both policies remain clearly below 50% versus simple legal heuristics. Round430 remains project default."
   }
 }

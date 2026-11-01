@@ -14,23 +14,23 @@ Pokémon Showdown remains the correctness reference and required battle platform
     "ci95": "[35.16%, 44.53%]",
     "games": 512,
     "clusters": 256,
-    "status": "Current default \u00b7 search disabled",
+    "status": "Current default · search disabled",
     "evaluation": "Latest full-match Max Damage screen: Round430 policy-only arm, 256 matched team-pair clusters, both seats, seed 202610480. The paired search arm scored 42.38% (+2.54 pp; 95% paired CI [-0.78,+6.05]), inconclusive and not enabled by default."
   },
   "speed": {
-    "games_per_second": "47.48 rollout / 24.70 full iteration",
-    "context": "Round485: 20,000 games in 421.24 s rollouts and 809.82 s input-to-checkpoint; includes strict audit/recovery and PPO, not comparable to search branch throughput.",
-    "decision_latency": "Median/p95 pending fresh profile",
-    "current_bottleneck": "Round485 strict preflight/recovery took 235.72 s; rollout 421.24 s; PPO 152.81 s",
+    "games_per_second": "34.48 rollout / 20.34 input-to-checkpoint",
+    "context": "Round536: 20,000 games; 580.04 s rollout, 983.40 s input-to-checkpoint including preflight/recovery and PPO. Eight workers averaged 6.69 CPU cores and peaked at 9.24 GiB aggregate RSS.",
+    "decision_latency": "Fresh profile pending",
+    "current_bottleneck": "Per episode: policy inference 38.9 ms, baseline action scoring 36.1 ms, engine round trips 32.8 ms, observation encoding 26.8 ms. Full iteration additionally spent 244.24 s preflight, 119.48 s recovery, and 159.08 s PPO/checkpointing.",
     "gpu_status": "CUDA PPO; battle simulation on CPU"
   },
   "latest_run": {
-    "round": 485,
-    "status": "Max Damage exposure ablation \u00b7 not promoted",
-    "summary": "Round485 used 70% Max Damage, 10% each heuristic Counterplay class, and 10% total policy-pool exposure. The five pool checkpoints split that 10% evenly (2% of all games each). It scored 39.45% vs Max Damage, \u22120.68 pp vs balanced Round473 (95% CI \u22123.12 to +1.76); five-opponent equal-weight change \u22120.49 pp [\u22121.39,+0.39]. No supported gain; Round430 stays default.",
-    "games": "20,000 self-play outcomes",
-    "epochs": "4 PPO passes",
-    "evaluation": "No supported improvement across opponent pool"
+    "round": 539,
+    "status": "completed controlled ablations · no promotion",
+    "summary": "Round536/538 scored 29.30%/30.27% vs Max Damage. Round538 paired lift +0.98 pp [−1.17,+3.32] over 128 clusters; unresolved. Both policies remain exploitable against simple heuristics; Round430 remains the validated default.",
+    "games": "20,000 training games (Round536); Round538 reused the same audited games",
+    "epochs": "1,308 PPO optimizer steps",
+    "evaluation": "Repeated six-class league: 128 team clusters × 2 outcomes, side-swapped"
   },
   "method": "Masked PPO action logits are the default move policy. Terminal win/loss is the primary PPO objective; win probability and hidden-set prediction are auxiliary targets. Optional search remains disabled unless a broader held-out league supports it.",
   "jax_decision": "Recent throughput gains came from policy/observation and rollout work; a GPU battle-engine rewrite remains gated on representative end-to-end profiling and parity against local Showdown.",
@@ -275,6 +275,12 @@ Pokémon Showdown remains the correctness reference and required battle platform
       },
       "promotion": "Not promoted: 46 test clusters, intervals include zero; holding out the Round476 PPO response did not show a robust gain. Round430 remains the deployed policy."
     }
+  },
+  "round539_group_norm_league": {
+    "report": "site/round539_group_norm_league.json",
+    "status": "complete_no_promotion",
+    "max_damage": "Round536 29.30%; Round538 30.27%; +0.98 pp [−1.17,+3.32]",
+    "interpretation": "Both remain clearly below 50%; candidate delta inconclusive."
   }
 }
 DASHBOARD_PROGRESS_JSON -->
@@ -19235,3 +19241,18 @@ and OUT set to the Round524 checkpoint and output paths.
   do not promote Round532 or change inference mode based on this run.
 - Results: `site/round535_action_selection.json`; raw summaries and comparison
   are in `training/outputs/phase12_headless/round535_round532_stochastic_vs_deterministic_maxdamage_128x2_20261031/`.
+
+
+### Round536: opponent-balanced PPO loss (complete; not promoted)
+
+- Trained 20,000 games from Round531 with opponent-balanced policy loss. The mix included 30% Max Damage, 34.875% Counterplay, 24.475% Public Counterplay, and a 10.65% six-policy pool. The audited rollout contained 20,000 complete games, 40,000 safe player-view rows, and 167,084 trainable transitions. One incomplete match was replaced before the strict perspective audit passed. The run completed 1,308 PPO optimizer steps.
+- Speed: 580.04 seconds for rollouts (34.48 games/s); 983.40 seconds from input to checkpoint (20.34 games/s). Preflight took 244.24 seconds, recovery 119.48 seconds, PPO/checkpointing 159.08 seconds. Eight workers averaged 6.69 CPU cores and peaked at 9.24 GiB aggregate RSS. Per-episode timing: 182.3 ms end to end, including 38.9 ms policy inference, 36.1 ms baseline action scoring, 32.8 ms engine round trips, 26.8 ms observation encoding, and 9.8 ms trajectory persistence. Inference and action scoring are the largest per-episode costs; strict preflight/recovery adds substantial wall time.
+- The 128-cluster, two-repeat six-class screen against Round532 did not support promotion. Round536 scored 40.23% vs Max Damage, 27.15% Counterplay, and 38.87% Public Counterplay; changes from Round532 were -0.20, -0.39, and -2.15 pp respectively. The Public Counterplay decrease was significant on this screen; no positive result against Max Damage or Counterplay was found. Random increased from 93.92% to 94.73%; Round430 PPO from 40.98% to 41.41%; Round473 PPO from 52.54% to 52.15%.
+- Round536 is well below 50% against Max Damage, Counterplay, and Public Counterplay. The uncertainty in candidate-vs-control deltas does not make these absolute results acceptable. Round430 remains the validated default. Reports: `site/round536_training.json`, `site/round537_round536_balanced_loss_league.json`; training output: `training/outputs/phase12_headless/round536_opponent_balanced_loss_20k_20261031/`. Scripts: `scripts/train_round536_opponent_balanced_loss_20k.sh`, `scripts/evaluate_round536_balanced_loss_128x2.sh`.
+
+### Round538–539: opponent-group advantage normalization replay (complete; not promoted)
+
+- Reused Round536's exact audited 20,000-game rollout data and trained from the same Round531 parent, retaining the same balanced loss and opponent mixture. The only training change was normalizing advantages within opponent groups. This isolates the normalization choice without another rollout run. PPO completed 1,308 optimizer steps. Reproduction: `scripts/train_round538_opponent_group_norm_replay.sh`.
+- Evaluated Round538 against Round536 on six opponent classes over 128 team-pair clusters per class, two outcomes per cluster, side-swapped, using matched teams/previews/selectors. Confidence intervals bootstrap team clusters. Candidate-minus-control: Max Damage 30.27% vs 29.30%, +0.98 pp [−1.17,+3.32]; Counterplay 34.90% vs 34.18%, +0.59 [−1.37,+2.73]; Public Counterplay 32.62% vs 32.03%, +0.59 [−1.37,+2.73]; Random 96.08% vs 96.48%, −0.39 [−1.17,+0.39]; Round430 PPO 50.98% vs 52.34%, −1.37 [−2.93,+0.20]; Round473 PPO 41.60% vs 40.98%, +0.39 [−1.37,+2.15]. No paired interval excludes zero. A candidate timeout/error in one Random, one Counterplay, and one Round430 case was excluded; one control case was excluded in Random, Counterplay, Round430, and Round473. All included actions were valid.
+- Both policies remain clearly below 50% against Max Damage and other simple heuristics. That is evidence of exploitable, non-optimal play even though the small candidate-vs-control changes are unresolved. Neither update is promoted; Round430 remains project default. This test does not show that opponent-balanced loss or group normalization helps. Next, diagnose concrete decision errors against simultaneous legal responses and improve targeted state/action representation before another broad PPO iteration.
+- Scorecard: `site/round539_group_norm_league.json`; raw results: `training/outputs/phase12_headless/round539_round538_group_norm_replay_league_128x2_20261031/`. Reproduction: `scripts/evaluate_round538_group_norm_128x2.sh`.

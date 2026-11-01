@@ -1,0 +1,33 @@
+{
+  "round": 536,
+  "status": "complete_not_promoted",
+  "training_games": 20000,
+  "training_wall_seconds": 983.3967308119754,
+  "rollout_seconds": 580.03643456602,
+  "rollout_games_per_second": 34.48,
+  "input_to_checkpoint_games_per_second": 20.34,
+  "preflight_seconds": 244.24,
+  "recovery_seconds": 119.48,
+  "ppo_checkpoint_seconds": 159.08,
+  "mean_cpu_cores": 6.69,
+  "peak_aggregate_rss_gb": 9.24,
+  "audit": "20,000 games; 40,000 safe player-view rows; 167,084 trainable transitions; perspective audit passed after replacing one incomplete game.",
+  "profile_ms_per_episode": {
+    "end_to_end": 182.3,
+    "policy_inference": 38.9,
+    "baseline_action_scoring": 36.1,
+    "headless_engine_roundtrip": 32.8,
+    "observation_encoding": 26.8,
+    "trajectory_persistence": 9.8
+  },
+  "ppo": {
+    "optimizer_steps": 1308,
+    "approx_kl": 0.005035,
+    "policy_loss": -0.003061,
+    "value_loss": 0.18618,
+    "win_probability_loss": 0.42416
+  },
+  "training_script": "scripts/train_round536_opponent_balanced_loss_20k.sh",
+  "evaluation": "site/round537_round536_balanced_loss_league.json",
+  "interpretation": "PPO training diagnostics and throughput do not establish policy improvement; Round536 was not promoted."
+}
