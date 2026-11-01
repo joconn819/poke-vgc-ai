@@ -7934,7 +7934,7 @@
     "status": "Running",
     "purpose": "Measure pairwise outcomes across seven policy checkpoints and estimate a restricted robust mixture; this is not a Nash solution for the full VGC game.",
     "matchups_total": 21,
-    "matchups_complete": 13,
+    "matchups_complete": 14,
     "team_clusters_per_matchup": 128,
     "seats": "Both seats, common team and preview selector",
     "reproduction": "scripts/evaluate_round528_policy_population_matrix.sh",
@@ -7952,10 +7952,67 @@
       4.14,
       4.75,
       4.39,
-      6.3
+      6.3,
+      3.95
     ],
-    "completed_games": 3326,
+    "completed_games": 3582,
     "timeouts_or_errors": 1,
-    "action_adjustments": 0
+    "action_adjustments": 0,
+    "preliminary_round430_head_to_head": [
+      {
+        "opponent": "round102",
+        "round430_score_pct": 57.42,
+        "cluster_ci95_pct": [
+          50.39,
+          64.45
+        ],
+        "clusters": 128
+      },
+      {
+        "opponent": "round472",
+        "round430_score_pct": 52.34,
+        "cluster_ci95_pct": [
+          44.53,
+          60.16
+        ],
+        "clusters": 128
+      },
+      {
+        "opponent": "round473",
+        "round430_score_pct": 51.17,
+        "cluster_ci95_pct": [
+          43.75,
+          58.59
+        ],
+        "clusters": 128
+      },
+      {
+        "opponent": "round476",
+        "round430_score_pct": 51.17,
+        "cluster_ci95_pct": [
+          43.75,
+          58.59
+        ],
+        "clusters": 128
+      },
+      {
+        "opponent": "round485",
+        "round430_score_pct": 51.95,
+        "cluster_ci95_pct": [
+          44.14,
+          59.77
+        ],
+        "clusters": 128
+      },
+      {
+        "opponent": "round524",
+        "round430_score_pct": 51.56,
+        "cluster_ci95_pct": [
+          44.14,
+          58.98
+        ],
+        "clusters": 128
+      }
+    ]
   }
 }
