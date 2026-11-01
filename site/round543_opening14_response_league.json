@@ -1,0 +1,167 @@
+{
+  "base_checkpoint": "/home/justin/p/poke_learning_2/training/outputs/phase12_headless/round536_opponent_balanced_loss_20k_20261031/checkpoints/latest.pt",
+  "baseline": "Round536 opponent-balanced-loss PPO trained with the same rollout distribution and optimizer, without the opponent overlay",
+  "candidate": "Round542 PPO trained against frozen policy opponents using Max Damage actions at decisions 1 and 4",
+  "candidate_checkpoint": "/home/justin/p/poke_learning_2/training/outputs/phase12_headless/round542_opening14_response_20k_20261101_retry1/checkpoints/latest.pt",
+  "clusters_per_opponent": 128,
+  "format": "gen9championsdoubles2026mcclosed",
+  "interpretation": {
+    "absolute_play": "Round542 remains below 50% against all three simple legal heuristics: Max Damage 36.863%, Counterplay 30.078%, and Public Counterplay 38.431%. These results show exploitable, non-optimal play, independently of candidate-vs-control uncertainty.",
+    "decision": "Do not promote Round542. Keep Round430 as the validated default. Stop repeating broad mixture/normalization tweaks; next diagnose loss-state action regret against multiple legal responses and convert confirmed mistakes into targeted training/evaluation cases.",
+    "mean_scores_pct": {
+      "round536": 48.715,
+      "round542": 48.01
+    },
+    "paired_training_effect": "Only the Counterplay gain is supported: +3.320 pp, 95% paired cluster interval [+0.195,+6.836]. The other seven paired intervals include zero. Max Damage trends downward by 2.539 pp [\u22126.055,+0.586]; there is no demonstrated robust improvement.",
+    "protocol": "All included games had zero action adjustments. One timeout/error occurred in each arm for Random, Counterplay, Round430, and Round524; the Round542 arm also had one in Max Damage and Public Counterplay. These cases were excluded from matched deltas; no cell had more than one incomplete case.",
+    "worst_simple_heuristic_pct": {
+      "round536": 26.863,
+      "round542": 30.078
+    }
+  },
+  "method": "128 fresh team-pair clusters per opponent; two outcome repeats; side-swapped; identical seed, team selector and opponent selector between candidate and baseline. Paired intervals bootstrap team-pair clusters.",
+  "opponents": {
+    "counterplay": {
+      "cluster_ci95_pp": [
+        0.195,
+        6.836
+      ],
+      "matched_cases": 255,
+      "matched_team_clusters": 128,
+      "paired_delta_pp": 3.32,
+      "round536_action_adjustments": 0,
+      "round536_errors": 1,
+      "round536_games_per_second": 4.516,
+      "round536_score_pct": 26.863,
+      "round542_action_adjustments": 0,
+      "round542_errors": 0,
+      "round542_games_per_second": 4.092,
+      "round542_score_pct": 30.078
+    },
+    "max_damage": {
+      "cluster_ci95_pp": [
+        -6.055,
+        0.586
+      ],
+      "matched_cases": 255,
+      "matched_team_clusters": 128,
+      "paired_delta_pp": -2.539,
+      "round536_action_adjustments": 0,
+      "round536_errors": 0,
+      "round536_games_per_second": 4.967,
+      "round536_score_pct": 39.258,
+      "round542_action_adjustments": 0,
+      "round542_errors": 1,
+      "round542_games_per_second": 4.739,
+      "round542_score_pct": 36.863
+    },
+    "public_counterplay": {
+      "cluster_ci95_pp": [
+        -4.492,
+        3.32
+      ],
+      "matched_cases": 255,
+      "matched_team_clusters": 128,
+      "paired_delta_pp": -0.586,
+      "round536_action_adjustments": 0,
+      "round536_errors": 0,
+      "round536_games_per_second": 3.783,
+      "round536_score_pct": 38.867,
+      "round542_action_adjustments": 0,
+      "round542_errors": 1,
+      "round542_games_per_second": 3.737,
+      "round542_score_pct": 38.431
+    },
+    "random": {
+      "cluster_ci95_pp": [
+        -2.148,
+        0.977
+      ],
+      "matched_cases": 255,
+      "matched_team_clusters": 128,
+      "paired_delta_pp": -0.586,
+      "round536_action_adjustments": 0,
+      "round536_errors": 1,
+      "round536_games_per_second": 2.553,
+      "round536_score_pct": 94.902,
+      "round542_action_adjustments": 0,
+      "round542_errors": 0,
+      "round542_games_per_second": 2.891,
+      "round542_score_pct": 94.336
+    },
+    "round430": {
+      "cluster_ci95_pp": [
+        -2.344,
+        3.125
+      ],
+      "matched_cases": 255,
+      "matched_team_clusters": 128,
+      "paired_delta_pp": 0.391,
+      "round536_action_adjustments": 0,
+      "round536_errors": 1,
+      "round536_games_per_second": 1.692,
+      "round536_score_pct": 41.569,
+      "round542_action_adjustments": 0,
+      "round542_errors": 0,
+      "round542_games_per_second": 1.995,
+      "round542_score_pct": 42.188
+    },
+    "round473": {
+      "cluster_ci95_pp": [
+        -6.445,
+        0.391
+      ],
+      "matched_cases": 256,
+      "matched_team_clusters": 128,
+      "paired_delta_pp": -2.93,
+      "round536_action_adjustments": 0,
+      "round536_errors": 0,
+      "round536_games_per_second": 4.197,
+      "round536_score_pct": 51.758,
+      "round542_action_adjustments": 0,
+      "round542_errors": 0,
+      "round542_games_per_second": 3.621,
+      "round542_score_pct": 48.828
+    },
+    "round476": {
+      "cluster_ci95_pp": [
+        -2.734,
+        1.758
+      ],
+      "matched_cases": 256,
+      "matched_team_clusters": 128,
+      "paired_delta_pp": -0.391,
+      "round536_action_adjustments": 0,
+      "round536_errors": 0,
+      "round536_games_per_second": 1.55,
+      "round536_score_pct": 42.383,
+      "round542_action_adjustments": 0,
+      "round542_errors": 0,
+      "round542_games_per_second": 1.947,
+      "round542_score_pct": 41.992
+    },
+    "round524": {
+      "cluster_ci95_pp": [
+        -6.25,
+        0.977
+      ],
+      "matched_cases": 255,
+      "matched_team_clusters": 128,
+      "paired_delta_pp": -2.539,
+      "round536_action_adjustments": 0,
+      "round536_errors": 1,
+      "round536_games_per_second": 3.205,
+      "round536_score_pct": 54.118,
+      "round542_action_adjustments": 0,
+      "round542_errors": 0,
+      "round542_games_per_second": 2.002,
+      "round542_score_pct": 51.367
+    }
+  },
+  "outcome_repeats": 2,
+  "promotion": "Screen only. Require independent confirmation and lower-tail review before promotion.",
+  "reproduction": "scripts/evaluate_round542_opening14_response_128x2.sh",
+  "round": 543,
+  "status": "complete_screen_no_promotion",
+  "workers": 8
+}

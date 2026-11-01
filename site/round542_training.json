@@ -1,6 +1,6 @@
 {
   "round": 542,
-  "status": "training_complete_evaluation_in_progress",
+  "status": "training_and_evaluation_complete_no_promotion",
   "run": "training/outputs/phase12_headless/round542_opening14_response_20k_20261101_retry1",
   "starting_checkpoint": "Round531",
   "candidate_checkpoint": "training/outputs/phase12_headless/round542_opening14_response_20k_20261101_retry1/checkpoints/latest.pt",
@@ -60,7 +60,7 @@
     "current_bottleneck": "Action selection (89.4 ms/episode), then policy inference (38.2 ms), baseline action scoring (36.1 ms), engine round trips (32.4 ms), and observation encoding (26.7 ms)."
   },
   "evaluation": {
-    "status": "running",
+    "status": "complete_no_promotion",
     "report": "round543_opening14_response_league.json",
     "opponents": [
       "Random",
@@ -75,9 +75,25 @@
     "clusters_per_opponent": 128,
     "outcome_repeats": 2,
     "side_swapped": true,
-    "script": "scripts/evaluate_round542_opening14_response_128x2.sh"
+    "script": "scripts/evaluate_round542_opening14_response_128x2.sh",
+    "summary": {
+      "paired_gain_counterplay_pp": 3.32,
+      "counterplay_ci95_pp": [
+        0.195,
+        6.836
+      ],
+      "max_damage_delta_pp": -2.539,
+      "max_damage_ci95_pp": [
+        -6.055,
+        0.586
+      ],
+      "mean_score_round536_pct": 48.715,
+      "mean_score_round542_pct": 48.01,
+      "worst_simple_score_round536_pct": 26.863,
+      "worst_simple_score_round542_pct": 30.078
+    }
   },
   "training_script": "scripts/train_round542_opening14_response_20k.sh",
   "control": "Round536 opponent-balanced-loss PPO trained from Round531 on the same opponent proportions without the 1+4 opponent overlay; matched held-out league evaluation is running.",
-  "promotion": "Do not promote until the matched evaluation and lower-tail review are complete."
+  "promotion": "Do not promote: Round542 remains below 50% against Max Damage and both Counterplay variants. Round430 remains default; only Counterplay improves with a paired interval excluding zero."
 }

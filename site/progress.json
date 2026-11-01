@@ -1405,17 +1405,17 @@
     }
   },
   "latest_run": {
-    "round": 542,
-    "status": "20k training complete \u00b7 eight-opponent evaluation running",
-    "summary": "Trained a response to the demonstrated 1+4 opening exploit by applying those legal Max Damage actions to frozen PPO opponents only. Strict audit passed with 20,000 games and 166,704 transitions after replacing one incomplete game; PPO completed all 1,304 optimizer steps. No strength claim yet.",
-    "games": "20,000 self-play games",
+    "round": 543,
+    "status": "eight-opponent evaluation complete \u00b7 Round542 not promoted",
+    "summary": "Round542 trained against PPO opponents using Max Damage actions at decisions 1 and 4. On 128 fresh clusters \u00d7 2 outcomes \u00d7 both sides, it improved +3.32 pp vs Counterplay [ +0.20,+6.84 ], but the other seven paired intervals include zero. Its absolute scores vs Max Damage, Counterplay, and Public Counterplay were 36.86%, 30.08%, and 38.43%\u2014all below 50%, signaling exploitable, non-optimal play. Round430 remains the validated default.",
+    "games": "20,000 training games; 8-opponent held-out evaluation, 128 clusters \u00d7 2 outcomes \u00d7 both sides",
     "epochs": "4 PPO passes \u00b7 1,304 optimizer steps",
-    "evaluation": "128 team clusters \u00d7 2 outcomes \u00d7 both sides against 8 opponents; paired with Round536"
+    "evaluation": "Paired team-cluster bootstrap; one incomplete match excluded in several cells; no action corrections"
   },
   "method": "Native self-play PPO for in-battle decisions. Terminal win/loss remains the main objective; win-probability and hidden-set prediction are auxiliary tasks. Search comes after a stronger policy.",
   "jax_decision": "Round430 has a confirmed self-play head-to-head lift over Round424, but external-opponent screens remain inconclusive. Prioritize measured inference batching, observation throughput, and rollouts; keep equilibrium-oriented opponent coverage and defer a JAX/GPU engine rewrite until its end-to-end payoff is measured.",
   "evaluation_note": "A reproducible score below 50% against a legal Max Damage policy is direct evidence that the evaluated agent is exploitable on that team and opponent distribution. It does not by itself prove the size of the gap to the global equilibrium strategy. Round532 scored 31.25% vs Max Damage; increasing training exposure to that policy did not help. Round430 remains the default because no later checkpoint has demonstrated a reliable broad improvement. Round537/539 also show absolute weakness: Round536 and Round538 each score about 30% against Max Damage. Uncertainty in the candidate delta does not change the evidence that both are exploitable and non-optimal on these teams. Round540 gives fresh evidence that the 1+4 Max Damage opening rule improves some matchups, but its worst score against the simple heuristic pool is still only 36.72%; this is measurable progress, not optimal play.",
-  "generated_at": "2026-11-01 06:20 UTC",
+  "generated_at": "2026-11-01 06:55 UTC",
   "round462_evaluation": {
     "status": "Round462 not promoted \u00b7 initial paired screen complete",
     "summary": "Round462 scored 44.82% against Max Damage [41.02%, 48.54%]. On the same teams and seeds, Round430 scored 44.73% and Round432 scored 44.43%; paired deltas were +0.10 pp [-1.37, +1.56] and +0.39 pp [-1.37, +2.05]. The update did not measurably change this weakness. Results against Public Counterplay and historical PPO are inconclusive; Random is an easy-baseline check.",
@@ -8709,10 +8709,34 @@
   "round542_training": {
     "round": 542,
     "report": "round542_training.json",
-    "status": "training_complete_evaluation_in_progress",
+    "status": "training_and_evaluation_complete_no_promotion",
     "rollout_games_per_second": 34.71,
     "input_to_checkpoint_games_per_second": 20.41,
     "current_bottleneck": "Action selection (89.4 ms/episode), then policy inference (38.2 ms), baseline action scoring (36.1 ms), engine round trips (32.4 ms), and observation encoding (26.7 ms).",
-    "evaluation_report": "round543_opening14_response_league.json"
+    "evaluation_report": "round543_opening14_response_league.json",
+    "summary": "Only Counterplay improved with a paired interval excluding zero (+3.32 pp [+0.20,+6.84]); all other paired deltas are unresolved. Round542 is still below 50% against all three simple heuristics and is not promoted."
+  },
+  "round543_evaluation": {
+    "report": "round543_opening14_response_league.json",
+    "status": "complete_no_promotion",
+    "paired_gain_counterplay_pp": 3.32,
+    "counterplay_ci95_pp": [
+      0.195,
+      6.836
+    ],
+    "round542_simple_scores_pct": {
+      "max_damage": 36.863,
+      "counterplay": 30.078,
+      "public_counterplay": 38.431
+    },
+    "mean_score_pct": {
+      "round536": 48.715,
+      "round542": 48.01
+    },
+    "worst_simple_score_pct": {
+      "round536": 26.863,
+      "round542": 30.078
+    },
+    "next": "Targeted loss-state action-regret diagnosis against multiple legal responses; do not repeat broad opponent-mixture changes without a measured failure mechanism."
   }
 }
