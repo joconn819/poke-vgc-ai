@@ -18,19 +18,19 @@ Pokémon Showdown remains the correctness reference and required battle platform
     "evaluation": "Latest full-match Max Damage screen: Round430 policy-only arm, 256 matched team-pair clusters, both seats, seed 202610480. The paired search arm scored 42.38% (+2.54 pp; 95% paired CI [-0.78,+6.05]), inconclusive and not enabled by default."
   },
   "speed": {
-    "games_per_second": "34.48 rollout / 20.34 input-to-checkpoint",
-    "context": "Round536: 20,000 games; 580.04 s rollout, 983.40 s input-to-checkpoint including preflight/recovery and PPO. Eight workers averaged 6.69 CPU cores and peaked at 9.24 GiB aggregate RSS.",
-    "decision_latency": "Fresh profile pending",
-    "current_bottleneck": "Per episode: policy inference 38.9 ms, baseline action scoring 36.1 ms, engine round trips 32.8 ms, observation encoding 26.8 ms. Full iteration additionally spent 244.24 s preflight, 119.48 s recovery, and 159.08 s PPO/checkpointing.",
-    "gpu_status": "CUDA PPO; battle simulation on CPU"
+    "games_per_second": "34.71 rollout / 20.41 input-to-checkpoint",
+    "context": "Round542: 20,000 games; 576.18 s rollout and 979.74 s input-to-checkpoint. Eight workers averaged 6.69 CPU cores and peaked at 9.31 GiB aggregate RSS.",
+    "decision_latency": "Fresh policy decision latency pending separate measurement",
+    "current_bottleneck": "Action selection (89.4 ms/episode), then policy inference (38.2 ms), baseline action scoring (36.1 ms), engine round trips (32.4 ms), and observation encoding (26.7 ms). Strict preflight and one-match recovery took 243.48 s; PPO/checkpointing took 160.03 s.",
+    "gpu_status": "CUDA PPO; Showdown battle simulation on CPU"
   },
   "latest_run": {
-    "round": 541,
-    "status": "fresh confirmation complete \u00b7 overlay not promoted",
-    "summary": "On fresh teams, the 1+4 Max Damage opening overlay gained +8.59 pp vs Counterplay [ +3.91,+13.48 ] and +5.86 pp vs Round476 PPO [ +0.39,+11.33 ]. It scored 45.90% vs Max Damage, 42.97% vs Counterplay, and 47.27% vs Public Counterplay. Every direct heuristic result remains below 50%, signaling exploitable, non-optimal play; candidate gains do not establish optimality.",
-    "games": "128 team clusters \u00d7 2 outcomes \u00d7 both sides; four opponent classes",
-    "epochs": "No training in this evaluation",
-    "evaluation": "Paired fresh-team confirmation; zero errors, timeouts, or action adjustments"
+    "round": 542,
+    "status": "20k training complete \u00b7 eight-opponent evaluation running",
+    "summary": "Trained a response to the demonstrated 1+4 opening exploit by applying those legal Max Damage actions to frozen PPO opponents only. Strict audit passed with 20,000 games and 166,704 transitions after replacing one incomplete game; PPO completed all 1,304 optimizer steps. No strength claim yet.",
+    "games": "20,000 self-play games",
+    "epochs": "4 PPO passes \u00b7 1,304 optimizer steps",
+    "evaluation": "128 team clusters \u00d7 2 outcomes \u00d7 both sides against 8 opponents; paired with Round536"
   },
   "method": "Masked PPO action logits are the default move policy. Terminal win/loss is the primary PPO objective; win probability and hidden-set prediction are auxiliary targets. Optional search remains disabled unless a broader held-out league supports it.",
   "jax_decision": "Recent throughput gains came from policy/observation and rollout work; a GPU battle-engine rewrite remains gated on representative end-to-end profiling and parity against local Showdown.",
@@ -296,6 +296,15 @@ Pokémon Showdown remains the correctness reference and required battle platform
     ],
     "confirmation_report": "round541_opening14_confirmation.json",
     "confirmation": "Fresh 128 clusters \u00d7 2 outcomes vs Max Damage, Counterplay, Public Counterplay, and Round476. Overlay absolute scores: 45.90%, 42.97%, 47.27%, 53.91%; only Counterplay and Round476 paired gains excluded zero. All simple heuristic scores below 50%; overlay remains experimental."
+  },
+  "round542_training": {
+    "round": 542,
+    "report": "round542_training.json",
+    "status": "training_complete_evaluation_in_progress",
+    "rollout_games_per_second": 34.71,
+    "input_to_checkpoint_games_per_second": 20.41,
+    "current_bottleneck": "Action selection (89.4 ms/episode), then policy inference (38.2 ms), baseline action scoring (36.1 ms), engine round trips (32.4 ms), and observation encoding (26.7 ms).",
+    "evaluation_report": "round543_opening14_response_league.json"
   }
 }
 DASHBOARD_PROGRESS_JSON -->
@@ -19279,3 +19288,12 @@ and OUT set to the Round524 checkpoint and output paths.
 - Scores and paired cluster intervals for hybrid minus raw: Max Damage 48.05% vs 40.63%, +7.42 pp [ +0.78,+14.06 ]; Counterplay 36.72% vs 33.98%, +2.73 [−2.73,+8.59]; Public Counterplay 45.70% vs 40.63%, +5.08 [−0.39,+10.94]; Random 94.49% vs 92.58%, +1.97 [−1.18,+5.51]; Round430 PPO 57.09% vs 50.00%, +7.48 [+1.57,+13.78]; Round473 53.52% vs 53.13%, +0.39 [−4.69,+5.86]; Round476 56.25% vs 45.67%, +10.24 [+3.94,+16.54]; Round485 57.03% vs 53.52%, +3.52 [−2.34,+9.38]; Round524 55.47% vs 54.30%, +1.17 [−4.69,+7.03]. All nine point deltas were positive, but only Max Damage and the Round430/Round476 PPO matchups had paired intervals excluding zero. Equal-weight mean rose from 51.60% to 56.03%; these averages are buoyed by PPO and Random matchups.
 - Against the three direct heuristics, raw worst score was 33.98% and hybrid worst score 36.72%. The hybrid still lost more often than it won against Max Damage, Counterplay, and Public Counterplay. This is promising evidence that the opening action rule improves over raw Round430, not evidence of optimal play or robustness to an adversary that adapts. Do not promote yet.
 - Round541 completed on 128 fresh team-pair clusters, two outcomes per cluster, both sides, against Max Damage, Counterplay, Public Counterplay, and Round476 PPO. There were 512 matches per arm in each matchup, with zero errors, timeouts, or action adjustments. Candidate-minus-raw paired results: Max Damage 45.90% vs 42.77%, +3.13 pp [−2.15,+8.20]; Counterplay 42.97% vs 34.38%, +8.59 [+3.91,+13.48]; Public Counterplay 47.27% vs 43.55%, +3.71 [−0.98,+8.20]; Round476 53.91% vs 48.05%, +5.86 [+0.39,+11.33]. The counterplay and Round476 deltas replicated as positive; Max Damage and Public Counterplay deltas remain unresolved. All three direct heuristic absolute scores remain below 50%, which is evidence of exploitable, non-optimal play. The overlay remains experimental and is not promoted. Reports: `site/round540_opening14_league.json`, `site/round541_opening14_confirmation.json`; raw output: `training/outputs/phase12_headless/round541_round540_opening14_confirmation_128x2_20261101/`.
+
+
+### Round542: response to PPO opponents using the 1+4 opening tactic (training complete; evaluation running)
+
+- Trained from Round531 for 20,000 games using the same optimizer, team selectors, opponent proportions, and opponent pool as Round536. The sole controlled change was applying the legal Max Damage action to every frozen PPO opponent at decision indices 1 and 4. The learner remained unmodified and received terminal PPO rewards, with no teacher forcing.
+- The strict information-boundary audit passed: 20,000 complete trainable games, 40,000 safe player-view rows, and 166,704 trainable transitions. One incomplete Max Damage match was replaced before the final audit. PPO ran all 1,304 planned optimizer steps over four passes (approximate KL 0.00513). This verifies training execution only, not strength.
+- Speed: rollouts 576.18 seconds (34.71 games/s); input-to-checkpoint 979.74 seconds (20.41 games/s). Preflight plus recovery took 243.48 seconds, including a 118.95-second recovery; PPO and checkpointing took 160.03 seconds. Eight workers averaged 6.69 CPU cores and peaked at 9.31 GiB aggregate RSS. Weighted per-episode profile: action selection 89.4 ms, policy inference 38.2 ms, baseline action scoring 36.1 ms, engine round trips 32.4 ms, observation encoding 26.7 ms, and trajectory persistence 9.7 ms. Action selection is the largest measured bottleneck.
+- Matched evaluation is running against Random, Max Damage, Counterplay, Public Counterplay, and four historical PPO policies on 128 fresh team-pair clusters per matchup, two outcome repeats, and side swaps. Round536 is the control. Keep Round430 as the validated default until results show a credible lower-tail improvement.
+- Training report: `site/round542_training.json`; raw run: `training/outputs/phase12_headless/round542_opening14_response_20k_20261101_retry1/`; training script: `scripts/train_round542_opening14_response_20k.sh`; evaluation script: `scripts/evaluate_round542_opening14_response_128x2.sh`.

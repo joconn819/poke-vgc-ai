@@ -1,0 +1,83 @@
+{
+  "round": 542,
+  "status": "training_complete_evaluation_in_progress",
+  "run": "training/outputs/phase12_headless/round542_opening14_response_20k_20261101_retry1",
+  "starting_checkpoint": "Round531",
+  "candidate_checkpoint": "training/outputs/phase12_headless/round542_opening14_response_20k_20261101_retry1/checkpoints/latest.pt",
+  "episodes": 20000,
+  "valid_trainable_games": 20000,
+  "safe_player_view_rows": 40000,
+  "trainable_transitions": 166704,
+  "recovered_malformed_matches": 1,
+  "strict_audit": "passed after replacing one incomplete Max Damage match",
+  "training_change": "Only change from Round536 training recipe: each frozen PPO opponent uses legal Max Damage actions at decision indices 1 and 4. The learner was not teacher-forced.",
+  "opponent_fractions": {
+    "max_damage": 0.3,
+    "counterplay": 0.34873,
+    "public_counterplay": 0.24477,
+    "policy_pool": 0.1065
+  },
+  "policy_opponent_action_overlay_indices": [
+    1,
+    4
+  ],
+  "ppo": {
+    "optimizer_steps": 1304,
+    "passes": 4.0,
+    "approx_kl": 0.005134362682260017,
+    "policy_loss": -0.0027757677788120562,
+    "value_loss": 0.1853699408745839,
+    "win_probability_loss": 0.4258148605289635,
+    "entropy": 1.6160952266008577,
+    "stop_reason": "step_budget",
+    "device": "cuda"
+  },
+  "speed": {
+    "rollout_wall_seconds": 576.18,
+    "rollout_games_per_second": 34.71,
+    "input_to_checkpoint_wall_seconds": 979.74,
+    "input_to_checkpoint_games_per_second": 20.41,
+    "preflight_and_recovery_seconds": 243.48,
+    "recovery_seconds": 118.95,
+    "ppo_and_checkpoint_seconds": 160.03,
+    "mean_cpu_cores": 6.69,
+    "peak_aggregate_rss_gib": 9.31,
+    "weighted_per_episode_profile_ms": {
+      "end_to_end_episode_ms": 181.0,
+      "action_selection_ms": 89.4,
+      "baseline_action_ms": 36.1,
+      "policy_inference_ms": 38.2,
+      "headless_engine_roundtrip_ms": 32.4,
+      "observation_encoding_ms": 26.7,
+      "trajectory_persist_ms": 9.7
+    },
+    "games_per_second_by_opponent": {
+      "counterplay": 5.01,
+      "max_damage": 7.13,
+      "policy": 4.84,
+      "public_counterplay": 4.93
+    },
+    "current_bottleneck": "Action selection (89.4 ms/episode), then policy inference (38.2 ms), baseline action scoring (36.1 ms), engine round trips (32.4 ms), and observation encoding (26.7 ms)."
+  },
+  "evaluation": {
+    "status": "running",
+    "report": "round543_opening14_response_league.json",
+    "opponents": [
+      "Random",
+      "Max Damage",
+      "Counterplay",
+      "Public Counterplay",
+      "Round430 PPO",
+      "Round473 PPO",
+      "Round476 PPO",
+      "Round524 PPO"
+    ],
+    "clusters_per_opponent": 128,
+    "outcome_repeats": 2,
+    "side_swapped": true,
+    "script": "scripts/evaluate_round542_opening14_response_128x2.sh"
+  },
+  "training_script": "scripts/train_round542_opening14_response_20k.sh",
+  "control": "Round536 opponent-balanced-loss PPO trained from Round531 on the same opponent proportions without the 1+4 opponent overlay; matched held-out league evaluation is running.",
+  "promotion": "Do not promote until the matched evaluation and lower-tail review are complete."
+}
