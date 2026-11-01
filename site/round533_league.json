@@ -1,0 +1,125 @@
+{
+  "baseline": "Round531 bootstrap-weighted robust-response PPO",
+  "candidate": "Round532 iterative robust-response PPO",
+  "method": "128 fresh team-pair clusters per opponent, two stochastic outcome repeats per cluster, side-swapped, identical seeds/teams/previews/selectors for both checkpoints. Paired confidence intervals bootstrap team-pair clusters. Server randomness is not identical between candidate and baseline arms.",
+  "opponent_classes": [
+    "Random",
+    "Max Damage",
+    "Counterplay",
+    "Public Counterplay",
+    "Round430 PPO",
+    "Round473 PPO"
+  ],
+  "opponents": {
+    "counterplay": {
+      "cluster_ci95_pp": [
+        -3.32,
+        0.586
+      ],
+      "matched_cases": 256,
+      "matched_team_clusters": 128,
+      "paired_delta_pp": -1.367,
+      "round531_action_adjustments": 0,
+      "round531_games_per_second": 4.313,
+      "round531_score_pct": 37.109,
+      "round531_timeouts_or_errors": 0,
+      "round532_action_adjustments": 0,
+      "round532_games_per_second": 3.853,
+      "round532_score_pct": 35.742,
+      "round532_timeouts_or_errors": 0
+    },
+    "max_damage": {
+      "cluster_ci95_pp": [
+        -2.93,
+        2.544
+      ],
+      "matched_cases": 256,
+      "matched_team_clusters": 128,
+      "paired_delta_pp": -0.195,
+      "round531_action_adjustments": 0,
+      "round531_games_per_second": 4.275,
+      "round531_score_pct": 31.445,
+      "round531_timeouts_or_errors": 0,
+      "round532_action_adjustments": 0,
+      "round532_games_per_second": 6.672,
+      "round532_score_pct": 31.25,
+      "round532_timeouts_or_errors": 0
+    },
+    "public_counterplay": {
+      "cluster_ci95_pp": [
+        -2.734,
+        2.344
+      ],
+      "matched_cases": 256,
+      "matched_team_clusters": 128,
+      "paired_delta_pp": -0.195,
+      "round531_action_adjustments": 0,
+      "round531_games_per_second": 5.828,
+      "round531_score_pct": 32.812,
+      "round531_timeouts_or_errors": 0,
+      "round532_action_adjustments": 0,
+      "round532_games_per_second": 5.071,
+      "round532_score_pct": 32.617,
+      "round532_timeouts_or_errors": 0
+    },
+    "random": {
+      "cluster_ci95_pp": [
+        -0.586,
+        1.172
+      ],
+      "matched_cases": 255,
+      "matched_team_clusters": 128,
+      "paired_delta_pp": 0.195,
+      "round531_action_adjustments": 0,
+      "round531_games_per_second": 4.649,
+      "round531_score_pct": 95.294,
+      "round531_timeouts_or_errors": 1,
+      "round532_action_adjustments": 0,
+      "round532_games_per_second": 4.648,
+      "round532_score_pct": 95.49,
+      "round532_timeouts_or_errors": 1
+    },
+    "round430": {
+      "cluster_ci95_pp": [
+        -1.562,
+        2.734
+      ],
+      "matched_cases": 255,
+      "matched_team_clusters": 128,
+      "paired_delta_pp": 0.586,
+      "round531_action_adjustments": 0,
+      "round531_games_per_second": 3.618,
+      "round531_score_pct": 51.176,
+      "round531_timeouts_or_errors": 1,
+      "round532_action_adjustments": 0,
+      "round532_games_per_second": 5.87,
+      "round532_score_pct": 51.562,
+      "round532_timeouts_or_errors": 0
+    },
+    "round473": {
+      "cluster_ci95_pp": [
+        -1.181,
+        3.15
+      ],
+      "matched_cases": 254,
+      "matched_team_clusters": 127,
+      "paired_delta_pp": 0.984,
+      "round531_action_adjustments": 0,
+      "round531_games_per_second": 1.851,
+      "round531_score_pct": 40.588,
+      "round531_timeouts_or_errors": 1,
+      "round532_action_adjustments": 0,
+      "round532_games_per_second": 2.055,
+      "round532_score_pct": 41.569,
+      "round532_timeouts_or_errors": 1
+    }
+  },
+  "paired_cases_per_checkpoint_per_opponent": 128,
+  "promotion": "Screening evidence only; do not promote without independent confirmation and held-out-team evaluation.",
+  "reproduction": "scripts/evaluate_round532_repeated_fresh_league_128x2.sh",
+  "round531_checkpoint": "/home/justin/p/poke_learning_2/training/outputs/phase12_headless/round531_iterative_robust_response_20k_20261031/checkpoints/latest.pt",
+  "round532_checkpoint": "/home/justin/p/poke_learning_2/training/outputs/phase12_headless/round532_maxdamage_floor_20k_20261031/checkpoints/latest.pt",
+  "side_swapped_matches_per_checkpoint_per_opponent_requested": 512,
+  "status": "Complete; repeated six-class evaluation",
+  "workers": 8
+}

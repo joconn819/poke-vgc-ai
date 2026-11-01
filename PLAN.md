@@ -19186,7 +19186,7 @@ and OUT set to the Round524 checkpoint and output paths.
   exposure to 30% while preserving the policy pool and the relative mixture of
   the other two heuristics; its result must be evaluated before any promotion.
 
-### Round532: higher Max Damage exposure (training complete; evaluation running)
+### Round532: higher Max Damage exposure (complete; not promoted)
 
 - Started from the Round531 checkpoint for 20,000 episodes. Max Damage receives
   30% of training episodes, Counterplay 34.873%, Public Counterplay 24.477%,
@@ -19214,6 +19214,6 @@ and OUT set to the Round524 checkpoint and output paths.
 - PPO diagnostics: approximate KL 0.00486, policy loss -0.00353, value loss
   0.18461, win-probability loss 0.42282. These are training diagnostics, not
   evidence of stronger play.
-- The planned repeated comparison is 128 fresh team-pair clusters and two
-  stochastic outcome repeats against six opponent classes, with side swaps:
-  `scripts/evaluate_round532_repeated_fresh_league_128x2.sh`.
+- The repeated comparison completed on 128 fresh team-pair clusters, two stochastic outcomes per cluster, with side swaps. All per-class paired confidence intervals include zero. Round531 → Round532: Max Damage 31.45% → 31.25% (Δ −0.20 pp, 95% cluster CI [−2.93,+2.54]); Counterplay 37.11% → 35.74% (−1.37 [−3.32,+0.59]); Public Counterplay 32.81% → 32.62% (−0.20 [−2.73,+2.34]); Random 95.29% → 95.49% (+0.20 [−0.59,+1.17]); Round430 PPO 51.18% → 51.56% (+0.59 [−1.56,+2.73]); Round473 PPO 40.59% → 41.57% (+0.98 [−1.18,+3.15]). Thus raising Max Damage exposure to 30% did not improve that matchup, and both policies remain clearly exploitable against simple strategies. Round532 is not promoted. Round430 remains the project default pending a stronger validated candidate.
+- A 32-team-cluster, two-repeat traced diagnostic (256 matches combined) scored 43.75% overall with a wide 95% cluster interval [30.08%,57.42%]. Losing games tended to have lower team HP and fewer surviving Pokémon from early snapshots. Action-use differences are descriptive and cannot identify which choices caused losses. Next diagnosis should measure per-state action counterfactuals under varied legal opponent responses, then turn confirmed errors into targeted regression cases.
+- Repeated league report: `site/round533_league.json`. Trace report: `site/round534_trace_analysis.md` and `site/round534_trace_analysis.json`. Trace run: `training/outputs/phase12_headless/round534_maxdamage_trace_round531_round532_32x2_20261031/`.

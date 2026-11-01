@@ -1385,16 +1385,14 @@
     }
   },
   "latest_run": {
-    "round": 485,
-    "status": "Max Damage exposure ablation \u00b7 not promoted",
-    "summary": "Trained from Round430 on 20,000 games with 70% Max Damage exposure. On matched held-out teams it scored 39.45% vs Max Damage, \u22120.68 pp vs balanced Round473 (95% CI \u22123.12 to +1.76); equal-weight change across five opponents was \u22120.49 pp [\u22121.39,+0.39]. No measured gain; Round430 stays default.",
-    "games": "20,000 self-play outcomes",
-    "epochs": "4 PPO passes",
-    "evaluation": "No supported improvement across opponent pool"
+    "round": 532,
+    "status": "evaluated_not_promoted",
+    "summary": "Increasing Max Damage training exposure from 11.25% to 30% did not improve performance. Round532 scored 31.25% vs Max Damage (31.45% for Round531; paired \u0394 \u22120.20 pp, 95% CI [\u22122.93,+2.54]) and scored lower against Counterplay (35.74% vs 37.11%). Neither checkpoint approaches 50% against these simple baselines. Round430 remains the project default; new later policies remain unpromoted.",
+    "evaluation": "Six-class repeated screen: no supported gain in any class. A 32-cluster trace diagnostic is descriptive only and shows early HP disadvantage in losing games."
   },
   "method": "Native self-play PPO for in-battle decisions. Terminal win/loss remains the main objective; win-probability and hidden-set prediction are auxiliary tasks. Search comes after a stronger policy.",
   "jax_decision": "Round430 has a confirmed self-play head-to-head lift over Round424, but external-opponent screens remain inconclusive. Prioritize measured inference batching, observation throughput, and rollouts; keep equilibrium-oriented opponent coverage and defer a JAX/GPU engine rewrite until its end-to-end payoff is measured.",
-  "evaluation_note": "Round402\u2019s historical 77.15% is a team-preview selector benchmark against damage-preview selection, not an in-battle policy score against the Max Damage opponent. The latest in-battle Max Damage result is Round430 policy-only at 39.84% on 256 clusters; one-turn search scored 42.38% but its paired interval includes zero. Round485\u2019s 70%-Max-Damage training mix did not measurably improve that matchup or the broader opponent league. Compare only evaluations using matched tasks, selectors, teams, and seeds.",
+  "evaluation_note": "A reproducible score below 50% against a legal Max Damage policy is direct evidence that the evaluated agent is exploitable on that team and opponent distribution. It does not by itself prove the size of the gap to the global equilibrium strategy. Round532 scored 31.25% vs Max Damage; increasing training exposure to that policy did not help. Round430 remains the default because no later checkpoint has demonstrated a reliable broad improvement.",
   "generated_at": "2026-10-31 23:50 UTC",
   "round462_evaluation": {
     "status": "Round462 not promoted \u00b7 initial paired screen complete",
@@ -8452,58 +8450,22 @@
     "evaluation_status": "Complete; not promoted"
   },
   "round532_training": {
-    "status": "Training complete; repeated six-class evaluation running",
-    "run": "training/outputs/phase12_headless/round532_maxdamage_floor_20k_20261031",
+    "round": 532,
+    "status": "training_complete_evaluation_complete_not_promoted",
     "starting_checkpoint": "round531",
+    "checkpoint": "training/outputs/phase12_headless/round532_maxdamage_floor_20k_20261031/checkpoints/latest.pt",
     "episodes": 20000,
+    "strict_audit": "passed_after_repair",
+    "recovered_malformed_matches": 1,
+    "safe_player_view_rows": 40000,
+    "trainable_games": 20000,
+    "trainable_transitions": 167084,
     "opponent_fractions": {
       "max_damage": 0.3,
       "counterplay": 0.34873,
       "public_counterplay": 0.24477,
       "prior_policy_pool": 0.1065
     },
-    "opponent_policy_pool": [
-      "round531",
-      "round430",
-      "round473",
-      "round476",
-      "round485",
-      "round524"
-    ],
-    "training_script": "scripts/train_round532_maxdamage_floor_20k.sh",
-    "note": "Strict audit passed after one malformed Max Damage game was replaced. The candidate is not promoted pending repeated-outcome held-out evaluation.",
-    "stage": "Strict audit passed after one repair; checkpoint complete; repeated-outcome evaluation is running.",
-    "started_at": "2026-10-31",
-    "rollout_episodes_reported_complete": 20000,
-    "rollout_progress_percent_reported_complete": 100.0,
-    "evaluation_script": "scripts/evaluate_round532_repeated_fresh_league_128x2.sh",
-    "speed_reference": {
-      "round": "Round531",
-      "rollout_games_per_second": 30.23,
-      "input_to_checkpoint_games_per_second": 18.55,
-      "peak_aggregate_rss_gib": 9.51,
-      "current_bottleneck": "Action selection at 103 ms per episode; Round532 own profile pending."
-    },
-    "provisional_speed": {
-      "completed_episodes": 20000,
-      "elapsed_seconds_since_training_process_start": 802,
-      "games_per_second_through_strict_audit_so_far": 24.94,
-      "note": "Preliminary input-to-audit rate includes startup and recovery; PPO/checkpoint time is still pending."
-    },
-    "provisional_profile_ms_per_episode": {
-      "completed_rollout_shard_summaries": 22,
-      "end_to_end_episode": 183.5,
-      "action_selection": 90.4,
-      "baseline_action": 36.4,
-      "policy_inference": 39.1,
-      "headless_engine_roundtrip": 33.0,
-      "observation_encoding": 27.1
-    },
-    "recovered_malformed_matches": 1,
-    "strict_audit": "passed",
-    "trainable_games": 20000,
-    "safe_player_view_rows": 40000,
-    "trainable_transitions": 167084,
     "speed": {
       "rollout_wall_seconds": 585.16,
       "rollout_games_per_second": 34.18,
@@ -8514,17 +8476,120 @@
       "ppo_and_checkpoint_seconds": 159.81,
       "mean_cpu_cores": 6.68,
       "peak_aggregate_rss_gib": 9.28,
+      "rollout_compression": {
+        "raw_bytes": 3907411606,
+        "compressed_bytes": 224548475,
+        "compression_ratio": 0.0575,
+        "compression_seconds": 15.25
+      },
       "weighted_per_episode_profile_ms": {
         "action_selection_ms": 90.4,
-        "policy_inference_ms": 39.1,
         "baseline_action_ms": 36.4,
+        "policy_inference_ms": 39.1,
         "headless_engine_roundtrip_ms": 33.0,
         "observation_encoding_ms": 27.1,
         "trajectory_persist_ms": 9.8,
         "end_to_end_episode_ms": 183.5
       },
-      "bottleneck": "Action selection at 90.4 ms per episode."
+      "current_bottleneck": "Action selection (90.4 ms/episode), then policy inference (39.1 ms), baseline scoring (36.4 ms), Showdown round trips (33.0 ms), and observation encoding (27.1 ms)."
     },
-    "training_report": "round532_training.json"
+    "ppo": {
+      "optimizer_steps_run": 1308.0,
+      "approx_kl": 0.004862012145797958,
+      "policy_loss": -0.003528457732525133,
+      "value_loss": 0.18460653068366764,
+      "win_probability_loss": 0.4228218714122743,
+      "entropy": 1.6264343792145406,
+      "hidden_move_loss": 4.373167005518526,
+      "hidden_item_loss": 2.683325014712249,
+      "hidden_ability_loss": 3.7607402823386935
+    },
+    "training_script": "scripts/train_round532_maxdamage_floor_20k.sh",
+    "evaluation": {
+      "status": "complete_not_promoted",
+      "script": "scripts/evaluate_round532_repeated_fresh_league_128x2.sh",
+      "output": "training/outputs/phase12_headless/round533_round532_maxdamage_repeated_league_128x2_20261031/",
+      "report": "round533_league.json",
+      "baseline": "round531",
+      "candidate": "round532",
+      "team_pair_clusters_per_opponent": 128,
+      "outcome_repeats_per_cluster": 2,
+      "summary": {
+        "counterplay": {
+          "round531_score_pct": 37.109,
+          "round532_score_pct": 35.742,
+          "paired_delta_pp": -1.367,
+          "cluster_ci95_pp": [
+            -3.32,
+            0.586
+          ],
+          "matched_clusters": 128
+        },
+        "max_damage": {
+          "round531_score_pct": 31.445,
+          "round532_score_pct": 31.25,
+          "paired_delta_pp": -0.195,
+          "cluster_ci95_pp": [
+            -2.93,
+            2.544
+          ],
+          "matched_clusters": 128
+        },
+        "public_counterplay": {
+          "round531_score_pct": 32.812,
+          "round532_score_pct": 32.617,
+          "paired_delta_pp": -0.195,
+          "cluster_ci95_pp": [
+            -2.734,
+            2.344
+          ],
+          "matched_clusters": 128
+        },
+        "random": {
+          "round531_score_pct": 95.294,
+          "round532_score_pct": 95.49,
+          "paired_delta_pp": 0.195,
+          "cluster_ci95_pp": [
+            -0.586,
+            1.172
+          ],
+          "matched_clusters": 128
+        },
+        "round430": {
+          "round531_score_pct": 51.176,
+          "round532_score_pct": 51.562,
+          "paired_delta_pp": 0.586,
+          "cluster_ci95_pp": [
+            -1.562,
+            2.734
+          ],
+          "matched_clusters": 128
+        },
+        "round473": {
+          "round531_score_pct": 40.588,
+          "round532_score_pct": 41.569,
+          "paired_delta_pp": 0.984,
+          "cluster_ci95_pp": [
+            -1.181,
+            3.15
+          ],
+          "matched_clusters": 127
+        }
+      },
+      "interpretation": "No supported improvement against any opponent; both policies remain well below 50% against Max Damage, Counterplay, and Public Counterplay. Do not promote Round532."
+    },
+    "trace_diagnostic": {
+      "status": "complete_descriptive_small_sample",
+      "report": "round534_trace_analysis.md",
+      "output": "training/outputs/phase12_headless/round534_maxdamage_trace_round531_round532_32x2_20261031/",
+      "team_pair_clusters": 32,
+      "games": 256,
+      "checkpoint_score_pct": 43.75,
+      "cluster_ci95_pct": [
+        30.08,
+        57.42
+      ],
+      "interpretation": "Loss traces show earlier team-HP disadvantage; action usage differences are descriptive and do not identify causal mistakes. Follow with state-action counterfactuals and tactical regression cases."
+    }
   }
 }

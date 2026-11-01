@@ -1,0 +1,593 @@
+{
+  "action_adjustments": 0,
+  "by_outcome": {
+    "draw": {
+      "action_summary": {
+        "action_kind_counts": {},
+        "action_kind_fractions": {},
+        "decision_actions": 0,
+        "first_decision_action_kind_counts": {},
+        "first_decision_action_kind_fractions": {},
+        "games": 0,
+        "per_game_mean_action_kind_fractions": {},
+        "top_moves": [],
+        "top_moves_by_mean_per_game_fraction": []
+      },
+      "decision_count_distribution": {
+        "count": 0,
+        "max": 0,
+        "median": 0.0,
+        "p10": 0.0,
+        "p90": 0.0
+      },
+      "mean_decisions": 0.0,
+      "simultaneous_post_state_summary": [],
+      "trace_step_distribution": {
+        "count": 0,
+        "max": 0,
+        "median": 0.0,
+        "p10": 0.0,
+        "p90": 0.0
+      },
+      "trace_steps_over_200": 0
+    },
+    "loss": {
+      "action_summary": {
+        "action_kind_counts": {
+          "move": 1367,
+          "pass": 428,
+          "switch": 291
+        },
+        "action_kind_fractions": {
+          "move": 0.6553211888782359,
+          "pass": 0.20517737296260785,
+          "switch": 0.13950143815915628
+        },
+        "decision_actions": 2086,
+        "first_decision_action_kind_counts": {
+          "move": 288
+        },
+        "first_decision_action_kind_fractions": {
+          "move": 1.0
+        },
+        "games": 144,
+        "per_game_mean_action_kind_fractions": {
+          "move": 0.6566188922959756,
+          "pass": 0.1966296145983646,
+          "switch": 0.14675149310565977
+        },
+        "top_moves": [
+          [
+            "heatwave",
+            140
+          ],
+          [
+            "shadowball",
+            80
+          ],
+          [
+            "closecombat",
+            59
+          ],
+          [
+            "hypervoice",
+            56
+          ],
+          [
+            "dracometeor",
+            51
+          ],
+          [
+            "rockslide",
+            48
+          ],
+          [
+            "psychic",
+            47
+          ],
+          [
+            "hurricane",
+            38
+          ],
+          [
+            "highhorsepower",
+            38
+          ],
+          [
+            "snarl",
+            36
+          ],
+          [
+            "doubleshock",
+            35
+          ],
+          [
+            "flareblitz",
+            33
+          ],
+          [
+            "gunkshot",
+            32
+          ],
+          [
+            "bravebird",
+            32
+          ],
+          [
+            "icywind",
+            31
+          ],
+          [
+            "woodhammer",
+            30
+          ],
+          [
+            "poltergeist",
+            30
+          ],
+          [
+            "protect",
+            28
+          ],
+          [
+            "muddywater",
+            28
+          ],
+          [
+            "drillrun",
+            26
+          ]
+        ],
+        "top_moves_by_mean_per_game_fraction": [
+          [
+            "heatwave",
+            0.09638548180214845
+          ],
+          [
+            "shadowball",
+            0.06552203583453584
+          ],
+          [
+            "hypervoice",
+            0.043904822029822016
+          ],
+          [
+            "closecombat",
+            0.04065423388340056
+          ],
+          [
+            "rockslide",
+            0.03801256613756613
+          ],
+          [
+            "psychic",
+            0.03700296616963283
+          ],
+          [
+            "dracometeor",
+            0.03612990019240018
+          ],
+          [
+            "woodhammer",
+            0.028583453583453586
+          ],
+          [
+            "icywind",
+            0.02819940476190477
+          ],
+          [
+            "doubleshock",
+            0.026916486291486286
+          ],
+          [
+            "highhorsepower",
+            0.026010101010101008
+          ],
+          [
+            "snarl",
+            0.025682419432419428
+          ],
+          [
+            "hurricane",
+            0.025397827481160814
+          ],
+          [
+            "gunkshot",
+            0.020359848484848484
+          ],
+          [
+            "muddywater",
+            0.019902551152551153
+          ],
+          [
+            "protect",
+            0.019775787484120823
+          ],
+          [
+            "flareblitz",
+            0.01936404644737978
+          ],
+          [
+            "scald",
+            0.01888678451178451
+          ],
+          [
+            "dazzlinggleam",
+            0.018628747795414465
+          ],
+          [
+            "bravebird",
+            0.017814631356298027
+          ]
+        ]
+      },
+      "decision_count_distribution": {
+        "count": 144,
+        "max": 12,
+        "median": 7.0,
+        "p10": 5.0,
+        "p90": 9.0
+      },
+      "mean_decisions": 7.243055555555555,
+      "simultaneous_post_state_summary": [
+        {
+          "games_observed": 144,
+          "joint_snapshot": 1,
+          "mean_opponent_alive": 5.625,
+          "mean_opponent_team_hp_sum": 5.044479608281648,
+          "mean_policy_alive": 5.604166666666667,
+          "mean_policy_team_hp_sum": 4.8554051947090455
+        },
+        {
+          "games_observed": 144,
+          "joint_snapshot": 2,
+          "mean_opponent_alive": 5.1875,
+          "mean_opponent_team_hp_sum": 4.626376144643621,
+          "mean_policy_alive": 4.722222222222222,
+          "mean_policy_team_hp_sum": 4.333933615369891
+        },
+        {
+          "games_observed": 144,
+          "joint_snapshot": 3,
+          "mean_opponent_alive": 4.736111111111111,
+          "mean_opponent_team_hp_sum": 4.207566179851505,
+          "mean_policy_alive": 4.25,
+          "mean_policy_team_hp_sum": 3.6771213645399348
+        },
+        {
+          "games_observed": 138,
+          "joint_snapshot": 4,
+          "mean_opponent_alive": 4.3768115942028984,
+          "mean_opponent_team_hp_sum": 3.763592992531795,
+          "mean_policy_alive": 3.652173913043478,
+          "mean_policy_team_hp_sum": 3.1305759779835034
+        },
+        {
+          "games_observed": 127,
+          "joint_snapshot": 5,
+          "mean_opponent_alive": 4.0078740157480315,
+          "mean_opponent_team_hp_sum": 3.4213077855879157,
+          "mean_policy_alive": 3.1102362204724407,
+          "mean_policy_team_hp_sum": 2.700241793433154
+        },
+        {
+          "games_observed": 102,
+          "joint_snapshot": 6,
+          "mean_opponent_alive": 3.7549019607843137,
+          "mean_opponent_team_hp_sum": 3.1324975716310655,
+          "mean_policy_alive": 2.5098039215686274,
+          "mean_policy_team_hp_sum": 2.231074962763943
+        },
+        {
+          "games_observed": 46,
+          "joint_snapshot": 7,
+          "mean_opponent_alive": 3.608695652173913,
+          "mean_opponent_team_hp_sum": 2.8794735180948465,
+          "mean_policy_alive": 2.4782608695652173,
+          "mean_policy_team_hp_sum": 2.1928595830179605
+        },
+        {
+          "games_observed": 20,
+          "joint_snapshot": 8,
+          "mean_opponent_alive": 3.6,
+          "mean_opponent_team_hp_sum": 2.7880241060836726,
+          "mean_policy_alive": 2.6,
+          "mean_policy_team_hp_sum": 2.183177339544063
+        }
+      ],
+      "trace_step_distribution": {
+        "count": 144,
+        "max": 13,
+        "median": 8.0,
+        "p10": 6.0,
+        "p90": 10.0
+      },
+      "trace_steps_over_200": 0
+    },
+    "win": {
+      "action_summary": {
+        "action_kind_counts": {
+          "move": 1210,
+          "pass": 280,
+          "switch": 224
+        },
+        "action_kind_fractions": {
+          "move": 0.705950991831972,
+          "pass": 0.1633605600933489,
+          "switch": 0.1306884480746791
+        },
+        "decision_actions": 1714,
+        "first_decision_action_kind_counts": {
+          "move": 224
+        },
+        "first_decision_action_kind_fractions": {
+          "move": 1.0
+        },
+        "games": 112,
+        "per_game_mean_action_kind_fractions": {
+          "move": 0.7197634830447331,
+          "pass": 0.15147279555761697,
+          "switch": 0.12876372139764997
+        },
+        "top_moves": [
+          [
+            "heatwave",
+            100
+          ],
+          [
+            "rockslide",
+            94
+          ],
+          [
+            "moonblast",
+            65
+          ],
+          [
+            "hypervoice",
+            63
+          ],
+          [
+            "closecombat",
+            61
+          ],
+          [
+            "shadowball",
+            60
+          ],
+          [
+            "dazzlinggleam",
+            38
+          ],
+          [
+            "shadowsneak",
+            37
+          ],
+          [
+            "wavecrash",
+            33
+          ],
+          [
+            "volttackle",
+            32
+          ],
+          [
+            "blizzard",
+            31
+          ],
+          [
+            "icywind",
+            30
+          ],
+          [
+            "gunkshot",
+            29
+          ],
+          [
+            "psychic",
+            22
+          ],
+          [
+            "alluringvoice",
+            21
+          ],
+          [
+            "protect",
+            20
+          ],
+          [
+            "muddywater",
+            20
+          ],
+          [
+            "hurricane",
+            19
+          ],
+          [
+            "hydropump",
+            18
+          ],
+          [
+            "energyball",
+            18
+          ]
+        ],
+        "top_moves_by_mean_per_game_fraction": [
+          [
+            "rockslide",
+            0.07948457792207793
+          ],
+          [
+            "heatwave",
+            0.07386656002727432
+          ],
+          [
+            "closecombat",
+            0.05115673017458732
+          ],
+          [
+            "moonblast",
+            0.05110794317727092
+          ],
+          [
+            "hypervoice",
+            0.05047300170068025
+          ],
+          [
+            "shadowball",
+            0.0440149355196624
+          ],
+          [
+            "dazzlinggleam",
+            0.031376460840746564
+          ],
+          [
+            "gunkshot",
+            0.03106930272108844
+          ],
+          [
+            "volttackle",
+            0.030357142857142857
+          ],
+          [
+            "icywind",
+            0.028433248299319733
+          ],
+          [
+            "blizzard",
+            0.025995879120879122
+          ],
+          [
+            "wavecrash",
+            0.025956632653061223
+          ],
+          [
+            "shadowsneak",
+            0.022480867346938774
+          ],
+          [
+            "psychic",
+            0.01991921768707483
+          ],
+          [
+            "hurricane",
+            0.019268578643578643
+          ],
+          [
+            "alluringvoice",
+            0.018948412698412697
+          ],
+          [
+            "stompingtantrum",
+            0.01889880952380952
+          ],
+          [
+            "muddywater",
+            0.017857142857142856
+          ],
+          [
+            "overdrive",
+            0.01688988095238095
+          ],
+          [
+            "protect",
+            0.015056335034013605
+          ]
+        ]
+      },
+      "decision_count_distribution": {
+        "count": 112,
+        "max": 12,
+        "median": 8.0,
+        "p10": 5.0,
+        "p90": 10.0
+      },
+      "mean_decisions": 7.651785714285714,
+      "simultaneous_post_state_summary": [
+        {
+          "games_observed": 112,
+          "joint_snapshot": 1,
+          "mean_opponent_alive": 5.571428571428571,
+          "mean_opponent_team_hp_sum": 4.770726360089666,
+          "mean_policy_alive": 5.705357142857143,
+          "mean_policy_team_hp_sum": 5.096912897821048
+        },
+        {
+          "games_observed": 112,
+          "joint_snapshot": 2,
+          "mean_opponent_alive": 4.598214285714286,
+          "mean_opponent_team_hp_sum": 4.180699591025092,
+          "mean_policy_alive": 5.151785714285714,
+          "mean_policy_team_hp_sum": 4.65255256590045
+        },
+        {
+          "games_observed": 112,
+          "joint_snapshot": 3,
+          "mean_opponent_alive": 4.071428571428571,
+          "mean_opponent_team_hp_sum": 3.645168079857286,
+          "mean_policy_alive": 4.741071428571429,
+          "mean_policy_team_hp_sum": 4.116046009202932
+        },
+        {
+          "games_observed": 110,
+          "joint_snapshot": 4,
+          "mean_opponent_alive": 3.5636363636363635,
+          "mean_opponent_team_hp_sum": 3.121854092500904,
+          "mean_policy_alive": 4.236363636363636,
+          "mean_policy_team_hp_sum": 3.6186581250459633
+        },
+        {
+          "games_observed": 98,
+          "joint_snapshot": 5,
+          "mean_opponent_alive": 3.193877551020408,
+          "mean_opponent_team_hp_sum": 2.6942959933388995,
+          "mean_policy_alive": 3.836734693877551,
+          "mean_policy_team_hp_sum": 3.17791299802175
+        },
+        {
+          "games_observed": 85,
+          "joint_snapshot": 6,
+          "mean_opponent_alive": 2.635294117647059,
+          "mean_opponent_team_hp_sum": 2.3437380750855783,
+          "mean_policy_alive": 3.588235294117647,
+          "mean_policy_team_hp_sum": 2.920772910767281
+        },
+        {
+          "games_observed": 44,
+          "joint_snapshot": 7,
+          "mean_opponent_alive": 2.6136363636363638,
+          "mean_opponent_team_hp_sum": 2.2522557023432594,
+          "mean_policy_alive": 3.4545454545454546,
+          "mean_policy_team_hp_sum": 2.8964124652468
+        },
+        {
+          "games_observed": 18,
+          "joint_snapshot": 8,
+          "mean_opponent_alive": 2.6666666666666665,
+          "mean_opponent_team_hp_sum": 2.2490030943628723,
+          "mean_policy_alive": 3.5555555555555554,
+          "mean_policy_team_hp_sum": 2.870766489981366
+        }
+      ],
+      "trace_step_distribution": {
+        "count": 112,
+        "max": 13,
+        "median": 9.0,
+        "p10": 6.0,
+        "p90": 12.0
+      },
+      "trace_steps_over_200": 0
+    }
+  },
+  "checkpoint_draws": 0,
+  "checkpoint_losses": 144,
+  "checkpoint_score_rate": 0.4375,
+  "checkpoint_wins": 112,
+  "games": 256,
+  "input_dir": "/home/justin/p/poke_learning_2/training/outputs/phase12_headless/round534_maxdamage_trace_round531_round532_32x2_20261031",
+  "interpretation_limit": "Outcome-stratified actions and states are descriptive associations, not causal action values. The policy's side is recovered from the checkpoint_p1/p2 filename because the raw trace result is Player 1's result.",
+  "team_cluster_bootstrap_95_interval": [
+    0.30078125,
+    0.57421875
+  ],
+  "team_pair_clusters": 32
+}

@@ -1,6 +1,6 @@
 {
   "round": 532,
-  "status": "training_complete_evaluation_running",
+  "status": "training_complete_evaluation_complete_not_promoted",
   "starting_checkpoint": "round531",
   "checkpoint": "training/outputs/phase12_headless/round532_maxdamage_floor_20k_20261031/checkpoints/latest.pt",
   "episodes": 20000,
@@ -55,21 +55,89 @@
   },
   "training_script": "scripts/train_round532_maxdamage_floor_20k.sh",
   "evaluation": {
-    "status": "running",
+    "status": "complete_not_promoted",
     "script": "scripts/evaluate_round532_repeated_fresh_league_128x2.sh",
     "output": "training/outputs/phase12_headless/round533_round532_maxdamage_repeated_league_128x2_20261031/",
+    "report": "round533_league.json",
     "baseline": "round531",
     "candidate": "round532",
     "team_pair_clusters_per_opponent": 128,
     "outcome_repeats_per_cluster": 2,
-    "opponents": [
-      "random",
-      "max_damage",
-      "counterplay",
-      "public_counterplay",
-      "round430",
-      "round473"
+    "summary": {
+      "counterplay": {
+        "round531_score_pct": 37.109,
+        "round532_score_pct": 35.742,
+        "paired_delta_pp": -1.367,
+        "cluster_ci95_pp": [
+          -3.32,
+          0.586
+        ],
+        "matched_clusters": 128
+      },
+      "max_damage": {
+        "round531_score_pct": 31.445,
+        "round532_score_pct": 31.25,
+        "paired_delta_pp": -0.195,
+        "cluster_ci95_pp": [
+          -2.93,
+          2.544
+        ],
+        "matched_clusters": 128
+      },
+      "public_counterplay": {
+        "round531_score_pct": 32.812,
+        "round532_score_pct": 32.617,
+        "paired_delta_pp": -0.195,
+        "cluster_ci95_pp": [
+          -2.734,
+          2.344
+        ],
+        "matched_clusters": 128
+      },
+      "random": {
+        "round531_score_pct": 95.294,
+        "round532_score_pct": 95.49,
+        "paired_delta_pp": 0.195,
+        "cluster_ci95_pp": [
+          -0.586,
+          1.172
+        ],
+        "matched_clusters": 128
+      },
+      "round430": {
+        "round531_score_pct": 51.176,
+        "round532_score_pct": 51.562,
+        "paired_delta_pp": 0.586,
+        "cluster_ci95_pp": [
+          -1.562,
+          2.734
+        ],
+        "matched_clusters": 128
+      },
+      "round473": {
+        "round531_score_pct": 40.588,
+        "round532_score_pct": 41.569,
+        "paired_delta_pp": 0.984,
+        "cluster_ci95_pp": [
+          -1.181,
+          3.15
+        ],
+        "matched_clusters": 127
+      }
+    },
+    "interpretation": "No supported improvement against any opponent; both policies remain well below 50% against Max Damage, Counterplay, and Public Counterplay. Do not promote Round532."
+  },
+  "trace_diagnostic": {
+    "status": "complete_descriptive_small_sample",
+    "report": "round534_trace_analysis.md",
+    "output": "training/outputs/phase12_headless/round534_maxdamage_trace_round531_round532_32x2_20261031/",
+    "team_pair_clusters": 32,
+    "games": 256,
+    "checkpoint_score_pct": 43.75,
+    "cluster_ci95_pct": [
+      30.08,
+      57.42
     ],
-    "note": "Two stochastic outcomes per fresh team-pair cluster and side swaps; paired cluster intervals."
+    "interpretation": "Loss traces show earlier team-HP disadvantage; action usage differences are descriptive and do not identify causal mistakes. Follow with state-action counterfactuals and tactical regression cases."
   }
 }
