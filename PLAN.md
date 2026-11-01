@@ -18981,18 +18981,37 @@ and `site/round527_first5_trace_analysis.json`. Reproduction:
   `scripts/evaluate_round523_round520_opening_traces_128x2.sh` with CHECKPOINT
 and OUT set to the Round524 checkpoint and output paths.
 
-### Round528: policy-population payoff matrix (running)
+### Round528: policy-population payoff matrix (complete; no promotion)
 
-- Measuring all pairwise head-to-head outcomes among Round430, 472, 473, 476,
-485, 524, and historical Round102, using 128 shared team clusters per pair,
-both seats, and the same preview selector. The goal is to test whether this
-finite population has a stable robust mixture before using it to train.
-- This is a restricted empirical matrix, not a Nash solution for VGC. Even a
-stable mix will need fresh-team validation against heuristic opponents and
-the full league before it changes the training mixture.
-- Reproduction: `scripts/evaluate_round528_policy_population_matrix.sh`.
+- Evaluated all 21 pairings among Round430, 472, 473, 476, 485, 524, and
+  historical Round102. Each pairing used 128 team-pair clusters, both seats,
+  the same preview selector, and common generated teams. The run completed
+  5,374 of 5,376 requested games (one incomplete cluster in Round472 vs
+  Round102), with zero action adjustments. The intersection across all pairs
+  contains 127 usable clusters.
+- Aggregate sequential throughput was 3.69 completed games/s across the 21
+  pairings; individual matchup throughput ranged from 2.08 to 6.30 games/s on
+  eight workers. Round430 scored 51.2–57.1% against the other six checkpoints,
+  but all six 95% cluster intervals include or touch 50%. The point estimates
+  do not establish that Round430 is stronger.
+- The point maximin solution selects Round430 alone, but the bootstrap is not
+  stable: Round430 receives >5% weight in 56.2% of resamples, Round524 in
+  41.8%, Round485 in 14.8%, and several strategy-weight intervals span most
+  of [0,1]. Do not use this point mix as a training target. The 50% maximin
+  value is structurally implied by the symmetric constant-sum payoff matrix
+  and 50% diagonal; it is not a strength metric. This is a finite checkpoint
+  screen, not a Nash equilibrium for full hidden-information VGC.
+- Internal PPO checkpoints are tightly clustered near 50% against one another,
+  while Round430 remains below 50% against Max Damage (Round526). Keep Round430
+  as the control and improve training coverage against a diverse opponent pool;
+  do not claim convergence or promote a candidate from this matrix.
+- Reports: site/round528_policy_population_matrix.json,
+  site/round528_payoff_matrix.csv, and
+  training/outputs/phase12_headless/round528_policy_population_matrix_128x1_20261031/.
+  Reproduction: scripts/evaluate_round528_policy_population_matrix.sh;
+  summarizer: scripts/summarize_round528_policy_population_matrix.py.
 
-### Next training direction after Round527
+### Next training direction after Round528
 
 - Do not repeat the first-five Max Damage teacher recipe, the positive-minimum
   action-value distillation from Rounds478–479, or the response-conditioned
@@ -19002,20 +19021,20 @@ the full league before it changes the training mixture.
   pass sequence. Round524 changed 3.52% of first-turn action slots and did not
   measurably change the held-out league. Another same-recipe 20,000-game run is
   not justified without a new learning signal.
-- Shift to a population-based response loop: evaluate a diverse set of policy
-  checkpoints against one another on common held-out teams, estimate the
-  payoff matrix with cluster bootstrap uncertainty, and compute a robust mixed
-  strategy over this restricted population. Treat the matrix as a training
-  opponent mixture, not a model of behavioral tendencies. Include heuristic
-  opponents as fixed regression coverage, then train a fresh response against
-  the mixture with on-policy data refreshed between updates.
-- First verify whether the estimated mixture is stable under seed/team
-  resampling and leave-one-policy-out analysis. If the restricted population
-  has no identifiable cycles or robust mixture, increase policy diversity
-  before PPO rather than overinterpreting noise. Compare the candidate against
-  Round430 on a fresh, larger Max Damage screen and the full opponent league;
-  report worst-class and lower-tail results and keep Round430 unless a gain
-  replicates.
+- Round528 completed the internal policy matrix but did not identify a stable
+  mix: the Round430 pure point solution is sensitive to team resampling and
+  several bootstrap strategy intervals span [0,1]. Do not train against this
+  point mix or describe the 50% restricted value as measured strength.
+- Next, diversify the response population using separate fresh PPO runs with
+  different seeds and opponent mixtures that include Max Damage, Counterplay,
+  Public Counterplay, Round430, and past PPO checkpoints. Use the matrix only
+  to select training opponents by robust payoff coverage, not by inferred
+  behavioral tendencies. Refresh on-policy data each update and retain
+  heuristic opponents as regression coverage.
+- Evaluate each new response on held-out teams with side swaps and enough
+  clusters to resolve the uncertainty in Round528. Keep Round430 as the control;
+  require a replicated gain against Max Damage and the broader opponent league,
+  including worst-class and lower-tail performance, before promotion.
 - The historical `pilot_clean` 96.2% claim remains unreproduced because its
   checkpoint and match records are absent. Do not treat it as a current agent
   baseline.

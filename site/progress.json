@@ -7931,10 +7931,10 @@
     "report": "round527_teacher_uptake.json"
   },
   "round528_policy_population_matrix": {
-    "status": "Running",
+    "status": "Complete; restricted policy-population payoff screen",
     "purpose": "Measure pairwise outcomes across seven policy checkpoints and estimate a restricted robust mixture; this is not a Nash solution for the full VGC game.",
     "matchups_total": 21,
-    "matchups_complete": 18,
+    "matchups_complete": 21,
     "team_clusters_per_matchup": 128,
     "seats": "Both seats, common team and preview selector",
     "reproduction": "scripts/evaluate_round528_policy_population_matrix.sh",
@@ -7959,7 +7959,7 @@
       5.28,
       3.71
     ],
-    "completed_games": 4606,
+    "completed_games": 5374,
     "timeouts_or_errors": 1,
     "action_adjustments": 0,
     "preliminary_round430_head_to_head": [
@@ -8017,6 +8017,70 @@
         ],
         "clusters": 128
       }
-    ]
+    ],
+    "planned_games": 5376,
+    "common_team_clusters": 127,
+    "aggregate_games_per_second_sequential": 3.689,
+    "matchup_games_per_second_min": 2.078,
+    "matchup_games_per_second_max": 6.301,
+    "round430_checkpoint_score_pct_vs_population": [
+      51.18,
+      57.09
+    ],
+    "restricted_maximin_mix": {
+      "round430": 1.0,
+      "round472": 0.0,
+      "round473": 0.0,
+      "round476": 0.0,
+      "round485": 0.0,
+      "round524": 0.0,
+      "round102": 0.0
+    },
+    "restricted_maximin_value": 0.5,
+    "bootstrap_strategy_weight_ci95": {
+      "round430": [
+        0.0,
+        1.0
+      ],
+      "round472": [
+        0.0,
+        0.0
+      ],
+      "round473": [
+        0.0,
+        0.19547619047619147
+      ],
+      "round476": [
+        0.0,
+        0.46607142857142525
+      ],
+      "round485": [
+        0.0,
+        1.0
+      ],
+      "round524": [
+        0.0,
+        1.0
+      ],
+      "round102": [
+        0.0,
+        0.6
+      ]
+    },
+    "bootstrap_support_frequency_gt_5pct": {
+      "round430": 0.562,
+      "round472": 0.022,
+      "round473": 0.048,
+      "round476": 0.08,
+      "round485": 0.148,
+      "round524": 0.418,
+      "round102": 0.05
+    },
+    "strategy_stability_interpretation": "The point estimate selects Round430 only, but bootstrap support is unstable: Round430 receives >5% weight in 56.2% of resamples, Round524 in 41.8%, and Round485 in 14.8%. The weight intervals are broad, so do not use this point mix as a definitive training target.",
+    "value_interpretation": "The payoff matrix is symmetric constant-sum with 0.5 diagonal, so the minimax value is structurally 0.5; this is not a strength estimate.",
+    "result": "No stable mixture identified; no checkpoint promotion.",
+    "report": "round528_policy_population_matrix.json",
+    "matrix_csv": "round528_payoff_matrix.csv",
+    "summarizer": "scripts/summarize_round528_policy_population_matrix.py"
   }
 }

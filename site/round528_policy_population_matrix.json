@@ -1,0 +1,319 @@
+{
+  "status": "Complete; restricted policy-population payoff screen",
+  "method": "Unordered head-to-head games among policy checkpoints, both seats, common preview selector, common generated teams across pairings, and team-cluster bootstrap. Randomness inside Showdown is server-side. The maximin mix is only for this finite checkpoint population.",
+  "policies": [
+    "round430",
+    "round472",
+    "round473",
+    "round476",
+    "round485",
+    "round524",
+    "round102"
+  ],
+  "checkpoints": {
+    "round430": "training/outputs/phase12_headless/round430_hard_opponent_auxiliary_ppo_20k_20261030/checkpoints/latest.pt",
+    "round472": "training/outputs/phase12_headless/round472_fresh_robust_mixed_ppo_20k_20261031/checkpoints/latest.pt",
+    "round473": "training/outputs/phase12_headless/round473_fresh_hard_mixed_ppo_20k_20261031/checkpoints/latest.pt",
+    "round476": "training/outputs/phase12_headless/round476_refreshed_population_ppo_20k_20261031/checkpoints/latest.pt",
+    "round485": "training/outputs/phase12_headless/round485_maxdamage_exposure_ppo_20k_20261031/checkpoints/latest.pt",
+    "round524": "training/outputs/phase12_headless/round524_opening5_teacher_low_lr_20k_20261031/checkpoints/latest.pt",
+    "round102": "training/outputs/phase12_headless/direct_policy_round102_round101_class_balanced_round94_value_gae_ppo_20k_20261024/checkpoints/latest.pt"
+  },
+  "pairs_requested_per_matchup": 128,
+  "repeats_per_team_cluster": 1,
+  "workers": 8,
+  "seed": 2026115288,
+  "common_team_clusters": 127,
+  "payoff_matrix_row_score_rate": [
+    [
+      0.5,
+      0.5196850393700787,
+      0.5078740157480315,
+      0.5078740157480315,
+      0.515748031496063,
+      0.5118110236220472,
+      0.5708661417322834
+    ],
+    [
+      0.4803149606299213,
+      0.5,
+      0.48031496062992124,
+      0.5,
+      0.484251968503937,
+      0.4921259842519685,
+      0.547244094488189
+    ],
+    [
+      0.4921259842519685,
+      0.5196850393700787,
+      0.5,
+      0.4921259842519685,
+      0.4921259842519685,
+      0.5,
+      0.562992125984252
+    ],
+    [
+      0.4921259842519685,
+      0.5,
+      0.5078740157480315,
+      0.5,
+      0.49606299212598426,
+      0.4881889763779528,
+      0.5669291338582677
+    ],
+    [
+      0.48425196850393704,
+      0.515748031496063,
+      0.5078740157480315,
+      0.5039370078740157,
+      0.5,
+      0.5,
+      0.5708661417322834
+    ],
+    [
+      0.4881889763779528,
+      0.5078740157480315,
+      0.5,
+      0.5118110236220472,
+      0.5,
+      0.5,
+      0.5590551181102362
+    ],
+    [
+      0.42913385826771655,
+      0.452755905511811,
+      0.43700787401574803,
+      0.4330708661417323,
+      0.42913385826771655,
+      0.4409448818897638,
+      0.5
+    ]
+  ],
+  "payoff_matrix_ci95_by_pair": {
+    "round430_vs_round472": [
+      0.43700787401574803,
+      0.5984251968503937
+    ],
+    "round430_vs_round473": [
+      0.42913385826771655,
+      0.5826771653543307
+    ],
+    "round430_vs_round476": [
+      0.42913385826771655,
+      0.5866141732283464
+    ],
+    "round430_vs_round485": [
+      0.43700787401574803,
+      0.594488188976378
+    ],
+    "round430_vs_round524": [
+      0.43700787401574803,
+      0.5866141732283464
+    ],
+    "round430_vs_round102": [
+      0.5,
+      0.6456692913385826
+    ],
+    "round472_vs_round473": [
+      0.40551181102362205,
+      0.5511811023622047
+    ],
+    "round472_vs_round476": [
+      0.4251968503937008,
+      0.5787401574803149
+    ],
+    "round472_vs_round485": [
+      0.4094488188976378,
+      0.562992125984252
+    ],
+    "round472_vs_round524": [
+      0.421259842519685,
+      0.562992125984252
+    ],
+    "round472_vs_round102": [
+      0.47244094488188976,
+      0.6220472440944882
+    ],
+    "round473_vs_round476": [
+      0.41732283464566927,
+      0.5708661417322834
+    ],
+    "round473_vs_round485": [
+      0.41732283464566927,
+      0.5669291338582677
+    ],
+    "round473_vs_round524": [
+      0.4251968503937008,
+      0.5748031496062992
+    ],
+    "round473_vs_round102": [
+      0.4920275590551182,
+      0.6377952755905512
+    ],
+    "round476_vs_round485": [
+      0.41732283464566927,
+      0.5748031496062992
+    ],
+    "round476_vs_round524": [
+      0.41732283464566927,
+      0.5590551181102362
+    ],
+    "round476_vs_round102": [
+      0.4881889763779528,
+      0.6417322834645669
+    ],
+    "round485_vs_round524": [
+      0.4251968503937008,
+      0.5748031496062992
+    ],
+    "round485_vs_round102": [
+      0.49606299212598426,
+      0.6456692913385826
+    ],
+    "round524_vs_round102": [
+      0.48031496062992124,
+      0.6338582677165354
+    ]
+  },
+  "restricted_maximin_mix": {
+    "round430": 1.0,
+    "round472": 0.0,
+    "round473": 0.0,
+    "round476": 0.0,
+    "round485": 0.0,
+    "round524": 0.0,
+    "round102": 0.0
+  },
+  "restricted_maximin_value": 0.5,
+  "bootstrap_replicates": 500,
+  "bootstrap_maximin_value_ci95": [
+    0.4999999999999999,
+    0.5
+  ],
+  "bootstrap_mean_strategy": {
+    "round430": 0.4978490231092403,
+    "round472": 0.0044352791862226045,
+    "round473": 0.016232602938802406,
+    "round476": 0.031460663412233865,
+    "round485": 0.08770891591980488,
+    "round524": 0.3320123881348569,
+    "round102": 0.03030112729883896
+  },
+  "strategy_weight_ci95": {
+    "round430": [
+      0.0,
+      1.0
+    ],
+    "round472": [
+      0.0,
+      0.0
+    ],
+    "round473": [
+      0.0,
+      0.19547619047619147
+    ],
+    "round476": [
+      0.0,
+      0.46607142857142525
+    ],
+    "round485": [
+      0.0,
+      1.0
+    ],
+    "round524": [
+      0.0,
+      1.0
+    ],
+    "round102": [
+      0.0,
+      0.6
+    ]
+  },
+  "strategy_support_frequency_gt_5pct": {
+    "round430": 0.562,
+    "round472": 0.022,
+    "round473": 0.048,
+    "round476": 0.08,
+    "round485": 0.148,
+    "round524": 0.418,
+    "round102": 0.05
+  },
+  "timeouts_or_errors_by_matchup": {
+    "round430_vs_round472": 0,
+    "round430_vs_round473": 0,
+    "round430_vs_round476": 0,
+    "round430_vs_round485": 0,
+    "round430_vs_round524": 0,
+    "round430_vs_round102": 0,
+    "round472_vs_round473": 0,
+    "round472_vs_round476": 0,
+    "round472_vs_round485": 0,
+    "round472_vs_round524": 0,
+    "round472_vs_round102": 1,
+    "round473_vs_round476": 0,
+    "round473_vs_round485": 0,
+    "round473_vs_round524": 0,
+    "round473_vs_round102": 0,
+    "round476_vs_round485": 0,
+    "round476_vs_round524": 0,
+    "round476_vs_round102": 0,
+    "round485_vs_round524": 0,
+    "round485_vs_round102": 0,
+    "round524_vs_round102": 0
+  },
+  "action_adjustments_by_matchup": {
+    "round430_vs_round472": 0,
+    "round430_vs_round473": 0,
+    "round430_vs_round476": 0,
+    "round430_vs_round485": 0,
+    "round430_vs_round524": 0,
+    "round430_vs_round102": 0,
+    "round472_vs_round473": 0,
+    "round472_vs_round476": 0,
+    "round472_vs_round485": 0,
+    "round472_vs_round524": 0,
+    "round472_vs_round102": 0,
+    "round473_vs_round476": 0,
+    "round473_vs_round485": 0,
+    "round473_vs_round524": 0,
+    "round473_vs_round102": 0,
+    "round476_vs_round485": 0,
+    "round476_vs_round524": 0,
+    "round476_vs_round102": 0,
+    "round485_vs_round524": 0,
+    "round485_vs_round102": 0,
+    "round524_vs_round102": 0
+  },
+  "aggregate_games_completed": 5374,
+  "sum_matchup_worker_wall_seconds": 1456.7335100069176,
+  "sequential_end_to_end_games_per_second": 3.6890755674141666,
+  "matchup_games_per_second": {
+    "round430_vs_round472": 4.597040407761015,
+    "round430_vs_round473": 4.415442398089978,
+    "round430_vs_round476": 3.79526337340571,
+    "round430_vs_round485": 2.4582031214574664,
+    "round430_vs_round524": 4.952325322143711,
+    "round430_vs_round102": 2.534034844541402,
+    "round472_vs_round473": 4.742118272708631,
+    "round472_vs_round476": 5.156645519974418,
+    "round472_vs_round485": 4.141895748231881,
+    "round472_vs_round524": 4.7452992622118515,
+    "round472_vs_round102": 2.078107745549933,
+    "round473_vs_round476": 4.389102915351808,
+    "round473_vs_round485": 6.30139498764856,
+    "round473_vs_round524": 3.953051288536188,
+    "round473_vs_round102": 3.8573157685614934,
+    "round476_vs_round485": 5.275962444723727,
+    "round476_vs_round524": 3.7123708744205337,
+    "round476_vs_round102": 3.1739031015937447,
+    "round485_vs_round524": 3.711439657182959,
+    "round485_vs_round102": 2.30354943030188,
+    "round524_vs_round102": 3.7199545171994535
+  },
+  "interpretation": "A restricted empirical matrix is useful only if bootstrap samples show a stable robust mix. It is not a Nash equilibrium of the full hidden-information VGC game and does not establish tournament strength.",
+  "reproduction": "scripts/evaluate_round528_policy_population_matrix.sh",
+  "summarizer": "scripts/summarize_round528_policy_population_matrix.py",
+  "restricted_maximin_value_note": "The payoff matrix is symmetric constant-sum with 0.5 diagonal, so the minimax value is structurally 0.5; this is not a strength estimate.",
+  "strategy_stability_interpretation": "The point estimate selects Round430 only, but bootstrap support is unstable: Round430 receives >5% weight in 56.2% of resamples, Round524 in 41.8%, and Round485 in 14.8%. The weight intervals are broad, so do not use this point mix as a definitive training target.",
+  "pairwise_uncertainty_interpretation": "All Round430-vs-checkpoint 95% cluster intervals include or touch 50%; the observed 51.2\u201357.1% point scores do not establish a reliable edge except that Round102 is clearly weaker on this sample. Larger held-out evaluation is required."
+}
