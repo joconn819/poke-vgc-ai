@@ -8740,28 +8740,28 @@
     "next": "Targeted loss-state action-regret diagnosis against multiple legal responses; do not repeat broad opponent-mixture changes without a measured failure mechanism."
   },
   "latest_diagnostic": {
-    "round": 545,
-    "title": "Round542 late-turn action regret screen",
-    "status": "128-cluster split-sample diagnostic complete; no policy promotion",
-    "summary": "At decision step 3, action selection on four chance outcomes per response and evaluation on four held-out outcomes found +6.50 pp equal-weight score lift [95% paired cluster CI +4.43,+8.77] and +4.88 pp mean worst-response lift for a maximin selector. This is an actual-hidden-team oracle upper bound, not deployable closed-sheet performance.",
-    "clusters": 128,
-    "chance_repeats": 8,
-    "response_classes": 5,
-    "branch_matches": 32056,
-    "matches_per_second": 63.064,
-    "elapsed_seconds": 508.31,
-    "equal_weight_delta_pp": 6.504,
+    "round": 549,
+    "title": "Public-world action oracle reproduces; learned selector does not transfer",
+    "status": "Round547 confirms local action gaps; Round548\u2013549 player-view fits rejected",
+    "summary": "Across 85 held-out team clusters and four public-compatible hidden worlds per state, the action oracle gained +6.38 pp equal-response [+4.16,+8.87] and maximin gained +3.37 [+1.43,+5.69]. The player-view value fit selected actions worse than the incumbent by 3.68 pp equal-response and 2.94 pp worst-response on 17 test clusters.",
+    "clusters": 85,
+    "branch_matches": 61093,
+    "matches_per_second": 60.587,
+    "equal_weight_delta_pp": 6.382,
     "equal_weight_ci95_pp": [
-      4.434,
-      8.77
+      4.162,
+      8.868
     ],
-    "maximin_equal_weight_delta_pp": 2.402,
+    "maximin_equal_weight_delta_pp": 3.368,
     "maximin_ci95_pp": [
-      1.016,
-      4.121
+      1.426,
+      5.691
     ],
-    "mean_worst_response_delta_pp": 4.883,
-    "information_note": "Counterfactual rollouts use actual captured hidden opponent sets. The action selector is an oracle diagnostic, not an information-safe policy.",
-    "report": "round545_midgame_action_screen.json"
+    "maximin_worst_response_delta_pp": 5.515,
+    "model_equal_weight_delta_pp": -3.676,
+    "model_worst_response_delta_pp": -2.941,
+    "model_test_clusters": 17,
+    "information_note": "Public-compatible hidden worlds establish the action-gap screen; the oracle still uses counterfactual outcome labels. The player-view fitted models failed to transfer the gain and were not promoted.",
+    "report": "round547_publicworld_action_screen.json"
   }
 }

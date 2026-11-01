@@ -1,0 +1,37 @@
+{
+  "round": 549,
+  "status": "pairwise_objective_did_not_recover_transfer",
+  "checkpoint": "training/outputs/phase12_headless/round549_round547_pairwise_action_value_fit_20261101/response_pairwise_action_value.pt",
+  "seed": 202611548,
+  "metrics": {
+    "validation_action_outcome_brier": 0.18052104115486145,
+    "validation_pairwise_loss": 0.6921009421348572,
+    "validation_total_loss": 1.2283787727355957,
+    "best_epoch": 2,
+    "epochs_run": 14,
+    "train_team_clusters": 68,
+    "validation_team_clusters": 17,
+    "train_actions": 4872,
+    "validation_actions": 1216,
+    "train_pairs": 2521,
+    "validation_pairs": 629,
+    "chance_repeats_per_action": 16,
+    "training_chance_half": "first_half",
+    "validation_chance_half": "second_half_on_validation_team_clusters"
+  },
+  "response_names": [
+    "counterplay",
+    "max_damage",
+    "policy",
+    "public_counterplay",
+    "random"
+  ],
+  "heldout_response_names": [],
+  "pairwise_weight": 1.0,
+  "interpretation": "Matched-seed pairwise objective pilot; validation pairwise loss remained near chance and provides no evidence to promote or distill this model.",
+  "reproduction": {
+    "trainer": "scripts/train_response_pairwise_action_value.py",
+    "data": "training/outputs/phase12_headless/round547_round542_publicworld_action_confirmation_128x4x4_20261101/data.json",
+    "raw_report": "training/outputs/phase12_headless/round549_round547_pairwise_action_value_fit_20261101/report.json"
+  }
+}

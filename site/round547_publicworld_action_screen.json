@@ -1,0 +1,188 @@
+{
+  "source": "training/outputs/phase12_headless/round547_round542_publicworld_action_confirmation_128x4x4_20261101/data.json",
+  "seed": 202611047,
+  "requested_clusters": 128,
+  "usable_states": 85,
+  "missing_states": 43,
+  "missing_state_reasons": {
+    "decision_not_reached": 2,
+    "possible_illusion_preview": 1,
+    "request_switch": 40
+  },
+  "hidden_worlds_per_state": 4,
+  "hidden_worlds_prepared": 340,
+  "chance_repeats_per_world": 4,
+  "hidden_world_prior": "showdown_random_champions",
+  "response_classes": [
+    "max_damage",
+    "policy",
+    "public_counterplay",
+    "random",
+    "counterplay"
+  ],
+  "branch_matches": 61093,
+  "elapsed_seconds": 1008.3468235539622,
+  "matches_per_second": 60.587288592505374,
+  "world_preparation_seconds": 43.62980176875135,
+  "split": "Action selected using two public-compatible hidden worlds with four chance outcomes each; evaluated on the two disjoint worlds; swapped halves. Bootstrap paired by team cluster.",
+  "information_note": "The candidate policy action inputs contain only the acting player observation and legal mask. Hidden opponent worlds are sampled from the Showdown Random Champions set prior conditioned on public facts; no actual opposing set is passed to the action selector. Counterfactual outcomes are still oracle labels used only for this screen, not deployable behavior.",
+  "results": [
+    {
+      "selector": "mean",
+      "usable_clusters": 85,
+      "heldout_equal_response_delta_pp": 6.382,
+      "paired_cluster_bootstrap_95_ci_pp": [
+        4.162,
+        8.868
+      ],
+      "heldout_mean_worst_response_delta_pp": 6.397,
+      "per_response_delta_pp": {
+        "max_damage": 9.706,
+        "policy": 5.0,
+        "public_counterplay": 9.191,
+        "random": 2.353,
+        "counterplay": 5.662
+      },
+      "incumbent_action_selected_pct": 26.5,
+      "selected_action_counts": {
+        "policy": 45,
+        "max_damage": 38,
+        "protect_slot0_protect": 11,
+        "legal_perturbation_0": 7,
+        "protect_slot1_protect": 7,
+        "hybrid_damage0_policy1": 6,
+        "legal_perturbation_1": 5,
+        "protect_slot0_detect": 5,
+        "hybrid_policy0_damage1": 4,
+        "spread_slot1_rockslide": 3,
+        "setup_slot0_irondefense": 2,
+        "spread_slot1_trickroom": 2
+      }
+    },
+    {
+      "selector": "maximin",
+      "usable_clusters": 85,
+      "heldout_equal_response_delta_pp": 3.368,
+      "paired_cluster_bootstrap_95_ci_pp": [
+        1.426,
+        5.691
+      ],
+      "heldout_mean_worst_response_delta_pp": 5.515,
+      "per_response_delta_pp": {
+        "max_damage": 6.397,
+        "policy": 2.794,
+        "public_counterplay": 3.015,
+        "random": -0.147,
+        "counterplay": 4.779
+      },
+      "incumbent_action_selected_pct": 57.1,
+      "selected_action_counts": {
+        "policy": 97,
+        "max_damage": 19,
+        "legal_perturbation_0": 9,
+        "protect_slot0_protect": 4,
+        "hybrid_damage0_policy1": 4,
+        "protect_slot1_protect": 2,
+        "switch_slot1_baxcalibur": 2,
+        "legal_perturbation_1": 2,
+        "setup_slot0_nastyplot": 2,
+        "switch_slot1_rotomwash": 2,
+        "switch_slot0_simisear": 2,
+        "switch_slot0_barbaracle": 2
+      }
+    }
+  ],
+  "status": "public_world_action_gap_reproduced_oracle_only",
+  "pilot_round546": {
+    "requested_clusters": 32,
+    "usable_states": 18,
+    "missing_states": 14,
+    "missing_reasons": {
+      "decision_not_reached": 1,
+      "possible_illusion_preview": 1,
+      "request_switch": 12
+    },
+    "hidden_worlds_per_state": 4,
+    "branch_matches": 13250,
+    "matches_per_second": 34.496977196190706,
+    "results": [
+      {
+        "method": "mean",
+        "clusters": 18,
+        "fold_evaluations": 36,
+        "heldout_equal_response_delta_pp": 12.153,
+        "cluster_bootstrap_95_ci_pp": [
+          6.111,
+          18.681
+        ],
+        "per_response_delta_pp": {
+          "max_damage": 13.194,
+          "policy": 26.389,
+          "public_counterplay": 13.194,
+          "random": 2.431,
+          "counterplay": 5.556
+        },
+        "incumbent_selected_pct": 16.7,
+        "top_action_counts": {
+          "max_damage": 7,
+          "protect_slot1_protect": 7,
+          "policy": 6,
+          "hybrid_damage0_policy1": 3,
+          "switch_slot0_farfetchd": 2,
+          "spread_slot0_trickroom": 2,
+          "legal_perturbation_0": 2,
+          "protect_slot1_detect": 1,
+          "hybrid_policy0_damage1": 1,
+          "switch_slot1_hatterene": 1
+        }
+      },
+      {
+        "method": "maximin",
+        "clusters": 18,
+        "fold_evaluations": 36,
+        "heldout_equal_response_delta_pp": 5.208,
+        "cluster_bootstrap_95_ci_pp": [
+          0.764,
+          10.069
+        ],
+        "per_response_delta_pp": {
+          "max_damage": 4.861,
+          "policy": 10.069,
+          "public_counterplay": 6.25,
+          "random": 0.694,
+          "counterplay": 4.167
+        },
+        "incumbent_selected_pct": 61.1,
+        "top_action_counts": {
+          "policy": 22,
+          "max_damage": 4,
+          "protect_slot1_protect": 3,
+          "protect_slot0_protect": 2,
+          "switch_slot0_farfetchd": 2,
+          "legal_perturbation_1": 1,
+          "hybrid_damage0_policy1": 1,
+          "spread_slot1_icywind": 1
+        }
+      }
+    ]
+  },
+  "reproduction": {
+    "collector": "scripts/collect_midgame_action_counterfactuals_parallel.py",
+    "clusters": 128,
+    "workers": 8,
+    "seed": 202611047,
+    "decision_step": 3,
+    "hidden_worlds": 4,
+    "hidden_set_prior": "showdown_random_champions",
+    "chance_repeats": 4,
+    "paired_responses": [
+      "max_damage",
+      "policy",
+      "public_counterplay",
+      "random",
+      "counterplay"
+    ],
+    "raw_data": "training/outputs/phase12_headless/round547_round542_publicworld_action_confirmation_128x4x4_20261101/data.json",
+    "plan": "PLAN.md"
+  }
+}

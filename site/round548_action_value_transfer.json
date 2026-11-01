@@ -1,0 +1,131 @@
+{
+  "round": 548,
+  "status": "player_view_action_value_fit_failed_to_transfer",
+  "checkpoint": "training/outputs/phase12_headless/round548_round547_publicworld_action_value_fit_20261101/response_conditioned_action_value.pt",
+  "train_validation_test_clusters": {
+    "train": 54,
+    "validation": 14,
+    "test": 17,
+    "unit": "team_cluster"
+  },
+  "states": 761,
+  "test_states": 17,
+  "test_action_rows": 152,
+  "best_epoch": 5,
+  "validation_action_outcome_brier": 0.16116389632225037,
+  "robust_selection": {
+    "aggregation": "minimum predicted response win probability",
+    "action_changed_from_policy_states": 15,
+    "test_states": 17,
+    "selected_worst_response_win_rate": 0.38235294117647056,
+    "policy_worst_response_win_rate": 0.4117647058823529,
+    "selected_minus_policy_worst_response": -0.029411764705882353,
+    "selected_minus_policy_worst_response_95_ci": [
+      -0.16911764705882354,
+      0.09558823529411764
+    ],
+    "by_response": {
+      "counterplay": {
+        "team_clusters": 17,
+        "selected_minus_policy": -0.051470588235294115,
+        "paired_team_cluster_95_ci": [
+          -0.19117647058823528,
+          0.08088235294117647
+        ]
+      },
+      "max_damage": {
+        "team_clusters": 17,
+        "selected_minus_policy": -0.10294117647058823,
+        "paired_team_cluster_95_ci": [
+          -0.2426470588235294,
+          0.0
+        ]
+      },
+      "policy": {
+        "team_clusters": 17,
+        "selected_minus_policy": 0.022058823529411766,
+        "paired_team_cluster_95_ci": [
+          -0.051470588235294115,
+          0.09558823529411764
+        ]
+      },
+      "public_counterplay": {
+        "team_clusters": 17,
+        "selected_minus_policy": -0.08823529411764706,
+        "paired_team_cluster_95_ci": [
+          -0.19117647058823528,
+          0.0
+        ]
+      },
+      "random": {
+        "team_clusters": 17,
+        "selected_minus_policy": 0.04411764705882353,
+        "paired_team_cluster_95_ci": [
+          -0.022058823529411766,
+          0.11764705882352941
+        ]
+      }
+    }
+  },
+  "equal_weight_selection": {
+    "aggregation": "mean predicted response win probability",
+    "action_changed_from_policy_states": 12,
+    "test_states": 17,
+    "selected_minus_policy_worst_response": -0.029411764705882353,
+    "selected_minus_policy_worst_response_95_ci": [
+      -0.16911764705882354,
+      0.09558823529411764
+    ],
+    "by_response": {
+      "counterplay": {
+        "team_clusters": 17,
+        "selected_minus_policy": -0.0661764705882353,
+        "paired_team_cluster_95_ci": [
+          -0.20588235294117646,
+          0.0661764705882353
+        ]
+      },
+      "max_damage": {
+        "team_clusters": 17,
+        "selected_minus_policy": -0.07352941176470588,
+        "paired_team_cluster_95_ci": [
+          -0.22058823529411764,
+          0.03676470588235294
+        ]
+      },
+      "policy": {
+        "team_clusters": 17,
+        "selected_minus_policy": 0.029411764705882353,
+        "paired_team_cluster_95_ci": [
+          -0.029411764705882353,
+          0.09558823529411764
+        ]
+      },
+      "public_counterplay": {
+        "team_clusters": 17,
+        "selected_minus_policy": -0.058823529411764705,
+        "paired_team_cluster_95_ci": [
+          -0.16911764705882354,
+          0.029411764705882353
+        ]
+      },
+      "random": {
+        "team_clusters": 17,
+        "selected_minus_policy": -0.014705882352941176,
+        "paired_team_cluster_95_ci": [
+          -0.051470588235294115,
+          0.014705882352941176
+        ]
+      }
+    }
+  },
+  "equal_weight_mean_delta_pp": -3.6764705882352944,
+  "interpretation": "Model inputs were player-view only, but fresh held-out action choice did not recover the public-world oracle gains. Do not deploy; no full-match evaluation.",
+  "reproduction": {
+    "trainer": "scripts/train_response_conditioned_action_value.py",
+    "data": "training/outputs/phase12_headless/round547_round542_publicworld_action_confirmation_128x4x4_20261101/data.json",
+    "raw_report": "training/outputs/phase12_headless/round548_round547_publicworld_action_value_fit_20261101/report.json",
+    "seed": 202611548,
+    "device": "cuda"
+  }
+}
