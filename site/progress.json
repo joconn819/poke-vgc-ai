@@ -8366,6 +8366,9 @@
     "opponent_fractions": {"max_damage": 0.1125, "counterplay": 0.459, "public_counterplay": 0.322, "prior_policy_pool": 0.1065},
     "opponent_policy_pool": ["round530", "round430", "round473", "round476", "round485", "round524"],
     "training_script": "scripts/train_round531_iterative_robust_response_20k.sh",
-    "note": "Iterative response to the Round529 empirical adversary mixture; Round530 is now included in the past-policy pool."
+    "rollout_episodes_reported_complete": 15000,
+    "rollout_progress_percent_reported_complete": 75.0,
+    "stage": "Rollout generation; strict audit and PPO update remain.",
+    "note": "Iterative response to the Round529 empirical adversary mixture; Round530 is now included in the past-policy pool. Progress counts completed shards, with additional jobs still active."
   }
 }
