@@ -19117,6 +19117,7 @@ and OUT set to the Round524 checkpoint and output paths.
   Counterplay, Random, and representative past PPO policies. Report per-class
   paired intervals and an equal-opponent aggregate. Do not promote from a
   training loss or one opponent score.
+  Reproduction: `scripts/evaluate_round532_repeated_fresh_league_128x2.sh`.
 - Add action and outcome traces to evaluation for representative weak games.
   The current league reports match outcomes and runtime but cannot explain
   which decisions lose against the simple heuristics.

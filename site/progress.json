@@ -8472,7 +8472,10 @@
     ],
     "training_script": "scripts/train_round532_maxdamage_floor_20k.sh",
     "note": "One-factor mixture ablation raises Max Damage from 11.25% to 30%, preserving the policy pool and relative weighting between Counterplay and Public Counterplay.",
-    "stage": "Generating 20,000 self-play and opponent-mixture rollouts; strict audit and PPO update follow.",
-    "started_at": "2026-10-31"
+    "stage": "Rollout generation running; 1,000 of 20,000 completed episodes reported. Strict audit and PPO update follow.",
+    "started_at": "2026-10-31",
+    "rollout_episodes_reported_complete": 1000,
+    "rollout_progress_percent_reported_complete": 5.0,
+    "evaluation_script": "scripts/evaluate_round532_repeated_fresh_league_128x2.sh"
   }
 }
