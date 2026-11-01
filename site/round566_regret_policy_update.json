@@ -1,0 +1,114 @@
+{
+  "schema_version": 1,
+  "round": 566,
+  "title": "Regret-matching policy update failed to transfer local payoff gains",
+  "status": "Fresh counterfactual fit complete; rejected before full-match evaluation",
+  "format": "gen9championsdoubles2026mcclosed",
+  "source_checkpoint": "training/outputs/phase12_headless/round430_hard_opponent_auxiliary_ppo_20k_20261030/checkpoints/latest.pt",
+  "candidate_checkpoint": "training/outputs/phase12_headless/round566_round430_regret_policy_update_126states_20261101/counterfactual_policy.pt",
+  "source_datasets": [
+    "training/outputs/phase12_headless/round562_round430_midgame_action_screen_64x4x2_20261101/data.json",
+    "training/outputs/phase12_headless/round565_round430_midgame_action_screen_128x4x2_20261101/data.json"
+  ],
+  "collection": {
+    "new_team_clusters": 128,
+    "captured_states": 83,
+    "hidden_worlds_prepared": 332,
+    "counterfactual_branches": 29971,
+    "elapsed_seconds": 490.26731322001433,
+    "branches_per_second": 61.131956367138216,
+    "workers": 8,
+    "rejected_candidates": 0,
+    "missing_states": 45,
+    "missing_state_reasons": {
+      "possible_illusion_preview": 1,
+      "public_transform_state": 1,
+      "request_switch": 43
+    }
+  },
+  "combined_data": {
+    "team_clusters": 126,
+    "candidate_rows": 1282,
+    "responses": [
+      "counterplay",
+      "max_damage",
+      "policy",
+      "public_counterplay",
+      "random"
+    ]
+  },
+  "target": {
+    "objective": "regret_matching",
+    "regret_matching_iterations": 5000,
+    "policy_projection": "absolute_joint",
+    "advantage_margin": 0.0,
+    "temperature": 0.15,
+    "kl_coefficient": 0.05
+  },
+  "split": {
+    "train": 81,
+    "validation": 20,
+    "test": 25
+  },
+  "best_epoch": 12,
+  "best_validation_loss": 4.416789770126343,
+  "validation_loss_first_epoch": 5.165429592132568,
+  "test_candidate_set_selection": {
+    "team_clusters": 25,
+    "selected_minus_policy_worst_response": 0.0,
+    "cluster_bootstrap_95_ci": [
+      0.0,
+      0.0
+    ],
+    "picked_candidate_counts": {
+      "policy": 24,
+      "hybrid_policy0_damage1": 1
+    },
+    "full_legal_action_argmax": {
+      "candidate_actions_with_measured_outcomes": 20,
+      "unmeasured_actions_outside_candidate_pool": 5,
+      "measured_subset_statewise_worst_response_delta": 0.0,
+      "measured_subset_cluster_bootstrap_95_ci": [
+        0.0,
+        0.0
+      ],
+      "measured_subset_clusters": 20
+    },
+    "candidate_restricted_mixed_distribution": {
+      "scope": "actor probabilities renormalized over only the collected candidate actions",
+      "mean_delta_by_response": {
+        "counterplay": -0.03558525088420595,
+        "max_damage": -0.020844343561128367,
+        "policy": 0.009077383706134014,
+        "public_counterplay": -0.025311233384284437,
+        "random": 0.0008202107812394388
+      },
+      "mean_statewise_worst_response_delta": -0.08461055501237354,
+      "cluster_bootstrap_95_ci": [
+        -0.12895952897091326,
+        -0.04692912419922065
+      ]
+    },
+    "absolute_joint_probability_diagnostic": {
+      "description": "true actor probability mass on measured candidate actions; unmeasured legal-action mass contributes zero relative to incumbent, so this is not a full-policy value estimate",
+      "mean_candidate_probability_mass": 0.4563336843252182,
+      "mean_measured_candidate_contribution_by_response": {
+        "counterplay": -0.024332817200709088,
+        "max_damage": -0.011982766303592313,
+        "policy": 0.004870255496099389,
+        "public_counterplay": -0.015483247405701377,
+        "random": -0.00029511739467125153
+      },
+      "mean_measured_candidate_contribution_to_statewise_worst_response": -0.04276064073848915,
+      "cluster_bootstrap_95_ci": [
+        -0.07159582729060375,
+        -0.019830196727566078
+      ]
+    }
+  },
+  "interpretation": "The local action-payoff signal is present, but this actor projection failed to make useful action changes. On held-out states it changed the deterministic selected candidate only once in 25 states; the sampled candidate probability mass was harmful on measured worst-response outcomes. Do not deploy or evaluate this checkpoint as a strength candidate. Round430 remains active.",
+  "next_step": "Improve the policy action representation or use a higher-capacity, better-regularized decision head; collect a new team-disjoint train/validation/test set before any fresh full-match evaluation.",
+  "report": "round566_regret_policy_update.json",
+  "metric_note": "Round565 added 83 states at 61.13 counterfactual branches/sec. Across 126 combined step-3 states, regret-matching targets lowered validation loss to 4.42, but the actor changed its argmax action in only 1/25 held-out states; worst-response gain was 0.00.",
+  "information_note": "The actor\u2019s measured candidate probability mass contributed \u22124.28 pp to worst-response value [\u22127.16,\u22121.98] on the held-out subset. This is not a full-policy estimate, but rejects the fit. No full-match screen or promotion."
+}

@@ -11,7 +11,7 @@
     "ci95": "[51.86%, 58.79%]",
     "games": "2,042",
     "label": "Current in-battle policy vs Round424 start",
-    "status": "Round430 remains the default baseline; Round515 confirms it is weak against Max Damage (33.50% on 256 held-out team clusters). No newer checkpoint is promoted.",
+    "status": "Round430 remains the validated default. Round566 regret-matching actor transfer failed on held-out states; no newer checkpoint is promoted.",
     "note": "Round431 scored 49.36% [45.85%, 52.93%] against Round430, and Round432 scored 47.90% [44.29%, 51.61%]; neither showed a clear gain. Round430 remains the validated in-battle candidate. Round402's 77.15% result is a separate team-preview selector benchmark. Round432 external screens also showed no clear lift: all paired 95% intervals vs Round430 and Round431 include zero. Round432 cross-opponent equal-weight mean/median/p10/worst were 60.35%/48.83%/47.64%/47.46%; the mean is buoyed by random play. Round435 used a Round434 restricted-game mixture (31.7% Round430 / 68.3% Round432 in the policy pool) and scored 52.98% [49.41%, 56.59%] head-to-head with Round430; all matched external deltas vs Round430/432 included zero. Round430 remains the candidate. Round436 removed hidden-set auxiliary loss on the identical Round435 data; it scored 53.42% [49.80%, 56.93%] vs Round435 over 512 clusters (one incomplete game), an inconclusive ablation. Round430 remains the validated candidate. Round436 external screens at 256 clusters found no supported paired gain vs Round435: deltas on 128 shared clusters were +0.20 pp vs Max Damage [-0.59,+0.98], +0.39 pp vs public Counterplay [-0.59,+1.37], 0.00 pp vs random [-0.78,+0.78], and -0.20 pp vs Round102 [-0.98,+0.39]. Round436 remains unpromoted; Round430 is still the validated candidate. Round462\u2019s latest full training run screened at 44.82% vs Max Damage [41.02%, 48.54%] and around 48% vs Public Counterplay/historical PPO. Do not promote it; the Max Damage interval is below 50% and performance vs stronger policy opponents is inconclusive. Exact-seed Max Damage controls found no measurable change from Round430: +0.10 pp [\u22121.37, +1.56]; Round432 control was +0.39 pp [\u22121.37, +2.05]. The weakness predates Round462. Round485 increased Max Damage exposure from Round473\u2019s 25% to 70%, with all else held as planned. On the same held-out team-pair clusters it did not improve the Max Damage result or the five-opponent composite; retain Round430. Round488 covered three game phases, but its three-response robust action-value selector regressed on held-out Public Counterplay; five split fits show no robust overall selector gain, so Round430 remains the default. Round489 added Random and legacy Counterplay to the one-step response set, but neither maximin nor equal-weight action selection beat the incumbent on held-out clusters; the only learned-policy response was Round476. Round515 cleanly confirmed the Max Damage weakness: Round430 scored 33.50% [28.81%, 38.18%], Round504 32.81% [28.22%, 37.50%], paired change -0.68 pp [-2.73, +1.37]. Both arms had 1,024 matches, zero errors/timeouts/corrections, and approximately 9.2 games/s over eight workers. Neither policy is close to robust play against this simple baseline."
   },
   "evaluation_scorecard": [
@@ -8740,15 +8740,15 @@
     "next": "Targeted loss-state action-regret diagnosis against multiple legal responses; do not repeat broad opponent-mixture changes without a measured failure mechanism."
   },
   "latest_diagnostic": {
-    "round": 562,
-    "title": "Local midgame action headroom found; deployable search still unproven",
-    "status": "Counterfactual and full-match search screens complete; no promotion",
-    "summary": "Round562 selected actions on one half of sampled outcomes and tested on the other: equal-response gains +5.00 pp [0.58, 9.54] and +8.37 pp [3.84, 13.14] across two splits; maximin gains were smaller and unresolved. This is an outcome-informed local oracle, not agent strength. Round563/564 equilibrium search changed many actions but scored 0.00 pp aggregate delta on 64 clusters against each opponent. Round430 remains active; search stays disabled.",
-    "clusters": 43,
-    "branch_matches": 15187,
-    "matches_per_second": 48.966,
-    "metric_note": "Round562 selected actions on one half of sampled outcomes and tested on the other: equal-response gains +5.00 pp [0.58, 9.54] and +8.37 pp [3.84, 13.14] across two splits; maximin gains were smaller and unresolved.",
-    "information_note": "This is an outcome-informed local oracle, not agent strength. Round563/564 equilibrium search changed many actions but scored 0.00 pp aggregate delta on 64 clusters against each opponent. Round430 remains active; search stays disabled.",
-    "report": "round562_midgame_action_diagnostic.json"
+    "round": 566,
+    "title": "Regret-matching policy update failed to transfer local payoff gains",
+    "status": "Fresh counterfactual fit complete; rejected before full-match evaluation",
+    "summary": "Round565 added 83 states at 61.13 counterfactual branches/sec. Across 126 combined step-3 states, regret-matching targets lowered validation loss to 4.42, but the actor changed its argmax action in only 1/25 held-out states; worst-response gain was 0.00. The actor\u2019s measured candidate probability mass contributed \u22124.28 pp to worst-response value [\u22127.16,\u22121.98] on the held-out subset. This is not a full-policy estimate, but rejects the fit. No full-match screen or promotion.",
+    "clusters": 126,
+    "branch_matches": 29971,
+    "matches_per_second": 61.132,
+    "metric_note": "Round565 added 83 states at 61.13 counterfactual branches/sec. Across 126 combined step-3 states, regret-matching targets lowered validation loss to 4.42, but the actor changed its argmax action in only 1/25 held-out states; worst-response gain was 0.00.",
+    "information_note": "The actor\u2019s measured candidate probability mass contributed \u22124.28 pp to worst-response value [\u22127.16,\u22121.98] on the held-out subset. This is not a full-policy estimate, but rejects the fit. No full-match screen or promotion.",
+    "report": "round566_regret_policy_update.json"
   }
 }
