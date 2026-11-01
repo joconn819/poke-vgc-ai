@@ -8320,10 +8320,13 @@
     "matrix_csv": "round529_payoff_matrix.csv"
   },
   "round530_training": {
-    "status": "Running",
+    "status": "Complete; not promoted",
     "run": "training/outputs/phase12_headless/round530_rectangular_robust_response_20k_20261031",
     "starting_checkpoint": "round430",
+    "checkpoint": "training/outputs/phase12_headless/round530_rectangular_robust_response_20k_20261031/checkpoints/latest.pt",
     "episodes": 20000,
+    "valid_trainable_games": 20000,
+    "transitions": 171866,
     "optimizer_epochs": 4,
     "minibatch_size": 512,
     "learning_rate": 5e-05,
@@ -8335,14 +8338,34 @@
       "public_counterplay": 0.322,
       "prior_policy_pool": 0.1065
     },
-    "opponent_policy_pool": [
-      "round430",
-      "round473",
-      "round476",
-      "round485",
-      "round524"
-    ],
+    "opponent_policy_pool": ["round430", "round473", "round476", "round485", "round524"],
+    "speed": {
+      "rollout_games_per_second": 30.33,
+      "rollout_wall_seconds": 659.48,
+      "input_to_checkpoint_games_per_second": 18.69,
+      "input_to_checkpoint_wall_seconds": 1070.01,
+      "preflight_and_recovery_seconds": 247.42,
+      "ppo_and_checkpoint_seconds": 163.08,
+      "bottleneck": "Rollout action selection and opponent scoring; strict data preparation/auditing is the next largest overhead."
+    },
     "training_signal": "90% scaled bootstrap mean minimizer from Round529, with 10% past-policy opponent pool.",
-    "reproduction": "scripts/train_round530_rectangular_robust_response_20k.sh"
+    "reproduction": "scripts/train_round530_rectangular_robust_response_20k.sh",
+    "training_report": "round530_training.json",
+    "evaluation_report": "round531_fresh_league.json"
+  },
+  "round531_training": {
+    "status": "Running",
+    "run": "training/outputs/phase12_headless/round531_iterative_robust_response_20k_20261031",
+    "starting_checkpoint": "round530",
+    "episodes": 20000,
+    "optimizer_epochs": 4,
+    "minibatch_size": 512,
+    "learning_rate": 5e-05,
+    "device": "cuda",
+    "rollout_workers": 8,
+    "opponent_fractions": {"max_damage": 0.1125, "counterplay": 0.459, "public_counterplay": 0.322, "prior_policy_pool": 0.1065},
+    "opponent_policy_pool": ["round530", "round430", "round473", "round476", "round485", "round524"],
+    "training_script": "scripts/train_round531_iterative_robust_response_20k.sh",
+    "note": "Iterative response to the Round529 empirical adversary mixture; Round530 is now included in the past-policy pool."
   }
 }

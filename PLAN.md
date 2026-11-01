@@ -19042,32 +19042,98 @@ and OUT set to the Round524 checkpoint and output paths.
   Reproduction: scripts/evaluate_round529_checkpoint_heuristic_payoffs.sh;
   summarizer: scripts/summarize_round529_checkpoint_heuristic_payoffs.py.
 
-### Round530: bootstrap-weighted robust response PPO (running)
+### Round530: bootstrap-weighted robust response PPO (complete; not promoted)
 
-- Started from Round430 for 20,000 games, with 11.25% Max Damage, 45.9%
-  Counterplay, 32.2% Public Counterplay, and the remaining 10.65% against a
-  uniform pool of Round430/473/476/485/524 checkpoints. The heuristic weights
-  approximate 90% of Round529's bootstrap mean adversary mix; the prior-policy
-  share preserves response diversity.
-- Use four PPO epochs, minibatches of 512, learning rate 5e-5, eight rollout
-  workers and CUDA. This changes the opponent mix based on the measured
-  rectangular game rather than repeating Round473/524's equal-hard-opponent
-  recipe.
-- Output: training/outputs/phase12_headless/round530_rectangular_robust_response_20k_20261031/.
-  Reproduction: scripts/train_round530_rectangular_robust_response_20k.sh.
-  Promote only after a fresh side-swapped league and sufficiently large
-  Max Damage evaluation with uncertainty estimates.
+- Trained from Round430 on 20,000 matches: 11.25% Max Damage, 45.9% Counterplay,
+  32.2% Public Counterplay, and 10.65% against a uniform pool of Round430,
+  Round473, Round476, Round485, and Round524. Used four PPO passes, minibatches
+  of 512, learning rate 5e-5, eight CPU rollout workers, and CUDA optimization.
+- The strict perspective audit replaced one timed-out/identical-team Max Damage
+  match using a fresh seed. The final audit passed with 40,000 safe player-view
+  rows, 20,000 trainable games, and 171,866 transitions.
+- **Measured speed:** rollout generation took 659.5 s (**30.33 games/s across
+  eight workers**); end-to-end input-to-checkpoint time was 1,070.0 s
+  (**18.69 games/s**). Rollout used a mean 6.36 CPU cores and peaked at 9.71 GB
+  aggregate RSS. The audit/preflight stage, including recovery, took 247.4 s;
+  PPO preparation, optimization, and checkpoint writing took 163.1 s.
+  Reproduction: `scripts/train_round530_rectangular_robust_response_20k.sh`.
+- **Current speed bottleneck:** the training rollout remains the largest stage
+  (61.6% of input-to-checkpoint wall time). Per episode, the weighted profile
+  measured 102.8 ms in action selection, 47.5 ms in baseline action scoring,
+  39.9 ms in policy inference, 33.9 ms in the Showdown engine round trip, and
+  27.7 ms in observation encoding. Counterplay and Public Counterplay shards
+  ran at 4.3–5.0 games/s per worker; Max Damage ran at 7.0. Next speed work
+  should reduce action selection and opponent scoring, then shorten repeated
+  full-corpus audit/data scans. Do not claim a simulator speedup from this run.
+- PPO used the full 1,344-step budget. Approximate KL was 0.0051, policy loss
+  -0.0038, value loss 0.1799, and win-probability auxiliary loss 0.4248.
+  These are optimization diagnostics, not proof of stronger play.
 
-### Next training direction after Round530
+### Round531: fresh eight-class Round530 league (complete; screening only)
 
-- Round530 tests a new adversary-weighted response distribution from the
-  rectangular payoff screen. Compare the checkpoint against Round430 on fresh
-  teams, all three heuristic opponents, the historical policy pool, and the
-  full opponent league. Report absolute and paired cluster intervals, worst
-  class, invalid actions, runtime and opponent-mixture results.
-- If Round530 does not show a replicated gain, do not repeat the same mixture
-  with a new seed. Inspect policy changes and rollout advantages, then improve
-  policy diversity or the PPO learning signal before another large run.
-- The historical `pilot_clean` 96.2% claim remains unreproduced because its
-  checkpoint and match records are absent. Do not treat it as a current agent
-  baseline.
+- Compared Round530 with its Round430 starting checkpoint on 128 fresh
+  team-pair clusters per opponent, one repeat per cluster, with both seats
+  swapped. Each cluster contributes two match results. Confidence intervals
+  bootstrap team-pair clusters; the battle RNG is server-side and was not
+  identical between checkpoint arms. The same team selections and preview
+  choices were used in both arms. All 16 arms completed with zero protocol
+  errors, timeouts, or action adjustments.
+
+| Opponent | Round430 score | Round530 score | Paired change (95% team-cluster interval) |
+|---|---:|---:|---:|
+| Random | 95.31% | 94.53% | -0.78 pp [-3.13, +1.56] |
+| Max Damage | 38.67% | 41.41% | +2.73 pp [+0.39, +5.47] |
+| Counterplay | 27.73% | 28.91% | +1.17 pp [-1.17, +3.52] |
+| Public Counterplay | 45.70% | 46.48% | +0.78 pp [-1.95, +3.13] |
+| Round473 PPO | 42.58% | 44.92% | +2.34 pp [-1.56, +6.64] |
+| Round476 PPO | 52.34% | 52.73% | +0.39 pp [-2.34, +3.13] |
+| Round485 PPO | 43.36% | 47.66% | +4.30 pp [0.00, +8.59] |
+| Round524 PPO | 53.52% | 53.52% | 0.00 pp [-2.34, +2.73] |
+
+- Round530's changes are small and do not establish a broad robustness gain.
+  The Max Damage interval excludes zero on this screening sample, and the
+  Round485 interval touches zero; neither result meets an independent
+  confirmation standard. Both checkpoints remain far below 50% against
+  Counterplay and Max Damage. Round530 is **not promoted** and these results do
+  not support optimal play. The 94.5% score against Random is not a strength
+  summary for the stronger opponent pool.
+- This screen uses one stochastic battle outcome per team cluster. Repeat the
+  most consequential comparisons on new teams and more outcome samples before
+  promotion. The 128-cluster league is a screening result, not a final estimate.
+- Full outputs: `training/outputs/phase12_headless/round531_round530_fresh_league_128x1_20261031/`;
+  report: `site/round531_fresh_league.json`; table:
+  `site/round531_payoff_comparison.csv`. Reproduction:
+  `scripts/evaluate_round530_fresh_league_128x1.sh`.
+
+### Next training and speed work
+
+- Continue from Round530 as an iterative best response to the same measured
+  heuristic mixture. Add Round530 to the prior-policy pool and retain Round430
+  and the other past checkpoints so training does not forget older responses.
+  Evaluate against the full eight-class league on fresh seeds after each 20,000
+  game iteration. Keep Round430 as the validated control until a gain replicates
+  across opponent classes and held-out teams.
+- Investigate the very low Counterplay scores with per-turn decision traces and
+  action-value diagnostics before changing heuristic weights again. The current
+  Round530 screen shows only +1.17 pp versus Counterplay, with an interval that
+  includes zero, despite allocating 45.9% of training to it.
+- Historical `pilot_clean` 96.2% vs Max Damage remains unreproduced because its
+  checkpoint and match records are absent; it is not a current baseline.
+
+### Round531: iterative robust response PPO (running)
+
+- Started a fresh 20,000-game update from Round530's completed checkpoint, keeping
+  the measured Round529 heuristic mixture and adding Round530 to the historical
+  policy pool. The six policy opponents are Round530, Round430, Round473,
+  Round476, Round485, and Round524 with equal sampling weights inside the
+  10.65% pool. The remaining 89.35% is 11.25% Max Damage, 45.9% Counterplay,
+  and 32.2% Public Counterplay.
+- Use four PPO passes, minibatches of 512, learning rate 5e-5, eight CPU
+  rollout workers, and CUDA optimization. This tests an iterative response from
+  the current policy while preserving the past policy population.
+- Output: `training/outputs/phase12_headless/round531_iterative_robust_response_20k_20261031/`.
+  Reproduction: `scripts/train_round531_iterative_robust_response_20k.sh`.
+- Evaluate only after the strict perspective audit and checkpoint complete. Use
+  fresh team seeds and repeat stochastic outcomes for the key weak classes;
+  compare against Round430 on the same teams and report paired cluster
+  intervals, speed, memory, action corrections, and protocol failures.

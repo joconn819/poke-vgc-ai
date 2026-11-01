@@ -1,0 +1,161 @@
+{
+  "baseline": "Round430 hard-opponent auxiliary PPO",
+  "candidate": "Round530 bootstrap-weighted robust-response PPO",
+  "method": "128 fresh team-pair clusters per opponent, one outcome repeat per cluster, side-swapped, identical seeds/teams/previews/selectors for both checkpoints. Paired confidence intervals bootstrap team-pair clusters. Server randomness is not identical between candidate and baseline arms.",
+  "opponent_classes": [
+    "Random",
+    "Max Damage",
+    "Counterplay",
+    "Public Counterplay",
+    "Round473 PPO",
+    "Round476 PPO",
+    "Round485 PPO",
+    "Round524 PPO"
+  ],
+  "opponents": {
+    "counterplay": {
+      "cluster_ci95_pp": [
+        -1.172,
+        3.516
+      ],
+      "matched_cases": 128,
+      "matched_team_clusters": 128,
+      "paired_delta_pp": 1.172,
+      "round430_action_adjustments": 0,
+      "round430_games_per_second": 1.886,
+      "round430_score_pct": 27.734,
+      "round430_timeouts_or_errors": 0,
+      "round530_action_adjustments": 0,
+      "round530_games_per_second": 3.27,
+      "round530_score_pct": 28.906,
+      "round530_timeouts_or_errors": 0
+    },
+    "max_damage": {
+      "cluster_ci95_pp": [
+        0.391,
+        5.469
+      ],
+      "matched_cases": 128,
+      "matched_team_clusters": 128,
+      "paired_delta_pp": 2.734,
+      "round430_action_adjustments": 0,
+      "round430_games_per_second": 3.958,
+      "round430_score_pct": 38.672,
+      "round430_timeouts_or_errors": 0,
+      "round530_action_adjustments": 0,
+      "round530_games_per_second": 4.176,
+      "round530_score_pct": 41.406,
+      "round530_timeouts_or_errors": 0
+    },
+    "public_counterplay": {
+      "cluster_ci95_pp": [
+        -1.953,
+        3.135
+      ],
+      "matched_cases": 128,
+      "matched_team_clusters": 128,
+      "paired_delta_pp": 0.781,
+      "round430_action_adjustments": 0,
+      "round430_games_per_second": 5.89,
+      "round430_score_pct": 45.703,
+      "round430_timeouts_or_errors": 0,
+      "round530_action_adjustments": 0,
+      "round530_games_per_second": 5.729,
+      "round530_score_pct": 46.484,
+      "round530_timeouts_or_errors": 0
+    },
+    "random": {
+      "cluster_ci95_pp": [
+        -3.125,
+        1.562
+      ],
+      "matched_cases": 128,
+      "matched_team_clusters": 128,
+      "paired_delta_pp": -0.781,
+      "round430_action_adjustments": 0,
+      "round430_games_per_second": 2.871,
+      "round430_score_pct": 95.312,
+      "round430_timeouts_or_errors": 0,
+      "round530_action_adjustments": 0,
+      "round530_games_per_second": 2.677,
+      "round530_score_pct": 94.531,
+      "round530_timeouts_or_errors": 0
+    },
+    "round473": {
+      "cluster_ci95_pp": [
+        -1.562,
+        6.641
+      ],
+      "matched_cases": 128,
+      "matched_team_clusters": 128,
+      "paired_delta_pp": 2.344,
+      "round430_action_adjustments": 0,
+      "round430_games_per_second": 3.216,
+      "round430_score_pct": 42.578,
+      "round430_timeouts_or_errors": 0,
+      "round530_action_adjustments": 0,
+      "round530_games_per_second": 3.039,
+      "round530_score_pct": 44.922,
+      "round530_timeouts_or_errors": 0
+    },
+    "round476": {
+      "cluster_ci95_pp": [
+        -2.344,
+        3.125
+      ],
+      "matched_cases": 128,
+      "matched_team_clusters": 128,
+      "paired_delta_pp": 0.391,
+      "round430_action_adjustments": 0,
+      "round430_games_per_second": 4.001,
+      "round430_score_pct": 52.344,
+      "round430_timeouts_or_errors": 0,
+      "round530_action_adjustments": 0,
+      "round530_games_per_second": 4.176,
+      "round530_score_pct": 52.734,
+      "round530_timeouts_or_errors": 0
+    },
+    "round485": {
+      "cluster_ci95_pp": [
+        0.0,
+        8.594
+      ],
+      "matched_cases": 128,
+      "matched_team_clusters": 128,
+      "paired_delta_pp": 4.297,
+      "round430_action_adjustments": 0,
+      "round430_games_per_second": 2.757,
+      "round430_score_pct": 43.359,
+      "round430_timeouts_or_errors": 0,
+      "round530_action_adjustments": 0,
+      "round530_games_per_second": 4.048,
+      "round530_score_pct": 47.656,
+      "round530_timeouts_or_errors": 0
+    },
+    "round524": {
+      "cluster_ci95_pp": [
+        -2.344,
+        2.734
+      ],
+      "matched_cases": 128,
+      "matched_team_clusters": 128,
+      "paired_delta_pp": 0.0,
+      "round430_action_adjustments": 0,
+      "round430_games_per_second": 4.144,
+      "round430_score_pct": 53.516,
+      "round430_timeouts_or_errors": 0,
+      "round530_action_adjustments": 0,
+      "round530_games_per_second": 4.169,
+      "round530_score_pct": 53.516,
+      "round530_timeouts_or_errors": 0
+    }
+  },
+  "paired_cases_per_checkpoint_per_opponent": 128,
+  "promotion": "Screening evidence only; do not promote without independent confirmation and held-out-team evaluation.",
+  "reproduction": "scripts/evaluate_round530_fresh_league_128x1.sh",
+  "round430_checkpoint": "/home/justin/p/poke_learning_2/training/outputs/phase12_headless/round430_hard_opponent_auxiliary_ppo_20k_20261030/checkpoints/latest.pt",
+  "round530_checkpoint": "/home/justin/p/poke_learning_2/training/outputs/phase12_headless/round530_rectangular_robust_response_20k_20261031/checkpoints/latest.pt",
+  "side_swapped_matches_per_checkpoint_per_opponent_requested": 256,
+  "status": "Complete; fresh eight-class screen",
+  "workers": 8
+}

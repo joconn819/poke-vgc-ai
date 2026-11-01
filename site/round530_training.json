@@ -1,0 +1,78 @@
+{
+  "audit": "Strict audit passed: 40,000 perspective rows, 20,000 trainable games, 171,866 transitions; one invalid Max Damage match was replaced from a fresh seed.",
+  "checkpoint": "training/outputs/phase12_headless/round530_rectangular_robust_response_20k_20261031/checkpoints/latest.pt",
+  "end_to_end_games_per_second": 18.691338196982944,
+  "end_to_end_wall_seconds": 1070.0143451060285,
+  "games": 20000,
+  "mean_runtime_per_episode_seconds": {
+    "action_proposal_seconds": 0.0013340269619831816,
+    "action_selection_seconds": 0.10284154347138537,
+    "baseline_action_seconds": 0.04749007326293213,
+    "end_to_end_episode_seconds": 0.19781997766400164,
+    "headless_engine_roundtrip_seconds": 0.03394921717757825,
+    "observation_encoding_seconds": 0.02773556586893974,
+    "policy_inference_seconds": 0.03986506890469754,
+    "pre_match_setup_seconds": 0.00896139517770789,
+    "preview_and_first_step_seconds": 0.0021076801659248305,
+    "trajectory_persist_seconds": 0.010073593088641064
+  },
+  "opponent_mix": {
+    "counterplay": 9180,
+    "max_damage": 2250,
+    "policy": 2130,
+    "public_counterplay": 6440,
+    "random": 0
+  },
+  "per_opponent_rollout": {
+    "counterplay": {
+      "episodes": 9180,
+      "rate_max": 4.97843577542192,
+      "rate_min": 4.818606336587634,
+      "rates": null
+    },
+    "max_damage": {
+      "episodes": 2250,
+      "rate_max": 7.073266516969577,
+      "rate_min": 7.024014935234517,
+      "rates": null
+    },
+    "policy": {
+      "episodes": 2130,
+      "rate_max": 5.428782969917304,
+      "rate_min": 4.460717282010526,
+      "rates": null
+    },
+    "public_counterplay": {
+      "episodes": 6440,
+      "rate_max": 5.073382922602862,
+      "rate_min": 4.310463425352633,
+      "rates": null
+    }
+  },
+  "ppo_and_checkpoint_seconds": 163.0784102200414,
+  "ppo_update": {
+    "approx_kl": 0.005092637181516056,
+    "entropy": 1.644147346860596,
+    "hidden_ability_loss": 4.208245989112627,
+    "hidden_item_loss": 2.90926820926723,
+    "hidden_move_loss": 4.544188127276444,
+    "optimizer_steps": 1344,
+    "policy_loss": -0.003796681695218597,
+    "stop_reason": "step_budget",
+    "value_loss": 0.17987833983664,
+    "win_probability_loss": 0.4247821592947557
+  },
+  "preflight_wall_seconds_including_repair": 247.41870282200398,
+  "rollout_games_per_second": 30.327098270525088,
+  "rollout_mean_cpu_cores": 6.361077579182224,
+  "rollout_peak_aggregate_rss_mb": 9705.2890625,
+  "rollout_wall_seconds": 659.4762156799552,
+  "rollout_workers": 8,
+  "round": 530,
+  "run": "training/outputs/phase12_headless/round530_rectangular_robust_response_20k_20261031",
+  "single_bad_match_recovery_seconds": 118.61537226702785,
+  "status": "Complete; checkpoint written",
+  "training_script": "scripts/train_round530_rectangular_robust_response_20k.sh",
+  "transitions": 171866,
+  "valid_trainable_games": 20000
+}
