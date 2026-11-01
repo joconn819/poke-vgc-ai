@@ -14,8 +14,8 @@ Pokémon Showdown remains the correctness reference and required battle platform
     "ci95": "[35.16%, 44.53%]",
     "games": 512,
     "clusters": 256,
-    "status": "Current default \u00b7 search disabled",
-    "evaluation": "Latest full-match Max Damage screen: Round430 policy-only arm, 256 matched team-pair clusters, both seats, seed 202610480. The paired search arm scored 42.38% (+2.54 pp; 95% paired CI [-0.78,+6.05]), inconclusive and not enabled by default."
+    "status": "Round430 remains incumbent; Round568 regret transfer and Round569 paired-advantage transfer both failed held-out action selection. No candidate promoted.",
+    "evaluation": "Latest full-match Max Damage screen: Round430 policy-only arm, 256 matched team-pair clusters, both seats, seed 202610480. The paired search arm scored 42.38% (+2.54 pp; 95% paired CI [-0.78,+6.05]), inconclusive and not enabled by default. Round567 expanded midgame data to 283 team clusters; the outcome-informed maximin oracle gained +4.77 pp [+3.16,+6.45], but the oracle is not deployable. Round568 selected actions were −7.89 pp [−13.60,−3.07] on held-out worst-response outcomes. Round569 paired advantage selection was −13.16 pp [−19.74,−7.46]. Sub-50% results against simple policies are substantive weaknesses; keep Max Damage as an independent scorecard metric."
   },
   "speed": {
     "games_per_second": "34.71 rollout / 20.41 input-to-checkpoint",
@@ -26,10 +26,10 @@ Pokémon Showdown remains the correctness reference and required battle platform
   },
   "latest_run": {
     "round": 543,
-    "status": "eight-opponent evaluation complete \u00b7 Round542 not promoted",
-    "summary": "Round542 trained against PPO opponents using Max Damage actions at decisions 1 and 4. On 128 fresh clusters \u00d7 2 outcomes \u00d7 both sides, it improved +3.32 pp vs Counterplay [ +0.20,+6.84 ], but the other seven paired intervals include zero. Its absolute scores vs Max Damage, Counterplay, and Public Counterplay were 36.86%, 30.08%, and 38.43%\u2014all below 50%, signaling exploitable, non-optimal play. Round430 remains the validated default.",
-    "games": "20,000 training games; 8-opponent held-out evaluation, 128 clusters \u00d7 2 outcomes \u00d7 both sides",
-    "epochs": "4 PPO passes \u00b7 1,304 optimizer steps",
+    "status": "eight-opponent evaluation complete · Round542 not promoted",
+    "summary": "Round542 trained against PPO opponents using Max Damage actions at decisions 1 and 4. On 128 fresh clusters × 2 outcomes × both sides, it improved +3.32 pp vs Counterplay [ +0.20,+6.84 ], but the other seven paired intervals include zero. Its absolute scores vs Max Damage, Counterplay, and Public Counterplay were 36.86%, 30.08%, and 38.43%—all below 50%, signaling exploitable, non-optimal play. Round430 remains the validated default.",
+    "games": "20,000 training games; 8-opponent held-out evaluation, 128 clusters × 2 outcomes × both sides",
+    "epochs": "4 PPO passes · 1,304 optimizer steps",
     "evaluation": "Paired team-cluster bootstrap; one incomplete match excluded in several cells; no action corrections"
   },
   "method": "Masked PPO action logits are the default move policy. Terminal win/loss is the primary PPO objective; win probability and hidden-set prediction are auxiliary targets. Optional search remains disabled unless a broader held-out league supports it.",
@@ -279,7 +279,7 @@ Pokémon Showdown remains the correctness reference and required battle platform
   "round539_group_norm_league": {
     "report": "site/round539_group_norm_league.json",
     "status": "complete_no_promotion",
-    "max_damage": "Round536 29.30%; Round538 30.27%; +0.98 pp [\u22121.17,+3.32]",
+    "max_damage": "Round536 29.30%; Round538 30.27%; +0.98 pp [−1.17,+3.32]",
     "interpretation": "Both remain clearly below 50%; candidate delta inconclusive."
   },
   "round540_opening14_summary": {
@@ -295,7 +295,7 @@ Pokémon Showdown remains the correctness reference and required battle platform
       14.062
     ],
     "confirmation_report": "round541_opening14_confirmation.json",
-    "confirmation": "Fresh 128 clusters \u00d7 2 outcomes vs Max Damage, Counterplay, Public Counterplay, and Round476. Overlay absolute scores: 45.90%, 42.97%, 47.27%, 53.91%; only Counterplay and Round476 paired gains excluded zero. All simple heuristic scores below 50%; overlay remains experimental."
+    "confirmation": "Fresh 128 clusters × 2 outcomes vs Max Damage, Counterplay, Public Counterplay, and Round476. Overlay absolute scores: 45.90%, 42.97%, 47.27%, 53.91%; only Counterplay and Round476 paired gains excluded zero. All simple heuristic scores below 50%; overlay remains experimental."
   },
   "round542_training": {
     "round": 542,
@@ -329,6 +329,18 @@ Pokémon Showdown remains the correctness reference and required battle platform
       "round542": 30.078
     },
     "next": "Targeted loss-state action-regret diagnosis against multiple legal responses; do not repeat broad opponent-mixture changes without a measured failure mechanism."
+  },
+  "latest_diagnostic": {
+    "round": 569,
+    "title": "Paired action-advantage transfer rejected on held-out teams",
+    "status": "Failed offline; no promotion",
+    "summary": "A model trained to predict candidate-vs-incumbent outcome deltas selected actions that reduced held-out worst-response outcomes by 13.16 pp. Its best validation loss was at epoch 2. This joins two failed selector transfers despite strong outcome-informed oracle headroom.",
+    "clusters": 57,
+    "branch_matches": 57533,
+    "matches_per_second": 56.27,
+    "metric_note": "Round567 collected 57,533 branches at 56.27/sec across eight CPU workers; Round569 held-out paired worst-response delta was −13.16 pp [−19.74, −7.46].",
+    "information_note": "Agent decisions remain under 50% against simple strategies in multiple full-match screens, which is evidence of exploitable play. Oracle gains are not deployable results.",
+    "report": "round569_paired_action_advantage.json"
   }
 }
 DASHBOARD_PROGRESS_JSON -->
@@ -19399,3 +19411,11 @@ and OUT set to the Round524 checkpoint and output paths.
 - Expanded the Round430 step-3 public-world action screen to 128 new team clusters, with the same four hidden-team worlds and two chance repeats per world as Round562. It captured 83 additional states / 332 hidden worlds and executed 29,971 full-match branches in 490.27 seconds (61.13 matches/s across eight CPU workers). Forty-five requested states were unavailable: 43 forced switches, one possible-Illusion preview, and one public Transform state. No candidate action was rejected. Combining Round562 and Round565 yielded 126 disjoint state/team clusters and 1,282 candidate rows.
 - Trained a new Round430 actor candidate from those payoff matrices using regret-matching mixed-strategy targets and absolute joint-action probability projection. This differs from Round212's positive-worst-advantage, candidate-renormalized target. The cluster split was 81/20/25 train/validation/test, with four chance outcomes for target construction and four held out for scoring. Validation loss fell from 5.17 to 4.42 over 12 epochs, but policy transfer did not follow: on 25 held-out states the candidate argmax selected a non-policy candidate in only one state, with no sampled worst-response gain (0.00, [0.00,0.00]). The actor's measured candidate-action probability mass averaged 45.6%; its measured candidate contribution to worst-response advantage was −4.28 pp (95% team-cluster CI [−7.16,−1.98]). This is not a full-policy estimate because unsampled legal actions are omitted, but it is sufficient to reject the fit before a costly full-match screen.
 - Keep the candidate unpromoted and do not tune against this held-out set. The result reinforces that learning matrix targets is not enough: the actor projection assigns negligible deterministic argmax changes and the sampled probability mass shifts toward harmful actions. The next work should improve state/action representation or build a higher-capacity, better-regularized decision head, with a new team-disjoint train/validation/test collection. Do not repeat the same actor fit unchanged. Candidate and fit report: `training/outputs/phase12_headless/round566_round430_regret_policy_update_126states_20261101/counterfactual_policy.pt` and `training/outputs/phase12_headless/round566_round430_regret_policy_update_126states_20261101/report.json`; combined data: `training/outputs/phase12_headless/round566_round430_regret_policy_update_126states_20261101/data.json`.
+
+### Round567–569: expanded midgame data and paired advantage transfer (rejected offline)
+
+- Round567 collected 157 new step-3 states from 256 requested Round430 clusters, producing 628 hidden worlds and 57,533 full-match branches in 1,022.53 seconds (56.27 branches/s on eight CPU workers). Ninety-nine requests were unavailable (93 forced switches, three decision-not-reached, one possible Illusion, two public Transform); no actions were rejected. Combined with Rounds562/565 this gives 283 disjoint team clusters and 2,877 candidate rows.
+- On those counterfactuals, an outcome-informed chooser selected on four chance outcomes and scored on the other four. Equal-weight response selection gained +8.59 percentage points (95% team-cluster CI [+6.77,+10.46]); maximin gained +4.77 pp [+3.16,+6.45]. Both split checks were positive for each of five response classes. This demonstrates action headroom in the sampled states, not deployable agent strength: the chooser sees counterfactual outcomes and only the captured step-3 decision is changed.
+- Round568 repeated the regret-matching absolute-joint actor transfer on the larger set, using a team-disjoint 181/45/57 split. Although validation loss declined, the held-out selected action reduced worst-response outcomes by 7.89 pp (95% CI [−13.60,−3.07]); measured candidate probability mass also had a negative worst-response contribution. Reject the candidate before full-match evaluation.
+- Round569 tested a different paired advantage model: it predicts each candidate's outcome delta against the incumbent action in the same state, trained on matched first-half chance outcomes and selected by predicted worst response. Its held-out selected actions were worse by 13.16 pp against the worst response (95% cluster CI [−19.74,−7.46]); individual response deltas were 0.00 pp vs Counterplay, −3.51 pp vs Max Damage, −3.51 pp vs PPO, −2.63 pp vs Public Counterplay, and +1.32 pp vs Random. Best validation loss occurred at epoch 2 and did not predict useful action ranking. Reject this transfer method; do not full-match screen or promote it.
+- Interpretation: the agent's sub-50% results against simple strategies are direct evidence of exploitable play. The local oracle confirms better choices exist, but current learned selectors fail to identify them on held-out teams. Keep Round430 as the incumbent and make the next iteration target the representation/decision process or policy-learning objective itself, with Max Damage reported as a first-class failure metric alongside broad opponent performance. Collection and fit reports: `training/outputs/phase12_headless/round567_round430_midgame_action_screen_256x4x2_20261101/report.json`, `training/outputs/phase12_headless/round568_round430_regret_policy_update_283states_20261101/report.json`, and `training/outputs/phase12_headless/round569_paired_action_advantage_283states_20261101/report.json`.

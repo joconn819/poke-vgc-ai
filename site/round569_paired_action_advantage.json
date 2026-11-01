@@ -1,0 +1,129 @@
+{
+  "data": "training/outputs/phase12_headless/round568_round430_regret_policy_update_283states_20261101/data.json",
+  "checkpoint": "training/outputs/phase12_headless/round569_paired_action_advantage_283states_20261101/paired_action_advantage.pt",
+  "responses": [
+    "counterplay",
+    "max_damage",
+    "policy",
+    "public_counterplay",
+    "random"
+  ],
+  "team_split": {
+    "train": 181,
+    "validation": 45,
+    "test": 57
+  },
+  "best_epoch": 2,
+  "best_validation_loss": 0.08158282935619354,
+  "epochs": [
+    {
+      "epoch": 1,
+      "train_loss": 0.07758617401123047,
+      "validation_loss": 0.0837382972240448
+    },
+    {
+      "epoch": 2,
+      "train_loss": 0.08556828647851944,
+      "validation_loss": 0.08158282935619354
+    },
+    {
+      "epoch": 3,
+      "train_loss": 0.08909723162651062,
+      "validation_loss": 0.0829298198223114
+    },
+    {
+      "epoch": 4,
+      "train_loss": 0.09137729555368423,
+      "validation_loss": 0.08177682012319565
+    },
+    {
+      "epoch": 5,
+      "train_loss": 0.07564235478639603,
+      "validation_loss": 0.08251003921031952
+    },
+    {
+      "epoch": 6,
+      "train_loss": 0.09753026813268661,
+      "validation_loss": 0.08255958557128906
+    },
+    {
+      "epoch": 7,
+      "train_loss": 0.07809135317802429,
+      "validation_loss": 0.08331122994422913
+    },
+    {
+      "epoch": 8,
+      "train_loss": 0.0792715921998024,
+      "validation_loss": 0.08482085913419724
+    },
+    {
+      "epoch": 9,
+      "train_loss": 0.09026224911212921,
+      "validation_loss": 0.08635960519313812
+    },
+    {
+      "epoch": 10,
+      "train_loss": 0.08289511501789093,
+      "validation_loss": 0.08815601468086243
+    },
+    {
+      "epoch": 11,
+      "train_loss": 0.06742951273918152,
+      "validation_loss": 0.08864203840494156
+    },
+    {
+      "epoch": 12,
+      "train_loss": 0.04929475486278534,
+      "validation_loss": 0.0890466570854187
+    }
+  ],
+  "test_selected_candidate_counts": {
+    "hybrid_damage0_policy1,policy": 6,
+    "policy": 9,
+    "hybrid_damage0_policy1,hybrid_policy0_damage1,max_damage,policy": 4,
+    "hybrid_policy0_damage1,policy": 7,
+    "setup_slot1_calmmind": 1,
+    "protect_slot1_protect": 1,
+    "switch_slot1_farfetchd": 1,
+    "switch_slot0_gourgeistsmall": 1,
+    "max_damage": 4,
+    "hybrid_damage0_policy1,max_damage": 3,
+    "hybrid_policy0_damage1,max_damage": 4,
+    "hybrid_policy0_damage1": 7,
+    "legal_perturbation_1": 2,
+    "protect_slot1_wideguard": 1,
+    "switch_slot0_jolteon": 1,
+    "protect_slot0_detect": 1,
+    "hybrid_damage0_policy1": 1,
+    "setup_slot1_nastyplot": 1,
+    "redirection_slot1_followme": 1,
+    "protect_slot0_protect": 1
+  },
+  "test_selected_paired_delta_by_response": {
+    "counterplay": 0.0,
+    "max_damage": -0.03508771929824561,
+    "policy": -0.03508771929824561,
+    "public_counterplay": -0.02631578947368421,
+    "random": 0.013157894736842105
+  },
+  "test_selected_statewise_worst_response_delta": -0.13157894736842105,
+  "test_worst_response_cluster_bootstrap_95_ci": [
+    -0.19736842105263158,
+    -0.07456140350877193
+  ],
+  "information_boundary": "player-visible observation and legal action features; outcomes used only as training labels/evaluation targets",
+  "schema_version": 1,
+  "round": 569,
+  "title": "Paired action-advantage transfer rejected on held-out teams",
+  "status": "Failed offline; no promotion",
+  "format": "gen9championsdoubles2026mcclosed",
+  "source_checkpoint": "training/outputs/phase12_headless/round430_hard_opponent_auxiliary_ppo_20k_20261030/checkpoints/latest.pt",
+  "candidate_role": "experimental diagnostic only",
+  "collection_report": "training/outputs/phase12_headless/round567_round430_midgame_action_screen_256x4x2_20261101/report.json",
+  "collection_clusters": 157,
+  "combined_clusters": 283,
+  "collection_branches": 57533,
+  "collection_elapsed_seconds": 1022.53,
+  "collection_branches_per_second": 56.27,
+  "decision": "Reject before full-match evaluation. Keep Round430 as incumbent."
+}
