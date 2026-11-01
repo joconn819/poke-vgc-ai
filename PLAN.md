@@ -14,8 +14,8 @@ Pokémon Showdown remains the correctness reference and required battle platform
     "ci95": "[35.16%, 44.53%]",
     "games": 512,
     "clusters": 256,
-    "status": "Round430 remains incumbent; Round568 regret transfer and Round569 paired-advantage transfer both failed held-out action selection. No candidate promoted.",
-    "evaluation": "Latest full-match Max Damage screen: Round430 policy-only arm, 256 matched team-pair clusters, both seats, seed 202610480. The paired search arm scored 42.38% (+2.54 pp; 95% paired CI [-0.78,+6.05]), inconclusive and not enabled by default. Round567 expanded midgame data to 283 team clusters; the outcome-informed maximin oracle gained +4.77 pp [+3.16,+6.45], but the oracle is not deployable. Round568 selected actions were −7.89 pp [−13.60,−3.07] on held-out worst-response outcomes. Round569 paired advantage selection was −13.16 pp [−19.74,−7.46]. Sub-50% results against simple policies are substantive weaknesses; keep Max Damage as an independent scorecard metric."
+    "status": "Round430 remains incumbent; Round568–572 action-transfer models failed on held-out teams. No new checkpoint promoted.",
+    "evaluation": "Latest full-match Max Damage screen: Round430 policy-only arm, 256 matched team-pair clusters, both seats, seed 202610480. The paired search arm scored 42.38% (+2.54 pp; 95% paired CI [-0.78,+6.05]), inconclusive and not enabled by default. Round567 expanded midgame data to 283 team clusters; the outcome-informed maximin oracle gained +4.77 pp [+3.16,+6.45], but the oracle is not deployable. Round568 selected actions were −7.89 pp [−13.60,−3.07] on held-out worst-response outcomes. Round569 paired advantage selection was −13.16 pp [−19.74,−7.46]. Sub-50% results against simple policies are substantive weaknesses; keep Max Damage as an independent scorecard metric. Fresh Round571/572 testing on 173 held-out team clusters confirmed local maximin oracle headroom (+4.62 pp [+1.95,+7.66]) but the anchored learned selector lost 2.17 pp [−3.90,−0.87]. The candidate remains unpromoted."
   },
   "speed": {
     "games_per_second": "34.71 rollout / 20.41 input-to-checkpoint",
@@ -331,16 +331,16 @@ Pokémon Showdown remains the correctness reference and required battle platform
     "next": "Targeted loss-state action-regret diagnosis against multiple legal responses; do not repeat broad opponent-mixture changes without a measured failure mechanism."
   },
   "latest_diagnostic": {
-    "round": 569,
-    "title": "Paired action-advantage transfer rejected on held-out teams",
-    "status": "Failed offline; no promotion",
-    "summary": "A model trained to predict candidate-vs-incumbent outcome deltas selected actions that reduced held-out worst-response outcomes by 13.16 pp. Its best validation loss was at epoch 2. This joins two failed selector transfers despite strong outcome-informed oracle headroom.",
-    "clusters": 57,
-    "branch_matches": 57533,
-    "matches_per_second": 56.27,
-    "metric_note": "Round567 collected 57,533 branches at 56.27/sec across eight CPU workers; Round569 held-out paired worst-response delta was −13.16 pp [−19.74, −7.46].",
-    "information_note": "Agent decisions remain under 50% against simple strategies in multiple full-match screens, which is evidence of exploitable play. Oracle gains are not deployable results.",
-    "report": "round569_paired_action_advantage.json"
+    "round": 572,
+    "title": "Fresh-team action headroom is real; learned selector still fails",
+    "status": "Action selector rejected offline; no promotion",
+    "summary": "On 173 entirely fresh team clusters, outcome-informed maximin selection gained +4.62 pp in held-out worst-response outcome [+1.95,+7.66]. The incumbent-anchored learned selector lost 2.17 pp [−3.90,−0.87]. Keep Round430 unchanged.",
+    "clusters": 173,
+    "branch_matches": 64269,
+    "matches_per_second": 63.85,
+    "metric_note": "Fresh-team results confirm the candidate pool contains better actions, but the information-safe model does not learn to select them.",
+    "information_note": "Oracle selection sees sampled counterfactual outcomes; only its result is an upper-bound diagnostic. Full-match score against Max Damage remains below 50%.",
+    "report": "round572_action_advantage_fresh_holdout.json"
   }
 }
 DASHBOARD_PROGRESS_JSON -->
@@ -19419,3 +19419,11 @@ and OUT set to the Round524 checkpoint and output paths.
 - Round568 repeated the regret-matching absolute-joint actor transfer on the larger set, using a team-disjoint 181/45/57 split. Although validation loss declined, the held-out selected action reduced worst-response outcomes by 7.89 pp (95% CI [−13.60,−3.07]); measured candidate probability mass also had a negative worst-response contribution. Reject the candidate before full-match evaluation.
 - Round569 tested a different paired advantage model: it predicts each candidate's outcome delta against the incumbent action in the same state, trained on matched first-half chance outcomes and selected by predicted worst response. Its held-out selected actions were worse by 13.16 pp against the worst response (95% cluster CI [−19.74,−7.46]); individual response deltas were 0.00 pp vs Counterplay, −3.51 pp vs Max Damage, −3.51 pp vs PPO, −2.63 pp vs Public Counterplay, and +1.32 pp vs Random. Best validation loss occurred at epoch 2 and did not predict useful action ranking. Reject this transfer method; do not full-match screen or promote it.
 - Interpretation: the agent's sub-50% results against simple strategies are direct evidence of exploitable play. The local oracle confirms better choices exist, but current learned selectors fail to identify them on held-out teams. Keep Round430 as the incumbent and make the next iteration target the representation/decision process or policy-learning objective itself, with Max Damage reported as a first-class failure metric alongside broad opponent performance. Collection and fit reports: `training/outputs/phase12_headless/round567_round430_midgame_action_screen_256x4x2_20261101/report.json`, `training/outputs/phase12_headless/round568_round430_regret_policy_update_283states_20261101/report.json`, and `training/outputs/phase12_headless/round569_paired_action_advantage_283states_20261101/report.json`.
+
+### Round570–572: incumbent-anchored action advantages and fresh-team confirmation
+
+- Round569's paired advantage model had no hard guarantee that the incumbent action scored exactly zero predicted advantage. Anchoring the output as `f(candidate, incumbent) − f(incumbent, incumbent)` fixes that invariant, so alternatives must beat a zero-valued incumbent. On Round569's already-used 57-cluster split, the selected worst-response loss shrank from −13.16 pp to −2.63 pp (95% CI [−7.02, 0.00]); this is diagnostic only, not an independent confirmation.
+- Collected Round571 on 256 fresh requested team clusters: 173 step-3 states, 692 hidden worlds, 64,269 full-match counterfactual branches in 1,006.58 seconds (63.85 branches/s, eight CPU workers), zero rejected actions. The 83 unavailable states were mainly forced switches (75); three states did not reach the decision, two had possible Illusion, and three had public Transform.
+- On the 173 fresh states, select actions on four of each action's eight outcomes and score on the other four, then swap the halves. The information-leaking equal-weight oracle gained +7.60 pp equal-weight response value (95% cluster CI [+5.38,+9.94]) and +5.20 pp statewise worst-response value [+2.53,+8.16]. The maximin oracle gained +3.97 pp equal-weight and +4.62 pp worst-response [+1.95,+7.66]. Maximin's held-out mean deltas were positive against all five response classes: Max Damage +5.06 pp, public Counterplay +6.07 pp, Counterplay +4.55 pp, Round476 policy +3.83 pp, Random +0.36 pp. This fresh result confirms the sampled candidate pool contains local gains; it is an oracle ceiling only, not a deployable policy.
+- Round572 trained the anchored model using the previous 283 states and reserved all 173 Round571 clusters for fresh testing. The 226/57 old-cluster train/validation split selected epoch 5. On the fresh set, learned selection reduced worst-response value by 2.17 pp (95% team-cluster CI [−3.90,−0.87]); mean deltas were −0.14 pp vs Counterplay, −0.43 pp vs Max Damage, +1.30 pp vs Round476 policy, −1.30 pp vs Public Counterplay, and +0.29 pp vs Random. It selected the incumbent-equivalent action on most states and did not transfer the oracle gains. Reject before full-match evaluation; do not promote.
+- Diagnosis: lack of local action headroom is not the primary failure. More counterfactual rows alone did not solve transfer. The current flat action/value head fails to rank the useful alternatives from player-visible state features. Next, replace that head with a lower-capacity shared action encoder and pairwise within-state ranking objective, then evaluate on entirely new team clusters; keep full-match Max Damage as a hard scorecard metric. Separate forced-switch collection is a coverage task, not a substitute for improving ordinary action choice. Reports: `training/outputs/phase12_headless/round571_round430_midgame_action_screen_256x4x2_20261101/report.json`, `.../heldout_action_selection_all5.json`, and `training/outputs/phase12_headless/round572_anchored_advantage_fresh_holdout_173_20261101/report.json`.

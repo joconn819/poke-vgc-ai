@@ -1,0 +1,115 @@
+{
+  "schema_version": 1,
+  "round": 572,
+  "title": "Fresh-team oracle gains confirmed; learned action transfer still fails",
+  "status": "Selector rejected offline; incumbent unchanged",
+  "format": "gen9championsdoubles2026mcclosed",
+  "source_checkpoint": "training/outputs/phase12_headless/round430_hard_opponent_auxiliary_ppo_20k_20261030/checkpoints/latest.pt",
+  "candidate_checkpoint": "training/outputs/phase12_headless/round572_anchored_advantage_fresh_holdout_173_20261101/paired_action_advantage.pt",
+  "candidate_role": "experimental diagnostic only",
+  "information_boundary": "The deployable selector sees player-visible state and legal action features only. Oracle results use counterfactual outcomes and cannot be deployed.",
+  "collection": {
+    "requested_team_clusters": 256,
+    "states_captured": 173,
+    "hidden_worlds": 692,
+    "branches": 64269,
+    "elapsed_seconds": 1006.5819642110146,
+    "branches_per_second": 63.848749813807494,
+    "workers": 8,
+    "rejected_candidates": 0,
+    "missing_states": 83,
+    "missing_state_reasons": {
+      "decision_not_reached": 3,
+      "possible_illusion_preview": 2,
+      "public_transform_state": 3,
+      "request_switch": 75
+    }
+  },
+  "fresh_split": {
+    "train_old_clusters": 226,
+    "validation_old_clusters": 57,
+    "test_fresh_clusters": 173,
+    "best_epoch": 5,
+    "best_validation_loss": 0.09720177203416824
+  },
+  "fresh_heldout_oracle": {
+    "response_classes": [
+      "counterplay",
+      "max_damage",
+      "policy",
+      "public_counterplay",
+      "random"
+    ],
+    "method": "Select using one half of eight chance outcomes; score on other half, then swap; bootstrap paired means across team clusters.",
+    "equal_weight": {
+      "changed_cluster_split_pairs": 112.5,
+      "mean_delta_pp": 7.601156069364162,
+      "mean_ci95_pp": [
+        5.375722543352602,
+        9.942196531791907
+      ],
+      "worst_delta_pp": 5.202312138728324,
+      "worst_ci95_pp": [
+        2.5289017341040463,
+        8.164739884393063
+      ],
+      "response_delta_pp": {
+        "counterplay": 5.708092485549133,
+        "max_damage": 11.705202312138727,
+        "policy": 8.453757225433527,
+        "public_counterplay": 11.054913294797688,
+        "random": 1.083815028901734
+      }
+    },
+    "maximin": {
+      "changed_cluster_split_pairs": 54.5,
+      "mean_delta_pp": 3.9739884393063587,
+      "mean_ci95_pp": [
+        2.355491329479769,
+        5.765895953757226
+      ],
+      "worst_delta_pp": 4.624277456647398,
+      "worst_ci95_pp": [
+        1.9508670520231215,
+        7.658959537572255
+      ],
+      "response_delta_pp": {
+        "counterplay": 4.552023121387283,
+        "max_damage": 5.057803468208093,
+        "policy": 3.8294797687861273,
+        "public_counterplay": 6.069364161849711,
+        "random": 0.36127167630057805
+      }
+    }
+  },
+  "anchored_model": {
+    "method": "Predict candidate-vs-incumbent deltas; subtract the incumbent self-score to guarantee exactly zero incumbent advantage.",
+    "selected_candidate_counts": {
+      "hybrid_damage0_policy1,policy": 42,
+      "hybrid_damage0_policy1,hybrid_policy0_damage1,max_damage,policy": 17,
+      "policy": 78,
+      "hybrid_policy0_damage1,max_damage": 4,
+      "legal_perturbation_1": 1,
+      "hybrid_policy0_damage1,policy": 24,
+      "protect_slot1_protect": 1,
+      "hybrid_policy0_damage1": 3,
+      "legal_perturbation_0": 1,
+      "hybrid_damage0_policy1": 1,
+      "protect_slot1_detect": 1
+    },
+    "paired_delta_by_response": {
+      "counterplay": -0.001445086705202312,
+      "max_damage": -0.004335260115606936,
+      "policy": 0.01300578034682081,
+      "public_counterplay": -0.01300578034682081,
+      "random": 0.002890173410404624
+    },
+    "worst_response_delta": -0.02167630057803468,
+    "worst_response_cluster_bootstrap_95_ci": [
+      -0.03901734104046243,
+      -0.008670520231213872
+    ]
+  },
+  "decision": "Reject the learned selector before full-match evaluation. Fresh outcome-informed oracle gains confirm local action headroom; the learned action-value head does not transfer them. Keep Round430 as incumbent.",
+  "next": "Replace the flat action/value head with a lower-capacity shared action encoder and pairwise within-state ranking objective; test on new team clusters."
+}

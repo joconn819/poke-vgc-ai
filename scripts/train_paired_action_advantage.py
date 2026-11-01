@@ -28,7 +28,13 @@ class PairedAdvantage(nn.Module):
         )
 
     def forward(self, candidate, incumbent):
-        return self.net(torch.cat((candidate, incumbent, candidate - incumbent), dim=-1))
+        score = self.net(torch.cat((candidate, incumbent, candidate - incumbent), dim=-1))
+        baseline_score = self.net(torch.cat((incumbent, incumbent,
+                                             torch.zeros_like(incumbent)), dim=-1))
+        # The incumbent's predicted advantage must be exactly zero. Without
+        # anchoring, a small common prediction bias can make an unproven
+        # alternative beat the policy action in every state.
+        return score - baseline_score
 
 
 def main():
@@ -39,6 +45,8 @@ def main():
     ap.add_argument('--epochs', type=int, default=100)
     ap.add_argument('--patience', type=int, default=10)
     ap.add_argument('--device', choices=('cpu', 'cuda'), default='cuda')
+    ap.add_argument('--test-cluster-min', type=int, default=None,
+                    help='reserve every cluster at or above this ID for a fresh test set')
     args = ap.parse_args()
     if args.device == 'cuda' and not torch.cuda.is_available():
         ap.error('CUDA unavailable')
@@ -83,8 +91,15 @@ def main():
             entries.append({'row':r,'x':feat,'y':ys})
         states.append({'key':key,'rows':entries,'base_action':tuple(map(int,base['action']))})
     clusters=np.asarray(sorted({s['key'][0] for s in states}))
-    split=rng.permutation(clusters); nt=max(1,round(.2*len(split))); test=set(map(int,split[:nt]))
-    remain=rng.permutation(split[nt:]); nv=max(1,round(.2*len(remain))); val=set(map(int,remain[:nv])); train=set(map(int,remain[nv:]))
+    if args.test_cluster_min is None:
+        split=rng.permutation(clusters); nt=max(1,round(.2*len(split)))
+        test=set(map(int,split[:nt])); remaining=split[nt:]
+    else:
+        test=set(map(int,clusters[clusters >= args.test_cluster_min]))
+        remaining=rng.permutation(clusters[clusters < args.test_cluster_min])
+        if not test or len(remaining) < 2:
+            ap.error('test-cluster-min must leave both fresh test and training clusters')
+    nv=max(1,round(.2*len(remaining))); val=set(map(int,remaining[:nv])); train=set(map(int,remaining[nv:]))
     train_rows=[]; val_rows=[]
     for state in states:
         dest=train_rows if state['key'][0] in train else val_rows if state['key'][0] in val else None
@@ -121,8 +136,6 @@ def main():
             bx=torch.as_tensor(base['x'][None,:],device=device)
             xs=torch.as_tensor(np.stack([e['x'] for e in s['rows']]),device=device)
             pred=model(xs,bx.expand(len(xs),-1)).cpu().numpy()
-            selected=int(np.argmin(np.max(-pred,axis=1))) # equivalent to argmax min predicted advantage
-            # Explicit robust argmax, kept clear for audit.
             selected=int(np.argmax(np.min(pred,axis=1)))
             chosen=s['rows'][selected]
             key=str(s['key'][0]); chosen_name=','.join(sorted(chosen['row']['candidate_names']))
