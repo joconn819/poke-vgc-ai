@@ -1,0 +1,100 @@
+{
+  "source": "training/outputs/phase12_headless/round545_round542_midgame_counterfactual_128x8_20261101/data.json",
+  "states": 128,
+  "clusters": 128,
+  "matches_executed": 32056,
+  "matches_per_second": 63.06405782024188,
+  "decision_step": 3,
+  "responses": [
+    "max_damage",
+    "policy",
+    "public_counterplay",
+    "random",
+    "counterplay"
+  ],
+  "chance_repeats": 8,
+  "split": "Select on one half of outcomes across all five response classes; score on disjoint half; swap halves. Bootstrap matched team clusters.",
+  "information_note": "Counterfactual rollouts use actual captured hidden team sets. These are oracle upper-bound diagnostics; no deployable action selector receives hidden sets.",
+  "results": [
+    {
+      "method": "mean",
+      "clusters": 128,
+      "states": 128,
+      "fold_evaluations": 256,
+      "heldout_equal_response_delta_pp": 6.504,
+      "paired_cluster_bootstrap_95_ci_pp": [
+        4.434,
+        8.77
+      ],
+      "heldout_worst_response_delta_pp": 4.59,
+      "per_response_delta_pp": {
+        "max_damage": 7.812,
+        "policy": 5.566,
+        "public_counterplay": 8.105,
+        "random": 6.055,
+        "counterplay": 4.98
+      },
+      "policy_selected_pct": 51.2,
+      "selected_candidate_counts": {
+        "policy": 131,
+        "max_damage": 40,
+        "legal_perturbation_0": 9,
+        "protect_slot0_protect": 8,
+        "setup_slot1_swordsdance": 7,
+        "hybrid_damage0_policy1": 6,
+        "protect_slot1_protect": 6,
+        "hybrid_policy0_damage1": 6,
+        "legal_perturbation_1": 5,
+        "protect_slot1_detect": 3,
+        "spread_slot1_icywind": 3,
+        "switch_slot0_medicham": 2,
+        "switch_slot0_meganium": 2,
+        "switch_slot0_manectric": 2,
+        "switch_slot1_araquanid": 2
+      }
+    },
+    {
+      "method": "maximin",
+      "clusters": 128,
+      "states": 128,
+      "fold_evaluations": 256,
+      "heldout_equal_response_delta_pp": 2.402,
+      "paired_cluster_bootstrap_95_ci_pp": [
+        1.016,
+        4.121
+      ],
+      "heldout_worst_response_delta_pp": 4.883,
+      "per_response_delta_pp": {
+        "max_damage": 2.93,
+        "policy": 0.293,
+        "public_counterplay": 4.395,
+        "random": 0.195,
+        "counterplay": 4.199
+      },
+      "policy_selected_pct": 81.6,
+      "selected_candidate_counts": {
+        "policy": 209,
+        "max_damage": 18,
+        "hybrid_policy0_damage1": 6,
+        "legal_perturbation_0": 4,
+        "setup_slot1_swordsdance": 3,
+        "hybrid_damage0_policy1": 3,
+        "protect_slot0_protect": 3,
+        "protect_slot1_protect": 2,
+        "switch_slot0_taurospaldeacombat": 2,
+        "status_slot1_recover": 2,
+        "switch_slot0_venusaur": 1,
+        "switch_slot0_sinistcha": 1,
+        "spread_slot0_trickroom": 1,
+        "spread_slot1_dazzlinggleam": 1
+      }
+    }
+  ],
+  "status": "complete_diagnostic_not_promoted",
+  "reproduction": {
+    "collector": "scripts/collect_midgame_action_counterfactuals_parallel.py",
+    "arguments": "--checkpoint Round542 --opponent-checkpoint Round476 --team-selection-checkpoint Round402 --include-public-counterplay-response --include-random-response --include-legacy-counterplay-response --clusters 128 --workers 8 --seed 202611045 --states-per-cluster 1 --chance-repeats 8 --decision-step 3 --candidate-mode broad --device cpu",
+    "raw_data": "training/outputs/phase12_headless/round545_round542_midgame_counterfactual_128x8_20261101/data.json",
+    "plan": "PLAN.md"
+  }
+}

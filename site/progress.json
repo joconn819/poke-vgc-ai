@@ -8738,5 +8738,30 @@
       "round542": 30.078
     },
     "next": "Targeted loss-state action-regret diagnosis against multiple legal responses; do not repeat broad opponent-mixture changes without a measured failure mechanism."
+  },
+  "latest_diagnostic": {
+    "round": 545,
+    "title": "Round542 late-turn action regret screen",
+    "status": "128-cluster split-sample diagnostic complete; no policy promotion",
+    "summary": "At decision step 3, action selection on four chance outcomes per response and evaluation on four held-out outcomes found +6.50 pp equal-weight score lift [95% paired cluster CI +4.43,+8.77] and +4.88 pp mean worst-response lift for a maximin selector. This is an actual-hidden-team oracle upper bound, not deployable closed-sheet performance.",
+    "clusters": 128,
+    "chance_repeats": 8,
+    "response_classes": 5,
+    "branch_matches": 32056,
+    "matches_per_second": 63.064,
+    "elapsed_seconds": 508.31,
+    "equal_weight_delta_pp": 6.504,
+    "equal_weight_ci95_pp": [
+      4.434,
+      8.77
+    ],
+    "maximin_equal_weight_delta_pp": 2.402,
+    "maximin_ci95_pp": [
+      1.016,
+      4.121
+    ],
+    "mean_worst_response_delta_pp": 4.883,
+    "information_note": "Counterfactual rollouts use actual captured hidden opponent sets. The action selector is an oracle diagnostic, not an information-safe policy.",
+    "report": "round545_midgame_action_screen.json"
   }
 }
