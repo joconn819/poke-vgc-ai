@@ -18935,7 +18935,7 @@ coverage, not another blind teacher-weight sweep.
   rows were excluded from PPO policy-gradient loss, but did receive the separate
   teacher loss. PPO stopped at KL limit after only 177/1,296 planned steps.
 
-### Round524: same broad mixture, lower PPO learning rate (trained; evaluation active)
+### Round524: same broad mixture, lower PPO learning rate (complete; not promoted)
 
 - Controlled follow-up from Round430 kept Round520's opponent mix, first-five
   Max Damage teacher rate, teacher loss weight, batch size, and epoch budget;
@@ -18944,11 +18944,41 @@ coverage, not another blind teacher-weight sweep.
   games, 40,000 safe/player-view rows, 165,874 transitions, zero errors. Rollouts
   took 541.60 sec (36.93 aggregate games/s); audit plus recovery took 251.68 sec;
   end to end was 913.40 sec (21.89 games/s). PPO took 120.08 sec and again
-  stopped at its KL limit, now after 400/1,296 optimizer steps (approx KL 0.0327;
+  stopped at its KL limit, after 400/1,296 optimizer steps (approx KL 0.0327;
   teacher loss 1.302). The lower rate extended training 2.26x vs Round520's 177
   steps but still completed less than one third of the planned updates.
+- Six-class screen (128 fresh clusters/class): no paired interval excluded zero.
+  Round524 scored 42.97% vs Max Damage (+0.39 pp vs Round430, CI [-3.91,+5.08]);
+  25.78% vs Counterplay, 42.19% vs Public Counterplay, 95.70% vs Random,
+  46.46% vs Round476 and 54.72% vs Round485. Two held-out PPO arms each had one
+  incomplete outcome; other classes had no errors or action corrections.
+- Larger Max Damage confirmation (256 fresh clusters, two repeats, sides
+  swapped): Round524 scored 38.75% [33.69,43.65] vs Round430's 39.16%
+  [34.28,44.24]. Paired change -0.49 pp [-2.44,+1.56]. This confirms Round524
+  is clearly below 50% against the simple opponent and did not improve Round430.
+- Keep Round430 as default. The learning-rate adjustment altered optimizer depth
+  but did not measurably improve play. Reports:
+  `training/outputs/phase12_headless/round525_round524_fresh_league_128x1_20261031/`
+  and `training/outputs/phase12_headless/round526_round524_maxdamage_256x2_20261031/`.
 - Checkpoint: `training/outputs/phase12_headless/round524_opening5_teacher_low_lr_20k_20261031/checkpoints/latest.pt`.
-- Run: `scripts/train_round524_opening5_teacher_low_lr_20k.sh`; output:
-  `training/outputs/phase12_headless/round524_opening5_teacher_low_lr_20k_20261031/`.
-- Fresh paired six-class evaluation is running. Do not promote based on training
-  metrics; decide from Max Damage and broader league results.
+  Training command: `scripts/train_round524_opening5_teacher_low_lr_20k.sh`.
+
+### Next training direction after Round524
+
+- Stop treating Max Damage action imitation or a modest learning-rate change as
+  sufficient. Round522's first-five lift failed to replicate in Round523, and
+  Round524 failed to beat Round430 despite more PPO steps.
+- Diagnose the first two turns with state-conditioned, counterfactual action
+  values across legal simultaneous action pairs and varied opponent responses.
+  Rank candidate actions by expected payoff across outcomes/opponents, then
+  build high-confidence teacher targets only where the ranking is stable; keep
+  equilibrium or robust response coverage instead of copying a single policy.
+- Before a large run, validate target labels on held-out team pairs and check
+  action/rules correctness. Train a controlled candidate from Round430 with a
+  conservative PPO update plus masked action-value/teacher loss on these
+  decisions, preserving the broad opponent mixture. Track KL, teacher loss,
+  optimizer steps, and held-out Max Damage win rate each iteration.
+- Require a larger paired test against Max Damage and the six-class league. The
+  target is improving worst-class and lower-tail performance, not a specific
+  opponent's habits. Do not promote until a candidate shows replicated positive
+  paired changes and clears the <50% weakness against Max Damage.
