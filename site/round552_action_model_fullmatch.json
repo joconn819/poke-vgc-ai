@@ -1,0 +1,99 @@
+{
+  "schema_version": 1,
+  "policy_checkpoint": "training/outputs/phase12_headless/round542_opening14_response_20k_20261101_retry1/checkpoints/latest.pt",
+  "opponent_checkpoint": "training/outputs/phase12_headless/round476_refreshed_population_ppo_20k_20261031/checkpoints/latest.pt",
+  "action_model_checkpoint": "training/outputs/phase12_headless/round551_publicworld_action_value_fit_20261101/response_conditioned_action_value.pt",
+  "team_selection_checkpoint": "training/outputs/phase12_headless/round402_selector_currentdata_8ep_20261030/selector_candidate.pt",
+  "format": "gen9championsdoubles2026mcclosed",
+  "seed": 202611552,
+  "decision_step": 3,
+  "matches_executed": 1024,
+  "elapsed_seconds": 140.71107316197595,
+  "matches_per_second": 7.277323504037587,
+  "summary": {
+    "overall": {
+      "arm": "all",
+      "clusters": 256,
+      "policy_win_rate": 0.431640625,
+      "selected_win_rate": 0.423828125,
+      "selected_minus_policy": -0.0078125,
+      "paired_cluster_bootstrap_95_ci": [
+        -0.037109375,
+        0.0234375
+      ]
+    },
+    "conditional_on_reaching_decision": {
+      "arm": "decision_reached",
+      "clusters": 256,
+      "policy_win_rate": 0.431640625,
+      "selected_win_rate": 0.423828125,
+      "selected_minus_policy": -0.0078125,
+      "paired_cluster_bootstrap_95_ci": [
+        -0.037109375,
+        0.021484375
+      ]
+    },
+    "by_opponent": {
+      "max_damage": {
+        "arm": "max_damage",
+        "clusters": 128,
+        "policy_win_rate": 0.3515625,
+        "selected_win_rate": 0.3125,
+        "selected_minus_policy": -0.0390625,
+        "paired_cluster_bootstrap_95_ci": [
+          -0.078125,
+          -0.00390625
+        ]
+      },
+      "policy": {
+        "arm": "policy",
+        "clusters": 128,
+        "policy_win_rate": 0.51171875,
+        "selected_win_rate": 0.53515625,
+        "selected_minus_policy": 0.0234375,
+        "paired_cluster_bootstrap_95_ci": [
+          -0.0234375,
+          0.0703125
+        ]
+      }
+    },
+    "by_seat": {
+      "P1": {
+        "arm": "P1",
+        "clusters": 256,
+        "policy_win_rate": 0.41796875,
+        "selected_win_rate": 0.4296875,
+        "selected_minus_policy": 0.01171875,
+        "paired_cluster_bootstrap_95_ci": [
+          -0.02734375,
+          0.05078125
+        ]
+      },
+      "P2": {
+        "arm": "P2",
+        "clusters": 256,
+        "policy_win_rate": 0.4453125,
+        "selected_win_rate": 0.41796875,
+        "selected_minus_policy": -0.02734375,
+        "paired_cluster_bootstrap_95_ci": [
+          -0.0703125,
+          0.015625
+        ]
+      }
+    },
+    "decision_reach_rate": 0.99609375
+  },
+  "round": 552,
+  "status": "selector_rejected_fresh_full_match",
+  "interpretation": "At decision 3 the Round551 player-view action model reduced Round542 score against Max Damage with a paired interval excluding zero, while the PPO matchup lift was inconclusive and overall score did not improve. Do not deploy; Round430 remains active.",
+  "reproduction": {
+    "script": "scripts/evaluate_action_value_selector.py",
+    "clusters": 256,
+    "seed": 202611552,
+    "decision_step": 3,
+    "policy_checkpoint": "training/outputs/phase12_headless/round542_opening14_response_20k_20261101_retry1/checkpoints/latest.pt",
+    "opponent_checkpoint": "training/outputs/phase12_headless/round476_refreshed_population_ppo_20k_20261031/checkpoints/latest.pt",
+    "action_model_checkpoint": "training/outputs/phase12_headless/round551_publicworld_action_value_fit_20261101/response_conditioned_action_value.pt",
+    "raw_report": "training/outputs/phase12_headless/round552_round551_action_model_fullmatch_256_step3_20261101/report.json"
+  }
+}

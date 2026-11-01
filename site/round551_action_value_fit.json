@@ -1,0 +1,139 @@
+{
+  "round": 551,
+  "status": "player_view_action_value_model_no_reliable_gain",
+  "checkpoint": "training/outputs/phase12_headless/round551_publicworld_action_value_fit_20261101/response_conditioned_action_value.pt",
+  "train_validation_test_clusters": {
+    "train": 172,
+    "validation": 43,
+    "test": 54,
+    "unit": "team_cluster"
+  },
+  "candidate_action_rows": 2437,
+  "heldout_test_states": 54,
+  "heldout_action_rows": 494,
+  "best_epoch": 1,
+  "validation_action_outcome_brier": 0.1766492873430252,
+  "equal_weight_selection": {
+    "aggregation": "mean predicted response win probability",
+    "action_changed_from_policy_states": 31,
+    "test_states": 54,
+    "selected_minus_policy_worst_response": -0.016203703703703703,
+    "selected_minus_policy_worst_response_95_ci": [
+      -0.05555555555555555,
+      0.020833333333333332
+    ],
+    "by_response": {
+      "counterplay": {
+        "team_clusters": 54,
+        "selected_minus_policy": -0.009259259259259259,
+        "paired_team_cluster_95_ci": [
+          -0.05092592592592592,
+          0.03009259259259259
+        ]
+      },
+      "max_damage": {
+        "team_clusters": 54,
+        "selected_minus_policy": 0.020833333333333332,
+        "paired_team_cluster_95_ci": [
+          -0.020833333333333332,
+          0.06481481481481481
+        ]
+      },
+      "policy": {
+        "team_clusters": 54,
+        "selected_minus_policy": -0.020833333333333332,
+        "paired_team_cluster_95_ci": [
+          -0.05787037037037037,
+          0.011574074074074073
+        ]
+      },
+      "public_counterplay": {
+        "team_clusters": 54,
+        "selected_minus_policy": 0.041666666666666664,
+        "paired_team_cluster_95_ci": [
+          -0.0023148148148148147,
+          0.09259259259259259
+        ]
+      },
+      "random": {
+        "team_clusters": 54,
+        "selected_minus_policy": -0.006944444444444444,
+        "paired_team_cluster_95_ci": [
+          -0.03009259259259259,
+          0.013888888888888888
+        ]
+      }
+    }
+  },
+  "equal_weight_mean_delta_pp": 0.509,
+  "equal_weight_delta_ci95_pp": [
+    -1.806,
+    2.824
+  ],
+  "robust_selection": {
+    "aggregation": "minimum predicted response win probability",
+    "action_changed_from_policy_states": 31,
+    "test_states": 54,
+    "selected_worst_response_win_rate": 0.29398148148148145,
+    "policy_worst_response_win_rate": 0.3148148148148148,
+    "selected_minus_policy_worst_response": -0.020833333333333332,
+    "selected_minus_policy_worst_response_95_ci": [
+      -0.0625,
+      0.016203703703703703
+    ],
+    "by_response": {
+      "counterplay": {
+        "team_clusters": 54,
+        "selected_minus_policy": -0.009259259259259259,
+        "paired_team_cluster_95_ci": [
+          -0.05092592592592592,
+          0.03009259259259259
+        ]
+      },
+      "max_damage": {
+        "team_clusters": 54,
+        "selected_minus_policy": 0.004629629629629629,
+        "paired_team_cluster_95_ci": [
+          -0.04398148148148148,
+          0.05324074074074074
+        ]
+      },
+      "policy": {
+        "team_clusters": 54,
+        "selected_minus_policy": -0.013888888888888888,
+        "paired_team_cluster_95_ci": [
+          -0.04861111111111111,
+          0.018518518518518517
+        ]
+      },
+      "public_counterplay": {
+        "team_clusters": 54,
+        "selected_minus_policy": 0.03009259259259259,
+        "paired_team_cluster_95_ci": [
+          -0.013888888888888888,
+          0.08101851851851852
+        ]
+      },
+      "random": {
+        "team_clusters": 54,
+        "selected_minus_policy": -0.016203703703703703,
+        "paired_team_cluster_95_ci": [
+          -0.03935185185185185,
+          0.006944444444444444
+        ]
+      }
+    }
+  },
+  "robust_worst_response_delta_ci95_pp": [
+    -6.019,
+    1.62
+  ],
+  "interpretation": "Combined 269 disjoint team clusters from Round546/547/550. Counterfactual training repeats are split by public-compatible hidden worlds. The fitted player-view selector does not recover the action oracle improvement; no promotion.",
+  "reproduction": {
+    "trainer": "scripts/train_response_conditioned_action_value.py",
+    "data": "training/outputs/phase12_headless/round551_combined_publicworld_action_data_20261101/data.json",
+    "raw_report": "training/outputs/phase12_headless/round551_publicworld_action_value_fit_20261101/report.json",
+    "seed": 202611551,
+    "device": "cuda"
+  }
+}
