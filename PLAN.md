@@ -19024,9 +19024,10 @@ and OUT set to the Round524 checkpoint and output paths.
 - Output: training/outputs/phase12_headless/round529_checkpoint_heuristic_payoffs_128x1_20261031/.
   Reproduction: scripts/evaluate_round529_checkpoint_heuristic_payoffs.sh;
   summarizer: scripts/summarize_round529_checkpoint_heuristic_payoffs.py.
-- Status: started with eight CPU workers. Report per-cell speed, completion,
-  errors, common-cluster count, matrix uncertainty, and whether the robust mix
-  is stable before selecting a training target.
+- Status: 2/21 cells and 512 games complete. Round430 scored 39.84% vs Max
+  Damage and 39.06% vs Counterplay, with no errors or action adjustments in
+  either cell; throughput was 6.55–7.53 games/s. Continue reporting per-cell
+  speed, errors, and uncertainty before selecting a training target.
 
 ### Next training direction after Round528
 
