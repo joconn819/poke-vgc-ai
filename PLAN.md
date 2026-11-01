@@ -19193,7 +19193,7 @@ and OUT set to the Round524 checkpoint and output paths.
   and the six-policy pool 10.65%. The Counterplay/Public Counterplay ratio and
   pool are held fixed from Round531, making heuristic exposure the experimental
   change.
-- As of the current progress update, 3,153/20,000 episodes have completed
+- As of the current progress update, 9,395/20,000 episodes have completed
   rollout generation. Strict audit and PPO update remain. Run directory:
   `training/outputs/phase12_headless/round532_maxdamage_floor_20k_20261031/`.
   Training script: `scripts/train_round532_maxdamage_floor_20k.sh`.
@@ -19202,6 +19202,13 @@ and OUT set to the Round524 checkpoint and output paths.
   eight workers. Action selection was the largest measured cost at 103 ms per
   episode. Round532's own speed and profile will replace this reference after
   its run completes.
+- Round532's in-progress rollout has reported 9,395 completed episodes in
+  about 378 seconds, a conservative completed-shard rate of 24.9 games/s; this
+  includes startup and excludes episodes in unfinished shards. The 14 completed
+  shard summaries currently average 164.6 ms end-to-end per episode, with
+  action selection at 69.5 ms, policy inference at 40.6 ms, Showdown round
+  trips at 33.1 ms, and observation encoding at 27.4 ms. Treat these as
+  preliminary until all rollout jobs finish.
 - The planned repeated comparison is 128 fresh team-pair clusters and two
   stochastic outcome repeats against six opponent classes, with side swaps:
   `scripts/evaluate_round532_repeated_fresh_league_128x2.sh`.

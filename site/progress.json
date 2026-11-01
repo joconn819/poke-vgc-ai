@@ -8472,10 +8472,10 @@
     ],
     "training_script": "scripts/train_round532_maxdamage_floor_20k.sh",
     "note": "One-factor mixture ablation raises Max Damage from 11.25% to 30%, preserving the policy pool and relative weighting between Counterplay and Public Counterplay.",
-    "stage": "Rollout generation running; 3,153 of 20,000 episodes completed. Strict audit and PPO update follow.",
+    "stage": "Rollout generation running; 9,395 of 20,000 completed episodes reported. Strict audit and PPO update follow.",
     "started_at": "2026-10-31",
-    "rollout_episodes_reported_complete": 3153,
-    "rollout_progress_percent_reported_complete": 15.765,
+    "rollout_episodes_reported_complete": 9395,
+    "rollout_progress_percent_reported_complete": 46.975,
     "evaluation_script": "scripts/evaluate_round532_repeated_fresh_league_128x2.sh",
     "speed_reference": {
       "round": "Round531",
@@ -8483,6 +8483,21 @@
       "input_to_checkpoint_games_per_second": 18.55,
       "peak_aggregate_rss_gib": 9.51,
       "current_bottleneck": "Action selection at 103 ms per episode; Round532 own profile pending."
+    },
+    "provisional_speed": {
+      "completed_episodes": 9395,
+      "elapsed_seconds_since_training_process_start": 378,
+      "reported_completed_shard_games_per_second_lower_bound": 24.85,
+      "note": "Includes startup and counts completed shard summaries only; unfinished shards are not counted. Not the final rollout throughput."
+    },
+    "provisional_profile_ms_per_episode": {
+      "sampled_completed_shards": 14,
+      "end_to_end_episode": 164.6,
+      "action_selection": 69.5,
+      "policy_inference": 40.6,
+      "headless_engine_roundtrip": 33.1,
+      "observation_encoding": 27.4,
+      "baseline_action": 13.7
     }
   }
 }
