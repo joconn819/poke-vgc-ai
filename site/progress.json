@@ -8452,7 +8452,7 @@
     "evaluation_status": "Complete; not promoted"
   },
   "round532_training": {
-    "status": "Running",
+    "status": "Rollouts complete; strict audit passed; PPO update running",
     "run": "training/outputs/phase12_headless/round532_maxdamage_floor_20k_20261031",
     "starting_checkpoint": "round531",
     "episodes": 20000,
@@ -8472,10 +8472,10 @@
     ],
     "training_script": "scripts/train_round532_maxdamage_floor_20k.sh",
     "note": "One-factor mixture ablation raises Max Damage from 11.25% to 30%, preserving the policy pool and relative weighting between Counterplay and Public Counterplay.",
-    "stage": "Rollout generation running; 15,105 of 20,000 completed episodes reported. Strict audit and PPO update follow.",
+    "stage": "Strict audit passed after replacing one incomplete Max Damage match. 20,000 valid games, 40,000 safe player-view rows, and 167,084 trainable transitions; PPO batch preparation is running.",
     "started_at": "2026-10-31",
-    "rollout_episodes_reported_complete": 15105,
-    "rollout_progress_percent_reported_complete": 75.525,
+    "rollout_episodes_reported_complete": 20000,
+    "rollout_progress_percent_reported_complete": 100.0,
     "evaluation_script": "scripts/evaluate_round532_repeated_fresh_league_128x2.sh",
     "speed_reference": {
       "round": "Round531",
@@ -8485,19 +8485,24 @@
       "current_bottleneck": "Action selection at 103 ms per episode; Round532 own profile pending."
     },
     "provisional_speed": {
-      "completed_episodes": 15105,
-      "elapsed_seconds_since_training_process_start": 529,
-      "reported_completed_shard_games_per_second_lower_bound": 28.55,
-      "note": "Includes startup and counts completed shard summaries only; unfinished shards are not counted. Not the final rollout throughput."
+      "completed_episodes": 20000,
+      "elapsed_seconds_since_training_process_start": 802,
+      "games_per_second_through_strict_audit_so_far": 24.94,
+      "note": "Preliminary input-to-audit rate includes startup and recovery; PPO/checkpoint time is still pending."
     },
     "provisional_profile_ms_per_episode": {
-      "sampled_completed_shards": 20,
-      "end_to_end_episode": 177.0,
-      "action_selection": 80.5,
-      "baseline_action": 23.8,
-      "policy_inference": 41.2,
-      "headless_engine_roundtrip": 34.0,
-      "observation_encoding": 27.9
-    }
+      "completed_rollout_shard_summaries": 22,
+      "end_to_end_episode": 183.5,
+      "action_selection": 90.4,
+      "baseline_action": 36.4,
+      "policy_inference": 39.1,
+      "headless_engine_roundtrip": 33.0,
+      "observation_encoding": 27.1
+    },
+    "recovered_malformed_matches": 1,
+    "strict_audit": "passed",
+    "trainable_games": 20000,
+    "safe_player_view_rows": 40000,
+    "trainable_transitions": 167084
   }
 }

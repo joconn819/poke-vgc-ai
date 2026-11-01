@@ -19193,8 +19193,11 @@ and OUT set to the Round524 checkpoint and output paths.
   and the six-policy pool 10.65%. The Counterplay/Public Counterplay ratio and
   pool are held fixed from Round531, making heuristic exposure the experimental
   change.
-- As of the current progress update, 15,105/20,000 episodes have completed
-  rollout generation. Strict audit and PPO update remain. Run directory:
+- Rollout generation completed all 20,000 episodes. The first strict audit
+  caught one incomplete Max Damage match (two perspective rows); it was
+  replaced with a fresh seed, and the second audit passed: 20,000 trainable
+  games, 40,000 safe player-view rows, and 167,084 trainable transitions. PPO
+  batch preparation is running. Run directory:
   `training/outputs/phase12_headless/round532_maxdamage_floor_20k_20261031/`.
   Training script: `scripts/train_round532_maxdamage_floor_20k.sh`.
 - The nearest completed speed reference is Round531: 30.23 rollout games/s,
@@ -19202,14 +19205,13 @@ and OUT set to the Round524 checkpoint and output paths.
   eight workers. Action selection was the largest measured cost at 103 ms per
   episode. Round532's own speed and profile will replace this reference after
   its run completes.
-- Round532's in-progress rollout has reported 15,105 completed episodes in
-  about 529 seconds, a conservative completed-shard rate of 28.6 games/s; this
-  includes startup and excludes episodes in unfinished shards. The 20 completed
-  shard summaries currently average 177.0 ms end-to-end per episode, with
-  action selection at 80.5 ms, baseline scoring at 23.8 ms, policy inference
-  at 41.2 ms, Showdown round trips at 34.0 ms, and observation encoding at
-  27.9 ms. Treat these as
-  preliminary until all rollout jobs finish.
+- Round532 rollout shard summaries reported 20,000 episodes in about 802
+  seconds. The preliminary rate through the first audit was 24.9 games/s
+  including startup and recovery; this is not the final input-to-checkpoint
+  rate. The 22 original shard summaries average 183.5 ms end-to-end per
+  episode, with action selection at 90.4 ms, baseline scoring at 36.4 ms,
+  policy inference at 39.1 ms, Showdown round trips at 33.0 ms, and observation
+  encoding at 27.1 ms. Treat these as provisional until training completes.
 - The planned repeated comparison is 128 fresh team-pair clusters and two
   stochastic outcome repeats against six opponent classes, with side swaps:
   `scripts/evaluate_round532_repeated_fresh_league_128x2.sh`.
