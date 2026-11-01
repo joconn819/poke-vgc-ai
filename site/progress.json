@@ -8101,7 +8101,7 @@
     ],
     "opponent_columns": "Seven policy checkpoints plus three fixed heuristic responses; policy-vs-policy outcomes reuse Round528 data.",
     "new_matchups_total": 21,
-    "new_matchups_complete": 12,
+    "new_matchups_complete": 15,
     "team_clusters_per_matchup": 128,
     "repeats_per_cluster": 1,
     "workers": 8,
@@ -8110,7 +8110,7 @@
     "reproduction": "scripts/evaluate_round529_checkpoint_heuristic_payoffs.sh",
     "summarizer": "scripts/summarize_round529_checkpoint_heuristic_payoffs.py",
     "purpose": "Estimate a checkpoint mixture against past policies and fixed Max Damage, Counterplay, and Public Counterplay responses; this restricted maximin is not a full-game Nash solution.",
-    "completed_games": 3072,
+    "completed_games": 3840,
     "matchups": [
       {
         "name": "round430_vs_counterplay",
@@ -8207,6 +8207,30 @@
         "timeouts_or_errors": 0,
         "action_adjustments": 0,
         "games_per_second": 4.537
+      },
+      {
+        "name": "round485_vs_counterplay",
+        "score_pct": 37.89,
+        "games": 256,
+        "timeouts_or_errors": 0,
+        "action_adjustments": 0,
+        "games_per_second": 7.932
+      },
+      {
+        "name": "round485_vs_max_damage",
+        "score_pct": 41.02,
+        "games": 256,
+        "timeouts_or_errors": 0,
+        "action_adjustments": 0,
+        "games_per_second": 7.023
+      },
+      {
+        "name": "round485_vs_public_counterplay",
+        "score_pct": 39.06,
+        "games": 256,
+        "timeouts_or_errors": 0,
+        "action_adjustments": 0,
+        "games_per_second": 5.222
       }
     ],
     "measured_games_per_second_range": [

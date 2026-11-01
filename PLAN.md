@@ -19024,12 +19024,12 @@ and OUT set to the Round524 checkpoint and output paths.
 - Output: training/outputs/phase12_headless/round529_checkpoint_heuristic_payoffs_128x1_20261031/.
   Reproduction: scripts/evaluate_round529_checkpoint_heuristic_payoffs.sh;
   summarizer: scripts/summarize_round529_checkpoint_heuristic_payoffs.py.
-- Status: 12/21 cells and 3,072 games complete. Round430 scored 39.84% vs Max
+- Status: 15/21 cells and 3,840 games complete. Round430 scored 39.84% vs Max
   Damage and 39.06% vs Counterplay and Public Counterplay. Round472 scored
   37.11%, 36.72%, and 40.23%; Round473 scored 40.23%, 37.89%, and 40.62%
-  against those respective opponents. Round476 scored 39.06%, 38.67%, and
-  38.28%, respectively. No errors or action adjustments so far; throughput
-  was 3.70–8.45 games/s. These are early point scores; evaluate
+  against those respective opponents. Round476 scored 39.06%, 38.67%, and 38.28%; Round485 scored 41.02%,
+  37.89%, and 39.06%, respectively. No errors or action adjustments so far;
+  throughput was 3.70–8.45 games/s. These are early point scores; evaluate
   confidence intervals after the full matrix completes.
 
 ### Next training direction after Round528
