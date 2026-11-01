@@ -19186,7 +19186,7 @@ and OUT set to the Round524 checkpoint and output paths.
   exposure to 30% while preserving the policy pool and the relative mixture of
   the other two heuristics; its result must be evaluated before any promotion.
 
-### Round532: higher Max Damage exposure (running)
+### Round532: higher Max Damage exposure (training complete; evaluation running)
 
 - Started from the Round531 checkpoint for 20,000 episodes. Max Damage receives
   30% of training episodes, Counterplay 34.873%, Public Counterplay 24.477%,
@@ -19197,21 +19197,23 @@ and OUT set to the Round524 checkpoint and output paths.
   caught one incomplete Max Damage match (two perspective rows); it was
   replaced with a fresh seed, and the second audit passed: 20,000 trainable
   games, 40,000 safe player-view rows, and 167,084 trainable transitions. PPO
-  batch preparation is running. Run directory:
+  completed 1,308 optimizer steps. Run directory:
   `training/outputs/phase12_headless/round532_maxdamage_floor_20k_20261031/`.
   Training script: `scripts/train_round532_maxdamage_floor_20k.sh`.
-- The nearest completed speed reference is Round531: 30.23 rollout games/s,
-  18.55 input-to-checkpoint games/s, and 9.51 GiB peak aggregate RSS across
-  eight workers. Action selection was the largest measured cost at 103 ms per
-  episode. Round532's own speed and profile will replace this reference after
-  its run completes.
-- Round532 rollout shard summaries reported 20,000 episodes in about 802
-  seconds. The preliminary rate through the first audit was 24.9 games/s
-  including startup and recovery; this is not the final input-to-checkpoint
-  rate. The 22 original shard summaries average 183.5 ms end-to-end per
-  episode, with action selection at 90.4 ms, baseline scoring at 36.4 ms,
-  policy inference at 39.1 ms, Showdown round trips at 33.0 ms, and observation
-  encoding at 27.1 ms. Treat these as provisional until training completes.
+- Rollout took 585.16 seconds (34.18 games/s); input-to-checkpoint took 989.43
+  seconds (20.21 games/s). Eight workers averaged 6.68 CPU cores and peaked at
+  9.28 GiB aggregate RSS. Preflight plus the one-match recovery took 244.42
+  seconds (119.33 seconds for recovery); PPO and checkpoint writing took
+  159.81 seconds. Rollout was 13.1% faster and full input-to-checkpoint was
+  8.9% faster than Round531. Raw rollout files compressed from 3.91 GB to
+  225 MB in 15 seconds.
+- The weighted per-episode profile was 183.5 ms end-to-end: action selection
+  90.4 ms, policy inference 39.1 ms, baseline scoring 36.4 ms, Showdown round
+  trips 33.0 ms, observation encoding 27.1 ms, and trajectory persistence
+  9.8 ms. Action selection remains the largest measured bottleneck.
+- PPO diagnostics: approximate KL 0.00486, policy loss -0.00353, value loss
+  0.18461, win-probability loss 0.42282. These are training diagnostics, not
+  evidence of stronger play.
 - The planned repeated comparison is 128 fresh team-pair clusters and two
   stochastic outcome repeats against six opponent classes, with side swaps:
   `scripts/evaluate_round532_repeated_fresh_league_128x2.sh`.

@@ -1,0 +1,75 @@
+{
+  "round": 532,
+  "status": "training_complete_evaluation_running",
+  "starting_checkpoint": "round531",
+  "checkpoint": "training/outputs/phase12_headless/round532_maxdamage_floor_20k_20261031/checkpoints/latest.pt",
+  "episodes": 20000,
+  "strict_audit": "passed_after_repair",
+  "recovered_malformed_matches": 1,
+  "safe_player_view_rows": 40000,
+  "trainable_games": 20000,
+  "trainable_transitions": 167084,
+  "opponent_fractions": {
+    "max_damage": 0.3,
+    "counterplay": 0.34873,
+    "public_counterplay": 0.24477,
+    "prior_policy_pool": 0.1065
+  },
+  "speed": {
+    "rollout_wall_seconds": 585.16,
+    "rollout_games_per_second": 34.18,
+    "input_to_checkpoint_wall_seconds": 989.43,
+    "input_to_checkpoint_games_per_second": 20.21,
+    "preflight_and_recovery_seconds": 244.42,
+    "recovery_seconds": 119.33,
+    "ppo_and_checkpoint_seconds": 159.81,
+    "mean_cpu_cores": 6.68,
+    "peak_aggregate_rss_gib": 9.28,
+    "rollout_compression": {
+      "raw_bytes": 3907411606,
+      "compressed_bytes": 224548475,
+      "compression_ratio": 0.0575,
+      "compression_seconds": 15.25
+    },
+    "weighted_per_episode_profile_ms": {
+      "action_selection_ms": 90.4,
+      "baseline_action_ms": 36.4,
+      "policy_inference_ms": 39.1,
+      "headless_engine_roundtrip_ms": 33.0,
+      "observation_encoding_ms": 27.1,
+      "trajectory_persist_ms": 9.8,
+      "end_to_end_episode_ms": 183.5
+    },
+    "current_bottleneck": "Action selection (90.4 ms/episode), then policy inference (39.1 ms), baseline scoring (36.4 ms), Showdown round trips (33.0 ms), and observation encoding (27.1 ms)."
+  },
+  "ppo": {
+    "optimizer_steps_run": 1308.0,
+    "approx_kl": 0.004862012145797958,
+    "policy_loss": -0.003528457732525133,
+    "value_loss": 0.18460653068366764,
+    "win_probability_loss": 0.4228218714122743,
+    "entropy": 1.6264343792145406,
+    "hidden_move_loss": 4.373167005518526,
+    "hidden_item_loss": 2.683325014712249,
+    "hidden_ability_loss": 3.7607402823386935
+  },
+  "training_script": "scripts/train_round532_maxdamage_floor_20k.sh",
+  "evaluation": {
+    "status": "running",
+    "script": "scripts/evaluate_round532_repeated_fresh_league_128x2.sh",
+    "output": "training/outputs/phase12_headless/round533_round532_maxdamage_repeated_league_128x2_20261031/",
+    "baseline": "round531",
+    "candidate": "round532",
+    "team_pair_clusters_per_opponent": 128,
+    "outcome_repeats_per_cluster": 2,
+    "opponents": [
+      "random",
+      "max_damage",
+      "counterplay",
+      "public_counterplay",
+      "round430",
+      "round473"
+    ],
+    "note": "Two stochastic outcomes per fresh team-pair cluster and side swaps; paired cluster intervals."
+  }
+}

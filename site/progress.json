@@ -8452,7 +8452,7 @@
     "evaluation_status": "Complete; not promoted"
   },
   "round532_training": {
-    "status": "Rollouts complete; strict audit passed; PPO update running",
+    "status": "Training complete; repeated six-class evaluation running",
     "run": "training/outputs/phase12_headless/round532_maxdamage_floor_20k_20261031",
     "starting_checkpoint": "round531",
     "episodes": 20000,
@@ -8471,8 +8471,8 @@
       "round524"
     ],
     "training_script": "scripts/train_round532_maxdamage_floor_20k.sh",
-    "note": "One-factor mixture ablation raises Max Damage from 11.25% to 30%, preserving the policy pool and relative weighting between Counterplay and Public Counterplay.",
-    "stage": "Strict audit passed after replacing one incomplete Max Damage match. 20,000 valid games, 40,000 safe player-view rows, and 167,084 trainable transitions; PPO batch preparation is running.",
+    "note": "Strict audit passed after one malformed Max Damage game was replaced. The candidate is not promoted pending repeated-outcome held-out evaluation.",
+    "stage": "Strict audit passed after one repair; checkpoint complete; repeated-outcome evaluation is running.",
     "started_at": "2026-10-31",
     "rollout_episodes_reported_complete": 20000,
     "rollout_progress_percent_reported_complete": 100.0,
@@ -8503,6 +8503,28 @@
     "strict_audit": "passed",
     "trainable_games": 20000,
     "safe_player_view_rows": 40000,
-    "trainable_transitions": 167084
+    "trainable_transitions": 167084,
+    "speed": {
+      "rollout_wall_seconds": 585.16,
+      "rollout_games_per_second": 34.18,
+      "input_to_checkpoint_wall_seconds": 989.43,
+      "input_to_checkpoint_games_per_second": 20.21,
+      "preflight_and_recovery_seconds": 244.42,
+      "recovery_seconds": 119.33,
+      "ppo_and_checkpoint_seconds": 159.81,
+      "mean_cpu_cores": 6.68,
+      "peak_aggregate_rss_gib": 9.28,
+      "weighted_per_episode_profile_ms": {
+        "action_selection_ms": 90.4,
+        "policy_inference_ms": 39.1,
+        "baseline_action_ms": 36.4,
+        "headless_engine_roundtrip_ms": 33.0,
+        "observation_encoding_ms": 27.1,
+        "trajectory_persist_ms": 9.8,
+        "end_to_end_episode_ms": 183.5
+      },
+      "bottleneck": "Action selection at 90.4 ms per episode."
+    },
+    "training_report": "round532_training.json"
   }
 }
