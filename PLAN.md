@@ -19107,20 +19107,27 @@ and OUT set to the Round524 checkpoint and output paths.
 
 ### Next training and speed work
 
-- Continue from Round530 as an iterative best response to the same measured
-  heuristic mixture. Add Round530 to the prior-policy pool and retain Round430
-  and the other past checkpoints so training does not forget older responses.
-  Evaluate against the full eight-class league on fresh seeds after each 20,000
-  game iteration. Keep Round430 as the validated control until a gain replicates
-  across opponent classes and held-out teams.
-- Investigate the very low Counterplay scores with per-turn decision traces and
-  action-value diagnostics before changing heuristic weights again. The current
-  Round530 screen shows only +1.17 pp versus Counterplay, with an interval that
-  includes zero, despite allocating 45.9% of training to it.
+- Round532 is a controlled opponent-mixture experiment from Round531. Raise
+  Max Damage exposure from 11.25% to 30%; preserve the 10.65% past-policy pool
+  and keep the Counterplay/Public Counterplay ratio fixed (34.873% and 24.477%).
+  The experiment tests whether the low Max Damage share contributes to the
+  persistent exploitability without training solely against one policy.
+- Compare Round532 with Round531 using fresh held-out team clusters and two
+  stochastic outcome repeats per cluster. Cover Max Damage, Counterplay, Public
+  Counterplay, Random, and representative past PPO policies. Report per-class
+  paired intervals and an equal-opponent aggregate. Do not promote from a
+  training loss or one opponent score.
+- Add action and outcome traces to evaluation for representative weak games.
+  The current league reports match outcomes and runtime but cannot explain
+  which decisions lose against the simple heuristics.
+- The measured speed priorities remain action selection, then baseline action
+  scoring and policy inference. Profile the selector's repeated candidate
+  scoring before considering a simulator rewrite; current per-game timings are
+  in `site/round531_training.json`.
 - Historical `pilot_clean` 96.2% vs Max Damage remains unreproduced because its
   checkpoint and match records are absent; it is not a current baseline.
 
-### Round531: iterative robust response PPO (complete; nine-class evaluation running)
+### Round531: iterative robust response PPO (complete; not promoted)
 
 - Started a fresh 20,000-game update from Round530's completed checkpoint, keeping
   the measured Round529 heuristic mixture and adding Round530 to the historical
@@ -19147,14 +19154,33 @@ and OUT set to the Round524 checkpoint and output paths.
 - PPO completed 1,348 optimizer steps. Approximate KL was 0.00510, policy loss
   -0.00376, value loss 0.17971, and win-probability loss 0.42276. These are
   training diagnostics, not evidence of stronger play.
-- The fresh paired league is running as
+- The completed screen compared Round531 with Round530 across nine opponents,
+  using 128 fresh side-swapped team-pair clusters and one stochastic outcome
+  per cluster. Battle RNG was not identical between arms; confidence intervals
+  resample paired team clusters. Three matches were excluded after a
+  timeout/error (one Round530, two Round531); all included games had zero
+  action adjustments. Output:
   `training/outputs/phase12_headless/round532_round531_iterative_fresh_league_128x1_20261031/`.
-  It compares Round531 with Round530 over 128 new side-swapped team-pair
-  clusters per opponent, one stochastic outcome per cluster, for Random, Max
-  Damage, Counterplay, Public Counterplay, and rounds 430, 473, 476, 485, and
-  524. Evaluation script:
+- Equal-weighting the nine opponent classes, Round530 scored 50.26% and
+  Round531 49.13%; the paired change was -1.13 pp [95% cluster interval
+  -2.22 to -0.04]. This is marginal evidence of a broad regression, not a
+  confirmed effect. Seven of nine point deltas were negative, but each
+  per-opponent paired interval included zero.
+- Against Max Damage, Round530 scored 32.81% [25.78, 40.23] and Round531
+  31.25% [24.22, 38.28]; paired change -1.56 pp [-4.30, +0.78]. Against
+  Counterplay they scored 37.89% [30.47, 45.31] and 37.11% [29.69, 44.92].
+  Both checkpoints are clearly exploitable by these simple legal baselines on
+  this tested team distribution. This is evidence of non-optimal play even
+  though the small Round531-vs-Round530 difference is uncertain.
+- Round531 also scored 30.86% against Public Counterplay, 94.49% against
+  Random, and 42.58-55.08% against the five prior PPO policies. It did not
+  show a reliable gain over Round530 and is not promoted; Round530 remains the
+  control. The strong score against Random does not offset the weaknesses
+  against the simple stronger policies.
+- Report and table: `site/round532_fresh_league.json` and
+  `site/round532_payoff_comparison.csv`. Reproduction:
   `scripts/evaluate_round531_iterative_fresh_league_128x1.sh`.
-- Round530 is still the control. Round531 will not be promoted based on training
-  loss; inspect per-opponent paired cluster intervals and failures when the
-  screen completes. Below-50% performance against a simple legal policy is a
-  concrete weakness even when a small comparison is statistically uncertain.
+- Next controlled training script:
+  `scripts/train_round532_maxdamage_floor_20k.sh`. It increases Max Damage
+  exposure to 30% while preserving the policy pool and the relative mixture of
+  the other two heuristics; its result must be evaluated before any promotion.

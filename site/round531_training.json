@@ -1,6 +1,6 @@
 {
   "round": 531,
-  "status": "training_complete_evaluation_running",
+  "status": "Training and evaluation complete; not promoted",
   "run": "training/outputs/phase12_headless/round531_iterative_robust_response_20k_20261031/checkpoints/latest.pt",
   "starting_checkpoint": "round530",
   "episodes": 20000,
@@ -40,23 +40,84 @@
     "current_bottleneck": "Action selection (103.0 ms/game), followed by baseline opponent scoring (47.6 ms), policy inference (39.9 ms), Showdown round trips (34.3 ms), and observation encoding (27.8 ms)."
   },
   "evaluation": {
-    "status": "running",
+    "status": "complete",
     "script": "scripts/evaluate_round531_iterative_fresh_league_128x1.sh",
-    "output": "training/outputs/phase12_headless/round532_round531_iterative_fresh_league_128x1_20261031/",
-    "baseline": "round530",
-    "team_pair_clusters_per_opponent": 128,
+    "report": "round532_fresh_league.json",
+    "score_table": "round532_payoff_comparison.csv",
+    "opponents": 9,
+    "clusters_per_opponent": 128,
     "outcome_repeats_per_cluster": 1,
-    "opponents": [
-      "random",
-      "max_damage",
-      "counterplay",
-      "public_counterplay",
-      "round430",
-      "round473",
-      "round476",
-      "round485",
-      "round524"
-    ],
-    "note": "One stochastic result per paired team cluster; use cluster intervals and treat as screening evidence."
+    "equal_opponent_macro_average": {
+      "round530": {
+        "score_pct": 50.26,
+        "cluster_bootstrap_ci95_pct": [
+          47.91,
+          52.61
+        ]
+      },
+      "round531": {
+        "score_pct": 49.13,
+        "cluster_bootstrap_ci95_pct": [
+          46.77,
+          51.47
+        ]
+      },
+      "paired_change_pp": -1.13,
+      "paired_cluster_bootstrap_ci95_pp": [
+        -2.22,
+        -0.04
+      ]
+    },
+    "max_damage": {
+      "round530_score_pct": 32.81,
+      "round530_absolute_ci95_pct": [
+        25.78,
+        40.23
+      ],
+      "round531_score_pct": 31.25,
+      "round531_absolute_ci95_pct": [
+        24.22,
+        38.28
+      ],
+      "paired_delta_pp": -1.56,
+      "paired_ci95_pp": [
+        -4.3,
+        0.78
+      ],
+      "matched_team_pair_clusters": 128,
+      "outcome_repeats_per_cluster": 1,
+      "round530_timeouts_or_errors": 0,
+      "round531_timeouts_or_errors": 0,
+      "round530_action_adjustments": 0,
+      "round531_action_adjustments": 0,
+      "round530_games_per_second": 5.569,
+      "round531_games_per_second": 6.956
+    },
+    "counterplay": {
+      "round530_score_pct": 37.89,
+      "round530_absolute_ci95_pct": [
+        30.47,
+        45.31
+      ],
+      "round531_score_pct": 37.11,
+      "round531_absolute_ci95_pct": [
+        29.69,
+        44.92
+      ],
+      "paired_delta_pp": -0.78,
+      "paired_ci95_pp": [
+        -4.3,
+        2.73
+      ],
+      "matched_team_pair_clusters": 128,
+      "outcome_repeats_per_cluster": 1,
+      "round530_timeouts_or_errors": 0,
+      "round531_timeouts_or_errors": 0,
+      "round530_action_adjustments": 0,
+      "round531_action_adjustments": 0,
+      "round530_games_per_second": 3.704,
+      "round531_games_per_second": 5.799
+    },
+    "interpretation": "Round531 shows no demonstrated gain over Round530 and is not promoted. The equal-opponent point estimate is marginally lower. Every individual paired 95% opponent interval includes zero. Both checkpoints score well below 50% against Max Damage and Counterplay on this tested team distribution; that repeated sub-50 performance is evidence of exploitable, non-optimal play, independent of whether the small Round531-vs-Round530 difference is statistically resolved."
   }
 }

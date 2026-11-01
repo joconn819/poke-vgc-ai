@@ -8360,7 +8360,7 @@
     "evaluation_report": "round531_fresh_league.json"
   },
   "round531_training": {
-    "status": "Training complete; fresh nine-class evaluation running",
+    "status": "Training and nine-class evaluation complete; checkpoint not promoted",
     "run": "training/outputs/phase12_headless/round531_iterative_robust_response_20k_20261031",
     "starting_checkpoint": "round530",
     "episodes": 20000,
@@ -8386,8 +8386,8 @@
     "training_script": "scripts/train_round531_iterative_robust_response_20k.sh",
     "rollout_episodes_reported_complete": 20000,
     "rollout_progress_percent_reported_complete": 100.0,
-    "stage": "Strict audit passed; checkpoint complete; nine-class paired evaluation is running.",
-    "note": "All 20,000 episodes passed strict audit after one malformed or timed-out match was replaced. The paired screen compares Round531 with Round530 on fresh seeds; Round530 remains the control pending results.",
+    "stage": "Evaluation complete; Round531 not promoted. A higher-Max-Damage-exposure ablation is next.",
+    "note": "Round531 shows no demonstrated gain over Round530 and is not promoted. The equal-opponent point estimate is marginally lower. Every individual paired 95% opponent interval includes zero. Both checkpoints score well below 50% against Max Damage and Counterplay on this tested team distribution; that repeated sub-50 performance is evidence of exploitable, non-optimal play, independent of whether the small Round531-vs-Round530 difference is statistically resolved.",
     "speed": {
       "rollout_wall_seconds": 661.52,
       "rollout_games_per_second": 30.23,
@@ -8409,6 +8409,70 @@
       "current_bottleneck": "Action selection (103.0 ms/game), followed by baseline opponent scoring (47.6 ms), policy inference (39.9 ms), Showdown round trips (34.3 ms), and observation encoding (27.8 ms)."
     },
     "training_report": "round531_training.json",
-    "evaluation_script": "scripts/evaluate_round531_iterative_fresh_league_128x1.sh"
+    "evaluation_script": "scripts/evaluate_round531_iterative_fresh_league_128x1.sh",
+    "evaluation_report": "round532_fresh_league.json",
+    "evaluation_table": "round532_payoff_comparison.csv",
+    "evaluation_summary": {
+      "round530": {
+        "score_pct": 50.26,
+        "cluster_bootstrap_ci95_pct": [
+          47.91,
+          52.61
+        ]
+      },
+      "round531": {
+        "score_pct": 49.13,
+        "cluster_bootstrap_ci95_pct": [
+          46.77,
+          51.47
+        ]
+      },
+      "paired_change_pp": -1.13,
+      "paired_cluster_bootstrap_ci95_pp": [
+        -2.22,
+        -0.04
+      ]
+    },
+    "key_results": {
+      "round530_vs_max_damage_pct": 32.81,
+      "round531_vs_max_damage_pct": 31.25,
+      "max_damage_paired_delta_pp": -1.56,
+      "max_damage_paired_ci95_pp": [
+        -4.3,
+        0.78
+      ],
+      "round530_vs_counterplay_pct": 37.89,
+      "round531_vs_counterplay_pct": 37.11,
+      "macro_candidate_paired_delta_pp": -1.13,
+      "macro_candidate_paired_ci95_pp": [
+        -2.22,
+        -0.04
+      ]
+    },
+    "evaluation_status": "Complete; not promoted"
+  },
+  "round532_training": {
+    "status": "Running",
+    "run": "training/outputs/phase12_headless/round532_maxdamage_floor_20k_20261031",
+    "starting_checkpoint": "round531",
+    "episodes": 20000,
+    "opponent_fractions": {
+      "max_damage": 0.3,
+      "counterplay": 0.34873,
+      "public_counterplay": 0.24477,
+      "prior_policy_pool": 0.1065
+    },
+    "opponent_policy_pool": [
+      "round531",
+      "round430",
+      "round473",
+      "round476",
+      "round485",
+      "round524"
+    ],
+    "training_script": "scripts/train_round532_maxdamage_floor_20k.sh",
+    "note": "One-factor mixture ablation raises Max Damage from 11.25% to 30%, preserving the policy pool and relative weighting between Counterplay and Public Counterplay.",
+    "stage": "Generating 20,000 self-play and opponent-mixture rollouts; strict audit and PPO update follow.",
+    "started_at": "2026-10-31"
   }
 }

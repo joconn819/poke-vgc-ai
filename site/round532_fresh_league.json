@@ -1,0 +1,266 @@
+{
+  "title": "Round531 fresh nine-opponent league",
+  "status": "Completed screen; Round531 not promoted",
+  "baseline": "Round530 bootstrap-weighted robust-response PPO",
+  "candidate": "Round531 iterative robust-response PPO",
+  "method": "128 fresh team-pair clusters per opponent, side swapped, one stochastic outcome per cluster. Teams, previews, selector, and seeds were matched between checkpoints. Showdown battle RNG is server-generated and not identical between arms. Absolute and paired 95% intervals use team-cluster bootstrap.",
+  "opponents": {
+    "counterplay": {
+      "round530_score_pct": 37.89,
+      "round530_absolute_ci95_pct": [
+        30.47,
+        45.31
+      ],
+      "round531_score_pct": 37.11,
+      "round531_absolute_ci95_pct": [
+        29.69,
+        44.92
+      ],
+      "paired_delta_pp": -0.78,
+      "paired_ci95_pp": [
+        -4.3,
+        2.73
+      ],
+      "matched_team_pair_clusters": 128,
+      "outcome_repeats_per_cluster": 1,
+      "round530_timeouts_or_errors": 0,
+      "round531_timeouts_or_errors": 0,
+      "round530_action_adjustments": 0,
+      "round531_action_adjustments": 0,
+      "round530_games_per_second": 3.704,
+      "round531_games_per_second": 5.799
+    },
+    "max_damage": {
+      "round530_score_pct": 32.81,
+      "round530_absolute_ci95_pct": [
+        25.78,
+        40.23
+      ],
+      "round531_score_pct": 31.25,
+      "round531_absolute_ci95_pct": [
+        24.22,
+        38.28
+      ],
+      "paired_delta_pp": -1.56,
+      "paired_ci95_pp": [
+        -4.3,
+        0.78
+      ],
+      "matched_team_pair_clusters": 128,
+      "outcome_repeats_per_cluster": 1,
+      "round530_timeouts_or_errors": 0,
+      "round531_timeouts_or_errors": 0,
+      "round530_action_adjustments": 0,
+      "round531_action_adjustments": 0,
+      "round530_games_per_second": 5.569,
+      "round531_games_per_second": 6.956
+    },
+    "public_counterplay": {
+      "round530_score_pct": 29.69,
+      "round530_absolute_ci95_pct": [
+        23.05,
+        36.72
+      ],
+      "round531_score_pct": 30.86,
+      "round531_absolute_ci95_pct": [
+        23.83,
+        37.89
+      ],
+      "paired_delta_pp": 1.17,
+      "paired_ci95_pp": [
+        -1.56,
+        3.52
+      ],
+      "matched_team_pair_clusters": 128,
+      "outcome_repeats_per_cluster": 1,
+      "round530_timeouts_or_errors": 0,
+      "round531_timeouts_or_errors": 0,
+      "round530_action_adjustments": 0,
+      "round531_action_adjustments": 0,
+      "round530_games_per_second": 5.774,
+      "round531_games_per_second": 5.862
+    },
+    "random": {
+      "round530_score_pct": 94.88,
+      "round530_absolute_ci95_pct": [
+        91.73,
+        97.64
+      ],
+      "round531_score_pct": 94.49,
+      "round531_absolute_ci95_pct": [
+        91.34,
+        97.24
+      ],
+      "paired_delta_pp": -0.39,
+      "paired_ci95_pp": [
+        -2.36,
+        1.18
+      ],
+      "matched_team_pair_clusters": 127,
+      "outcome_repeats_per_cluster": 1,
+      "round530_timeouts_or_errors": 0,
+      "round531_timeouts_or_errors": 1,
+      "round530_action_adjustments": 0,
+      "round531_action_adjustments": 0,
+      "round530_games_per_second": 2.589,
+      "round531_games_per_second": 2.454
+    },
+    "round430": {
+      "round530_score_pct": 53.52,
+      "round530_absolute_ci95_pct": [
+        46.48,
+        60.94
+      ],
+      "round531_score_pct": 51.95,
+      "round531_absolute_ci95_pct": [
+        44.53,
+        59.38
+      ],
+      "paired_delta_pp": -1.56,
+      "paired_ci95_pp": [
+        -5.08,
+        1.56
+      ],
+      "matched_team_pair_clusters": 128,
+      "outcome_repeats_per_cluster": 1,
+      "round530_timeouts_or_errors": 0,
+      "round531_timeouts_or_errors": 0,
+      "round530_action_adjustments": 0,
+      "round531_action_adjustments": 0,
+      "round530_games_per_second": 2.814,
+      "round531_games_per_second": 3.713
+    },
+    "round473": {
+      "round530_score_pct": 46.48,
+      "round530_absolute_ci95_pct": [
+        39.06,
+        53.52
+      ],
+      "round531_score_pct": 42.58,
+      "round531_absolute_ci95_pct": [
+        35.55,
+        50.0
+      ],
+      "paired_delta_pp": -3.91,
+      "paired_ci95_pp": [
+        -8.2,
+        0.39
+      ],
+      "matched_team_pair_clusters": 128,
+      "outcome_repeats_per_cluster": 1,
+      "round530_timeouts_or_errors": 0,
+      "round531_timeouts_or_errors": 0,
+      "round530_action_adjustments": 0,
+      "round531_action_adjustments": 0,
+      "round530_games_per_second": 2.301,
+      "round531_games_per_second": 2.868
+    },
+    "round476": {
+      "round530_score_pct": 53.91,
+      "round530_absolute_ci95_pct": [
+        46.48,
+        61.33
+      ],
+      "round531_score_pct": 55.08,
+      "round531_absolute_ci95_pct": [
+        47.27,
+        62.89
+      ],
+      "paired_delta_pp": 1.17,
+      "paired_ci95_pp": [
+        -1.95,
+        4.3
+      ],
+      "matched_team_pair_clusters": 128,
+      "outcome_repeats_per_cluster": 1,
+      "round530_timeouts_or_errors": 0,
+      "round531_timeouts_or_errors": 0,
+      "round530_action_adjustments": 0,
+      "round531_action_adjustments": 0,
+      "round530_games_per_second": 5.356,
+      "round531_games_per_second": 3.939
+    },
+    "round485": {
+      "round530_score_pct": 46.85,
+      "round530_absolute_ci95_pct": [
+        39.37,
+        54.72
+      ],
+      "round531_score_pct": 44.49,
+      "round531_absolute_ci95_pct": [
+        36.61,
+        52.36
+      ],
+      "paired_delta_pp": -2.36,
+      "paired_ci95_pp": [
+        -7.09,
+        1.97
+      ],
+      "matched_team_pair_clusters": 127,
+      "outcome_repeats_per_cluster": 1,
+      "round530_timeouts_or_errors": 0,
+      "round531_timeouts_or_errors": 1,
+      "round530_action_adjustments": 0,
+      "round531_action_adjustments": 0,
+      "round530_games_per_second": 3.417,
+      "round531_games_per_second": 1.862
+    },
+    "round524": {
+      "round530_score_pct": 56.3,
+      "round530_absolute_ci95_pct": [
+        48.43,
+        63.78
+      ],
+      "round531_score_pct": 54.33,
+      "round531_absolute_ci95_pct": [
+        46.46,
+        62.2
+      ],
+      "paired_delta_pp": -1.97,
+      "paired_ci95_pp": [
+        -5.12,
+        1.18
+      ],
+      "matched_team_pair_clusters": 127,
+      "outcome_repeats_per_cluster": 1,
+      "round530_timeouts_or_errors": 1,
+      "round531_timeouts_or_errors": 0,
+      "round530_action_adjustments": 0,
+      "round531_action_adjustments": 0,
+      "round530_games_per_second": 2.445,
+      "round531_games_per_second": 3.329
+    }
+  },
+  "equal_opponent_macro_average": {
+    "round530": {
+      "score_pct": 50.26,
+      "cluster_bootstrap_ci95_pct": [
+        47.91,
+        52.61
+      ]
+    },
+    "round531": {
+      "score_pct": 49.13,
+      "cluster_bootstrap_ci95_pct": [
+        46.77,
+        51.47
+      ]
+    },
+    "paired_change_pp": -1.13,
+    "paired_cluster_bootstrap_ci95_pp": [
+      -2.22,
+      -0.04
+    ]
+  },
+  "interpretation": "Round531 shows no demonstrated gain over Round530 and is not promoted. The equal-opponent point estimate is marginally lower. Every individual paired 95% opponent interval includes zero. Both checkpoints score well below 50% against Max Damage and Counterplay on this tested team distribution; that repeated sub-50 performance is evidence of exploitable, non-optimal play, independent of whether the small Round531-vs-Round530 difference is statistically resolved.",
+  "quality": {
+    "requested_team_pair_clusters_per_opponent": 128,
+    "incomplete_matches_excluded_total": 3,
+    "action_adjustments_total": 0,
+    "opponent_classes": 9,
+    "candidate_minus_baseline_negative_point_deltas": 7,
+    "candidate_minus_baseline_positive_point_deltas": 2
+  },
+  "output_directory": "training/outputs/phase12_headless/round532_round531_iterative_fresh_league_128x1_20261031",
+  "reproduction": "scripts/evaluate_round531_iterative_fresh_league_128x1.sh"
+}
