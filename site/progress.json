@@ -8399,12 +8399,12 @@
       "mean_cpu_cores": 6.37,
       "peak_aggregate_rss_gib": 9.51,
       "weighted_per_episode_profile_ms": {
-        "action_selection_seconds": 103.0,
-        "baseline_action_seconds": 47.6,
-        "policy_inference_seconds": 39.9,
-        "headless_engine_roundtrip_seconds": 34.3,
-        "observation_encoding_seconds": 27.8,
-        "trajectory_persist_seconds": 10.1
+        "action_selection_ms": 103.0,
+        "baseline_action_ms": 47.6,
+        "policy_inference_ms": 39.9,
+        "headless_engine_roundtrip_ms": 34.3,
+        "observation_encoding_ms": 27.8,
+        "trajectory_persist_ms": 10.1
       },
       "current_bottleneck": "Action selection (103.0 ms/game), followed by baseline opponent scoring (47.6 ms), policy inference (39.9 ms), Showdown round trips (34.3 ms), and observation encoding (27.8 ms)."
     },
