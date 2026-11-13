@@ -150,6 +150,7 @@
       const speedOpportunities = (iterationProfile.opportunities ?? []).map(x => `<li><b>${esc(x.title)}:</b> ${esc(x.detail)}</li>`).join("");
       const pct = Math.max(0, Math.min(100, Number(d.candidate?.win_rate_pct ?? 0)));
       document.querySelector("#dashboard").innerHTML = `
+        <article class="card wide"><div class="eyebrow">Information-boundary audit</div><h2>Legacy Counterplay results use privileged information</h2><p>Legacy Counterplay can see private opponent state; in training it also received the opponent’s selected simultaneous action. Treat earlier Counterplay and Round582 equilibrium figures as privileged stress tests. Max Damage and Public Counterplay remain under information-boundary verification. Round583 completed training but has no recorded held-out evaluation.</p><p class="note"><a href="https://github.com/joconn819/poke-vgc-ai/blob/master/docs/FRESH_PLAN_AUDIT.md">Read the audit and next checks</a></p></article>
         <article class="card hero">
           <span class="tag">${esc(d.objective?.status ?? "Active research")}</span>
           <div class="eyebrow" style="margin-top:18px">Project objective</div>

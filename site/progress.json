@@ -297,8 +297,8 @@
     }
   ],
   "speed": {
-    "games_per_second": "30.39 rollout / 17.72 input-to-checkpoint",
-    "context": "Round574: 20,000 audited games; rollouts 658.15 s; input-to-checkpoint 1,128.45 s. 20 shards compressed from 4.01 GB to 229 MB (5.72%).",
+    "games_per_second": "36.76 rollout / 20.92 input-to-checkpoint",
+    "context": "Round583 historical run: 20,000 games, 544.12 seconds rollout, 955.83 seconds to checkpoint; no held-out evaluation. Historical Counterplay opponent used privileged information.",
     "decision_latency": "Round542 weighted profile remains the latest detailed rollout breakdown.",
     "current_bottleneck": "Round542: action selection 89.4 ms/episode, then inference 38.2 ms, baseline scoring 36.1 ms, engine roundtrip 32.4 ms, observation encoding 26.7 ms. Round574 speed includes slower policy-pool opponents and remains CPU simulation. Round582 matchup evaluation is limited by a slow worker tail in PPO-vs-PPO cells (one 16-cluster shard took up to 152 seconds); direct heuristic cells were faster. This suggests dynamically scheduling team-pair clusters instead of fixed 16-pair shards for evaluation.",
     "gpu_status": "CUDA PPO; headless battle simulation on CPU",
@@ -1407,14 +1407,15 @@
   },
   "latest_run": {
     "round": 583,
-    "status": "PSRO best-response PPO training in progress; Round582 payoff matrix complete",
-    "summary": "Round582 fresh 8-policy empirical game: all eight checkpoints scored below 50% against Max Damage, Counterplay, and Public Counterplay. Restricted maximin value 36.61% (95% team-cluster bootstrap CI 30.29\u201343.42%); point adversary is Counterplay. Round583 is training a PSRO-style best response from Round532 using a bootstrap dual response mixture plus the empirical row mixture. No candidate promotion until fresh direct-strategy evaluation.",
-    "games": "Round582: 52 payoff cells \u00d7 128 requested team-pair clusters; 127 common clusters. Round583: 20,000-game training run",
-    "evaluation": "All Round582 cells had zero protocol errors, timeouts, or action adjustments. One incomplete cluster was excluded from every matrix cell."
+    "status": "Training completed; held-out evaluation pending",
+    "summary": "Round583 produced a checkpoint after 20,000 audited games. Its held-out evaluation is not available. The legacy Counterplay opponent used in 14,114 games had access to private opponent state and the selected simultaneous action; the rollout audit does not certify a legal opponent information boundary.",
+    "games": "20,000 training games; 177,989 trainable transitions",
+    "evaluation": "No held-out evaluation recorded; checkpoint not promoted",
+    "epochs": "Four PPO passes requested"
   },
   "method": "Native self-play PPO for in-battle decisions. Terminal win/loss remains the main objective; win-probability and hidden-set prediction are auxiliary tasks. Search comes after a stronger policy.",
   "jax_decision": "Round430 has a confirmed self-play head-to-head lift over Round424, but external-opponent screens remain inconclusive. Prioritize measured inference batching, observation throughput, and rollouts; keep equilibrium-oriented opponent coverage and defer a JAX/GPU engine rewrite until its end-to-end payoff is measured.",
-  "evaluation_note": "A reproducible score below 50% against a legal simple heuristic is direct evidence of exploitable, non-optimal play on that matchup distribution. Round582 found every current checkpoint below 50% against Max Damage, Counterplay, and Public Counterplay; the best restricted mix value was only 36.61% (bootstrap 95% interval 30.29\u201343.42%). Round583 is training a best response to the fresh restricted empirical response mixture; no strength claim until its held-out evaluation.",
+  "evaluation_note": "Legacy Counterplay is privileged: evaluation uses the opponent\u2019s private battle object; training also passed the selected simultaneous action. Scores against it and the Round582 restricted-game result are stress tests, not proof against legal closed-sheet opponents. Max Damage and Public Counterplay passed an initial call-site inspection but their complete information boundaries remain under audit. Round583 completed training and has no recorded held-out evaluation.",
   "generated_at": "2026-11-01",
   "round462_evaluation": {
     "status": "Round462 not promoted \u00b7 initial paired screen complete",
@@ -9003,10 +9004,10 @@
     "action_adjustments": 0,
     "mean_cell_games_per_second": 3.931,
     "training_target": "90% empirical dual-response mixture plus 10% empirical row mixture; Round532 initialization",
-    "interpretation": "Restricted empirical game only; not a full-game Nash guarantee. Every direct heuristic point score remains below 50%."
+    "interpretation": "Restricted empirical game includes the privileged legacy Counterplay opponent; this is not a legal closed-sheet equilibrium or a full-game Nash guarantee. Max Damage and Public Counterplay information boundaries require further verification."
   },
   "round583_psro_training": {
-    "status": "in progress",
+    "status": "complete; no held-out evaluation; not promoted",
     "run": "training/outputs/phase12_headless/round583_psro_response_mix_20k_20261101_retry1",
     "starting_policy": "Round532",
     "episodes_requested": 20000,
@@ -9016,6 +9017,9 @@
       "counterplay": 0.7056998960861998,
       "public_counterplay": 0.14632600333977513
     },
-    "reproduction": "scripts/train_round583_psro_response_mix_20k.sh"
+    "reproduction": "scripts/train_round583_psro_response_mix_20k.sh",
+    "audit": "20,000 trainable games, 40,000 safe player-view rows, zero audit errors; legacy Counterplay opponent had private state and selected opposing action",
+    "rollout_games_per_second": 36.76,
+    "end_to_end_games_per_second": 20.92
   }
 }

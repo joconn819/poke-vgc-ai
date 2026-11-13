@@ -1,0 +1,90 @@
+# Fresh plan: a strong closed-sheet VGC agent
+
+Status: proposal for a new implementation and evaluation program. No code or training was performed for this plan. The objective is increasingly strong, robust play on the local Pokémon Showdown server; no finite experiment will prove optimal VGC play.
+
+## What the evidence says
+
+1. **The present agent is exploitable.** Round515 reports Round430 at 33.50% against Max Damage over 1,024 matches, with a team-cluster interval of 28.81–38.18%, no errors or corrections. This is strong evidence of weakness on that benchmark distribution. Round582's eight-checkpoint restricted matrix has a 36.6% point-estimate maximin score and a 30.3–43.4% bootstrap interval; every checkpoint scored below 50% against each recorded heuristic. The matrix covers only the selected strategies, teams and simulator conditions; it is not a full-game equilibrium or a certificate of general exploitability.
+2. **We cannot recover the claimed 96.2% baseline.** The `pilot_clean` checkpoint and match records are missing, and the old opponent and protocol were not reproduced. Treat that result as an unverified historical claim, not as evidence that the current runner lost a confirmed strong policy.
+3. **Some training and evaluation paths were defective.** The earlier rollout path trained P1 transitions while evaluation swapped seats; later work reports repairs, but its exact current coverage needs a new audit. Locked moves, Struggle and action translation required fixes. Some earlier Counterplay implementations read private state and even the simultaneous opposing action. Their results are privileged stress tests, not legal closed-sheet benchmark results. Audit the exact current Max Damage, Counterplay and Public Counterplay implementations separately before drawing legal-opponent conclusions; an opponent that can see the current simultaneous action is not a valid legal benchmark. Do not assume a past repair covers every current path.
+4. **We optimized proxies without proving they improved decisions.** A win predictor trained on a behavior policy estimates that policy distribution's outcomes, not ideal-play value. Round85's held-out self-play Brier score was 0.175, yet its one-turn search did not improve Max Damage play. The restricted counterfactual oracle found local action headroom, but learned action selectors failed to transfer it on fresh teams. Search with a weak frontier model and pruned actions changed many moves without a measured match gain.
+5. **Experiments did not form a reliable improvement loop.** Many 20,000-game runs changed mixtures, heads or optimization settings, often from weak or repeatedly reused parents. The observed PPO KL and losses describe the update, not whether the correct actions improved. Screening hundreds of variants against reused opponents and teams makes apparent wins vulnerable to selection bias. Round582's chosen response weights have broad bootstrap uncertainty; Round583's checkpoint exists, but its strength and audit status require inspection before use.
+6. **The task distribution is a likely limitation, not a proven root cause.** Training and evaluation used generated random teams and a learned team selector. That does not establish strength on competitive, player-built teams, and preview quality can mask or magnify battle-policy weaknesses. The documented seat imbalance, protocol bugs and privileged opponents are confirmed historical defects; their individual contributions to the present score remain unmeasured.
+7. **Speed is necessary but is not yet shown to be the only limiting factor.** Round579 collected 30.31 games/s and reached a checkpoint at 18.62 games/s end to end. More throughput permits more independent experiments, but cannot correct wrong observations, rewards, actions or evaluation. Measure the current machine again before budgeting a large run.
+
+## Ground rules
+
+- [ ] Freeze the exact format, generation, rules, legal team construction, preview and choose-four rules; document the Showdown revision and team distribution. Keep the existing simulator as the mechanics reference and use the local server only.
+- [ ] Use a fresh project plan and experiment registry. Archive existing artifacts and preserve historical evidence; do not treat any old checkpoint as a proven incumbent until reproduced under the new protocol.
+- [ ] Fix the goal as a policy that chooses legal joint actions from player-visible history. Win/loss is the main objective. A value head predicts probability under the current continuation policies, not an ideal value.
+- [ ] Record configuration, code revision, format, checkpoint hashes, observations, team and battle seeds where controllable, side, opponent, errors, compute, throughput and storage for each run. Preserve resumable checkpoints atomically. Keep storage below half of filesystem capacity.
+- [ ] Do not claim an exact Nash solution or guaranteed optimality. Restricted-game exploitability and best responses are lower bounds or diagnostics for the full game.
+
+## Phase 0 — Reset the evidence and lock the benchmark
+
+- [ ] Reproduce complete local-server matches, including team preview and side swaps, with independently checked legality and no hidden-data access. Inspect Round583's finished audit and artifacts; do not assume the old website's in-progress status is current.
+- [ ] Audit each baseline's actual information and timing. Max Damage must score only legal choices from its own information, without seeing the agent's simultaneous action; implement a separate public-information version if necessary. Label privileged opponents explicitly and keep them out of legal-opponent claims. Include random, legal Max Damage, legal defensive/counterplay, historical PPO, and independent stronger policies.
+- [ ] Separate preview from battle: test fixed, identical preview choices first, then evaluate each complete agent with its own preview. Include a mirror and check that swapping seats and player identities is symmetric. Check same rules, team construction and selector for all arms.
+- [ ] Split by team/roster family before generation into training, development and untouched final test. Add curated competitive teams and held-out archetypes alongside random teams; document their source and usage rights. Never choose a checkpoint or tune hyperparameters on the final set.
+- [ ] Pre-register comparisons and sample sizes. Use paired teams and seat swaps, several independent battle outcomes per team where possible, and team-cluster intervals. Show absolute scores and paired differences, invalid choices, errors and throughput. Show uncertainty; a reproducible <50% against a legal fixed strategy is a failure, but >50% alone is not a proof of strength. Monitor average and worst-opponent performance and losses by archetype.
+- [ ] Reproduce the strongest available old policy under this protocol, plus Max Damage versus itself. Preserve the action and reward traces for representative losses. Deliverable: a frozen baseline report and benchmark manifest before new training.
+
+## Phase 1 — Prove the environment and information contract
+
+- [ ] Define player-view observation and action schemas shared by training and Showdown. Cover preview, both active Pokémon, HP, status, stat stages, speed/order information, weather/terrain, screens, hazards, remaining turns, PP and restrictions, revealed opponent moves/items/abilities, and uncertainty masks.
+- [ ] Represent history needed for decisions: consecutive Protect attempts, entry turn / Fake Out availability, switches, revealed actions and resource use. Distinguish unknown, impossible and known absent. An RNN or explicit event history may retain information; neither substitutes for testing observability.
+- [ ] Audit legal joint moves, targets, switches, duplicate-switch constraints, forced replacements and format-specific mechanics. Compare choices and outcomes across both seats and live server; check probabilities and rewards before and after serialization. Verify opponent actions are simultaneous and hidden until committed.
+- [ ] Make named, reproducible differential cases for spread/multihit, Protect chains, Fake Out, field effects, priority, switching, locked/forced moves, fainting and transformations. Compare reference and training simulator on states, legal actions and outcome distributions under controlled randomness where available. Track exclusions instead of silently discarding failures.
+- [ ] Verify both player perspectives contribute correct rewards, log probabilities, action masks and policy updates. Recompute behavior log probabilities before training; reject mismatches. Check no hidden data enters policy inputs or public-opponent baselines.
+- [ ] Exit gate: zero unexplained mismatches in the documented coverage and complete local matches across representative teams; publish remaining mechanics gaps. Do not scale training before this gate.
+
+## Phase 2 — Establish that the learning loop can learn
+
+- [ ] Build a direct masked joint-action policy first, with a value head and terminal win/loss reward. Keep actor, value, observations and server adapter separate. Use a simple fixed-team or small roster curriculum, then grow toward the real format; final evaluation stays on the full held-out distribution.
+- [ ] Run instrumentation checks on deliberately small, interpretable scenarios: reward sign, both seats, mask, sampling and log probabilities, advantage magnitude, gradient norms, KL, entropy, clipping and value fit. Verify that an update increases the probability of demonstrably good actions on held-out scenarios. A declining training loss alone is not success.
+- [ ] Compare random, legal Max Damage, direct PPO and a simple legal damage-plus-survival policy with fixed preview. Run at least three independent training seeds, keeping total games and wall time comparable. Use controlled opponent curricula and a frozen historical pool; advance difficulty only on held-out evidence, without dropping earlier opponents.
+- [ ] Define promotion before running: improve paired match score against the parent on a development suite with an interval excluding zero, no material predeclared regression against any direct baseline, reliable legal actions, and a fresh absolute score against Max Damage. Report all seeds and total games, including failed runs. Continue iterations only when the learning loop produces repeatable positive improvement; otherwise diagnose representation, reward and credit assignment before scaling.
+
+## Phase 3 — Scale a robust policy
+
+- [ ] Move from simplified curriculum to diverse full teams, preview choices and actual hidden information. Train with current self-play, a diverse past-checkpoint pool, and legal heuristic opponents. Sample both seats and both player perspectives. Preserve diverse strategies and monitor forgetting; do not infer or exploit individual opponent habits.
+- [ ] Maintain an empirical payoff table on development teams. Use equilibrium or regret-based population mixtures as a proposal, with bootstrap uncertainty and diversity floors. Train approximate best responses and add verified policies to the pool, then refresh the table. An equilibrium of a restricted pool is not an equilibrium of VGC. Use held-out strategies and direct baselines as external checks, and do not tune solely to Max Damage.
+- [ ] Use auxiliary win-probability and hidden-set prediction only after controlled ablations show improved held-out match outcomes; keep labels available to the learner without leaking hidden targets into inference. Measure policy changes, sample efficiency and outcomes, not only predictive loss.
+- [ ] Run a pre-budgeted series of incremental training iterations rather than collecting one million games under a frozen weak policy. Compare at equal games and compute across seeds. Scale toward millions only after the smaller loop reliably learns; retain checkpoints and learning curves at fixed game counts.
+
+## Phase 4 — Speed and compute decisions
+
+- [ ] Benchmark end-to-end games/s, decisions/s, per-decision p50/p95, CPU/GPU utilization, memory, storage and time to evaluated checkpoint on representative teams and move mixtures. Attribute observation encoding, policy inference, opponent scoring, serialization, simulator and worker tail separately. Set explicit local targets using measured resources and a budget before scaling.
+- [ ] Batch observations and inference, reuse immutable mechanics lookups and avoid redundant encoding; dynamically schedule independent games to reduce long-worker tails. Compare each optimization against the reference and report throughput and memory under real workloads.
+- [ ] Benchmark GPU inference and batching at actual batch sizes, including transfers. Consider a JAX/GPU simulator only after a representative prototype shows end-to-end training gain and passes transition, chance-distribution and full-match differential checks against Showdown. Increase rules coverage incrementally and retain the reference path. Simulator steps/s alone is not training throughput.
+- [ ] Project training time and disk consumption for 20k, 100k and 1M games using measured rates; compress or expire redundant raw data while retaining manifests and reproducible evidence. A single GPU can support useful progress, but whether it is sufficient for near-optimal VGC is unknown until sample efficiency and the desired strength target are measured.
+
+## Phase 5 — Add search only after the policy is strong
+
+- [ ] Establish held-out value calibration by game phase, team, opponent and policy version; measure action ranking and complete-match impact, not Brier alone. Separate calibration on behavior-policy outcomes from value under another continuation policy.
+- [ ] Begin with one-turn simultaneous-action search over legal, strategically diverse candidates. Use public-history-consistent hidden-world beliefs and seeded stochastic rollouts. Compare no search, policy-guided search and mixed/maximin action selection at equal wall-clock budgets. Never sample from actual unrevealed opponent data.
+- [ ] Add adaptive outcome sampling and selective extra depth only if they improve held-out full matches at the same latency budget. Include switches, Protect and defensive replies; report candidate coverage and sample uncertainty. Do not enumerate every Rock Slide damage, accuracy and flinch combination; estimate expected value with controlled sampling or exact chance where practical.
+- [ ] Keep search disabled if it adds latency without repeatable strength gains. Track decision deadlines and safe legal fallback.
+
+## Phase 6 — Deploy and keep score
+
+- [ ] Run full matches on the local Showdown server using the same policy and observation contract used in training. Verify preview, target translation, forced switches, reconnects, timeouts and terminal outcomes. Publish reproducible setup and play instructions. Active LAN play during training is no longer a requirement.
+- [ ] Update the GitHub Pages site with current checkpoint identity, explicit format and opponent versions, fresh absolute and paired results against random, legal Max Damage, legal Counterplay and historical PPO, uncertainty, team distribution, error rates, training speed and bottlenecks. Separate privileged stress tests from legal closed-sheet results. Never show a completed run as active.
+- [ ] Broader-testing gate: complete server matches, no material information leaks, reliable valid actions, repeatable training and evaluation, statistically supported improvement across independent seeds, greater than 50% against legal Max Damage on held-out teams, no material regression across the diverse suite, documented performance against stronger held-out opponents, and measured runtime within agreed budgets. Passing is a readiness gate, not a claim of optimality.
+
+## Immediate sequence for the implementing agent
+
+1. Audit the exact current Max Damage and Counterplay information boundary, Round583's completion/audit and current published status; fix reporting before using those numbers as legal benchmarks.
+2. Freeze a genuinely held-out team/seed benchmark and reproduce the Round430 baseline with matched preview and both seats. Establish precise absolute rates before model changes.
+3. Audit the current mirrored-seat training and observation/action/reward contract against reference matches, including the historical defect cases.
+4. Run the small learnability and multi-seed direct-policy experiments. Only then choose the next scale, population mixture and simulator investment.
+
+## References
+
+- Project evidence: `PLAN.md`, sections Round515, Rounds560–582, and historical result reconciliation; archived plan `archive/current-training/docs/plan.md`.
+- [Jaxcalibur methodology](https://jaxcalibur.github.io/): an independently developed self-play PPO policy, GPU-oriented simulator and later search; its random-battle results and engineering do not establish performance on this VGC format.
+- [OpenAI Five technical paper](https://arxiv.org/abs/1912.06680): large-scale self-play PPO illustrates the importance of a complete policy improvement system and substantial compute, not a compute requirement for this project.
+
+## Implementation log
+
+- 2026-11-13: Inspected current benchmark and rollout call sites and Round583 artifacts. Legacy Counterplay in evaluation reads the opposing player's battle object; in training it also receives the other player's selected action. The Max Damage and Public Counterplay call sites use a single player battle view, but neither is certified until hidden-state perturbation and protocol provenance are checked. Round583 finished with a checkpoint and passed its recorded rollout preflight, but has no held-out evaluation and used privileged Counterplay for 14,114 games. Updated the progress dashboard to show this and to identify Round582's privileged-response limitation. See `docs/FRESH_PLAN_AUDIT.md`. Phase 0 remains open.
