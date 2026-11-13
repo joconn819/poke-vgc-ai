@@ -24,3 +24,9 @@ The matrix includes the privileged legacy Counterplay opponent. Its restricted-g
 1. Generate two otherwise identical visible states with different unrevealed sets and actions. Verify observations, Max Damage and Public Counterplay action probabilities/outputs are invariant to those hidden changes for both seats, including preview and forced-switch requests.
 2. Trace public-history construction and player-specific protocol messages from local server through headless parsing. Compare equivalent player views against the server.
 3. Freeze legal-opponent implementations and team/seed manifests before reproducing the old baseline. Track excluded games, errors, and per-seat counts, and retain an untouched team split.
+
+## Initial regression coverage
+
+`HeadlessShowdownProcess._apply_state` feeds public history from the shared protocol log and sends each parser its corresponding player-specific log and request. This is a promising separation in source, but it has not yet been verified end to end by perturbing hidden teams.
+
+On 2026-11-13, 30 existing targeted tests passed: four native damage tests, nine public-history tests, one recipient-specific split-log projection test, and sixteen closed-sheet belief tests. A stale fake order in the native-damage speed-cache test lacked fields now required by `DoubleBattleOrder.join_orders`; the fixture was corrected before rerunning. These tests do not prove hidden-state invariance of live baseline or policy decisions.
