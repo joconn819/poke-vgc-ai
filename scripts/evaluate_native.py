@@ -9,6 +9,7 @@ import os
 import signal
 import sys
 import time
+import traceback
 from pathlib import Path
 from typing import Any
 
@@ -96,6 +97,53 @@ def _trace_action(action: int, battle: Any, position: int) -> dict[str, Any]:
         if descriptor.move_index < len(move_list):
             result["move"] = move_list[descriptor.move_index].id
     return result
+
+
+def _trace_battle_status(battle: Any) -> dict[str, Any] | None:
+    """Capture request/turn lifecycle fields for diagnosing long traces."""
+    if battle is None:
+        return None
+    request = getattr(battle, "_last_request", {}) or {}
+    active_requests = request.get("active", []) or []
+    valid_orders = getattr(battle, "valid_orders", [[], []])
+    return {
+        "turn": int(getattr(battle, "turn", 0)),
+        "finished": bool(getattr(battle, "finished", False)),
+        "won": bool(getattr(battle, "won", False)),
+        "lost": bool(getattr(battle, "lost", False)),
+        "request_wait": bool(request.get("wait", False)),
+        "request_team_preview": bool(request.get("teamPreview", False)),
+        "request_id": request.get("rqid"),
+        "force_switch": list(request.get("forceSwitch", []) or []),
+        "active_move_counts": [len(item.get("moves", []) or {}) for item in active_requests],
+        "active_moves": [
+            [
+                {
+                    "id": move.get("id"),
+                    "target": move.get("target"),
+                    "pp": move.get("pp"),
+                }
+                for move in item.get("moves", []) or []
+            ]
+            for item in active_requests
+        ],
+        "valid_orders": [
+            [str(order) for order in position_orders]
+            for position_orders in valid_orders
+        ],
+    }
+
+
+def _trace_replay_delta(battle: Any, start: int) -> dict[str, Any]:
+    replay = getattr(battle, "_replay_data", ()) or ()
+    delta = replay[start:]
+    return {
+        "new_event_count": len(delta),
+        "tail": [
+            [str(part) for part in (event[1:] if len(event) > 1 else event)]
+            for event in delta[-5:]
+        ],
+    }
 
 
 from src.baselines.native_damage import (
@@ -290,6 +338,9 @@ def evaluate(
         env = ShowdownDoublesEnv(
             battle_format=battle_format,
             server_configuration=LOCAL_SERVER_CONFIGURATION,
+            # Surface Showdown protocol rejections during explicit trace runs;
+            # ordinary evaluation stays at poke-env's default log level.
+            log_level=25 if trace_decisions else None,
             # Include the process id so a timed-out run cannot poison the
             # next benchmark with Showdown's `nametaken` response.
             account_configuration1=AccountConfiguration(
@@ -839,6 +890,24 @@ def evaluate(
                                 for position, action in enumerate(actions[agent])
                             ],
                         }
+                trace_replay_cursors = None
+                if trace_decisions:
+                    trace_replay_cursors = {
+                        "player1": len(getattr(env.battle1, "_replay_data", ()) or ()),
+                        "player2": len(getattr(env.battle2, "_replay_data", ()) or ()),
+                    }
+                trace_before = None
+                trace_requests_before = None
+                if trace_decisions:
+                    trace_before = {
+                        "player1": _trace_battle_status(env.battle1),
+                        "player2": _trace_battle_status(env.battle2),
+                    }
+                    trace_requests_before = {
+                        "player1_to_move": bool(env.agent1_to_move),
+                        "player2_to_move": bool(env.agent2_to_move),
+                        "agents": list(env.agents),
+                    }
                 _, rewards, terminated, truncated, infos = env.step(actions)
                 steps += 1
                 if player_view_output is not None and player_view_trajectory:
@@ -884,6 +953,25 @@ def evaluate(
                         ]
                     phase_trace.append({
                         "step": steps,
+                        "battle_status_before": trace_before,
+                        "battle_status_after": {
+                            "player1": _trace_battle_status(env.battle1),
+                            "player2": _trace_battle_status(env.battle2),
+                        },
+                        "request_flags_before": trace_requests_before,
+                        "request_flags_after": {
+                            "player1_to_move": bool(env.agent1_to_move),
+                            "player2_to_move": bool(env.agent2_to_move),
+                            "agents": list(env.agents),
+                        },
+                        "replay_delta": {
+                            "player1": _trace_replay_delta(
+                                env.battle1, trace_replay_cursors["player1"]
+                            ),
+                            "player2": _trace_replay_delta(
+                                env.battle2, trace_replay_cursors["player2"]
+                            ),
+                        },
                         "hp_progress": float(components.get("hp_progress", 0.0)),
                         "terminal_outcome": float(components.get("terminal_outcome", 0.0)),
                         "total": float(components.get("total", rewards.get(env.possible_agents[0], 0.0))),
@@ -996,7 +1084,8 @@ def evaluate(
                                "opponent_checkpoint": str(opponent_checkpoint) if opponent_checkpoint else None,
                                "teams": {side: [pokemon.get("speciesId", pokemon.get("species", "")) for pokemon in team]
                                          for side, team in preview_teams.items()},
-                               "preview_actions": preview_actions, "phase_trace": phase_trace})
+                               "preview_actions": preview_actions, "phase_trace": phase_trace,
+                               "error_traceback": traceback.format_exc()})
         finally:
             signal.alarm(0)
             signal.signal(signal.SIGALRM, signal.SIG_DFL)

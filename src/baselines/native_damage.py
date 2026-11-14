@@ -57,6 +57,16 @@ def _id(value) -> str:
     return str(getattr(value, "name", value) or "").lower().replace("_", "").replace("-", "").replace(" ", "")
 
 
+def _move_priority(move) -> int:
+    """Read optional priority safely from custom-format move entries."""
+    try:
+        return int(getattr(move, "priority", 0) or 0)
+    except (AttributeError, KeyError, TypeError, ValueError):
+        # Showdown's default for a move with no explicit priority is zero;
+        # poke-env's property accessor raises KeyError for such entries.
+        return 0
+
+
 def _move_has_flag(move, flag: str) -> bool:
     flags = getattr(move, "flags", ()) or ()
     if hasattr(flags, "keys"):
@@ -743,8 +753,8 @@ def choose_counterplay_action(
                         own_spread = False
                     if not hits_attacker:
                         continue
-                    own_priority = int(getattr(own_move, "priority", 0) or 0)
-                    incoming_priority = int(getattr(move, "priority", 0) or 0)
+                    own_priority = _move_priority(own_move)
+                    incoming_priority = _move_priority(move)
                     own_speed = cached_action_speed(own_attacker, battle)
                     incoming_speed = cached_action_speed(attacker, opponent_battle)
                     speed_order = own_speed < incoming_speed if trick_room else own_speed > incoming_speed
@@ -770,7 +780,7 @@ def choose_counterplay_action(
                 target = _target_name(move)
                 if spread and wide_guard:
                     continue
-                if quick_guard and int(getattr(move, "priority", 0) or 0) > 0:
+                if quick_guard and _move_priority(move) > 0:
                     continue
                 for target_slot in target_slots:
                     if protection_probability[target_slot] >= 1.0:
@@ -1233,6 +1243,32 @@ def choose_max_damage_action(action_mask: np.ndarray, battle, *, order_validator
         result = np.array([first, second], dtype=np.int64)
         try:
             validate = order_validator or DoublesEnv.action_to_order
+            # A stale/transitional native mask can expose explicit target
+            # variants for RANDOM_NORMAL moves even when the current Showdown
+            # request accepts only the targetless order (notably Struggle).
+            # Prefer the server's current legal-order list in that case.
+            for slot in range(2):
+                descriptor = decode_native_action_index(int(result[slot]))
+                if descriptor.kind != "move" or descriptor.target_code not in (1, 2):
+                    continue
+                order = DoublesEnv._action_to_order_individual(
+                    np.int64(result[slot]), battle, True, slot
+                )
+                if getattr(getattr(order, "order", None), "target", None) is None:
+                    continue
+                target_name = str(
+                    getattr(getattr(order.order, "target", None), "name", "")
+                ).upper()
+                if target_name != "RANDOM_NORMAL":
+                    continue
+                targetless_action = int(result[slot]) - descriptor.target_code
+                targetless_order = DoublesEnv._action_to_order_individual(
+                    np.int64(targetless_action), battle, True, slot
+                )
+                if str(targetless_order) in {
+                    str(legal_order) for legal_order in battle.valid_orders[slot]
+                }:
+                    result[slot] = targetless_action
             validate(result, battle, strict=True)
         except ValueError as error:
             if len(validation_failures) < 3:
@@ -1405,7 +1441,7 @@ def choose_public_counterplay_action(
                 attacker,
                 move,
                 target in {"alladjacent", "alladjacentfoes", "all"},
-                int(getattr(move, "priority", 0) or 0),
+                _move_priority(move),
                 probability,
                 models,
             ))
@@ -1603,7 +1639,7 @@ def choose_public_counterplay_action(
                             own_spread = False
                         if not targets_this_foe:
                             continue
-                        own_priority = int(getattr(own_move, "priority", 0) or 0)
+                        own_priority = _move_priority(own_move)
                         if own_priority < priority:
                             continue
                         own_speed = _public_speed_estimate(own_attacker, battle, own_side=True)
@@ -1656,7 +1692,7 @@ def choose_public_counterplay_action(
                                 item = _id(getattr(redirector, "item", ""))
                                 if "grass" in types or ability == "overcoat" or item == "safetygoggles":
                                     continue
-                            redirect_priority = int(getattr(redirect_move, "priority", 0) or 0)
+                            redirect_priority = _move_priority(redirect_move)
                             if redirect_priority < priority:
                                 continue
                             if redirect_priority == priority:
@@ -1691,7 +1727,7 @@ def choose_public_counterplay_action(
                                 or own_descriptor.kind != "move"
                             ):
                                 continue
-                            own_priority = int(getattr(own_move, "priority", 0) or 0)
+                            own_priority = _move_priority(own_move)
                             if priority > own_priority:
                                 acts_first = 1.0
                             elif priority < own_priority:

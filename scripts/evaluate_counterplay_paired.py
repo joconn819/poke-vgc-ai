@@ -550,6 +550,7 @@ def run_worker_process(args: argparse.Namespace, worker: int, pair_ids: list[int
     command = [
         sys.executable,
         str(Path(__file__).resolve()),
+        "--pairs", str(len(pair_ids)),
         "--worker-id", str(worker),
         "--pair-ids", ",".join(map(str, pair_ids)),
         "--seed", str(args.seed),

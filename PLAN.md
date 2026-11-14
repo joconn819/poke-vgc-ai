@@ -22,15 +22,22 @@ Pokémon Showdown remains the correctness reference and required battle platform
     "context": "Round579: 20,000 audited games; rollout 659.88 s; input-to-checkpoint 1,074.19 s; 20 shards compressed from 4.00 GB to 229 MB.",
     "decision_latency": "Round542 remains latest detailed weighted rollout profile.",
     "current_bottleneck": "Action selection 89.4 ms/episode; inference 38.2 ms; baseline action scoring 36.1 ms; engine roundtrip 32.4 ms; observation encoding 26.7 ms (Round542). CPU rollout throughput depends strongly on opponent type.",
-    "gpu_status": "CUDA PPO; headless simulation on CPU"
+    "gpu_status": "CUDA PPO; headless simulation on CPU",
+    "latest_competitive_team_evaluation": {
+      "workers": 4,
+      "round430_ppo_games_per_second": 2.917,
+      "public_counterplay_games_per_second": 13.171,
+      "context": "200 paired matches per arm on tournament-derived exact-SP teams. This is evaluation throughput, not a training rollout benchmark.",
+      "measured_bottleneck": "The PPO arm is about 4.5× slower than the public heuristic in this evaluation workload. No component-level profile was collected, so retain policy/action inference and observation work as the leading hypotheses, not a confirmed cause."
+    }
   },
   "latest_run": {
-    "round": 581,
-    "status": "Stochastic action-sampling diagnostic running",
-    "summary": "Round579 2x-learning-rate PPO failed to improve: 35.94% vs Max Damage, 34.38% vs Counterplay, 33.59% vs Public Counterplay; all paired changes vs Round430 include zero. Round579 regressed vs Round524 by 3.91 pp [−7.81,−0.39]. Testing stochastic sampling from Round430 next.",
-    "games": "20,000 training games; 128 fresh team-pair clusters per opponent in Round580",
-    "epochs": "4 PPO passes · 1,348 steps · KL 0.00746",
-    "evaluation": "Eight-opponent paired screen; no promotion"
+    "round": 594,
+    "status": "Competitive-team development evaluation complete; no training run recorded active",
+    "summary": "Imported 94 exact-SP tournament teams, validated them locally, and split complete events between 25 development and 22 reserved final clusters. Round430 PPO scored 35.5% and Public Counterplay 46.5% vs Max Damage on 200 matches per arm; paired difference +11 pp with a wide interval crossing zero. No agent is promoted; reserved final events remain untouched.",
+    "games": "200 matches per arm; 25 team-pair clusters × 4 outcome repeats × 2 seats",
+    "epochs": "No training in this round",
+    "evaluation": "Round594 competitive-team development; no final-set evaluation"
   },
   "method": "Masked PPO action logits are the default move policy. Terminal win/loss is the primary PPO objective; win probability and hidden-set prediction are auxiliary targets. Optional search remains disabled unless a broader held-out league supports it.",
   "jax_decision": "Recent throughput gains came from policy/observation and rollout work; a GPU battle-engine rewrite remains gated on representative end-to-end profiling and parity against local Showdown.",
@@ -416,6 +423,106 @@ Pokémon Showdown remains the correctness reference and required battle platform
     "errors_or_timeouts": 0,
     "action_adjustments": 0,
     "interpretation": "The historical ~69% Public Counterplay result did not transfer to this roster-family-filtered generated-team stress test."
+  },
+  "round594_competitive_development": {
+    "round": 594,
+    "status": "Competitive-team development evaluation complete; final events remain untouched",
+    "format": "gen9championsdoubles2026mcclosed",
+    "showdown_revision": "bebf328c69f5d065b4c0f738197e146cab699771",
+    "team_source": {
+      "name": "VGCPastes Champions M-C catalog, distributed through MunchStats",
+      "url": "https://raw.githubusercontent.com/PizzaTimeJoshua/munchstats/teams-data/app/champions-mc.json.gz",
+      "index_url": "https://raw.githubusercontent.com/PizzaTimeJoshua/munchstats/teams-data/app/index.json",
+      "attribution": "Team data from the VGCPastes Repository; fetched via MunchStats' public teams-data branch.",
+      "source_sha256": "4734fe5607a3e2b44e7bac498058328087fd7feb273d2b5226eba3f64a828ae6",
+      "filter": "Top 64 or better, six distinct complete sets, exact published SP spreads only",
+      "legal_validation": "94 of 94 normalized six-Pokemon teams passed the local Showdown Gen 9 Champions Doubles 2026 M-C Closed team validator.",
+      "redistribution_note": "Raw public source is cached locally for reproducibility and attribution. No separate redistribution license was identified; do not redistribute the cached team file."
+    },
+    "split": {
+      "method": "Tournament-event holdout; no event or exact roster crosses development/final.",
+      "development_events": [
+        "Baltimore Regional 2027",
+        "Brisbane Regional 2027",
+        "Frankfurt Regional 2027",
+        "Louisville Regional 2027",
+        "Recife Regional 2027"
+      ],
+      "final_events_reserved": [
+        "2027 Global Challenge II",
+        "Gdańsk Regional 2027",
+        "Nice Regional 2027",
+        "Puebla Regional 2027",
+        "Taiwan PBL 2027"
+      ],
+      "development_teams": 50,
+      "development_team_pair_clusters": 25,
+      "final_teams_reserved": 44,
+      "final_team_pair_clusters_reserved": 22,
+      "final_evaluated": false
+    },
+    "evaluation": {
+      "design": "25 fixed development team-pair clusters, four outcome repeats per pair, both seat orders, same paired seeds and Round402 learned preview selector for all arms.",
+      "opponent": "Max Damage baseline; public-view path is exercised, full information-boundary certification remains open",
+      "arms": {
+        "round430_ppo": {
+          "checkpoint": "training/outputs/phase12_headless/round430_hard_opponent_auxiliary_ppo_20k_20261030/checkpoints/latest.pt",
+          "score": 0.355,
+          "wins": 71,
+          "losses": 129,
+          "draws": 0,
+          "games": 200,
+          "team_cluster_bootstrap_95_ci": [
+            0.205,
+            0.515
+          ],
+          "games_per_second": 2.917,
+          "errors_or_timeouts": 0,
+          "action_adjustments": 0,
+          "information_boundary": "policy player-view path; broader audit still open"
+        },
+        "public_counterplay": {
+          "parameters": {
+            "incoming_threat_weight": 1.0,
+            "ko_bonus": 0.7
+          },
+          "score": 0.465,
+          "wins": 93,
+          "losses": 107,
+          "draws": 0,
+          "games": 200,
+          "team_cluster_bootstrap_95_ci": [
+            0.315,
+            0.62
+          ],
+          "games_per_second": 13.171,
+          "errors_or_timeouts": 0,
+          "action_adjustments": 0,
+          "information_boundary": "public-only baseline"
+        }
+      },
+      "paired_public_counterplay_minus_round430": {
+        "difference": 0.11,
+        "team_cluster_bootstrap_95_ci": [
+          -0.035,
+          0.26
+        ],
+        "clusters": 25
+      },
+      "interpretation": "Both agents scored below 50% against Max Damage at this sample size. The wide intervals and paired interval crossing zero make the relative ranking inconclusive. This is a small competitive-team development benchmark, not final evidence or an optimal-play claim.",
+      "fault_found_and_fixed": "The initial run found that poke-env raises KeyError when a custom-format move omits optional priority. The public counterplay baseline now treats missing priority as Showdown's default of zero; rerun completed with no errors."
+    },
+    "reproduction": {
+      "import": "venv/bin/python scripts/import_vgcpastes_teams.py --output-dir training/outputs/phase12_headless/round594_competitive_event_splits_20261113 --showdown-path /home/justin/p/poke_learning/pokemon-showdown",
+      "development_run": "Use scripts/evaluate_counterplay_paired.py with --pairs 25 --repeats 4 --workers 4 --seed 594100 --team-pair-manifest training/outputs/phase12_headless/round594_competitive_event_splits_20261113/team_pair_manifest.json --team-pair-split development, --team-selection-checkpoint training/outputs/phase12_headless/round402_selector_currentdata_8ep_20261030/selector_candidate.pt, and --player-preview-strategy learned --opponent-preview-strategy learned. Compare --player public_counterplay with --player policy and the Round430 checkpoint."
+    },
+    "artifacts": {
+      "importer": "scripts/import_vgcpastes_teams.py",
+      "team_pair_manifest": "training/outputs/phase12_headless/round594_competitive_event_splits_20261113/team_pair_manifest.json",
+      "normalized_teams": "training/outputs/phase12_headless/round594_competitive_event_splits_20261113/teams_by_event.json",
+      "public_counterplay_summary": "training/outputs/phase12_headless/round594_competitive_event_splits_20261113/dev_public_counterplay_25x4_retry/paired_summary.json",
+      "round430_summary": "training/outputs/phase12_headless/round594_competitive_event_splits_20261113/dev_round430_25x4/paired_summary.json"
+    }
   }
 }
 DASHBOARD_PROGRESS_JSON -->
@@ -19539,7 +19646,7 @@ and OUT set to the Round524 checkpoint and output paths.
 - Recomputed a matched payoff matrix for Round430, Round530, Round531, Round532, Round536, Round542, Round574, and Round579. Each policy faced the other seven and Max Damage, Counterplay, and Public Counterplay on 128 requested team clusters, both seats, with shared team/preview seeds. One incomplete cell cluster was excluded globally, leaving 127 common clusters. All 52 matchup cells had zero timeouts, protocol errors, and action corrections. Mean per-cell evaluation throughput was 3.93 games/s; the slower PPO-vs-PPO cells reached about 1.69 games/s due to long individual battles. The run used about 117 MB. Reproduction: `scripts/evaluate_round582_current_policy_meta_game.sh`; payoff analysis: `scripts/summarize_round582_current_policy_meta_game.py`.
 - Every policy remained below 50% against every direct heuristic. Scores versus Max Damage ranged from 40.2% (Round542) to 45.3% (Round574); versus Counterplay, 34.3% (Round530) to 36.6% (Round532); versus Public Counterplay, 37.4% (Round532) to 40.9% (Round542). Round579 scored 44.9% vs Max Damage, 34.6% vs Counterplay, and 38.6% vs Public Counterplay on these clusters. This independently confirms exploitable non-optimal play across the full current checkpoint pool.
 - The exact restricted maximin solution puts all row mass on Round532 and guarantees only 36.6% against the evaluated response columns. The team-cluster bootstrap 95% interval for its value is 30.3–43.4%, fully below 50%. The point-matrix adversary is pure Counterplay. Bootstrap average adversary support is 78.4% Counterplay, 16.3% Public Counterplay, and 4.6% Max Damage, with broad support intervals; the distribution is a training target over this finite population, not a global equilibrium claim.
-- Round583 is now training from Round532 for 20,000 games as an approximate PSRO best response. Its opponent distribution combines 90% of the bootstrap empirical dual response mixture with 10% of the bootstrap row equilibrium mixture: approximately 70.57% Counterplay, 14.63% Public Counterplay, 4.13% Max Damage, and 10.67% historical PPO policies. The PPO pool contains all eight current checkpoints, with Round532 represented by the trainer's starting-policy entry. Training uses the existing four-pass PPO setup, CUDA inference/training, and eight CPU rollout workers. The first launch exposed a mismatch between the auto-added starting policy and the exact opponent-pool mixture paths before any games ran; the corrected retry is the active run. No strength claim until audit and fresh evaluation complete.
+- Round583 finished training from Round532 for 20,000 games as an approximate PSRO best response, but remains unpromoted pending strict rollout audit and held-out evaluation. Its opponent distribution combines 90% of the bootstrap empirical dual response mixture with 10% of the bootstrap row equilibrium mixture: approximately 70.57% Counterplay, 14.63% Public Counterplay, 4.13% Max Damage, and 10.67% historical PPO policies. The PPO pool contains all eight current checkpoints, with Round532 represented by the trainer's starting-policy entry. Training uses the existing four-pass PPO setup, CUDA inference/training, and eight CPU rollout workers. The first launch exposed a mismatch between the auto-added starting policy and the exact opponent-pool mixture paths before any games ran; the corrected retry is the active run. No strength claim until audit and fresh evaluation complete.
 - Next: strictly audit Round583 rollouts, evaluate the resulting checkpoint on fresh teams against all three heuristics and the checkpoint population, and only add it to the empirical game if valid. Continue treating every direct heuristic score below 50% as a failure; do not promote based on relative candidate deltas alone. Full matrix: `site/round582_current_policy_meta_game.json`; training target: `training/outputs/phase12_headless/round583_psro_response_mix_20k_20261101_retry1/inputs/opponent_target.json`.
 
 
@@ -19549,3 +19656,9 @@ and OUT set to the Round524 checkpoint and output paths.
 - Generated and re-verified 256 development and 1,024 untouched final team-pair clusters. The rule rejects any roster sharing four or more species with the training set, previous evaluations, or reserved teams. This is a practical family proxy; curated competitive team-family holdouts are still required.
 - On the same 256 development clusters, two repeats and both seats (1,024 games per arm), Round430 scored 37.99% [33.30%, 42.68%] vs Max Damage. Public Counterplay scored 51.95% with the evaluator defaults and 50.78% with Round588 settings (incoming-threat weight 1.5, KO bonus 0.35). Paired gains over Round430 were +13.28 pp [6.64,19.92] and +9.96 pp [3.52,16.41]. All arms used the Round402 learned preview selector; no errors or action adjustments.
 - The old ~69% heuristic score did not transfer to this family-filtered generated-team sample. Treat this as a development stress test, not the final competitive benchmark. The final split is untouched. Round430 / Public Counterplay ran at 10.05 / 24.82–24.99 complete matches per second on eight workers. Full report: `site/round593_roster_disjoint_development.json`; raw artifacts: `training/outputs/phase12_headless/round593_roster_audit_20261113/`.
+
+### Round594: event-held-out competitive-team development check (final events reserved)
+
+- Imported 94 unique M-C teams with exact published SP from the VGCPastes catalog distributed by MunchStats. All 94 pass the local Showdown validator for `[Gen 9 Champions] Doubles 2026 M-C Closed`. Development uses 50 teams from Baltimore, Brisbane, Frankfurt, Louisville and Recife; final reserves 44 teams from Nice, Puebla, Gdańsk, Global Challenge II and Taiwan PBL. There are 25 development and 22 reserved final pair clusters; no event or exact roster crosses the split. Source checksum and provenance are recorded in `site/round594_competitive_development.json`. Public accessibility is not treated as a redistribution license; the source remains cached locally.
+- On the same 25 development team-pair clusters, four repeats and both seats (200 matches/arm), Round430 PPO scored 35.5% (71–129; team-cluster 95% interval 20.5–51.5%) against the Max Damage baseline. Public Counterplay scored 46.5% (93–107; interval 31.5–62.0%). Paired Public Counterplay-minus-Round430 was +11.0 pp [−3.5,+26.0], inconclusive. Both arms used Round402 learned preview, with zero errors, timeouts or action corrections. Throughput was 2.92 games/s for Round430 PPO and 13.17 for Public Counterplay on four workers in this tournament-team workload. The public heuristic and policy do not yet show reliable >50% strength here; the final event split remains untouched. Max Damage uses a player-view path, but its full information-boundary certification remains open.
+- The first evaluation attempt exposed a `KeyError('priority')` from poke-env for custom-format move entries missing optional priority. `src/baselines/native_damage.py` now safely uses the Showdown default of zero when the field is absent; the complete rerun had no failures. Reproduction and full source details: `site/round594_competitive_development.json`; raw outputs and split manifest: `training/outputs/phase12_headless/round594_competitive_event_splits_20261113/`.
