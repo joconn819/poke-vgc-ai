@@ -297,10 +297,10 @@
     }
   ],
   "speed": {
-    "games_per_second": "36.76 rollout / 20.92 input-to-checkpoint",
-    "context": "Round583 historical run: 20,000 games, 544.12 seconds rollout, 955.83 seconds to checkpoint; no held-out evaluation. Historical Counterplay opponent used privileged information.",
+    "games_per_second": "38.00 rollout / 21.51 input-to-checkpoint",
+    "context": "Round585: 20,000 audited games; rollout 526.41 seconds; recorded input-to-checkpoint 929.75 seconds; two malformed games replaced.",
     "decision_latency": "Round542 weighted profile remains the latest detailed rollout breakdown.",
-    "current_bottleneck": "Round542: action selection 89.4 ms/episode, then inference 38.2 ms, baseline scoring 36.1 ms, engine roundtrip 32.4 ms, observation encoding 26.7 ms. Round574 speed includes slower policy-pool opponents and remains CPU simulation. Round582 matchup evaluation is limited by a slow worker tail in PPO-vs-PPO cells (one 16-cluster shard took up to 152 seconds); direct heuristic cells were faster. This suggests dynamically scheduling team-pair clusters instead of fixed 16-pair shards for evaluation.",
+    "current_bottleneck": "Round585: preflight 252.91 seconds including 125.43 seconds of recovery; PPO training 150.40 seconds. More detailed full-run component profile pending.",
     "gpu_status": "CUDA PPO; headless battle simulation on CPU",
     "profile_context": "Round542 weighted per-episode rollout profile from 20,000 episodes across Max Damage, Counterplay, Public Counterplay, and six frozen PPO opponents with the 1+4 overlay.",
     "active_training_profile": {
@@ -1408,11 +1408,11 @@
   },
   "latest_run": {
     "round": 585,
-    "status": "20,000-game PPO run in progress",
-    "summary": "Training from Round430 against 50% Max Damage, 25% Public Counterplay and 25% historical PPO; privileged legacy Counterplay excluded. Information-boundary audit is incomplete. No strength claim until fresh matched evaluation.",
-    "games": "20,000 requested; in progress",
-    "epochs": "4 PPO passes planned",
-    "evaluation": "Pending; latest Round584: Round430 37.45%, Round583 36.52% vs Max Damage"
+    "status": "Training complete; matched Max Damage evaluation running",
+    "summary": "Round585 completed 20,000 audited games after replacing two incomplete games, with 160,332 transitions and both seats balanced. Round586 is evaluating it against Round430 and Max Damage on fresh matched team seeds. No new strength result yet.",
+    "games": "20,000 audited training games; evaluation running",
+    "epochs": "4 PPO passes requested",
+    "evaluation": "Round586 comparison running; 70% target not yet established"
   },
   "method": "Native self-play PPO for in-battle decisions. Terminal win/loss remains the main objective; win-probability and hidden-set prediction are auxiliary tasks. Search comes after a stronger policy.",
   "jax_decision": "Round430 has a confirmed self-play head-to-head lift over Round424, but external-opponent screens remain inconclusive. Prioritize measured inference batching, observation throughput, and rollouts; keep equilibrium-oriented opponent coverage and defer a JAX/GPU engine rewrite until its end-to-end payoff is measured.",
@@ -9088,10 +9088,14 @@
     "interpretation": "No evidence of improvement vs Round430; neither score meets the 70% target. Round583 trained mainly against privileged Counterplay. Information-boundary checks are incomplete."
   },
   "round585_training": {
-    "status": "in progress",
+    "status": "complete; Round586 evaluation running",
     "starting_policy": "Round430",
     "games_requested": 20000,
     "opponent_mix": "50% Max Damage, 25% Public Counterplay, 25% historical policies",
-    "reproduction": "scripts/train_round585_public_pool_20k.sh"
+    "reproduction": "scripts/train_round585_public_pool_20k.sh",
+    "rollout_games_per_second": 38.0,
+    "end_to_end_games_per_second": 21.51,
+    "trainable_transitions": 160332,
+    "preflight_errors": 0
   }
 }
