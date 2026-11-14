@@ -60,7 +60,7 @@
     "gpu": "NVIDIA GeForce RTX 4060 Laptop GPU, 8 GB; CUDA 13 driver available.",
     "jax": "JAX 0.12.0.1 CUDA wheel ran in an isolated temporary environment. This confirms device compatibility only; no battle simulator has been ported or benchmarked on GPU."
   },
-  "decision": "Do not start a greenfield JAX simulator yet. First run broader Showdown differential parity and information-boundary checks for Ninjask on the exact local format, then prototype it as an optional one-turn sampling backend while keeping Showdown as the reference. Compare full decision latency and paired strength at equal action/chance budgets. Reconsider JAX only if the validated CPU backend is still the measured sampling bottleneck and an actual batched transition prototype can beat it end to end.",
+  "decision": "Keep Showdown as correctness authority. The CPU Rust candidate remains promising for sampling, but integrate only behind an optional backend that accepts player-view inputs, constrains choices using the acting player\u2019s request, and retains Showdown differential checks. Do not expose Battle.projection() to policy/search features. Revisit a JAX port after an end-to-end Rust search comparison.",
   "reproduction_notes": {
     "package": "pip install ninjask==0.4.0",
     "local_showdown": "/home/justin/p/poke_learning/pokemon-showdown",
@@ -68,5 +68,34 @@
     "benchmark": "128 copies of the same selected local-Showdown state; one identical joint turn per branch; five trials; medians reported.",
     "parity": "32 full seeded random-legal-choice matches against local Showdown; normalized player-view protocol logs and terminal result compared."
   },
-  "external_reference": "https://github.com/dcabatin/Ninjask"
+  "external_reference": "https://github.com/dcabatin/Ninjask",
+  "expanded_validation": {
+    "random_legal_choice_replay": {
+      "games": 256,
+      "matched_after_request_aware_choice_filter": 256,
+      "state_or_log_divergences": 0,
+      "choice_rejections_before_filter": 3,
+      "rejection_cases": [
+        42,
+        112,
+        113
+      ],
+      "filter": "Remove switches when the acting player request marks the slot trapped or maybeTrapped; remove disabled moves.",
+      "interpretation": "The raw Ninjask legal-choice list is optimistic for some hidden trapping states. An adapter must intersect choices with the acting player request or handle server rejection and refresh; the raw list is not safe as a protocol action list."
+    },
+    "closed_sheet_view_audit": {
+      "opponent_teams": 70,
+      "phase": "after team preview and four-Pokemon lead selection, before turn-one choices",
+      "hidden_attribute_mutated": "all opponent move sets",
+      "observer_tracker_views_unchanged": 70,
+      "result": "Tracker.view did not change when only unrevealed opponent moves changed.",
+      "important_boundary": "Battle.projection() includes hidden opponent moves, items, abilities, and stats; it is an engine snapshot and must never be passed to the agent. Tracker.view plus the acting player request is the candidate player-view interface.",
+      "scope_limit": "This smoke check covers move secrecy in Tracker.view only; item, ability, stat, hidden roster assumptions, and every mid-battle event still need dedicated audits."
+    },
+    "reproduction_scripts": {
+      "parity": "scripts/verify_ninjask_showdown_parity.py and scripts/ninjask_showdown_bridge.js",
+      "closed_sheet": "scripts/audit_ninjask_closed_view.py",
+      "package": "ninjask==0.4.0"
+    }
+  }
 }

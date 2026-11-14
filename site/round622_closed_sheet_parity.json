@@ -1,0 +1,46 @@
+{
+  "title": "Round622: Rust simulator parity and closed-sheet information boundary",
+  "status": "sampled parity and move-secrecy checks passed; backend not integrated",
+  "target_format": "gen9championsdoubles2026mcclosed",
+  "reference": "Local Pokémon Showdown",
+  "backend": {
+    "name": "Ninjask",
+    "version": "0.4.0",
+    "team_pool_size": 70,
+    "teams_supported": 70
+  },
+  "differential_replay": {
+    "games": 256,
+    "matched": 256,
+    "state_or_log_divergences": 0,
+    "seed_start": 720160,
+    "choice_rejections_before_request_filter": 3,
+    "rejection_game_indices": [42, 112, 113],
+    "request_filter": [
+      "Drop switch actions when the acting player's request marks that active slot trapped or maybeTrapped.",
+      "Drop moves marked disabled in the acting player's request."
+    ],
+    "comparison": "Normalized player-view logs, turn count, terminal flag, and winner.",
+    "limits": "Random legal-choice trajectories only. This does not certify all mechanics, state combinations, or all legal actions. The request filter is conservative for maybeTrapped slots."
+  },
+  "hidden_information_audit": {
+    "opponent_teams": 70,
+    "phase": "After team preview and lead selection, before turn-one choices.",
+    "mutated_hidden_attribute": "All opponent move sets.",
+    "unchanged_tracker_views": 70,
+    "result": "The acting player's Tracker.view was byte-for-byte identical before and after hidden opponent moves were changed.",
+    "critical_finding": "Battle.projection() contains opponent hidden moves, held items, abilities, and stats. Never pass this engine snapshot to a policy or player-view feature encoder. Use Tracker.view, the acting player's request, and the player's protocol stream.",
+    "limits": "This audit covers move secrecy at one phase only. It does not yet certify hidden items, abilities, stats, opponent-world assumptions, or every midgame reveal."
+  },
+  "reproduction": {
+    "parity_command": "python scripts/verify_ninjask_showdown_parity.py --teams TEAM_POOL.json --packed-teams PACKED_TEAMS.json --dex FORMAT_DEX.json --showdown /path/to/local/pokemon-showdown --games 256",
+    "privacy_command": "python scripts/audit_ninjask_closed_view.py --teams TEAM_POOL.json --packed-teams PACKED_TEAMS.json --dex FORMAT_DEX.json",
+    "scripts": [
+      "scripts/verify_ninjask_showdown_parity.py",
+      "scripts/ninjask_showdown_bridge.js",
+      "scripts/audit_ninjask_closed_view.py"
+    ],
+    "dependencies": "ninjask==0.4.0; local Showdown Node dependencies for parity replay"
+  },
+  "next": "Audit other hidden fields and midgame reveals, then integrate an optional request-constrained Ninjask sampling backend behind Showdown differential checks. Reconsider JAX only after end-to-end CPU backend profiling."
+}
