@@ -1,0 +1,63 @@
+{
+  "format": "gen9championsdoubles2026mcclosed",
+  "opponent": "max_damage (player-view boundary provisionally checked; full audit pending)",
+  "seed": 231113001,
+  "method": "512 team-pair clusters; 2 outcome repeats; both seats; paired teams and previews; server battle RNG not controlled. Team-seed held-out status does not guarantee roster-disjointness.",
+  "arms": {
+    "round430": {
+      "wins": 767,
+      "losses": 1281,
+      "draws": 0,
+      "games": 2048,
+      "score": 0.37451171875,
+      "team_clusters": 512,
+      "cluster_bootstrap_95": [
+        0.33984375,
+        0.408203125
+      ],
+      "errors": 0,
+      "action_adjustments": 0,
+      "games_per_second": 7.7868995134232275,
+      "checkpoint": "/home/justin/p/poke_learning_2/training/outputs/phase12_headless/round430_hard_opponent_auxiliary_ppo_20k_20261030/checkpoints/latest.pt"
+    },
+    "round583": {
+      "wins": 748,
+      "losses": 1300,
+      "draws": 0,
+      "games": 2048,
+      "score": 0.365234375,
+      "team_clusters": 512,
+      "cluster_bootstrap_95": [
+        0.3310546875,
+        0.3994140625
+      ],
+      "errors": 0,
+      "action_adjustments": 0,
+      "games_per_second": 8.643295997095466,
+      "checkpoint": "/home/justin/p/poke_learning_2/training/outputs/phase12_headless/round583_psro_response_mix_20k_20261101_retry1/checkpoints/latest.pt"
+    }
+  },
+  "comparison": {
+    "bootstrap_replicates": 10000,
+    "candidate_minus_starting_rate": -0.00927734375,
+    "candidate_pairs_excluded": 0,
+    "candidate_score_rate": 0.365234375,
+    "candidate_summary": "training/outputs/phase12_headless/round584_round583_maxdamage_512x2_20261113/round583/paired_summary.json",
+    "difference_95_percentile_interval": [
+      -0.0302734375,
+      0.01123046875
+    ],
+    "matched_cases": 1024,
+    "matched_team_pair_clusters": 512,
+    "method": "match fixed teams, previews, and repeat index between checkpoints. Showdown battle RNG is generated server-side and is not controlled by the evaluator seed, so outcomes are paired by team-pair cluster rather than identical battle randomness. Average repeated case scores within each team-pair cluster and bootstrap paired cluster-level differences",
+    "outcome_repeats_per_cluster": 2,
+    "pairs_candidate_better": 92,
+    "pairs_candidate_worse": 109,
+    "pairs_tied": 311,
+    "seed": 231113001,
+    "starting_pairs_excluded": 0,
+    "starting_score_rate": 0.37451171875,
+    "starting_summary": "training/outputs/phase12_headless/round584_round583_maxdamage_512x2_20261113/round430/paired_summary.json"
+  },
+  "interpretation": "No evidence of improvement vs Round430; neither score meets the 70% target. Round583 trained mainly against privileged Counterplay. Information-boundary checks are incomplete."
+}
