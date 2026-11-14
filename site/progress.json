@@ -300,9 +300,9 @@
     "games_per_second": "38.00 rollout / 21.51 input-to-checkpoint",
     "context": "Round585: 20,000 audited games; rollout 526.41 seconds; recorded input-to-checkpoint 929.75 seconds; two malformed games replaced.",
     "decision_latency": "Round542 weighted profile remains the latest detailed rollout breakdown.",
-    "current_bottleneck": "Round585: preflight 252.91 seconds including 125.43 seconds of recovery; PPO training 150.40 seconds. More detailed full-run component profile pending.",
+    "current_bottleneck": "Round585 weighted rollout: action selection 77.44 ms/game, including policy inference 41.28 ms and baseline scoring 21.85 ms. Simulator round trips 31.28 ms; observation encoding 25.87 ms. Categories overlap. Preflight 252.91 s including recovery 125.43 s; PPO 150.40 s.",
     "gpu_status": "CUDA PPO; headless battle simulation on CPU",
-    "profile_context": "Round542 weighted per-episode rollout profile from 20,000 episodes across Max Damage, Counterplay, Public Counterplay, and six frozen PPO opponents with the 1+4 overlay.",
+    "profile_context": "Round585 weighted over 20,000 games; mean CPU 6.80 cores; peak aggregate RSS 9,865 MiB. Optimize and benchmark policy inference and baseline scoring first.",
     "active_training_profile": {
       "round": "542",
       "status": "Round542 response training profile",
