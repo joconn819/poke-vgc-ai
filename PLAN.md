@@ -27,9 +27,9 @@ Pokémon Showdown remains the correctness reference and required battle platform
   "latest_run": {
     "round": 581,
     "status": "Stochastic action-sampling diagnostic running",
-    "summary": "Round579 2x-learning-rate PPO failed to improve: 35.94% vs Max Damage, 34.38% vs Counterplay, 33.59% vs Public Counterplay; all paired changes vs Round430 include zero. Round579 regressed vs Round524 by 3.91 pp [\u22127.81,\u22120.39]. Testing stochastic sampling from Round430 next.",
+    "summary": "Round579 2x-learning-rate PPO failed to improve: 35.94% vs Max Damage, 34.38% vs Counterplay, 33.59% vs Public Counterplay; all paired changes vs Round430 include zero. Round579 regressed vs Round524 by 3.91 pp [−7.81,−0.39]. Testing stochastic sampling from Round430 next.",
     "games": "20,000 training games; 128 fresh team-pair clusters per opponent in Round580",
-    "epochs": "4 PPO passes \u00b7 1,348 steps \u00b7 KL 0.00746",
+    "epochs": "4 PPO passes · 1,348 steps · KL 0.00746",
     "evaluation": "Eight-opponent paired screen; no promotion"
   },
   "method": "Masked PPO action logits are the default move policy. Terminal win/loss is the primary PPO objective; win probability and hidden-set prediction are auxiliary targets. Optional search remains disabled unless a broader held-out league supports it.",
@@ -279,7 +279,7 @@ Pokémon Showdown remains the correctness reference and required battle platform
   "round539_group_norm_league": {
     "report": "site/round539_group_norm_league.json",
     "status": "complete_no_promotion",
-    "max_damage": "Round536 29.30%; Round538 30.27%; +0.98 pp [\u22121.17,+3.32]",
+    "max_damage": "Round536 29.30%; Round538 30.27%; +0.98 pp [−1.17,+3.32]",
     "interpretation": "Both remain clearly below 50%; candidate delta inconclusive."
   },
   "round540_opening14_summary": {
@@ -295,7 +295,7 @@ Pokémon Showdown remains the correctness reference and required battle platform
       14.062
     ],
     "confirmation_report": "round541_opening14_confirmation.json",
-    "confirmation": "Fresh 128 clusters \u00d7 2 outcomes vs Max Damage, Counterplay, Public Counterplay, and Round476. Overlay absolute scores: 45.90%, 42.97%, 47.27%, 53.91%; only Counterplay and Round476 paired gains excluded zero. All simple heuristic scores below 50%; overlay remains experimental."
+    "confirmation": "Fresh 128 clusters × 2 outcomes vs Max Damage, Counterplay, Public Counterplay, and Round476. Overlay absolute scores: 45.90%, 42.97%, 47.27%, 53.91%; only Counterplay and Round476 paired gains excluded zero. All simple heuristic scores below 50%; overlay remains experimental."
   },
   "round542_training": {
     "round": 542,
@@ -334,7 +334,7 @@ Pokémon Showdown remains the correctness reference and required battle platform
     "round": 573,
     "title": "Shared pairwise action ranker overfits and worsens held-out selection",
     "status": "Rejected offline; no promotion",
-    "summary": "The shared pairwise action ranker overfit: validation loss worsened after epoch 4, and its selected actions reduced worst-response outcomes by 10.84 pp [\u221214.60,\u22127.23]. The test teams were reused for exploration, not independent confirmation.",
+    "summary": "The shared pairwise action ranker overfit: validation loss worsened after epoch 4, and its selected actions reduced worst-response outcomes by 10.84 pp [−14.60,−7.23]. The test teams were reused for exploration, not independent confirmation.",
     "clusters": 173,
     "branch_matches": 64269,
     "matches_per_second": 63.85,
@@ -380,6 +380,42 @@ Pokémon Showdown remains the correctness reference and required battle platform
       "Round524": -3.906
     },
     "promotion": "Rejected; no simple-heuristic improvement and significant regression vs Round524."
+  },
+  "round593_roster_disjoint_development": {
+    "status": "Development evaluation complete; final split remains untouched",
+    "report": "round593_roster_disjoint_development.json",
+    "roster_audit": {
+      "unique_training_species_rosters": 99998,
+      "family_rule": "at most 3 shared species with any training, prior evaluation, or reserved roster",
+      "development_clusters": 256,
+      "final_clusters_reserved": 1024
+    },
+    "arms": {
+      "round430_ppo": {
+        "score": 0.3798828125,
+        "team_cluster_bootstrap_95_ci": [
+          0.3329833984375,
+          0.4267578125
+        ],
+        "games_per_second": 10.045948291323487
+      },
+      "public_counterplay_round588_parameters": {
+        "score": 0.5078125,
+        "team_cluster_bootstrap_95_ci": [
+          0.458984375,
+          0.5556640625
+        ],
+        "games_per_second": 24.823211736799852,
+        "parameters": {
+          "incoming_threat_weight": 1.5,
+          "ko_bonus": 0.35
+        }
+      }
+    },
+    "games_per_arm": 1024,
+    "errors_or_timeouts": 0,
+    "action_adjustments": 0,
+    "interpretation": "The historical ~69% Public Counterplay result did not transfer to this roster-family-filtered generated-team stress test."
   }
 }
 DASHBOARD_PROGRESS_JSON -->
@@ -19505,3 +19541,11 @@ and OUT set to the Round524 checkpoint and output paths.
 - The exact restricted maximin solution puts all row mass on Round532 and guarantees only 36.6% against the evaluated response columns. The team-cluster bootstrap 95% interval for its value is 30.3–43.4%, fully below 50%. The point-matrix adversary is pure Counterplay. Bootstrap average adversary support is 78.4% Counterplay, 16.3% Public Counterplay, and 4.6% Max Damage, with broad support intervals; the distribution is a training target over this finite population, not a global equilibrium claim.
 - Round583 is now training from Round532 for 20,000 games as an approximate PSRO best response. Its opponent distribution combines 90% of the bootstrap empirical dual response mixture with 10% of the bootstrap row equilibrium mixture: approximately 70.57% Counterplay, 14.63% Public Counterplay, 4.13% Max Damage, and 10.67% historical PPO policies. The PPO pool contains all eight current checkpoints, with Round532 represented by the trainer's starting-policy entry. Training uses the existing four-pass PPO setup, CUDA inference/training, and eight CPU rollout workers. The first launch exposed a mismatch between the auto-added starting policy and the exact opponent-pool mixture paths before any games ran; the corrected retry is the active run. No strength claim until audit and fresh evaluation complete.
 - Next: strictly audit Round583 rollouts, evaluate the resulting checkpoint on fresh teams against all three heuristics and the checkpoint population, and only add it to the empirical game if valid. Continue treating every direct heuristic score below 50% as a failure; do not promote based on relative candidate deltas alone. Full matrix: `site/round582_current_policy_meta_game.json`; training target: `training/outputs/phase12_headless/round583_psro_response_mix_20k_20261101_retry1/inputs/opponent_target.json`.
+
+
+### Round593: roster-family audit and development baseline (complete; final split reserved)
+
+- Audited 40,000 Round430 PPO, 40,000 Round585 PPO and 20,000 Round401 selector training rosters, yielding 99,998 unique six-species rosters. Prior Round586–589 evaluation data had no exact roster duplicates with training, but did contain meaningful four-of-six species overlap.
+- Generated and re-verified 256 development and 1,024 untouched final team-pair clusters. The rule rejects any roster sharing four or more species with the training set, previous evaluations, or reserved teams. This is a practical family proxy; curated competitive team-family holdouts are still required.
+- On the same 256 development clusters, two repeats and both seats (1,024 games per arm), Round430 scored 37.99% [33.30%, 42.68%] vs Max Damage. Public Counterplay scored 51.95% with the evaluator defaults and 50.78% with Round588 settings (incoming-threat weight 1.5, KO bonus 0.35). Paired gains over Round430 were +13.28 pp [6.64,19.92] and +9.96 pp [3.52,16.41]. All arms used the Round402 learned preview selector; no errors or action adjustments.
+- The old ~69% heuristic score did not transfer to this family-filtered generated-team sample. Treat this as a development stress test, not the final competitive benchmark. The final split is untouched. Round430 / Public Counterplay ran at 10.05 / 24.82–24.99 complete matches per second on eight workers. Full report: `site/round593_roster_disjoint_development.json`; raw artifacts: `training/outputs/phase12_headless/round593_roster_audit_20261113/`.
