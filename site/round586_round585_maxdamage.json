@@ -1,0 +1,58 @@
+{
+  "status": "complete; one candidate case incomplete",
+  "seed": 231914001,
+  "method": "512 team-pair clusters, two outcome repeats, both seats; battle RNG differs between arms; fresh seed does not establish roster-disjointness",
+  "comparison": {
+    "bootstrap_replicates": 10000,
+    "candidate_minus_starting_rate": -0.01123046875,
+    "candidate_pairs_excluded": 0,
+    "candidate_score_rate": 0.37939453125,
+    "candidate_summary": "training/outputs/phase12_headless/round586_round585_maxdamage_512x2_20261113/round585/paired_summary.json",
+    "difference_95_percentile_interval": [
+      -0.0322265625,
+      0.009289550781249822
+    ],
+    "matched_cases": 1023,
+    "matched_team_pair_clusters": 512,
+    "method": "match fixed teams, previews, and repeat index between checkpoints. Showdown battle RNG is generated server-side and is not controlled by the evaluator seed, so outcomes are paired by team-pair cluster rather than identical battle randomness. Average repeated case scores within each team-pair cluster and bootstrap paired cluster-level differences",
+    "outcome_repeats_per_cluster": 2,
+    "pairs_candidate_better": 99,
+    "pairs_candidate_worse": 106,
+    "pairs_tied": 307,
+    "seed": 231914001,
+    "starting_pairs_excluded": 1,
+    "starting_score_rate": 0.390625,
+    "starting_summary": "training/outputs/phase12_headless/round586_round585_maxdamage_512x2_20261113/round430/paired_summary.json"
+  },
+  "arms": {
+    "round430": {
+      "wins": 800,
+      "losses": 1248,
+      "draws": 0,
+      "games_completed": 2048,
+      "side_swapped_score_rate": 0.390625,
+      "timeouts_or_errors": 0,
+      "action_adjustments": 0,
+      "aggregate_games_per_second": 8.976045484098131,
+      "cluster_bootstrap_95": [
+        0.35693359375,
+        0.42431640625
+      ]
+    },
+    "round585": {
+      "wins": 777,
+      "losses": 1269,
+      "draws": 0,
+      "games_completed": 2046,
+      "side_swapped_score_rate": 0.37976539589442815,
+      "timeouts_or_errors": 1,
+      "action_adjustments": 0,
+      "aggregate_games_per_second": 7.954940383036543,
+      "cluster_bootstrap_95": [
+        0.34521484375,
+        0.41455078125
+      ]
+    }
+  },
+  "interpretation": "No supported improvement; scores remain below 70%. Max Damage information boundary remains under audit."
+}

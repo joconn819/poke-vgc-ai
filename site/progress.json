@@ -1407,16 +1407,16 @@
     "round584_evaluation_games_per_second": "7.79 Round430 / 8.64 Round583 games/s, eight evaluator workers"
   },
   "latest_run": {
-    "round": 585,
-    "status": "Training complete; matched Max Damage evaluation running",
-    "summary": "Round585 completed 20,000 audited games after replacing two incomplete games, with 160,332 transitions and both seats balanced. Round586 is evaluating it against Round430 and Max Damage on fresh matched team seeds. No new strength result yet.",
-    "games": "20,000 audited training games; evaluation running",
-    "epochs": "4 PPO passes requested",
-    "evaluation": "Round586 comparison running; 70% target not yet established"
+    "round": 587,
+    "status": "Public Counterplay baseline evaluation running",
+    "summary": "Round585 scored 37.98% vs Max Damage, Round430 39.06%; paired change \u22121.12 pp (95% interval \u22123.22 to +0.93). One candidate case failed. A stronger historical public-view heuristic is now being evaluated separately on fresh team seeds.",
+    "games": "Round586: 2,046 candidate and 2,048 control matches; Round587: 512 team clusters \u00d7 2 repeats \u00d7 2 seats requested",
+    "epochs": "Round585: four PPO passes",
+    "evaluation": "Round585 not promoted; public heuristic information boundary still under audit"
   },
   "method": "Native self-play PPO for in-battle decisions. Terminal win/loss remains the main objective; win-probability and hidden-set prediction are auxiliary tasks. Search comes after a stronger policy.",
   "jax_decision": "Round430 has a confirmed self-play head-to-head lift over Round424, but external-opponent screens remain inconclusive. Prioritize measured inference batching, observation throughput, and rollouts; keep equilibrium-oriented opponent coverage and defer a JAX/GPU engine rewrite until its end-to-end payoff is measured.",
-  "evaluation_note": "Round584: Round430 scored 37.45% and Round583 36.52% against Max Damage; neither meets 70%. The 95% paired difference interval includes zero. Legacy Counterplay uses privileged information and is a stress test, not a legal closed-sheet opponent. The Max Damage information boundary has passed opening hidden-set checks but remains under full audit.",
+  "evaluation_note": "The 70% target is not established. Round585 scored 37.98% and Round430 39.06% against Max Damage on fresh matched team seeds. Legacy Counterplay is privileged. The separately tested Public Counterplay heuristic has a preliminary opening information-boundary check, but its full boundary is still being audited.",
   "generated_at": "2026-11-01",
   "round462_evaluation": {
     "status": "Round462 not promoted \u00b7 initial paired screen complete",
@@ -9096,6 +9096,65 @@
     "rollout_games_per_second": 38.0,
     "end_to_end_games_per_second": 21.51,
     "trainable_transitions": 160332,
-    "preflight_errors": 0
+    "preflight_errors": 0,
+    "evaluation": "Round586: 37.98% vs Max Damage; 95% cluster CI 34.52\u201341.46%; one failed case; not promoted"
+  },
+  "round586_max_damage_evaluation": {
+    "status": "complete; one candidate case incomplete",
+    "seed": 231914001,
+    "method": "512 team-pair clusters, two outcome repeats, both seats; battle RNG differs between arms; fresh seed does not establish roster-disjointness",
+    "comparison": {
+      "bootstrap_replicates": 10000,
+      "candidate_minus_starting_rate": -0.01123046875,
+      "candidate_pairs_excluded": 0,
+      "candidate_score_rate": 0.37939453125,
+      "candidate_summary": "training/outputs/phase12_headless/round586_round585_maxdamage_512x2_20261113/round585/paired_summary.json",
+      "difference_95_percentile_interval": [
+        -0.0322265625,
+        0.009289550781249822
+      ],
+      "matched_cases": 1023,
+      "matched_team_pair_clusters": 512,
+      "method": "match fixed teams, previews, and repeat index between checkpoints. Showdown battle RNG is generated server-side and is not controlled by the evaluator seed, so outcomes are paired by team-pair cluster rather than identical battle randomness. Average repeated case scores within each team-pair cluster and bootstrap paired cluster-level differences",
+      "outcome_repeats_per_cluster": 2,
+      "pairs_candidate_better": 99,
+      "pairs_candidate_worse": 106,
+      "pairs_tied": 307,
+      "seed": 231914001,
+      "starting_pairs_excluded": 1,
+      "starting_score_rate": 0.390625,
+      "starting_summary": "training/outputs/phase12_headless/round586_round585_maxdamage_512x2_20261113/round430/paired_summary.json"
+    },
+    "arms": {
+      "round430": {
+        "wins": 800,
+        "losses": 1248,
+        "draws": 0,
+        "games_completed": 2048,
+        "side_swapped_score_rate": 0.390625,
+        "timeouts_or_errors": 0,
+        "action_adjustments": 0,
+        "aggregate_games_per_second": 8.976045484098131,
+        "cluster_bootstrap_95": [
+          0.35693359375,
+          0.42431640625
+        ]
+      },
+      "round585": {
+        "wins": 777,
+        "losses": 1269,
+        "draws": 0,
+        "games_completed": 2046,
+        "side_swapped_score_rate": 0.37976539589442815,
+        "timeouts_or_errors": 1,
+        "action_adjustments": 0,
+        "aggregate_games_per_second": 7.954940383036543,
+        "cluster_bootstrap_95": [
+          0.34521484375,
+          0.41455078125
+        ]
+      }
+    },
+    "interpretation": "No supported improvement; scores remain below 70%. Max Damage information boundary remains under audit."
   }
 }
