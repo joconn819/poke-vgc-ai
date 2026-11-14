@@ -407,6 +407,7 @@ def _semantic_native_action_pair(
             active = active_requests[slot] if slot < len(active_requests) else {}
             move_slots = active.get("moves", [])
             if len(move_slots) == 1 and move_slots[0].get("pp") is None:
+                semantic["target"] = 0
                 semantic["forced_targetless"] = True
         elif hasattr(chosen, "species"):
             semantic = {

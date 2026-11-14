@@ -1,0 +1,62 @@
+{
+  "title": "Rounds 615–620: response shortlist coverage and paired strength check",
+  "status": "complete; damage-ranked response proposal remains experimental",
+  "question": "Can the fixed-width four-response search matrix include the opponent's realized joint response more often without widening the matrix?",
+  "method": {
+    "format": "gen9championsdoubles2026mcclosed",
+    "round615_618_619": "64 same-seed team-pair clusters per opponent; two hidden-world samples per decision; compare semantic and damage-ranked shortlist inclusion",
+    "round620": "256 fresh team-pair clusters per opponent; both seats; raw policy and one-turn equilibrium search paired on the same matches; 2,048 matches total",
+    "search": "4 own candidates × 4 response candidates × 4 chance samples × 2 hidden worlds; one decision per match",
+    "policy": "Round600h",
+    "value_model": "Round609 trained from Round600h self-play outcomes",
+    "seed": 620160
+  },
+  "coverage": {
+    "sampled_worlds_per_opponent": 252,
+    "semantic": {"max_damage": 0.532, "public_counterplay": 0.329},
+    "damage_ranked": {"max_damage": 0.627, "public_counterplay": 0.440},
+    "conditional_on_both_actual_move_ids_available": {
+      "semantic": {"max_damage": 0.615, "public_counterplay": 0.414},
+      "damage_ranked": {"max_damage": 0.725, "public_counterplay": 0.561}
+    },
+    "generation_audit": "When the actual move IDs were available in the sampled hidden world, exact target/action semantics were generated in about 98% of cases. A forced-targetless Solar Beam target normalization defect in the diagnostic was corrected; it did not alter battle or search behavior."
+  },
+  "round620_score": {
+    "max_damage": {
+      "clusters": 256,
+      "matches_per_arm": 512,
+      "policy_only_win_rate": 0.435547,
+      "search_win_rate": 0.431641,
+      "paired_delta_percentage_points": -0.391,
+      "paired_cluster_bootstrap_95_ci_percentage_points": [-3.516, 2.734],
+      "search_policy_action_changed": 354,
+      "safe_search_fallback_matches": 16,
+      "search_matches_per_second": 2.337
+    },
+    "public_counterplay": {
+      "clusters": 256,
+      "matches_per_arm": 512,
+      "policy_only_win_rate": 0.466797,
+      "search_win_rate": 0.476563,
+      "paired_delta_percentage_points": 0.977,
+      "paired_cluster_bootstrap_95_ci_percentage_points": [-2.539, 4.492],
+      "search_policy_action_changed": 364,
+      "safe_search_fallback_matches": 16,
+      "search_matches_per_second": 2.046
+    },
+    "interpretation": "Neither comparison supports a strength gain. Coverage increased at the same matrix width, but the shortlist change has not improved paired full-match outcomes. Do not promote search or this response selector."
+  },
+  "speed": {
+    "round620_complete_match_throughput_games_per_second": {"max_damage": 2.337, "public_counterplay": 2.046},
+    "decision_budget": "10 seconds; one search decision per match",
+    "measurement_limit": "These are workload-specific complete-match rates, not training rollout rates and not a controlled speed comparison with earlier rounds.",
+    "bottleneck": "For this search workload, Showdown branch advancement and candidate/chance evaluation dominate. For training rollout throughput, the current measured bottleneck remains CPU action selection/policy inference and observation encoding; the GPU learner is not the dominant rollout path."
+  },
+  "decision": "Keep Round600h PPO as the playing baseline. Preserve damage_ranked as an experimental selectable strategy because it improves measured response coverage without widening the matrix, but do not deploy it as a strength improvement. Next work should improve response proposal quality and value/action alignment, then validate on a new paired cohort; do not spend more time widening the matrix absent a powered strength gain.",
+  "raw_results": [
+    "training/outputs/phase12_headless/round615_response_rank_diagnostic_64x1_20261114/",
+    "training/outputs/phase12_headless/round619_damage_ranked_64x1_20261114/",
+    "training/outputs/phase12_headless/round620_damage_ranked_256x1_20261114/"
+  ],
+  "reproduction": "RESPONSE_SELECTION_STRATEGY=damage_ranked MAX_RESPONSE_CANDIDATES=4 CLUSTERS=256 SEED=620160 OUT=training/outputs/phase12_headless/round620_damage_ranked_256x1_20261114 scripts/evaluate_round610_current_value_search.sh"
+}

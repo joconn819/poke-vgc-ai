@@ -804,8 +804,10 @@ def choose_sanitized_state_search_action(
         raise ValueError("search needs four own candidates and no fewer response candidates")
     if not 1 <= max_damage_response_candidates <= response_candidate_limit:
         raise ValueError("damage response candidate count must fit the response shortlist")
-    if response_selection_strategy not in {"semantic", "slot_coverage"}:
-        raise ValueError("response_selection_strategy must be 'semantic' or 'slot_coverage'")
+    if response_selection_strategy not in {"semantic", "slot_coverage", "damage_ranked"}:
+        raise ValueError(
+            "response_selection_strategy must be 'semantic', 'slot_coverage', or 'damage_ranked'"
+        )
     max_chance_samples = (
         chance_samples if max_chance_samples is None else int(max_chance_samples)
     )

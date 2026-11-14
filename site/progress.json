@@ -10987,5 +10987,40 @@
       "max_damage": 1.2334,
       "public_counterplay": 1.1474
     }
+  },
+  "round615_620_response_coverage": {
+    "status": "complete; response selector experimental, search not promoted",
+    "report": "round615_620_response_coverage.json",
+    "coverage": {
+      "semantic": {
+        "max_damage": 0.532,
+        "public_counterplay": 0.329
+      },
+      "damage_ranked": {
+        "max_damage": 0.627,
+        "public_counterplay": 0.44
+      }
+    },
+    "round620": {
+      "max_damage_delta_pp": -0.391,
+      "max_damage_ci95_pp": [
+        -3.516,
+        2.734
+      ],
+      "public_counterplay_delta_pp": 0.977,
+      "public_counterplay_ci95_pp": [
+        -2.539,
+        4.492
+      ],
+      "games_per_second": {
+        "max_damage": 2.337,
+        "public_counterplay": 2.046
+      }
+    },
+    "current_bottleneck": {
+      "search": "Showdown branch advancement and candidate/chance evaluation",
+      "training_rollouts": "CPU action selection/policy inference and observation encoding; GPU learner is not the dominant rollout path"
+    },
+    "next": "Keep PPO as playing baseline; improve value/action response alignment, then paired held-out evaluation without widening matrix."
   }
 }
