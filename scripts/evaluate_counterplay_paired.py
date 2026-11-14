@@ -422,9 +422,12 @@ def run_worker(args: argparse.Namespace, worker: int, pair_ids: list[int]) -> di
         save_team(team_a_path, team_a)
         save_team(team_b_path, team_b)
         opponent_preview_strategy = args.opponent_preview_strategy
+        player_preview_strategy = args.player_preview_strategy
+        if player_preview_strategy == "auto":
+            player_preview_strategy = "learned" if selector is not None else args.preview_strategy
         preview_a = choose_preview(
             team_a, team_b, args.seed + pair_index * 2,
-            "learned" if selector is not None else args.preview_strategy,
+            player_preview_strategy,
         )
         preview_b = choose_preview(
             team_b, team_a, args.seed + pair_index * 2 + 1,
@@ -532,6 +535,7 @@ def run_worker_process(args: argparse.Namespace, worker: int, pair_ids: list[int
         "--episode-timeout", str(args.episode_timeout),
         "--battle-format", args.battle_format,
         "--preview-strategy", args.preview_strategy,
+        "--player-preview-strategy", args.player_preview_strategy,
         "--opponent-preview-strategy", args.opponent_preview_strategy,
         "--preview-lead-weight", str(args.preview_lead_weight),
         "--preview-defense-weight", str(args.preview_defense_weight),
@@ -614,6 +618,12 @@ def main() -> None:
         help="random, damage heuristic, expected utility, or public-prior zero-sum preview",
     )
     parser.add_argument(
+        "--player-preview-strategy",
+        choices=("auto", "random", "damage", "expected", "equilibrium", "learned"),
+        default="auto",
+        help="preview rule for the evaluated player; auto preserves historical selector behavior",
+    )
+    parser.add_argument(
         "--opponent-preview-strategy",
         choices=("same", "random", "damage", "expected", "equilibrium", "learned"),
         default="same",
@@ -644,6 +654,8 @@ def main() -> None:
     parser.add_argument("--worker-id", type=int)
     parser.add_argument("--pair-ids")
     args = parser.parse_args()
+    if (args.player_preview_strategy == "learned" or args.opponent_preview_strategy == "learned") and args.team_selection_checkpoint is None:
+        parser.error("learned preview requires --team-selection-checkpoint")
     if args.worker_id is not None:
         ids = [int(value) for value in (args.pair_ids or "").split(",") if value]
         result = run_worker(args, args.worker_id, ids)
@@ -707,6 +719,7 @@ def main() -> None:
         "player": args.player,
         "opponent": "max_damage",
         "preview_strategy": args.preview_strategy,
+        "player_preview_strategy": args.player_preview_strategy,
         "opponent_preview_strategy": args.opponent_preview_strategy,
         "preview_lead_weight": args.preview_lead_weight,
         "preview_defense_weight": args.preview_defense_weight,

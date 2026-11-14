@@ -27,10 +27,12 @@ def main() -> None:
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--bootstrap-replicates", type=int, default=10000)
     parser.add_argument("--seed", type=int, default=20261119)
+    parser.add_argument("--points-key", choices=("checkpoint_points", "counterplay_points"), default="checkpoint_points")
     parser.add_argument(
         "--allow-preview-difference", action="store_true",
         help="Compare selector changes on identical team pairs even when their chosen previews differ.",
     )
+    parser.add_argument("--require-opponent-preview-equal", action="store_true", help="Require preview_b to match even when the evaluated player's preview differs.")
     args = parser.parse_args()
     if args.bootstrap_replicates < 100:
         parser.error("use at least 100 bootstrap replicates")
@@ -45,6 +47,8 @@ def main() -> None:
         compare_fields = ["team_a", "team_b"]
         if not args.allow_preview_difference:
             compare_fields.extend(("preview_a", "preview_b"))
+        elif args.require_opponent_preview_equal:
+            compare_fields.append("preview_b")
         for key in compare_fields:
             if a[key] != b[key]:
                 parser.error(f"team or preview mismatch for case {case_key}: {key}")
@@ -55,10 +59,10 @@ def main() -> None:
     for team_seed in cluster_ids:
         repeats = [key for key in shared if key[0] == team_seed]
         starting_cluster_scores.append(np.mean([
-            starting[key]["checkpoint_points"] / 2 for key in repeats
+            starting[key][args.points_key] / 2 for key in repeats
         ]))
         candidate_cluster_scores.append(np.mean([
-            candidate[key]["checkpoint_points"] / 2 for key in repeats
+            candidate[key][args.points_key] / 2 for key in repeats
         ]))
     start_points = np.asarray(starting_cluster_scores)
     candidate_points = np.asarray(candidate_cluster_scores)

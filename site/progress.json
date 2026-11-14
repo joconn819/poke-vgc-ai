@@ -1409,17 +1409,17 @@
     "round588_evaluation_games_per_second": "12.84 games/s, eight CPU evaluator workers; standalone heuristic vs Max Damage"
   },
   "latest_run": {
-    "round": 588,
-    "status": "Independent heuristic confirmation complete; 70% not established",
-    "summary": "Standalone Public Counterplay scored 69.14% vs Max Damage across 4,096 games (95% team-cluster interval 66.80\u201371.41%). Round587 scored 71.34% on 2,048 games. The trained Round585 PPO policy scored 37.98%; heuristic information boundary and roster disjointness remain under audit.",
+    "round": 589,
+    "status": "Preview ablation complete; no promotion",
+    "summary": "Damage-based player preview scored 67.60% vs Max Damage, versus 69.14% with learned preview on the same teams. Paired difference \u22121.54 pp [\u22124.10,+0.98]; not a supported improvement. This is a standalone heuristic, not PPO.",
     "games": "4,096 matches; 1,024 team-pair clusters, 2 repeats, both seats",
-    "epochs": "Standalone heuristic; no model update",
-    "evaluation": "Zero errors and action adjustments; independent seed confirmation complete"
+    "epochs": "No model update; preview-only ablation",
+    "evaluation": "Zero errors/action adjustments; 13.66 games/s; boundary audit pending"
   },
   "method": "Native self-play PPO for in-battle decisions. Terminal win/loss remains the main objective; win-probability and hidden-set prediction are auxiliary tasks. Search comes after a stronger policy.",
   "jax_decision": "Round430 has a confirmed self-play head-to-head lift over Round424, but external-opponent screens remain inconclusive. Prioritize measured inference batching, observation throughput, and rollouts; keep equilibrium-oriented opponent coverage and defer a JAX/GPU engine rewrite until its end-to-end payoff is measured.",
   "evaluation_note": "Round588 standalone Public Counterplay: 69.14% vs Max Damage (95% cluster CI 66.80\u201371.41%); 70% not established. Round587: 71.34% (68.21\u201374.41%). Round585 PPO: 37.98%. Full heuristic information-boundary audit remains open.",
-  "generated_at": "2026-11-01",
+  "generated_at": "2026-11-13",
   "round462_evaluation": {
     "status": "Round462 not promoted \u00b7 initial paired screen complete",
     "summary": "Round462 scored 44.82% against Max Damage [41.02%, 48.54%]. On the same teams and seeds, Round430 scored 44.73% and Round432 scored 44.43%; paired deltas were +0.10 pp [-1.37, +1.56] and +0.39 pp [-1.37, +2.05]. The update did not measurably change this weakness. Results against Public Counterplay and historical PPO are inconclusive; Random is an easy-baseline check.",
@@ -9260,5 +9260,40 @@
     "status": "complete; 70% not established",
     "method_note": "Standalone heuristic; 1,024 fresh-seed team-pair clusters, two outcome repeats, both sides, learned preview on both teams. CI includes 70%. Full information boundary and roster-disjointness remain unverified.",
     "reproduction": "SEED=232116001 PAIRS=1024 OUTPUT_ROOT=training/outputs/phase12_headless/round588_public_counterplay_maxdamage_1024x2_20261113 scripts/evaluate_round587_public_counterplay_maxdamage.sh"
+  },
+  "round589_damage_preview_evaluation": {
+    "status": "complete; damage preview not promoted",
+    "seed": 232116001,
+    "method": "1,024 team-pair clusters, two repeats, both seats. Same clusters as Round588; candidate player preview differs, opponent preview held fixed at Round402 learned selector; server battle RNG not controlled.",
+    "candidate": {
+      "preview": "damage",
+      "score_pct": 67.6025,
+      "team_cluster_bootstrap_95_pct": [
+        65.3076,
+        69.873
+      ],
+      "games": 4096,
+      "wins": 2769,
+      "errors": 0,
+      "action_adjustments": 0,
+      "games_per_second": 13.6579
+    },
+    "control_round588": {
+      "preview": "learned Round402 selector",
+      "score_pct": 69.140625,
+      "team_cluster_bootstrap_95_pct": [
+        66.796875,
+        71.4111328125
+      ]
+    },
+    "paired_delta_candidate_minus_control_pp": -1.5380859375,
+    "paired_cluster_bootstrap_95_pp": [
+      -4.1015625,
+      0.9765625
+    ],
+    "paired_team_clusters": 1024,
+    "conclusion": "No supported gain; retain learned preview. Standalone Public Counterplay heuristic, not PPO; full information-boundary and roster-disjoint audit remain open.",
+    "reproduction": "scripts/evaluate_round589_damage_preview.sh",
+    "report": "round589_damage_preview.json"
   }
 }

@@ -1,0 +1,47 @@
+{
+  "round": 589,
+  "status": "Complete; damage preview not promoted",
+  "objective": "Paired ablation of damage-based player preview against the learned Round402 preview selector, with opponent preview held fixed",
+  "format": "gen9championsdoubles2026mcclosed",
+  "player": "Standalone Public Counterplay heuristic (not a trained PPO policy)",
+  "opponent": "Max Damage",
+  "information_boundary": "public_only; opening-state hidden-set perturbations passed, full boundary audit pending",
+  "seed": 232116001,
+  "team_pair_clusters": 1024,
+  "outcome_repeats_per_cluster": 2,
+  "seats": "both; 4,096 complete games",
+  "preview": {
+    "candidate_player": "damage-based",
+    "control_player": "Round402 learned selector",
+    "opponent_both_arms": "Round402 learned selector",
+    "team_selection_checkpoint": "training/outputs/phase12_headless/round402_selector_currentdata_8ep_20261030/selector_candidate.pt"
+  },
+  "candidate": {
+    "wins": 2769,
+    "losses": 1327,
+    "draws": 0,
+    "score_rate_pct": 67.6025,
+    "team_cluster_bootstrap_95_pct": [65.3076, 69.8730],
+    "games_per_second": 13.6579,
+    "timeouts_or_errors": 0,
+    "action_adjustments": 0
+  },
+  "control_round588": {
+    "score_rate_pct": 69.1406,
+    "team_cluster_bootstrap_95_pct": [66.7969, 71.4111],
+    "games_per_second": 12.8373
+  },
+  "paired_comparison": {
+    "candidate_minus_control_percentage_points": -1.5381,
+    "cluster_bootstrap_95_percentage_points": [-4.1016, 0.9766],
+    "team_pair_clusters": 1024,
+    "candidate_better_clusters": 291,
+    "candidate_worse_clusters": 316,
+    "tied_clusters": 417,
+    "battle_rng": "Showdown RNG is server-side and not controlled; paired by team-pair cluster and repeat index"
+  },
+  "conclusion": "The test does not support replacing the learned preview with damage preview. The candidate point estimate is lower, and the paired interval includes zero.",
+  "reproduction": "scripts/evaluate_round589_damage_preview.sh",
+  "raw_summary": "training/outputs/phase12_headless/round589_damage_preview_vs_learned_1024x2_20261113/paired_summary.json",
+  "paired_summary": "training/outputs/phase12_headless/round589_damage_preview_vs_learned_1024x2_20261113/paired_comparison.json"
+}
