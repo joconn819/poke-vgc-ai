@@ -1,0 +1,241 @@
+{
+  "round": 597,
+  "status": "Balanced competitive development meta-game complete; exploratory only",
+  "format": "gen9championsdoubles2026mcclosed",
+  "team_source": "Round595 tournament team development split; reserved final event teams untouched",
+  "design": {
+    "participants": [
+      "Round430 PPO",
+      "Public Counterplay",
+      "Max Damage",
+      "Random"
+    ],
+    "development_team_pair_clusters": 35,
+    "outcome_repeats_per_pair": 2,
+    "seat_orders": "both; each paired match includes the seat-swapped game",
+    "team_assignment": "A/B team assignment alternated by pair ID; balances fixed team-role assignment",
+    "preview": "Round402 learned selector used by both sides",
+    "cells": 10,
+    "games_per_cell": 140,
+    "policy_checkpoint": "training/outputs/phase12_headless/round430_hard_opponent_auxiliary_ppo_20k_20261030/checkpoints/latest.pt",
+    "seed": 597100
+  },
+  "results": {
+    "round430_vs_round430": {
+      "player": "Round430 PPO",
+      "opponent": "Round430 PPO",
+      "score": 0.4714285714285714,
+      "wins": 66,
+      "losses": 74,
+      "draws": 0,
+      "games": 140,
+      "clusters": 35,
+      "cluster_bootstrap_95_ci": [
+        0.34285714285714286,
+        0.6071428571428571
+      ],
+      "errors_or_timeouts": 0,
+      "action_adjustments": 0,
+      "games_per_second": 1.7442703285748222,
+      "wall_seconds": 80.26278823098983
+    },
+    "round430_vs_public_counterplay": {
+      "player": "Round430 PPO",
+      "opponent": "Public Counterplay",
+      "score": 0.34285714285714286,
+      "wins": 48,
+      "losses": 92,
+      "draws": 0,
+      "games": 140,
+      "clusters": 35,
+      "cluster_bootstrap_95_ci": [
+        0.22142857142857142,
+        0.4714285714285714
+      ],
+      "errors_or_timeouts": 0,
+      "action_adjustments": 0,
+      "games_per_second": 1.5017977302181635,
+      "wall_seconds": 93.22160846498446
+    },
+    "round430_vs_max_damage": {
+      "player": "Round430 PPO",
+      "opponent": "Max Damage",
+      "score": 0.35,
+      "wins": 49,
+      "losses": 91,
+      "draws": 0,
+      "games": 140,
+      "clusters": 35,
+      "cluster_bootstrap_95_ci": [
+        0.2357142857142857,
+        0.4714285714285714
+      ],
+      "errors_or_timeouts": 0,
+      "action_adjustments": 0,
+      "games_per_second": 1.9957118913782006,
+      "wall_seconds": 70.15040628099814
+    },
+    "round430_vs_random": {
+      "player": "Round430 PPO",
+      "opponent": "Random",
+      "score": 0.9,
+      "wins": 126,
+      "losses": 14,
+      "draws": 0,
+      "games": 140,
+      "clusters": 35,
+      "cluster_bootstrap_95_ci": [
+        0.8571428571428571,
+        0.9428571428571428
+      ],
+      "errors_or_timeouts": 0,
+      "action_adjustments": 0,
+      "games_per_second": 1.415693957943201,
+      "wall_seconds": 98.89143004000653
+    },
+    "public_counterplay_vs_public_counterplay": {
+      "player": "Public Counterplay",
+      "opponent": "Public Counterplay",
+      "score": 0.4714285714285714,
+      "wins": 66,
+      "losses": 74,
+      "draws": 0,
+      "games": 140,
+      "clusters": 35,
+      "cluster_bootstrap_95_ci": [
+        0.34285714285714286,
+        0.6071428571428571
+      ],
+      "errors_or_timeouts": 0,
+      "action_adjustments": 0,
+      "games_per_second": 10.241509994556282,
+      "wall_seconds": 13.669859237008495
+    },
+    "public_counterplay_vs_max_damage": {
+      "player": "Public Counterplay",
+      "opponent": "Max Damage",
+      "score": 0.42857142857142855,
+      "wins": 60,
+      "losses": 80,
+      "draws": 0,
+      "games": 140,
+      "clusters": 35,
+      "cluster_bootstrap_95_ci": [
+        0.30714285714285716,
+        0.55
+      ],
+      "errors_or_timeouts": 0,
+      "action_adjustments": 0,
+      "games_per_second": 11.360140661171203,
+      "wall_seconds": 12.323791066999547
+    },
+    "public_counterplay_vs_random": {
+      "player": "Public Counterplay",
+      "opponent": "Random",
+      "score": 0.9571428571428572,
+      "wins": 134,
+      "losses": 6,
+      "draws": 0,
+      "games": 140,
+      "clusters": 35,
+      "cluster_bootstrap_95_ci": [
+        0.9214285714285714,
+        0.9857142857142858
+      ],
+      "errors_or_timeouts": 0,
+      "action_adjustments": 0,
+      "games_per_second": 10.959410834994825,
+      "wall_seconds": 12.774409328005277
+    },
+    "max_damage_vs_max_damage": {
+      "player": "Max Damage",
+      "opponent": "Max Damage",
+      "score": 0.4714285714285714,
+      "wins": 66,
+      "losses": 74,
+      "draws": 0,
+      "games": 140,
+      "clusters": 35,
+      "cluster_bootstrap_95_ci": [
+        0.32857142857142857,
+        0.6142857142857143
+      ],
+      "errors_or_timeouts": 0,
+      "action_adjustments": 0,
+      "games_per_second": 15.079781365975768,
+      "wall_seconds": 9.28395422999165
+    },
+    "max_damage_vs_random": {
+      "player": "Max Damage",
+      "opponent": "Random",
+      "score": 0.9285714285714286,
+      "wins": 130,
+      "losses": 10,
+      "draws": 0,
+      "games": 140,
+      "clusters": 35,
+      "cluster_bootstrap_95_ci": [
+        0.8928571428571429,
+        0.9642857142857143
+      ],
+      "errors_or_timeouts": 0,
+      "action_adjustments": 0,
+      "games_per_second": 13.61457950596712,
+      "wall_seconds": 10.28309393901145
+    },
+    "random_vs_random": {
+      "player": "Random",
+      "opponent": "Random",
+      "score": 0.4785714285714286,
+      "wins": 67,
+      "losses": 73,
+      "draws": 0,
+      "games": 140,
+      "clusters": 35,
+      "cluster_bootstrap_95_ci": [
+        0.39285714285714285,
+        0.5714285714285714
+      ],
+      "errors_or_timeouts": 0,
+      "action_adjustments": 0,
+      "games_per_second": 9.256901588265283,
+      "wall_seconds": 15.123850962991128
+    }
+  },
+  "interpretation": {
+    "round430_vs_max_damage": "35.0%; 95% cluster interval 23.6\u201347.1%, well below parity on this small event-held-out development set.",
+    "round430_vs_public_counterplay": "34.3%; 95% cluster interval 22.1\u201347.1%.",
+    "round430_vs_random": "90.0%; 95% cluster interval 85.7\u201394.3%; one long episode exceeded the initial 60-second timeout and was recovered at 180 seconds.",
+    "restricted_game_caveat": "This four-participant, 35-cluster development matrix is a limited empirical scorecard, not a Nash equilibrium for VGC. Self-matchups and symmetric zero-sum normalization make the restricted game value 50% by construction; do not read that as demonstrated strength. Max Damage point-estimates outperform Round430 and Public Counterplay here, while uncertainty remains wide.",
+    "promotion": "No policy promoted. Round430 remains the evaluated PPO reference only.",
+    "final_split": "Untouched."
+  },
+  "speed": {
+    "workers": 4,
+    "round430_games_per_second_by_cell": {
+      "vs_round430": 1.7442703285748222,
+      "vs_public_counterplay": 1.5017977302181635,
+      "vs_max_damage": 1.9957118913782006,
+      "vs_random": 1.415693957943201
+    },
+    "baseline_games_per_second": {
+      "public_counterplay_vs_max_damage": 11.360140661171203,
+      "max_damage_vs_random": 13.61457950596712
+    },
+    "note": "End-to-end evaluation speed; not a training rollout rate or component profile. One same-seed sharding comparison measured 5.6% higher throughput, but the long-worker tail persisted and one outcome changed; confirm with repeated runs before adopting as a stable gain.",
+    "sharding_comparison": {
+      "contiguous_baseline_games_per_second": 1.415693957943201,
+      "seeded_shuffled_games_per_second": 1.4946456503258665,
+      "relative_change_percent": 5.58,
+      "baseline_wall_seconds": 98.89143004000653,
+      "shuffled_wall_seconds": 93.66768636397319,
+      "sample_note": "One same-seed 140-match Round430-vs-Random rerun; battle outcomes differed by one win (126 vs 125), so work was not identical. Treat the 5.6% increase as preliminary. The longest worker still took 91.9 seconds; randomized equal shards did not remove the long-tail bottleneck."
+    }
+  },
+  "artifacts": {
+    "summaries": "training/outputs/phase12_headless/round597_balanced_competitive_meta_game_35x2_20261113/fullrun/*/paired_summary.json",
+    "runner": "scripts/evaluate_round597_balanced_competitive_meta_game.sh",
+    "evaluator": "scripts/evaluate_counterplay_paired.py",
+    "manifest": "training/outputs/phase12_headless/round595_competitive_event_splits_top256_20261113/team_pair_manifest.json"
+  }
+}

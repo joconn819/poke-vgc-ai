@@ -14,7 +14,7 @@ Pokémon Showdown remains the correctness reference and required battle platform
     "ci95": "[35.16%, 44.53%]",
     "games": 512,
     "clusters": 256,
-    "status": "Round430 remains baseline; Round574 and Round579 are rejected. Round579 missed all three simple-heuristic gates and regressed vs Round524 PPO.",
+    "status": "Round430 remains the PPO reference. Round597 confirms low scores on a small tournament-derived development set; no candidate promoted.",
     "evaluation": "Round580: Round579 scored 35.94% Max Damage (+0.78 pp [-2.73,+4.69]), 34.38% Counterplay (-0.78 [-4.69,+3.13]), and 33.59% Public Counterplay (-0.78 [-4.30,+2.73]); all below 50% and no paired improvement. It regressed vs Round524 by -3.91 pp [-7.81,-0.39]. Round430 remains reference only."
   },
   "speed": {
@@ -25,23 +25,28 @@ Pokémon Showdown remains the correctness reference and required battle platform
     "gpu_status": "CUDA PPO; headless simulation on CPU",
     "latest_competitive_team_evaluation": {
       "workers": 4,
-      "round430_ppo_games_per_second": 9.94,
-      "public_counterplay_games_per_second": 12.62,
-      "context": "Round595, 280 tournament-derived matches per arm. End-to-end evaluation throughput, not a training rollout benchmark.",
-      "measured_bottleneck": "The PPO arm ran about 21% slower than Public Counterplay in this workload. No component profile was captured; policy inference/action scoring and match-length variation remain unseparated."
+      "round597_round430_games_per_second": {
+        "vs_round430": 1.74,
+        "vs_public_counterplay": 1.5,
+        "vs_max_damage": 2.0,
+        "vs_random": 1.42
+      },
+      "public_counterplay_vs_max_damage_games_per_second": 11.36,
+      "context": "Round597, 140 matches per matchup cell on 35 competitive team-pair clusters; full end-to-end evaluation rates.",
+      "measured_bottleneck": "PPO-involving tournament matchups are 1.42–2.00 games/s with large long-game tails; seeded shuffled shards measured 1.49 games/s vs 1.42 in one rerun but the 91.9-second worker tail remained. Repeat the comparison before adopting; no component profile yet."
     }
   },
   "latest_run": {
-    "round": 595,
-    "status": "Expanded competitive-team development evaluation complete; final events reserved",
-    "summary": "On 35 event-held-out team-pair clusters and 280 matches per arm, Round430 PPO scored 35.7% and Public Counterplay 45.0% vs Max Damage. Paired difference +9.3 pp [−2.9,+21.8], inconclusive. No agent promoted; final event group untouched.",
-    "games": "280 matches per arm; 35 team-pair clusters × 4 outcome repeats × 2 seats",
+    "round": 597,
+    "status": "Balanced competitive development meta-game complete; exploratory only",
+    "summary": "On 35 event-held-out tournament team-pair clusters, Round430 PPO scored 35.0% vs Max Damage and 34.3% vs Public Counterplay, with 140 matches per cell and wide cluster intervals. No policy promoted; reserved final events remain untouched.",
+    "games": "10 matchup cells × 140 games; 35 clusters, two repeats and both seats",
     "epochs": "No training in this round",
-    "evaluation": "Round595 event-held-out competitive-team development; final set not evaluated"
+    "evaluation": "Balanced four-participant empirical scorecard; final event split not evaluated"
   },
   "method": "Masked PPO action logits are the default move policy. Terminal win/loss is the primary PPO objective; win probability and hidden-set prediction are auxiliary targets. Optional search remains disabled unless a broader held-out league supports it.",
   "jax_decision": "Recent throughput gains came from policy/observation and rollout work; a GPU battle-engine rewrite remains gated on representative end-to-end profiling and parity against local Showdown.",
-  "evaluation_note": "A repeatable score below 50% against a legal simple heuristic is direct evidence of exploitable, non-optimal play on that opponent/team distribution. Round580: Round579 scores were 35.94% vs Max Damage, 34.38% vs Counterplay, and 33.59% vs Public Counterplay; no paired gains vs Round430. Round579 regressed against Round524. Neither candidate is near robust play.",
+  "evaluation_note": "Round597 balanced team assignment and side swaps show Round430 at 35.0% vs Max Damage [23.6,47.1] and 34.3% vs Public Counterplay [22.1,47.1] on 35 competitive development clusters. These are exploratory low-sample development results; final events remain untouched. Restricted symmetric payoff matrices do not establish global Nash or optimal play.",
   "round499_policy_ensemble": {
     "round": 499,
     "status": "Collection and held-out fits complete; selector not promoted",
@@ -19776,3 +19781,12 @@ and OUT set to the Round524 checkpoint and output paths.
 - Matched Round430 PPO and Public Counterplay on the same 35 clusters, four outcomes per pair, both seats and the Round402 learned preview selector (280 matches per arm). Public Counterplay scored 45.0% (126–154; team-cluster 95% interval 31.1–58.9%); Round430 scored 35.7% (100–180; 24.6–47.5%). Paired Public Counterplay-minus-Round430 was +9.3 pp [−2.9,+21.8], which is inconclusive. Neither shows reliable >50% performance. Zero errors, timeouts or action corrections.
 - Evaluation throughput with four workers was 12.62 games/s for Public Counterplay and 9.94 for Round430 PPO. This is end-to-end evaluation speed, not a profile of the training hot path. The additional model work corresponds to a 21% throughput reduction in this run; component profiling remains necessary before assigning the cause.
 - The initial top-64 evaluation exposed and fixed poke-env's `KeyError('priority')` on custom move data missing optional priority. Missing priority now defaults to zero as in Showdown. Reproduction/report: `site/round595_competitive_development.json`; raw artifacts: `training/outputs/phase12_headless/round595_competitive_event_splits_top256_20261113/`.
+
+
+### Round597: balanced four-policy competitive development matrix (complete; no promotion)
+
+- Evaluated Round430 PPO, Public Counterplay, Max Damage and Random on the Round595 event-held-out development set. Each of 10 matchup cells used 35 team-pair clusters, two outcome repeats, both seat orders, Round402 learned preview, and alternated the manifest A/B team assignment across cluster IDs. That yields 140 matches per cell. All 10 cells completed with zero timeouts/errors and zero action adjustments after recovery of one Round430-vs-Random long-game leg. The reserved final event teams were not used.
+- Round430 scored 35.0% vs Max Damage (49–91; 95% cluster interval 23.6–47.1%), 34.3% vs Public Counterplay (48–92; 22.1–47.1%), 90.0% vs Random (126–14; 85.7–94.3%), and 47.1% in the Round430 mirror (66–74; 34.3–60.7%). Public Counterplay scored 42.9% vs Max Damage (60–80; 30.7–55.0%) and 95.7% vs Random. The small 35-cluster sample has broad uncertainty; this is a development diagnostic, not final evidence or an equilibrium result. No policy is promoted.
+- Matchup rates are side-swapped and team-role-balanced. A restricted, symmetric four-strategy payoff matrix has a 50% value by construction; that number is not evidence of strength or global Nash equilibrium. The data instead show Round430 losing to both direct baselines in point estimates on these tournament teams. Full information-boundary audit remains open for Round430 and Max Damage.
+- Four-worker end-to-end evaluation ran at 1.42–2.00 games/s for Round430 matchups and 11.36 games/s for Public Counterplay vs Max Damage. One PPO-vs-Random episode exceeded the initial 60-second worker timeout and was replayed successfully with a 180-second timeout. This reflects evaluation workload/match-length tails, not rollout throughput. Seeded randomized equal shards measured 1.49 vs 1.42 games/s (+5.6%) in one same-seed 140-match rerun. The longest worker still took 91.9 seconds, and one game outcome changed across runs; this is preliminary and should be repeated before treating it as a stable gain.
+- Report: `site/round597_competitive_meta_game.json`; raw match summaries: `training/outputs/phase12_headless/round597_balanced_competitive_meta_game_35x2_20261113/fullrun/`; runner: `scripts/evaluate_round597_balanced_competitive_meta_game.sh`.

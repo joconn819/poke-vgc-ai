@@ -11,7 +11,7 @@
     "ci95": "[35.16%, 44.53%]",
     "games": 512,
     "label": "Current validated in-battle default",
-    "status": "Round430 remains baseline; Round574 and Round579 are rejected. Round579 missed all three simple-heuristic gates and regressed vs Round524 PPO.",
+    "status": "Round430 remains the PPO reference. Round597 confirms low scores on a small tournament-derived development set; no candidate promoted.",
     "note": "Round431 scored 49.36% [45.85%, 52.93%] against Round430, and Round432 scored 47.90% [44.29%, 51.61%]; neither showed a clear gain. Round430 remains the validated in-battle candidate. Round402's 77.15% result is a separate team-preview selector benchmark. Round432 external screens also showed no clear lift: all paired 95% intervals vs Round430 and Round431 include zero. Round432 cross-opponent equal-weight mean/median/p10/worst were 60.35%/48.83%/47.64%/47.46%; the mean is buoyed by random play. Round435 used a Round434 restricted-game mixture (31.7% Round430 / 68.3% Round432 in the policy pool) and scored 52.98% [49.41%, 56.59%] head-to-head with Round430; all matched external deltas vs Round430/432 included zero. Round430 remains the candidate. Round436 removed hidden-set auxiliary loss on the identical Round435 data; it scored 53.42% [49.80%, 56.93%] vs Round435 over 512 clusters (one incomplete game), an inconclusive ablation. Round430 remains the validated candidate. Round436 external screens at 256 clusters found no supported paired gain vs Round435: deltas on 128 shared clusters were +0.20 pp vs Max Damage [-0.59,+0.98], +0.39 pp vs public Counterplay [-0.59,+1.37], 0.00 pp vs random [-0.78,+0.78], and -0.20 pp vs Round102 [-0.98,+0.39]. Round436 remains unpromoted; Round430 is still the validated candidate. Round462\u2019s latest full training run screened at 44.82% vs Max Damage [41.02%, 48.54%] and around 48% vs Public Counterplay/historical PPO. Do not promote it; the Max Damage interval is below 50% and performance vs stronger policy opponents is inconclusive. Exact-seed Max Damage controls found no measurable change from Round430: +0.10 pp [\u22121.37, +1.56]; Round432 control was +0.39 pp [\u22121.37, +2.05]. The weakness predates Round462. Round485 increased Max Damage exposure from Round473\u2019s 25% to 70%, with all else held as planned. On the same held-out team-pair clusters it did not improve the Max Damage result or the five-opponent composite; retain Round430. Round488 covered three game phases, but its three-response robust action-value selector regressed on held-out Public Counterplay; five split fits show no robust overall selector gain, so Round430 remains the default. Round489 added Random and legacy Counterplay to the one-step response set, but neither maximin nor equal-weight action selection beat the incumbent on held-out clusters; the only learned-policy response was Round476. Round515 cleanly confirmed the Max Damage weakness: Round430 scored 33.50% [28.81%, 38.18%], Round504 32.81% [28.22%, 37.50%], paired change -0.68 pp [-2.73, +1.37]. Both arms had 1,024 matches, zero errors/timeouts/corrections, and approximately 9.2 games/s over eight workers. Neither policy is close to robust play against this simple baseline. Round567 expanded midgame data to 283 team clusters; the outcome-informed maximin oracle gained +4.77 pp [+3.16,+6.45], but the oracle is not deployable. Round568 selected actions were \u22127.89 pp [\u221213.60,\u22123.07] on held-out worst-response outcomes. Round569 paired advantage selection was \u221213.16 pp [\u221219.74,\u22127.46]. Sub-50% results against simple policies are substantive weaknesses; keep Max Damage as an independent scorecard metric. Fresh Round571/572 testing on 173 held-out team clusters confirmed maximin oracle headroom (+4.62 pp [+1.95,+7.66]) but the incumbent-anchored learned selector lost 2.17 pp [\u22123.90,\u22120.87]. The candidate remains unpromoted. Round573 shared action ranker changed 63/173 exploratory choices and lost 10.84 pp worst-response value [\u221214.60,\u22127.23]; its teams had already informed Round572, so this is not independent confirmation. Round575 compared Round574 against Round430 on fresh teams: 40.23% vs Max Damage (+1.56 pp, 95% CI [-1.56,+4.69]), 28.13% vs Counterplay (+0.39 [-2.73,+3.13]), and 44.14% vs Public Counterplay (-1.57 [-5.51,+2.36]); no paired delta was significant. All eight matchup intervals included zero. Round574 is not promoted. Scores below 50% against direct heuristics remain evidence of exploitable, non-optimal play.",
     "clusters": 256,
     "evaluation": "Round580: Round579 scored 35.94% Max Damage (+0.78 pp [-2.73,+4.69]), 34.38% Counterplay (-0.78 [-4.69,+3.13]), and 33.59% Public Counterplay (-0.78 [-4.30,+2.73]); all below 50% and no paired improvement. It regressed vs Round524 by -3.91 pp [-7.81,-0.39]. Round430 remains reference only."
@@ -1413,22 +1413,29 @@
       "workers": 4,
       "round430_ppo_games_per_second": 9.94,
       "public_counterplay_games_per_second": 12.62,
-      "context": "Round595, 280 tournament-derived matches per arm. End-to-end evaluation throughput, not a training rollout benchmark.",
-      "measured_bottleneck": "The PPO arm ran about 21% slower than Public Counterplay in this workload. No component profile was captured; policy inference/action scoring and match-length variation remain unseparated."
+      "context": "Round597, 140 matches per matchup cell on 35 competitive team-pair clusters; full end-to-end evaluation rates.",
+      "measured_bottleneck": "PPO-involving tournament matchups are 1.42\u20132.00 games/s with large long-game tails; seeded shuffled shards measured 1.49 games/s vs 1.42 in one rerun but the 91.9-second worker tail remained. Repeat the comparison before adopting; no component profile yet.",
+      "round597_round430_games_per_second": {
+        "vs_round430": 1.74,
+        "vs_public_counterplay": 1.5,
+        "vs_max_damage": 2.0,
+        "vs_random": 1.42
+      },
+      "public_counterplay_vs_max_damage_games_per_second": 11.36
     }
   },
   "latest_run": {
-    "round": 595,
-    "status": "Expanded competitive-team development evaluation complete; final events reserved",
-    "summary": "On 35 event-held-out team-pair clusters and 280 matches per arm, Round430 PPO scored 35.7% and Public Counterplay 45.0% vs Max Damage. Paired difference +9.3 pp [\u22122.9,+21.8], inconclusive. No agent promoted; final event group untouched.",
-    "games": "280 matches per arm; 35 team-pair clusters \u00d7 4 outcome repeats \u00d7 2 seats",
+    "round": 597,
+    "status": "Balanced competitive development meta-game complete; exploratory only",
+    "summary": "On 35 event-held-out tournament team-pair clusters, Round430 PPO scored 35.0% vs Max Damage and 34.3% vs Public Counterplay, with 140 matches per cell and wide cluster intervals. No policy promoted; reserved final events remain untouched.",
+    "games": "10 matchup cells \u00d7 140 games; 35 clusters, two repeats and both seats",
     "epochs": "No training in this round",
-    "evaluation": "Round595 event-held-out competitive-team development; final set not evaluated"
+    "evaluation": "Balanced four-participant empirical scorecard; final event split not evaluated"
   },
   "method": "Masked PPO action logits are the default move policy. Terminal win/loss is the primary PPO objective; win probability and hidden-set prediction are auxiliary targets. Optional search remains disabled unless a broader held-out league supports it.",
   "jax_decision": "Recent throughput gains came from policy/observation and rollout work; a GPU battle-engine rewrite remains gated on representative end-to-end profiling and parity against local Showdown.",
-  "evaluation_note": "A repeatable score below 50% against a legal simple heuristic is direct evidence of exploitable, non-optimal play on that opponent/team distribution. Round580: Round579 scores were 35.94% vs Max Damage, 34.38% vs Counterplay, and 33.59% vs Public Counterplay; no paired gains vs Round430. Round579 regressed against Round524. Neither candidate is near robust play.",
-  "generated_at": "2026-11-14 04:31 UTC",
+  "evaluation_note": "Round597 balanced team assignment and side swaps show Round430 at 35.0% vs Max Damage [23.6,47.1] and 34.3% vs Public Counterplay [22.1,47.1] on 35 competitive development clusters. These are exploratory low-sample development results; final events remain untouched. Restricted symmetric payoff matrices do not establish global Nash or optimal play.",
+  "generated_at": "2026-11-14 04:59 UTC",
   "round462_evaluation": {
     "status": "Round462 not promoted \u00b7 initial paired screen complete",
     "summary": "Round462 scored 44.82% against Max Damage [41.02%, 48.54%]. On the same teams and seeds, Round430 scored 44.73% and Round432 scored 44.43%; paired deltas were +0.10 pp [-1.37, +1.56] and +0.39 pp [-1.37, +2.05]. The update did not measurably change this weakness. Results against Public Counterplay and historical PPO are inconclusive; Random is an easy-baseline check.",

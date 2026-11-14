@@ -1,4 +1,4 @@
-"""Evaluate the support-aware counterplay baseline on side-swapped teams."""
+"""Evaluate paired agents on fixed teams, including side-swapped outcomes."""
 
 from __future__ import annotations
 
@@ -434,6 +434,9 @@ def run_worker(args: argparse.Namespace, worker: int, pair_ids: list[int]) -> di
             if team_a == team_b:
                 raise RuntimeError(f"could not generate distinct teams for pair {pair_index}")
             generator_seeds = [team_seed, team_seed + 1 + retries * 100_000]
+        team_assignment_flipped = bool(args.balance_team_assignment and pair_index % 2)
+        if team_assignment_flipped:
+            team_a, team_b = team_b, team_a
         team_a_path = worker_dir / f"pair_{pair_index:04d}_A.json"
         team_b_path = worker_dir / f"pair_{pair_index:04d}_B.json"
         save_team(team_a_path, team_a)
@@ -478,7 +481,10 @@ def run_worker(args: argparse.Namespace, worker: int, pair_ids: list[int]) -> di
                 checkpoint=args.checkpoint if args.player == "policy" else None,
                 output=leg1_path,
                 seed=args.seed + case_index,
-                opponent="max_damage",
+                opponent=args.opponent,
+                opponent_checkpoint=(
+                    args.opponent_checkpoint if args.opponent == "policy" else None
+                ),
                 player=args.player,
                 team1_json=team_a_path,
                 team2_json=team_b_path,
@@ -487,19 +493,22 @@ def run_worker(args: argparse.Namespace, worker: int, pair_ids: list[int]) -> di
                 team_selection_checkpoint=args.team_selection_checkpoint,
                 **common,
             )
-            # Swap teams and preview choices. Player 1 now uses max-damage;
-            # score the inverted result for counterplay on player 2.
+            # Swap teams and preview choices so both participants take both seats.
             leg2 = evaluate(
-                checkpoint=None,
+                checkpoint=(
+                    args.opponent_checkpoint if args.opponent == "policy" else None
+                ),
                 output=leg2_path,
                 seed=args.seed + 100_000 + case_index,
                 opponent=args.player,
-                player="max_damage",
+                opponent_checkpoint=(
+                    args.checkpoint if args.player == "policy" else None
+                ),
+                player=args.opponent,
                 team1_json=team_b_path,
                 team2_json=team_a_path,
                 preview_action_player1=preview_b,
                 preview_action_player2=preview_a,
-                opponent_checkpoint=args.checkpoint if args.player == "policy" else None,
                 team_selection_checkpoint=args.team_selection_checkpoint,
                 **common,
             )
@@ -516,6 +525,7 @@ def run_worker(args: argparse.Namespace, worker: int, pair_ids: list[int]) -> di
                 "team_seed": team_seed,
                 "team_generator_seeds": generator_seeds,
                 "team_manifest_split": args.team_pair_split if manifest_pair is not None else None,
+                "team_assignment_flipped": team_assignment_flipped,
                 "team_a": [p.get("speciesId", p.get("species", "")) for p in team_a],
                 "team_b": [p.get("speciesId", p.get("species", "")) for p in team_b],
                 "preview_a": preview_a,
@@ -558,6 +568,8 @@ def run_worker_process(args: argparse.Namespace, worker: int, pair_ids: list[int
         "--episode-timeout", str(args.episode_timeout),
         "--battle-format", args.battle_format,
         "--player", args.player,
+        "--opponent", args.opponent,
+        *( ["--balance-team-assignment"] if args.balance_team_assignment else [] ),
         "--preview-strategy", args.preview_strategy,
         "--player-preview-strategy", args.player_preview_strategy,
         "--opponent-preview-strategy", args.opponent_preview_strategy,
@@ -576,6 +588,8 @@ def run_worker_process(args: argparse.Namespace, worker: int, pair_ids: list[int
     ]
     if args.checkpoint is not None:
         command.extend(["--checkpoint", str(args.checkpoint)])
+    if args.opponent_checkpoint is not None:
+        command.extend(["--opponent-checkpoint", str(args.opponent_checkpoint)])
     if args.team_pair_manifest is not None:
         command.extend([
             "--team-pair-manifest", str(args.team_pair_manifest),
@@ -625,8 +639,23 @@ def main() -> None:
     parser.add_argument("--seed", type=int, default=20261100)
     parser.add_argument("--episode-timeout", type=int, default=60)
     parser.add_argument("--battle-format", default="gen9championsdoubles2026mcclosed")
-    parser.add_argument("--player", choices=("counterplay", "public_counterplay", "policy"), default="counterplay")
+    parser.add_argument(
+        "--player",
+        choices=("random", "max_damage", "counterplay", "public_counterplay", "policy"),
+        default="counterplay",
+    )
+    parser.add_argument(
+        "--opponent",
+        choices=("random", "max_damage", "public_counterplay", "policy"),
+        default="max_damage",
+        help="second agent; legacy privileged Counterplay is intentionally excluded",
+    )
     parser.add_argument("--checkpoint", type=Path, help="in-battle policy checkpoint when --player=policy")
+    parser.add_argument("--opponent-checkpoint", type=Path, help="checkpoint when --opponent=policy")
+    parser.add_argument(
+        "--balance-team-assignment", action="store_true",
+        help="alternate manifest A/B assignment across clusters so each agent receives both team roles",
+    )
     parser.add_argument("--counterplay-incoming-weight", type=float, default=1.0)
     parser.add_argument("--counterplay-ko-bonus", type=float, default=0.7)
     parser.add_argument("--counterplay-setup-bonus", type=float, default=0.0)
@@ -708,6 +737,10 @@ def main() -> None:
         parser.error("--checkpoint is required when --player=policy")
     if args.player != "policy" and args.checkpoint is not None:
         parser.error("--checkpoint is only valid with --player=policy")
+    if args.opponent == "policy" and args.opponent_checkpoint is None:
+        parser.error("--opponent-checkpoint is required when --opponent=policy")
+    if args.opponent != "policy" and args.opponent_checkpoint is not None:
+        parser.error("--opponent-checkpoint is only valid with --opponent=policy")
     if args.worker_id is not None:
         ids = [int(value) for value in (args.pair_ids or "").split(",") if value]
         result = run_worker(args, args.worker_id, ids)
@@ -720,7 +753,11 @@ def main() -> None:
         parser.error(f"output directory must be empty: {args.output_dir}")
 
     worker_count = min(args.pairs, args.workers)
-    ids = np.array_split(np.arange(args.pairs), worker_count)
+    # Battle lengths vary substantially across team pairs. Randomize the
+    # deterministic pair order before splitting so one contiguous shard does
+    # not accidentally collect most long games and become the wall-time tail.
+    shard_order = np.random.default_rng(args.seed ^ 0x71A6D1).permutation(args.pairs)
+    ids = np.array_split(shard_order, worker_count)
     jobs = [(worker, [int(value) for value in chunk]) for worker, chunk in enumerate(ids)]
     started = time.perf_counter()
     with ThreadPoolExecutor(max_workers=worker_count) as executor:
@@ -769,7 +806,7 @@ def main() -> None:
         ]
     summary = {
         "player": args.player,
-        "opponent": "max_damage",
+        "opponent": args.opponent,
         "preview_strategy": args.preview_strategy,
         "player_preview_strategy": args.player_preview_strategy,
         "opponent_preview_strategy": args.opponent_preview_strategy,
@@ -792,13 +829,23 @@ def main() -> None:
         "team_selection_checkpoint": str(args.team_selection_checkpoint) if args.team_selection_checkpoint else None,
         "team_pair_manifest": str(args.team_pair_manifest) if args.team_pair_manifest else None,
         "team_pair_split": args.team_pair_split if args.team_pair_manifest else None,
+        "team_assignment_balanced": args.balance_team_assignment,
         "counterplay_support_actions": args.player == "counterplay",
         "checkpoint": str(args.checkpoint) if args.checkpoint else None,
-        "information_boundary": (
-            "public_only" if args.player == "public_counterplay" else
-            "policy_player_view (full audit pending)" if args.player == "policy" else
-            "privileged_opponent_battle"
-        ),
+        "opponent_checkpoint": str(args.opponent_checkpoint) if args.opponent_checkpoint else None,
+        "information_boundary": {
+            "random": "legal random choices",
+            "max_damage": "player-view scoring; full audit pending",
+            "counterplay": "privileged mirrored opponent battle",
+            "public_counterplay": "public-only baseline",
+            "policy": "policy player-view path; full audit pending",
+        }[args.player],
+        "opponent_information_boundary": {
+            "random": "legal random choices",
+            "max_damage": "player-view scoring; full audit pending",
+            "public_counterplay": "public-only baseline",
+            "policy": "policy player-view path; full audit pending",
+        }[args.opponent],
         "pairs_requested": args.pairs,
         "outcome_repeats_per_pair": args.repeats,
         "pairs_completed": len(complete),
@@ -813,6 +860,7 @@ def main() -> None:
         "score_rate_ci95_team_pair_cluster_bootstrap": cluster_interval,
         "team_pair_clusters_completed": int(cluster_scores.size),
         "worker_count": worker_count,
+        "worker_shard_strategy": "seeded_permutation_then_equal_shards",
         "wall_seconds": elapsed,
         "aggregate_games_per_second": games / elapsed if elapsed else 0.0,
         "seed": args.seed,
