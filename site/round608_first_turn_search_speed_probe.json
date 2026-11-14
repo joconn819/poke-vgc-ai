@@ -1,0 +1,257 @@
+{
+  "round": 608,
+  "title": "One-turn search and CPU/GPU value-frontier speed probe",
+  "status": "speed_probe_complete_strength_unresolved",
+  "scope": "One first-turn state per seed, six own candidates by twelve opponent responses, two sampled hidden-set worlds, one chance sample, 1,000 regret iterations. This measures a small search configuration only.",
+  "value_checkpoint": "outputs/phase4/state_value_round37_search_teacher_20261021/evaluator/best.pt",
+  "value_checkpoint_warning": "historical Round37 evaluator; not trained from Round600h",
+  "runs": [
+    {
+      "seed": 608160,
+      "evaluator_device": "cpu",
+      "world_count": 2,
+      "matrix_game_shape": [
+        6,
+        12
+      ],
+      "simulated_turn_advances": 72,
+      "transitions_per_second": 161.09344863149437,
+      "elapsed_ms": 446.94555,
+      "search_process_elapsed_ms": 862.8907820093445,
+      "frontier_application_ms": 247.8775590134319,
+      "value_inference_ms": 200.92267901054583,
+      "warm_frontier_application_ms": [
+        64.08917499356903,
+        63.07426097919233,
+        63.17668399424292
+      ],
+      "warm_value_inference_ms": [
+        10.2910999848973,
+        8.783225988736376,
+        8.848869998473674
+      ],
+      "frontier_value": 0.26787617802619934,
+      "selected_action": {
+        "action_indices": [
+          14,
+          16
+        ],
+        "actions": [
+          {
+            "mega": false,
+            "move_id": "protect",
+            "target": 0,
+            "terastallize": false,
+            "type": "move"
+          },
+          {
+            "mega": false,
+            "move_id": "gunkshot",
+            "target": 2,
+            "terastallize": false,
+            "type": "move"
+          }
+        ],
+        "command": "move 2, move 2 +2",
+        "kinds": [
+          "protect",
+          "defensive",
+          "attack"
+        ],
+        "maxDamageScore": 34,
+        "score": 1.3499999999999999
+      },
+      "learned_material_selection_agreement": true
+    },
+    {
+      "seed": 608161,
+      "evaluator_device": "cpu",
+      "world_count": 2,
+      "matrix_game_shape": [
+        6,
+        12
+      ],
+      "simulated_turn_advances": 72,
+      "transitions_per_second": 257.2888557040264,
+      "elapsed_ms": 279.841114,
+      "search_process_elapsed_ms": 689.1617600049358,
+      "frontier_application_ms": 247.96093499753624,
+      "value_inference_ms": 201.18261000607163,
+      "warm_frontier_application_ms": [
+        65.18949099699967,
+        62.828467023791745,
+        62.8501379978843
+      ],
+      "warm_value_inference_ms": [
+        10.280880000209436,
+        8.565585012547672,
+        8.338837011251599
+      ],
+      "frontier_value": 0.4519951045513153,
+      "selected_action": {
+        "action_indices": [
+          14,
+          19
+        ],
+        "actions": [
+          {
+            "mega": false,
+            "move_id": "protect",
+            "target": 0,
+            "terastallize": false,
+            "type": "move"
+          },
+          {
+            "mega": false,
+            "move_id": "blizzard",
+            "target": 0,
+            "terastallize": false,
+            "type": "move"
+          }
+        ],
+        "command": "move 2, move 3",
+        "kinds": [
+          "protect",
+          "defensive",
+          "attack"
+        ],
+        "maxDamageScore": 222.25,
+        "score": 1.722185430463576
+      },
+      "learned_material_selection_agreement": true
+    },
+    {
+      "seed": 608162,
+      "evaluator_device": "cpu",
+      "world_count": 2,
+      "matrix_game_shape": [
+        6,
+        12
+      ],
+      "simulated_turn_advances": 72,
+      "transitions_per_second": 240.3834267900138,
+      "elapsed_ms": 299.521481,
+      "search_process_elapsed_ms": 718.4626630041748,
+      "frontier_application_ms": 258.4901039954275,
+      "value_inference_ms": 209.2949999787379,
+      "warm_frontier_application_ms": [
+        66.22647601761855,
+        65.01099400338717,
+        65.52125600865111
+      ],
+      "warm_value_inference_ms": [
+        11.061391996918246,
+        9.151000005658716,
+        9.281505015678704
+      ],
+      "frontier_value": 0.28021112084388733,
+      "selected_action": {
+        "action_indices": [
+          24,
+          21
+        ],
+        "actions": [
+          {
+            "mega": false,
+            "move_id": "detect",
+            "target": 0,
+            "terastallize": false,
+            "type": "move"
+          },
+          {
+            "mega": false,
+            "move_id": "hydropump",
+            "target": 2,
+            "terastallize": false,
+            "type": "move"
+          }
+        ],
+        "command": "move 4, move 3 +2",
+        "kinds": [
+          "protect",
+          "defensive",
+          "attack"
+        ],
+        "maxDamageScore": 73.8,
+        "score": 1.25
+      },
+      "learned_material_selection_agreement": false
+    },
+    {
+      "seed": 608160,
+      "evaluator_device": "cuda",
+      "world_count": 2,
+      "matrix_game_shape": [
+        6,
+        12
+      ],
+      "simulated_turn_advances": 72,
+      "transitions_per_second": 152.19368393125535,
+      "elapsed_ms": 473.081393,
+      "search_process_elapsed_ms": 896.429205982713,
+      "frontier_application_ms": 504.7470360004809,
+      "value_inference_ms": 456.70197100844234,
+      "warm_frontier_application_ms": [
+        58.28561901580542,
+        57.58450698340312,
+        58.38600901188329
+      ],
+      "warm_value_inference_ms": [
+        4.571462020976469,
+        4.056100005982444,
+        4.524774005403742
+      ],
+      "frontier_value": 0.26787611842155457,
+      "selected_action": {
+        "action_indices": [
+          14,
+          16
+        ],
+        "actions": [
+          {
+            "mega": false,
+            "move_id": "protect",
+            "target": 0,
+            "terastallize": false,
+            "type": "move"
+          },
+          {
+            "mega": false,
+            "move_id": "gunkshot",
+            "target": 2,
+            "terastallize": false,
+            "type": "move"
+          }
+        ],
+        "command": "move 2, move 2 +2",
+        "kinds": [
+          "protect",
+          "defensive",
+          "attack"
+        ],
+        "maxDamageScore": 34,
+        "score": 1.3499999999999999
+      },
+      "learned_material_selection_agreement": true
+    }
+  ],
+  "takeaways": {
+    "cpu_three_state_median_showdown_search_elapsed_ms": 299.521481,
+    "cpu_three_state_median_search_process_elapsed_ms": 718.4626630041748,
+    "cpu_warm_frontier_feature_application_ms_median": 63.17668399424292,
+    "cpu_warm_inference_ms_median": 8.848869998473674,
+    "cuda_warm_frontier_feature_application_ms": 58.28561901580542,
+    "cuda_warm_inference_ms": 4.524774005403742,
+    "cuda_cold_value_inference_ms": 456.70197100844234,
+    "transitions_per_state": 72,
+    "interpretation": "CPU three-state Showdown search time was 280\u2013447 ms; the paired CPU/CUDA state had 447 ms CPU versus 473 ms CUDA for search turn-advances, so CUDA did not speed the actual simulator workload. Warm GPU inference was ~4\u20135 ms versus ~8\u201311 ms CPU, but warmed feature preparation remained ~58 ms and simulator/frontier work dominated. GPU cold inference was ~457 ms. Do not move battle simulation to GPU based on these results. Persistent GPU may help if large batched frontier inference is used; it is not a material full-search speedup yet."
+  },
+  "quality_caveats": [
+    "Historical Round37 value model, not trained on Round600h/current policy self-play.",
+    "One chance sample per action cannot estimate variance or represent broad damage, accuracy, and secondary-effect outcomes.",
+    "Only three CPU seeds and one GPU paired seed; no strength evaluation.",
+    "Learned search action matched the material search action on two of three CPU seeds and the one paired CUDA seed; this is not a policy-vs-PPO win-rate comparison."
+  ],
+  "reproduction": "POKEMON_SHOWDOWN_PATH=/home/justin/p/poke_learning/pokemon-showdown PYTHONPATH=. OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 venv/bin/python scripts/benchmark_first_turn_search.py --seed 608160 --worlds 2 --max-candidates 6 --chance-samples 1 --warm-repeats 3 --state-value-checkpoint outputs/phase4/state_value_round37_search_teacher_20261021/evaluator/best.pt --evaluator-device cpu (repeat seeds 608161 and 608162; replace cpu with cuda for paired device probe)",
+  "raw_output": "training/outputs/phase12_headless/round608_first_turn_device_probe_20261114/summary.json"
+}
