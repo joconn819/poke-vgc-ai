@@ -11022,5 +11022,29 @@
       "training_rollouts": "CPU action selection/policy inference and observation encoding; GPU learner is not the dominant rollout path"
     },
     "next": "Keep PPO as playing baseline; improve value/action response alignment, then paired held-out evaluation without widening matrix."
+  },
+  "round621_simulator_backend_probe": {
+    "status": "probe complete; candidate backend not promoted",
+    "report": "round621_simulator_backend_probe.json",
+    "engine": "Ninjask 0.4.0 Rust simulator, isolated; not integrated",
+    "supported_development_teams": 70,
+    "parity": {
+      "matched_full_games": 32,
+      "total_full_games": 32,
+      "hidden_choice_retries_in_separate_128_match_probe": 3
+    },
+    "branch_benchmark": {
+      "showdown_median_branches_per_second": 351.096,
+      "ninjask_median_branches_per_second": 72527.04,
+      "raw_ratio": 206.6,
+      "branches_per_trial": 128,
+      "trials": 5
+    },
+    "exact_rock_slide_enumeration": "exceeded 200,000-path budget in Precise and DamageEndpoints modes; sampled outcomes remain necessary",
+    "current_bottleneck": {
+      "search": "Showdown branch-copy and turn advancement; value inference is ~13.5ms of ~443ms median 128-branch decision",
+      "training_rollouts": "CPU policy/action scoring and observation encoding"
+    },
+    "next": "Broaden exact-format differential and hidden-information audits; then evaluate Ninjask as an optional search backend before considering a custom JAX simulator."
   }
 }

@@ -1,0 +1,72 @@
+{
+  "title": "Round621: accelerated sampling backend feasibility",
+  "status": "probe complete; no backend promoted",
+  "question": "Would a JAX/GPU simulator materially accelerate our VGC search sampling, and is there a lower-cost exact simulator path to measure first?",
+  "target": {
+    "format": "gen9championsdoubles2026mcclosed",
+    "format_rules": "Local Champions Reg M-C doubles, Flat Rules, VGC Timer, ordinary species-visible preview, closed sets, six previewed and four selected.",
+    "reference": "Local Showdown. It remains the correctness authority."
+  },
+  "search_baseline": {
+    "source": "Round620 current-value one-decision search reports",
+    "branches_per_decision": 128,
+    "median_showdown_search_elapsed_ms": 443.2,
+    "median_value_inference_ms": 13.5,
+    "median_reported_transition_rate_per_second": 288.8,
+    "note": "Elapsed search includes candidate work, state handling, transitions and value calls; it is not a pure simulator benchmark."
+  },
+  "candidate_engine": {
+    "name": "Ninjask",
+    "version": "0.4.0",
+    "implementation": "Rust simulator with Python bindings",
+    "format_compatibility": "Used its bundled Reg M-C Champions format data, removed only the Open Team Sheets rule, and assigned the local closed-sheet format id. The local format has the same battle mod, Flat Rules and VGC Timer; OTS changes information visibility, not turn mechanics.",
+    "team_coverage": {
+      "development_teams_checked": 70,
+      "supported": 70,
+      "unsupported": 0
+    },
+    "local_showdown_parity_sample": {
+      "full_matches": 32,
+      "matched": 32,
+      "method": "Same packed teams, team preview, legal joint choices and sodium RNG seed were replayed in both engines. Player-view logs were normalized for timestamp, metadata, split lines and non-gameplay hints; turns, winner and remaining protocol events matched.",
+      "scope_limit": "This is a small differential sample, not full-mechanics certification. The local Showdown checkout is not the same revision as Ninjask's pinned reference."
+    },
+    "hidden_choice_retry": "In a separate 128-match probe, 125 replays matched and 3 initial choices were rejected by Showdown because of hidden trapping or Imprison effects. These require the same refreshed-request retry path already used by training; they were not engine outcome divergences."
+  },
+  "matched_branch_benchmark": {
+    "team_pair": "Round595 development pool teams 24 and 0; team 1234 selected on each side.",
+    "joint_actions": "P1 Rock Slide plus Protect; P2 Fake Out plus Detect.",
+    "branches_per_trial": 128,
+    "trials": 5,
+    "showdown": {
+      "method": "JSON snapshot parse, Showdown state deserialize, one joint turn advance",
+      "median_seconds": 0.364572,
+      "median_branches_per_second": 351.096
+    },
+    "ninjask": {
+      "method": "Rust battle copy, reseed, one identical joint turn advance",
+      "median_seconds": 0.001765,
+      "median_branches_per_second": 72527.04
+    },
+    "raw_branch_throughput_ratio": 206.6,
+    "interpretation": "This is a controlled one-turn branch microbenchmark, not a 206x full-search or training speedup. It isolates the transition/copy path and makes the CPU Rust backend a stronger near-term search candidate than starting a new JAX port."
+  },
+  "chance_branching": {
+    "scenario": "Rock Slide across two targets with accuracy, damage rolls and flinch, plus opposing actions.",
+    "exact_enumeration": "Both Precise and DamageEndpoints outcome enumeration exceeded a 200,000-path cap and took about 4.6 seconds to reach the cap in the tested state.",
+    "implication": "Exact enumeration can still explode on the exact multi-target cases of concern. Fast controlled sampling remains necessary; the faster transition backend could make more samples practical."
+  },
+  "jax_readiness": {
+    "gpu": "NVIDIA GeForce RTX 4060 Laptop GPU, 8 GB; CUDA 13 driver available.",
+    "jax": "JAX 0.12.0.1 CUDA wheel ran in an isolated temporary environment. This confirms device compatibility only; no battle simulator has been ported or benchmarked on GPU."
+  },
+  "decision": "Do not start a greenfield JAX simulator yet. First run broader Showdown differential parity and information-boundary checks for Ninjask on the exact local format, then prototype it as an optional one-turn sampling backend while keeping Showdown as the reference. Compare full decision latency and paired strength at equal action/chance budgets. Reconsider JAX only if the validated CPU backend is still the measured sampling bottleneck and an actual batched transition prototype can beat it end to end.",
+  "reproduction_notes": {
+    "package": "pip install ninjask==0.4.0",
+    "local_showdown": "/home/justin/p/poke_learning/pokemon-showdown",
+    "team_pool": "training/inputs/round595_development_team_pool.json",
+    "benchmark": "128 copies of the same selected local-Showdown state; one identical joint turn per branch; five trials; medians reported.",
+    "parity": "32 full seeded random-legal-choice matches against local Showdown; normalized player-view protocol logs and terminal result compared."
+  },
+  "external_reference": "https://github.com/dcabatin/Ninjask"
+}
