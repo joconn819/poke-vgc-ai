@@ -20142,3 +20142,11 @@ and OUT set to the Round524 checkpoint and output paths.
 - Reproduction: `scripts/verify_ninjask_showdown_parity.py`, `scripts/ninjask_showdown_bridge.js`, and `scripts/audit_ninjask_closed_view.py`; see `site/round621_simulator_backend_probe.json`. The run used Ninjask 0.4.0, the local Round595 team pool, and local Showdown.
 - Decision: keep Showdown as oracle; next audit all hidden fields and midgame reveals, then prototype Ninjask only behind an optional request-constrained search backend. Compare end-to-end decisions and paired strength before investing in JAX. GPU JAX remains only a smoke-tested install, not a battle-simulation speed result.
 - Expanded privacy check: for all 70 teams, changing opposing moves, item, ability, nature, and EVs before team selection left the `Tracker.view` unchanged; changing opposing moves after lead selection also left it unchanged in all 70 cases. The full engine projection was confirmed to contain the hidden sets, making strict interface separation mandatory. This remains a smoke audit, not full event-by-event certification.
+
+### Round623: live-turn hidden bench-set invariance
+
+- Added a midgame player-view audit across 70 opponent teams. The hidden opponent's fifth and sixth Pokémon were never selected; their moves, items, abilities, natures, and EVs were changed while the selected four, seed, and joint choices remained fixed.
+- Compared the complete player-visible protocol log and `Tracker.view` at each live choice. All 70 games passed across 780 observation states with zero view/log divergence and zero choice rejection.
+- Reproducer: `scripts/audit_ninjask_midgame_privacy.py`; report: `site/round623_midgame_privacy_audit.json`.
+- Scope: this confirms one sampled live-turn path for unrevealed bench sets. It does not certify active hidden sets, every mechanic, or all hidden-world assumptions.
+- Next: prototype Ninjask `Tracker.world` as an optional sampling backend using player-view-only inputs, preserve request-based legality, then compare full decision latency and paired playing strength against the Showdown path.

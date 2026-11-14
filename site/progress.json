@@ -11072,5 +11072,16 @@
     },
     "critical_privacy_finding": "Battle.projection() contains opponent hidden moves/items/abilities/stats. Never expose it to policy; use Tracker.view plus acting-player request and protocol stream.",
     "next": "Audit all hidden fields and midgame reveals; then prototype optional Rust search backend with request-constrained actions and differential checks before deciding whether JAX is needed."
+  },
+  "round623_midgame_privacy_audit": {
+    "status": "sampled audit passed; backend not integrated",
+    "report": "round623_midgame_privacy_audit.json",
+    "games": 70,
+    "matched_player_view_states": 780,
+    "player_log_divergences": 0,
+    "tracker_view_divergences": 0,
+    "choice_rejections": 0,
+    "mutated": "moves/items/abilities/nature/EVs of the unselected fifth and sixth Pok\u00e9mon; selected four fixed",
+    "next": "Prototype optional Tracker.world Ninjask search backend using player-view-only inputs and request-constrained actions."
   }
 }
