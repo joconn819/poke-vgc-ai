@@ -1,0 +1,110 @@
+{
+  "round": 600,
+  "status": "Fresh-seed development screen complete; Round600h not promoted",
+  "format": "gen9championsdoubles2026mcclosed",
+  "design": {
+    "team_source": "128 fresh Showdown RandomChampions team-pair clusters",
+    "team_seed": 600800,
+    "outcome_repeats_per_pair": 1,
+    "seat_orders": "both",
+    "games_per_arm": 256,
+    "team_assignment_balanced": true,
+    "preview": "Round402 learned selector for both sides",
+    "workers": 4,
+    "final_event_teams_used": false
+  },
+  "candidate": {
+    "name": "Round600h PPO",
+    "checkpoint": "training/outputs/phase12_headless/round600h_round585_competitive_team_pool_20k_20261113/checkpoints/latest.pt"
+  },
+  "arms": {
+    "max_damage": {
+      "wins": 86,
+      "losses": 170,
+      "draws": 0,
+      "games": 256,
+      "score_rate": 0.3359375,
+      "team_pair_cluster_bootstrap_95_ci": [
+        0.26171875,
+        0.41015625
+      ],
+      "games_per_second": 3.195303283455821,
+      "wall_seconds": 80.11759050399996,
+      "timeouts_or_errors": 0,
+      "action_adjustments": 0
+    },
+    "public_counterplay": {
+      "wins": 88,
+      "losses": 168,
+      "draws": 0,
+      "games": 256,
+      "score_rate": 0.34375,
+      "team_pair_cluster_bootstrap_95_ci": [
+        0.27734375,
+        0.4140625
+      ],
+      "games_per_second": 2.3718165425508944,
+      "wall_seconds": 107.9341489560029,
+      "timeouts_or_errors": 0,
+      "action_adjustments": 0
+    },
+    "random": {
+      "wins": 245,
+      "losses": 11,
+      "draws": 0,
+      "games": 256,
+      "score_rate": 0.95703125,
+      "team_pair_cluster_bootstrap_95_ci": [
+        0.9296875,
+        0.98046875
+      ],
+      "games_per_second": 2.6322610934479003,
+      "wall_seconds": 97.2547900499776,
+      "timeouts_or_errors": 0,
+      "action_adjustments": 0
+    },
+    "round102_ppo": {
+      "wins": 129,
+      "losses": 127,
+      "draws": 0,
+      "games": 256,
+      "score_rate": 0.50390625,
+      "team_pair_cluster_bootstrap_95_ci": [
+        0.4296875,
+        0.58203125
+      ],
+      "games_per_second": 2.544534907141418,
+      "wall_seconds": 100.60777680098545,
+      "timeouts_or_errors": 0,
+      "action_adjustments": 0
+    },
+    "round585_ppo": {
+      "wins": 133,
+      "losses": 123,
+      "draws": 0,
+      "games": 256,
+      "score_rate": 0.51953125,
+      "team_pair_cluster_bootstrap_95_ci": [
+        0.44140625,
+        0.59765625
+      ],
+      "games_per_second": 2.4085235082859637,
+      "wall_seconds": 106.28918468899792,
+      "timeouts_or_errors": 0,
+      "action_adjustments": 0
+    }
+  },
+  "interpretation": "Round600h did not demonstrate a measurable gain over its Round585 parent or historical Round102 PPO on this fresh RandomChampions sample: both head-to-head point estimates are near 50%, with team-cluster intervals including parity. It scored about 34% against Max Damage and Public Counterplay, and 95.7% against Random. This indicates a severe weakness against both damage-focused policies, not a general inability to select legal actions. The screen is development evidence: one outcome repeat and 128 team-pair clusters; do not promote Round600h or claim equilibrium/optimal play.",
+  "next": "Keep Round585 and Round102 as comparison checkpoints, not certified strong incumbents. Diagnose candidate losses against Max Damage and Public Counterplay using matched states and repeated chance outcomes; build action-counterfactual data before choosing a targeted PPO mixture or search experiment.",
+  "artifacts": {
+    "runner": "scripts/evaluate_round600h_fresh_seed_screen.sh",
+    "raw_directory": "training/outputs/phase12_headless/round600h_fresh_randomteam_screen_128x1_20261114/",
+    "summaries": {
+      "max_damage": "vs_max_damage/paired_summary.json",
+      "public_counterplay": "vs_public_counterplay/paired_summary.json",
+      "random": "vs_random/paired_summary.json",
+      "round102_ppo": "vs_round102/paired_summary.json",
+      "round585_ppo": "vs_round585/paired_summary.json"
+    }
+  }
+}

@@ -65,7 +65,7 @@ function publicBattleIdentityByNickname(log, sidePrefix = "p2") {
   return {rosterSpecies, activeSpecies, transformed};
 }
 
-function publishState() {
+function publishState(extra = {}) {
   const requests = battle.getRequests(battle.requestState);
   const logDelta = battle.log.slice(logOffset);
   const payload = {
@@ -83,6 +83,7 @@ function publishState() {
       projectLogForPlayer(logDelta, "p1"),
       projectLogForPlayer(logDelta, "p2"),
     ],
+    ...extra,
   };
   logOffset = battle.log.length;
   process.stdout.write(JSON.stringify(payload) + "\n");
@@ -293,7 +294,10 @@ async function playMatch(init) {
   battle = init.snapshot ? Battle.fromJSON(init.snapshot) : new Battle({
     formatid: formatId,
     seed: [init.seed || 1, (init.seed || 1) + 1, (init.seed || 1) + 2, (init.seed || 1) + 3],
-    strictChoices: true,
+    // Closed-sheet requests can hide a move disabled by an opponent's
+    // Imprison. Let Side.choose return an updated request so the caller can
+    // resample that side instead of terminating the worker.
+    strictChoices: false,
     p1: {name: "Headless P1", team: init.team1},
     p2: {name: "Headless P2", team: init.team2},
   });
@@ -358,7 +362,24 @@ async function playMatch(init) {
       });
       process.stderr.write(`before makeChoices turn=${battle.turn} state=${battle.requestState} choices=${JSON.stringify(message.choices)} p1=${JSON.stringify(activeState(battle.p1))} p2=${JSON.stringify(activeState(battle.p2))}\n`);
     }
-    battle.makeChoices(message.choices[0], message.choices[1]);
+    const rejectedSides = [];
+    for (let sideIndex = 0; sideIndex < 2; sideIndex++) {
+      if (!message.choices[sideIndex]) continue;
+      if (!battle.sides[sideIndex].choose(message.choices[sideIndex])) {
+        rejectedSides.push(sideIndex);
+        battle.sides[sideIndex].clearChoice();
+      }
+    }
+    if (rejectedSides.length) {
+      publishState({
+        choice_retry: {
+          sides: rejectedSides,
+          errors: rejectedSides.map(sideIndex => battle.sides[sideIndex].choice.error),
+        },
+      });
+      continue;
+    }
+    battle.commitChoices();
     if (process.env.POKE_HEADLESS_DEBUG) {
       process.stderr.write(`after makeChoices turn=${battle.turn} ended=${battle.ended}\n`);
     }

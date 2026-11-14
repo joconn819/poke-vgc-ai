@@ -16,7 +16,7 @@ import select
 import subprocess
 import sys
 import time
-from typing import Any, Sequence
+from typing import Any, Callable, Sequence
 
 import numpy as np
 from poke_env.battle.double_battle import DoubleBattle
@@ -224,8 +224,13 @@ class HeadlessShowdownProcess:
             ShowdownDoublesEnv.embed_battle(None, battle) for battle in self._battles
         )
         masks = tuple(
-            np.asarray(ShowdownDoublesEnv.get_action_mask(battle), dtype=np.int8)
-            for battle in self._battles
+            np.asarray(
+                ShowdownDoublesEnv.get_action_mask(
+                    battle, self.state["requests"][side_index]
+                ),
+                dtype=np.int8,
+            )
+            for side_index, battle in enumerate(self._battles)
         )
         return observations[0], masks[0], observations[1], masks[1]
 
@@ -276,12 +281,21 @@ class HeadlessShowdownProcess:
             targetless_slots = set(
                 (forced_targetless_positions or {}).get(side_index, ())
             )
-            order = ShowdownDoublesEnv.action_to_order(
-                np.asarray(action, dtype=np.int64),
-                battle,
-                fake=bool(targetless_slots),
-                strict=True,
-            )
+            try:
+                order = ShowdownDoublesEnv.action_to_order(
+                    np.asarray(action, dtype=np.int64),
+                    battle,
+                    fake=bool(targetless_slots),
+                    strict=True,
+                )
+            except ValueError as error:
+                raise ValueError(
+                    f"{error}; headless request={requests[side_index]!r}; "
+                    f"active={[getattr(mon, 'species', None) for mon in battle.active_pokemon]}; "
+                    f"available_moves={[[getattr(move, 'id', '') for move in slot] for slot in battle.available_moves]}; "
+                    f"known_moves={[[getattr(move, 'id', '') for move in mon.moves.values()] if mon is not None else [] for mon in battle.active_pokemon]}; "
+                    f"mask_actions={[int(i) for i in np.flatnonzero(np.asarray(ShowdownDoublesEnv.get_action_mask(battle, requests[side_index])))]}"
+                ) from error
             if not isinstance(order, DoubleBattleOrder):
                 raise ValueError(f"expected a doubles order, received {order!r}")
             single_orders = [order.first_order, order.second_order]
@@ -324,7 +338,13 @@ class HeadlessShowdownProcess:
                     str(candidate) for candidate in battle.valid_orders[position]
                 }:
                     raise ValueError(
-                        f"native action is not in the live legal-order list: {single_order}"
+                        f"native action is not in the live legal-order list: {single_order}; "
+                        f"request={requests[side_index]!r}; "
+                        f"active_position={position}; "
+                        f"native_action={list(map(int, actions[side_index]))}; "
+                        f"active={[getattr(mon, 'species', None) for mon in battle.active_pokemon]}; "
+                        f"valid_orders={[str(candidate) for candidate in battle.valid_orders[position]]}; "
+                        f"available_moves={[[getattr(move, 'id', '') for move in slot] for slot in battle.available_moves]}"
                     )
             parts = [
                 self._single_order_to_choice(
@@ -451,14 +471,42 @@ class HeadlessShowdownProcess:
             command += " dynamax"
         return command
 
-    def advance(self, choice1: str, choice2: str) -> dict[str, Any]:
-        """Submit one simultaneous choice pair and return the next public state."""
+    def advance(
+        self,
+        choice1: str,
+        choice2: str,
+        *,
+        on_choice_retry: Callable[
+            [dict[str, Any], list[int], tuple[str, str]], tuple[str, str]
+        ] | None = None,
+    ) -> dict[str, Any]:
+        """Submit simultaneous choices, resolving closed-sheet rejections safely."""
         if self.ended:
             raise RuntimeError("cannot advance a completed headless match")
-        self._send({"type": "choices", "choices": [choice1, choice2]})
-        self._last_state = self._receive()
-        self._apply_state(self._last_state)
-        return self._last_state
+        choices = (choice1, choice2)
+        for retry_index in range(5):
+            self._send({"type": "choices", "choices": list(choices)})
+            self._last_state = self._receive()
+            self._apply_state(self._last_state)
+            retry = self._last_state.get("choice_retry")
+            if not retry:
+                return self._last_state
+            sides = [int(side) for side in retry.get("sides", [])]
+            if not sides or any(side not in {0, 1} for side in sides):
+                raise RuntimeError(f"Showdown returned an invalid choice retry request: {retry!r}")
+            if on_choice_retry is None:
+                raise RuntimeError(
+                    "Showdown rejected a choice and refreshed its private request, "
+                    "but this caller did not provide a retry handler"
+                )
+            self.action_adjustments += len(sides)
+            choices = on_choice_retry(self._last_state, sides, choices)
+            if retry_index == 4:
+                raise RuntimeError(
+                    "Showdown rejected five consecutive choices in one decision: "
+                    f"{retry!r}; requests={self._last_state.get('requests')!r}"
+                )
+        raise AssertionError("unreachable choice retry loop exit")
 
     def reseed_random(self, seed: int) -> None:
         """Set Showdown's future battle PRNG stream without changing current state."""
@@ -514,6 +562,11 @@ class HeadlessShowdownProcess:
         requests = state.get("requests", [None, None])
         refresh_sides = self._refresh_request_move_slots_for_sides
         for side_index, (battle, request) in enumerate(zip(self._battles, requests)):
+            # Mirror poke-env's live battle request on the reference-parser
+            # object. The shared action mask/order translator uses these
+            # player-private request fields to distinguish targetless Struggle
+            # from locked randomNormal moves such as Outrage.
+            battle._last_request = deepcopy(request) if request is not None else {}
             if request is not None:
                 if side_index in refresh_sides:
                     # A hypothetical hidden-world branch can change a player's
@@ -542,5 +595,8 @@ class HeadlessShowdownProcess:
 
     def __exit__(self, *_: object) -> None:
         if not self.ended:
-            self.abort_match()
+            try:
+                self.abort_match()
+            except (BrokenPipeError, RuntimeError):
+                self._aborted = True
         self.close()

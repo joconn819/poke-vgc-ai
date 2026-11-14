@@ -1,0 +1,41 @@
+{
+  "round": 600,
+  "status": "Small loss-trace diagnostic complete; descriptive only",
+  "candidate": "Round600h PPO",
+  "design": {
+    "team_seed": 600900,
+    "team_pair_clusters": 12,
+    "repeats_per_pair": 1,
+    "seat_orders": "both",
+    "games_per_opponent": 24,
+    "team_assignment_balanced": true,
+    "preview": "Round402 learned selector",
+    "trace_logging": true
+  },
+  "results": {
+    "max_damage": {
+      "wins": 7,
+      "losses": 17,
+      "score_rate": 0.2916666666666667,
+      "games_per_second": 3.708,
+      "first_turn_mean_alive_count_difference_wins": 0.0,
+      "first_turn_mean_alive_count_difference_losses": -0.294,
+      "losses_first_turn_mean_hp_difference": -0.523,
+      "first_turn_mean_normalized_team_hp_difference_candidate_wins": 0.029
+    },
+    "public_counterplay": {
+      "wins": 8,
+      "losses": 16,
+      "score_rate": 0.3333333333333333,
+      "games_per_second": 3.422,
+      "first_turn_mean_normalized_team_hp_difference_candidate_wins": 0.165,
+      "first_turn_mean_normalized_team_hp_difference_candidate_losses": -0.432,
+      "first_turn_mean_alive_count_difference_wins": 0.375,
+      "first_turn_mean_alive_count_difference_losses": -0.312
+    }
+  },
+  "interpretation": "In this small traced sample, candidate losses against both damage-focused opponents were already behind in normalized total team HP and surviving Pokemon after the first resolved turn. The sample is only 12 team-pair clusters per opponent and the comparison is outcome-stratified; it does not establish that opening choices caused the losses. Use it to prioritize matched opening-state counterfactuals with repeated chance outcomes, then validate any policy change on fresh teams.",
+  "runtime_note": "Trace-enabled evaluation ran at 3.42\u20133.71 games/s on four workers. Trace collection adds overhead; this is not comparable to ordinary evaluation throughput.",
+  "raw_artifacts": "training/outputs/phase12_headless/round600h_loss_trace_diagnostic_12x1_20261114_rerun/",
+  "reproduction": "scripts/evaluate_round600h_loss_trace_diagnostic.sh"
+}

@@ -1624,6 +1624,8 @@ def run_game(
                         second_slot[0] = 0
                     elif 1 <= action_for_conditional_mask[0] <= 6:
                         second_slot[int(action_for_conditional_mask[0])] = 0
+                    if 27 <= int(action_for_conditional_mask[0]) < 47:
+                        second_slot[27:47] = 0
                     if not second_slot.any():
                         recorded_masks[agent][half:] = masks[agent][half:]
                 strategies_by_agent = (player_strategy, opponent_strategy)
@@ -2235,6 +2237,41 @@ def run_game(
                         "p1_max_damage_score_gate": bool(max_damage_score_gate),
                         "trapped": [list(getattr(battle, "trapped", ())) for battle in match.battles],
                         "force_switch": [list(getattr(battle, "force_switch", ())) for battle in match.battles],
+                        "active_request_moves": [
+                            None if request is None else [
+                                {
+                                    "moves": [
+                                        {
+                                            "id": move.get("id"),
+                                            "pp": move.get("pp"),
+                                            "disabled": move.get("disabled"),
+                                        }
+                                        for move in active.get("moves", ())
+                                    ],
+                                    "canMegaEvo": active.get("canMegaEvo"),
+                                    "canTerastallize": active.get("canTerastallize"),
+                                }
+                                for active in (request.get("active") or ())
+                            ]
+                            for request in requests
+                        ],
+                        "available_moves": [
+                            [[getattr(move, "id", None) for move in slot] for slot in battle.available_moves]
+                            for battle in match.battles
+                        ],
+                        "active_move_status": [
+                            [
+                                {
+                                    "species": getattr(mon, "species", None),
+                                    "moves": [
+                                        {"id": move.id, "disabled": bool(getattr(move, "disabled", False))}
+                                        for move in mon.moves.values()
+                                    ] if mon is not None else [],
+                                }
+                                for mon in battle.active_pokemon
+                            ]
+                            for battle in match.battles
+                        ],
                     }
                     if player_strategy == "policy" and requests[0] is not None and not requests[0].get("wait"):
                         try:
@@ -2277,7 +2314,110 @@ def run_game(
                 and player1_decision_index == reseed_random_at_decision[0]
             ):
                 match.reseed_random(reseed_random_at_decision[1])
-            state = match.advance(*choices)
+
+            def retry_rejected_choices(
+                updated_state: dict[str, Any],
+                rejected_sides: list[int],
+                previous_choices: tuple[str, str],
+            ) -> tuple[str, str]:
+                """Resample only rejected sides against Showdown's refreshed private request."""
+                del updated_state  # match.advance already applied this player-view state.
+                updated_observations = match.observations()
+                for side in rejected_sides:
+                    # A search-selected targetless order was replaced by a
+                    # fresh policy action, so its serialization override no
+                    # longer applies to this resubmission.
+                    forced_targetless_search_positions.clear()
+                    agent = agent_names[side]
+                    observation = updated_observations[side * 2]
+                    legal_mask = updated_observations[side * 2 + 1]
+                    policy = policies.get(agent)
+                    if policy is None:
+                        payload = {
+                            agent: {
+                                "observation": observation,
+                                "action_mask": legal_mask,
+                                "wait": False,
+                            }
+                        }
+                        replacement = choose_masked_actions(payload, rng)[agent]
+                        outputs.pop(agent, None)
+                        action_features_by_agent.pop(agent, None)
+                    else:
+                        replacement, log_probability, value = policy.predict_native_with_value(
+                            observation, legal_mask, use_critic=True
+                        )
+                        outputs[agent] = (replacement, log_probability, value)
+                        if policy.last_native_action_features is not None:
+                            action_features_by_agent[agent] = (
+                                policy.last_native_action_features.tolist()
+                            )
+                        policy_proposed_actions_this_step[agent] = (
+                            replacement.astype(np.int64).tolist()
+                        )
+                    observations[agent] = observation
+                    masks[agent] = legal_mask.copy()
+                    recorded_masks[agent] = legal_mask.copy()
+                    half = recorded_masks[agent].size // 2
+                    first_action = int(replacement[0])
+                    if first_action == 0:
+                        recorded_masks[agent][half] = 0
+                    elif 1 <= first_action <= 6:
+                        recorded_masks[agent][half + first_action] = 0
+                    if 27 <= first_action < 47:
+                        recorded_masks[agent][half + 27:half + 47] = 0
+                    if not recorded_masks[agent][half:].any():
+                        recorded_masks[agent][half:] = legal_mask[half:]
+                    actions[agent] = replacement
+                    replacement_features = (
+                        policy.last_native_action_features.tolist()
+                        if policy is not None
+                        and policy.last_native_action_features is not None
+                        else None
+                    )
+                    if side == 0 and first_turn_action_data is not None:
+                        first_turn_action_data.update({
+                            "action": replacement.astype(np.int64).tolist(),
+                            "legal_action_mask": legal_mask.astype(np.int8).tolist(),
+                            "recorded_action_mask": recorded_masks[agent].astype(np.int8).tolist(),
+                            "native_action_features": replacement_features,
+                            "source": "policy",
+                        })
+                    if first_turn_joint_action_data and agent in first_turn_joint_action_data:
+                        first_turn_joint_action_data[agent].update({
+                            "action": replacement.astype(np.int64).tolist(),
+                            "legal_action_mask": legal_mask.astype(np.int8).tolist(),
+                            "native_action_features": replacement_features,
+                        })
+                    if side == 0 and counterfactual_action_data is not None:
+                        counterfactual_action_data.update({
+                            "action": replacement.astype(np.int64).tolist(),
+                            "legal_action_mask": legal_mask.astype(np.int8).tolist(),
+                            "recorded_action_mask": recorded_masks[agent].astype(np.int8).tolist(),
+                            "native_action_features": replacement_features,
+                            "source": "policy",
+                        })
+                    if agent in counterfactual_action_data_by_agent:
+                        counterfactual_action_data_by_agent[agent].update({
+                            "action": replacement.astype(np.int64).tolist(),
+                            "legal_action_mask": legal_mask.astype(np.int8).tolist(),
+                            "native_action_features": replacement_features,
+                            "source": "policy",
+                        })
+                    teacher_actions_this_step.discard(agent)
+                    max_damage_gate_teacher_actions.discard(agent)
+                corrected_choices = match.choices_from_native_actions(
+                    [actions[agent_names[0]], actions[agent_names[1]]],
+                    forced_targetless_positions={
+                        (0 if trainable_side == "player1" else 1): forced_targetless_search_positions
+                    } if forced_targetless_search_positions else None,
+                )
+                return corrected_choices
+
+            state = match.advance(
+                *choices, on_choice_retry=retry_rejected_choices
+            )
+            action_adjustments = match.action_adjustments + baseline_fallbacks
             engine_roundtrip_seconds += time.perf_counter() - step_started
 
             winner = state.get("winner") if state.get("ended") else None
@@ -2360,6 +2500,7 @@ def run_game(
     match_record = {
         "episode": record_episode,
         "format": format_id,
+        "team_source": "competitive_pool" if teams_override is not None else "showdown_random",
         "opponent": (
             opponent_strategy if trainable_side == "player1" else player_strategy
         ),
@@ -2668,6 +2809,14 @@ def main() -> None:
     )
     parser.add_argument("--telemetry-path", type=Path)
     parser.add_argument("--run-id", default="headless-showdown-self-play")
+    parser.add_argument(
+        "--competitive-team-pool-json", type=Path,
+        help="Optional JSON list of legal six-Pokemon teams sampled for training episodes.",
+    )
+    parser.add_argument(
+        "--competitive-team-fraction", type=float, default=0.0,
+        help="Fraction of episodes using two distinct teams sampled from the supplied pool.",
+    )
     args = parser.parse_args()
     if (args.episodes < 1 or args.temperature <= 0
             or not math.isfinite(args.team_selection_temperature)
@@ -2675,6 +2824,10 @@ def main() -> None:
         parser.error("episodes/policy temperature must be positive; selector temperature must be finite and nonnegative")
     if args.team_selection_temperature > 0 and args.team_selection_checkpoint is None:
         parser.error("--team-selection-temperature requires --team-selection-checkpoint")
+    if not math.isfinite(args.competitive_team_fraction) or not 0 <= args.competitive_team_fraction <= 1:
+        parser.error("--competitive-team-fraction must be finite and in [0, 1]")
+    if args.competitive_team_fraction > 0 and args.competitive_team_pool_json is None:
+        parser.error("a positive --competitive-team-fraction requires --competitive-team-pool-json")
     if args.max_damage_action_steps is not None and any(
         step < 0 for step in args.max_damage_action_steps
     ):
@@ -2703,6 +2856,25 @@ def main() -> None:
             f"opponent team-selection checkpoint does not exist: "
             f"{args.opponent_team_selection_checkpoint}"
         )
+    competitive_team_pool: list[list[dict[str, Any]]] = []
+    if args.competitive_team_pool_json is not None:
+        try:
+            payload = json.loads(args.competitive_team_pool_json.read_text(encoding="utf-8"))
+            rows = payload.get("teams") if isinstance(payload, dict) else payload
+            if not isinstance(rows, list):
+                raise ValueError("team pool must be a JSON list or an object with a teams list")
+            for index, row in enumerate(rows):
+                team = row.get("pokemon", row.get("team")) if isinstance(row, dict) else row
+                if not isinstance(team, list) or len(team) != 6:
+                    raise ValueError(f"team {index} must contain exactly six Pokemon")
+                species = [str(pokemon.get("species", pokemon.get("name", ""))) for pokemon in team]
+                if any(not value for value in species) or len({value.casefold() for value in species}) != 6:
+                    raise ValueError(f"team {index} must contain six distinct named species")
+                competitive_team_pool.append(team)
+        except (OSError, json.JSONDecodeError, TypeError, ValueError) as error:
+            parser.error(f"could not load competitive team pool: {error}")
+        if args.competitive_team_fraction > 0 and len(competitive_team_pool) < 2:
+            parser.error("competitive training team pool must contain at least two teams")
     if args.opponent_strategy == "policy" and args.policy_checkpoint is None:
         parser.error("policy opponent requires --policy-checkpoint or --opponent-checkpoint")
     learned_search = args.opening_search == "learned" or args.midgame_search == "learned"
@@ -2824,6 +2996,18 @@ def main() -> None:
             if args.opening_search != "none" or args.midgame_search != "none" else None
         )
         for game in range(args.episodes):
+            episode_index = args.episode_offset + game
+            teams_override = None
+            if competitive_team_pool and (
+                np.random.default_rng(args.seed + 17_000_003 + episode_index * 7).random()
+                < args.competitive_team_fraction
+            ):
+                team_rng = np.random.default_rng(args.seed + 19_000_007 + episode_index * 11)
+                selected = team_rng.choice(len(competitive_team_pool), size=2, replace=False)
+                teams_override = (
+                    competitive_team_pool[int(selected[0])],
+                    competitive_team_pool[int(selected[1])],
+                )
             result = run_game(
                 game=game,
                 seed=args.seed,
@@ -2838,6 +3022,7 @@ def main() -> None:
                 device=args.device,
                 telemetry=telemetry,
                 worker=worker,
+                teams_override=teams_override,
                 opening_search=args.opening_search,
                 midgame_search=args.midgame_search,
                 state_value_evaluator=state_value_evaluator,
