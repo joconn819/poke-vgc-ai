@@ -1540,17 +1540,17 @@
     }
   },
   "latest_run": {
-    "round": 605,
-    "status": "Round605 low-rate imitation completed; not promoted",
-    "summary": "A one-pass imitation update at one-fifth learning rate had small KL drift but barely improved teacher agreement. It scored 35.2% vs Max Damage, 32.8% vs Public Counterplay, 93.4% vs Random, 47.7% vs Round600h, 50.0% vs Round585 and 47.7% vs Round102 on six fresh 128-cluster screens. No errors, timeouts or action adjustments remained after the full Random arm was replayed at 180 seconds.",
-    "games": "20,000 audited source games / 153,828 transitions; six opponent arms \u00d7 256 complete fresh-seed matches",
-    "epochs": "One supervised imitation pass (301 optimizer steps), learning rate 2e-6; PPO reward/value/auxiliary losses disabled",
-    "evaluation": "Seed 605160; cluster-bootstrap 95% intervals in site/round605_lowlr_fresh_league_screen.json. Not promoted; Round600h remains the reference."
+    "round": 607,
+    "status": "Round607 first-five intervention confirmed on 256 fresh clusters; not promoted",
+    "summary": "A diagnostic overlay that replaces Round600h actions with Max Damage choices for its first five in-battle decisions improved scores by 12.5 pp vs Max Damage [7.2,18.0], 8.6 pp vs Public Counterplay [3.1,14.1], 12.9 pp vs Round600h [7.4,18.4], 7.0 pp vs Round585 [1.6,12.5], and 11.7 pp vs Round102 [6.3,17.2]. Random changed +0.4 pp [\u22122.0,2.9]. Absolute overlay scores remain 43.6% vs Max Damage and 42.8% vs Public Counterplay. Not a learned policy or optimal-play claim; keep Round600h incumbent.",
+    "games": "256 fresh team-pair clusters; 512 side-swapped games in each of six opponent arms per condition",
+    "epochs": "No training. Max Damage override on evaluated agent steps 0\u20134 only.",
+    "evaluation": "All arms completed with zero timeouts/errors/action adjustments. Local player-facing object audit found opponent exact stats unset at preview and after one turn; broader information-boundary certification remains required."
   },
   "method": "Masked PPO action logits are the default move policy. Terminal win/loss is the primary PPO objective; win probability and hidden-set prediction are auxiliary targets. Optional search remains disabled unless a broader held-out league supports it.",
   "jax_decision": "Recent throughput gains came from policy/observation and rollout work; a GPU battle-engine rewrite remains gated on representative end-to-end profiling and parity against local Showdown.",
-  "evaluation_note": "Rounds603\u2013605 show that the Max Damage labels do not yield a strong standalone policy: four-pass imitation over-shifted the parent and fell to 21.9% vs Max Damage, while one-pass and low-learning-rate variants stayed at 36.7% and 35.2%. The low-rate candidate also scored 32.8% vs Public Counterplay. None is promoted. The next step is state/action loss analysis and strategy-oriented simultaneous-response/value targets, retaining Round600h as incumbent.",
-  "generated_at": "2026-11-14 10:18 UTC",
+  "evaluation_note": "Round607 confirms the first-five Max Damage override has paired gains against five non-random opponents on 256 fresh clusters, while scores against Max Damage/Public Counterplay remain below 50% and Random is unchanged. It is a diagnostic hand-coded action override, not a learned stronger policy. Continue with player-view action-response/value-guided policy work; keep PPO as the base policy and Round600h as incumbent. Do not claim optimality.",
+  "generated_at": "2026-11-14 16:00 UTC",
   "round462_evaluation": {
     "status": "Round462 not promoted \u00b7 initial paired screen complete",
     "summary": "Round462 scored 44.82% against Max Damage [41.02%, 48.54%]. On the same teams and seeds, Round430 scored 44.73% and Round432 scored 44.43%; paired deltas were +0.10 pp [-1.37, +1.56] and +0.39 pp [-1.37, +2.05]. The update did not measurably change this weakness. Results against Public Counterplay and historical PPO are inconclusive; Random is an easy-baseline check.",
@@ -10880,5 +10880,74 @@
       "candidate_mean_negative_log_likelihood_per_joint_action": 1.8073918576318917
     },
     "report": "round605_lowlr_fresh_league_screen.json"
+  },
+  "round607_first5_intervention": {
+    "status": "256-cluster confirmation complete; intervention not promoted",
+    "report": "round607_first5_intervention_confirmation.json",
+    "scorecard": {
+      "max_damage": {
+        "raw": 0.310546875,
+        "first5": 0.435546875,
+        "paired_delta": 0.125,
+        "paired_ci": [
+          0.072265625,
+          0.1796875
+        ]
+      },
+      "public_counterplay": {
+        "raw": 0.341796875,
+        "first5": 0.427734375,
+        "paired_delta": 0.0859375,
+        "paired_ci": [
+          0.03125,
+          0.140625
+        ]
+      },
+      "random": {
+        "raw": 0.958984375,
+        "first5": 0.962890625,
+        "paired_delta": 0.00390625,
+        "paired_ci": [
+          -0.01953125,
+          0.029296875
+        ]
+      },
+      "round600h": {
+        "raw": 0.462890625,
+        "first5": 0.591796875,
+        "paired_delta": 0.12890625,
+        "paired_ci": [
+          0.07421875,
+          0.18359375
+        ]
+      },
+      "round585": {
+        "raw": 0.466796875,
+        "first5": 0.537109375,
+        "paired_delta": 0.0703125,
+        "paired_ci": [
+          0.015625,
+          0.125
+        ]
+      },
+      "round102": {
+        "raw": 0.48046875,
+        "first5": 0.59765625,
+        "paired_delta": 0.1171875,
+        "paired_ci": [
+          0.0625,
+          0.171875
+        ]
+      }
+    },
+    "speed_games_per_second": {
+      "max_damage": 5.240923737860575,
+      "public_counterplay": 4.910276461376096,
+      "random": 5.124307073305969,
+      "round600h": 4.380548993574496,
+      "round585": 3.5356604802151437,
+      "round102": 3.217666833674671
+    },
+    "next": "Do not continue imitation sweeps. Build a legal action-level intervention using current observation and candidate action outcomes; compare it to raw Round600h on a new held-out cohort and include an explicit randomized opening-action robustness check. Retain Round600h as incumbent until full-game gains transfer."
   }
 }

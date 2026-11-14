@@ -1,0 +1,295 @@
+{
+  "round": 607,
+  "candidate": "Round600h with Max Damage action override on first five in-battle decisions",
+  "status": "experimental_intervention_not_promoted",
+  "format": "gen9championsdoubles2026mcclosed",
+  "design": {
+    "team_pair_clusters": 256,
+    "outcome_repeats_per_cluster": 1,
+    "seat_orders": "both",
+    "seed": 607160,
+    "preview": "Round402 selector on both sides",
+    "episode_timeout_seconds": 180,
+    "paired_unit": "team-pair cluster; Showdown battle RNG is server-side and not identical between the compared arms"
+  },
+  "arms": {
+    "max_damage": {
+      "raw": {
+        "score_rate": 0.310546875,
+        "cluster_bootstrap_95_ci": [
+          0.26171875,
+          0.359375
+        ],
+        "wins": 159,
+        "losses": 353,
+        "draws": 0,
+        "games": 512,
+        "clusters": 256,
+        "timeouts_or_errors": 0,
+        "action_adjustments": 0,
+        "games_per_second": 5.352665285237112,
+        "wall_seconds": 95.65328163001686
+      },
+      "first5": {
+        "score_rate": 0.435546875,
+        "cluster_bootstrap_95_ci": [
+          0.380859375,
+          0.490234375
+        ],
+        "wins": 223,
+        "losses": 289,
+        "draws": 0,
+        "games": 512,
+        "clusters": 256,
+        "timeouts_or_errors": 0,
+        "action_adjustments": 0,
+        "games_per_second": 5.240923737860575,
+        "wall_seconds": 97.69270182301989
+      }
+    },
+    "public_counterplay": {
+      "raw": {
+        "score_rate": 0.341796875,
+        "cluster_bootstrap_95_ci": [
+          0.29296875,
+          0.392578125
+        ],
+        "wins": 175,
+        "losses": 337,
+        "draws": 0,
+        "games": 512,
+        "clusters": 256,
+        "timeouts_or_errors": 0,
+        "action_adjustments": 0,
+        "games_per_second": 4.98941797455241,
+        "wall_seconds": 102.61717952101026
+      },
+      "first5": {
+        "score_rate": 0.427734375,
+        "cluster_bootstrap_95_ci": [
+          0.375,
+          0.48046875
+        ],
+        "wins": 219,
+        "losses": 293,
+        "draws": 0,
+        "games": 512,
+        "clusters": 256,
+        "timeouts_or_errors": 0,
+        "action_adjustments": 0,
+        "games_per_second": 4.910276461376096,
+        "wall_seconds": 104.27111467701616
+      }
+    },
+    "random": {
+      "raw": {
+        "score_rate": 0.958984375,
+        "cluster_bootstrap_95_ci": [
+          0.9375,
+          0.9765625
+        ],
+        "wins": 491,
+        "losses": 21,
+        "draws": 0,
+        "games": 512,
+        "clusters": 256,
+        "timeouts_or_errors": 0,
+        "action_adjustments": 0,
+        "games_per_second": 4.806861012093636,
+        "wall_seconds": 106.51441735299886
+      },
+      "first5": {
+        "score_rate": 0.962890625,
+        "cluster_bootstrap_95_ci": [
+          0.9453125,
+          0.978515625
+        ],
+        "wins": 493,
+        "losses": 19,
+        "draws": 0,
+        "games": 512,
+        "clusters": 256,
+        "timeouts_or_errors": 0,
+        "action_adjustments": 0,
+        "games_per_second": 5.124307073305969,
+        "wall_seconds": 99.91594818100566
+      }
+    },
+    "round600h": {
+      "raw": {
+        "score_rate": 0.462890625,
+        "cluster_bootstrap_95_ci": [
+          0.408203125,
+          0.515625
+        ],
+        "wins": 237,
+        "losses": 275,
+        "draws": 0,
+        "games": 512,
+        "clusters": 256,
+        "timeouts_or_errors": 0,
+        "action_adjustments": 0,
+        "games_per_second": 3.1327813536496705,
+        "wall_seconds": 163.4330462939979
+      },
+      "first5": {
+        "score_rate": 0.591796875,
+        "cluster_bootstrap_95_ci": [
+          0.5390625,
+          0.64453125
+        ],
+        "wins": 303,
+        "losses": 209,
+        "draws": 0,
+        "games": 512,
+        "clusters": 256,
+        "timeouts_or_errors": 0,
+        "action_adjustments": 0,
+        "games_per_second": 4.380548993574496,
+        "wall_seconds": 116.88032727199607
+      }
+    },
+    "round585": {
+      "raw": {
+        "score_rate": 0.466796875,
+        "cluster_bootstrap_95_ci": [
+          0.41015625,
+          0.5234375
+        ],
+        "wins": 239,
+        "losses": 273,
+        "draws": 0,
+        "games": 512,
+        "clusters": 256,
+        "timeouts_or_errors": 0,
+        "action_adjustments": 0,
+        "games_per_second": 2.8259414046545257,
+        "wall_seconds": 181.1785620029841
+      },
+      "first5": {
+        "score_rate": 0.537109375,
+        "cluster_bootstrap_95_ci": [
+          0.482421875,
+          0.591796875
+        ],
+        "wins": 275,
+        "losses": 237,
+        "draws": 0,
+        "games": 512,
+        "clusters": 256,
+        "timeouts_or_errors": 0,
+        "action_adjustments": 0,
+        "games_per_second": 3.5356604802151437,
+        "wall_seconds": 144.8102844899986
+      }
+    },
+    "round102": {
+      "raw": {
+        "score_rate": 0.48046875,
+        "cluster_bootstrap_95_ci": [
+          0.427734375,
+          0.53515625
+        ],
+        "wins": 246,
+        "losses": 266,
+        "draws": 0,
+        "games": 512,
+        "clusters": 256,
+        "timeouts_or_errors": 0,
+        "action_adjustments": 0,
+        "games_per_second": 4.668707940994635,
+        "wall_seconds": 109.6663159210002
+      },
+      "first5": {
+        "score_rate": 0.59765625,
+        "cluster_bootstrap_95_ci": [
+          0.544921875,
+          0.650390625
+        ],
+        "wins": 306,
+        "losses": 206,
+        "draws": 0,
+        "games": 512,
+        "clusters": 256,
+        "timeouts_or_errors": 0,
+        "action_adjustments": 0,
+        "games_per_second": 3.217666833674671,
+        "wall_seconds": 159.12150836799992
+      }
+    }
+  },
+  "paired_deltas": {
+    "max_damage": {
+      "candidate_minus_raw": 0.125,
+      "cluster_bootstrap_95_ci": [
+        0.072265625,
+        0.1796875
+      ],
+      "candidate_clusters_better": 71,
+      "candidate_clusters_worse": 32,
+      "tied_clusters": 153
+    },
+    "public_counterplay": {
+      "candidate_minus_raw": 0.0859375,
+      "cluster_bootstrap_95_ci": [
+        0.03125,
+        0.140625
+      ],
+      "candidate_clusters_better": 79,
+      "candidate_clusters_worse": 46,
+      "tied_clusters": 131
+    },
+    "random": {
+      "candidate_minus_raw": 0.00390625,
+      "cluster_bootstrap_95_ci": [
+        -0.01953125,
+        0.029296875
+      ],
+      "candidate_clusters_better": 15,
+      "candidate_clusters_worse": 14,
+      "tied_clusters": 227
+    },
+    "round600h": {
+      "candidate_minus_raw": 0.12890625,
+      "cluster_bootstrap_95_ci": [
+        0.07421875,
+        0.18359375
+      ],
+      "candidate_clusters_better": 82,
+      "candidate_clusters_worse": 32,
+      "tied_clusters": 142
+    },
+    "round585": {
+      "candidate_minus_raw": 0.0703125,
+      "cluster_bootstrap_95_ci": [
+        0.015625,
+        0.125
+      ],
+      "candidate_clusters_better": 61,
+      "candidate_clusters_worse": 35,
+      "tied_clusters": 160
+    },
+    "round102": {
+      "candidate_minus_raw": 0.1171875,
+      "cluster_bootstrap_95_ci": [
+        0.0625,
+        0.171875
+      ],
+      "candidate_clusters_better": 79,
+      "candidate_clusters_worse": 39,
+      "tied_clusters": 138
+    }
+  },
+  "information_boundary_audit": {
+    "method": "direct player-facing battle-object inspection at team preview and after one resolved turn in the local headless Showdown process",
+    "opponent_stats_fields": "all six stats fields were None at both observations",
+    "visible_fallback": "species base stats, level, current/max HP and only revealed moves/abilities/items",
+    "result": "The damage chooser falls back to public species base stats when exact stats are absent; these inspected player-facing objects did not reveal opponent EVs, IVs or nature. Audit is scoped to inspected observations; broader field-by-field certification remains required."
+  },
+  "interpretation": "A first-five Max Damage action overlay produces replicated, statistically supported paired gains against five non-random opponents on a fresh 256-cluster cohort. It does not improve the random control, and absolute scores against Max Damage and Public Counterplay remain below 50%. This is a useful opening intervention signal, not a learned policy or evidence of optimal play. Keep Round600h as checkpoint incumbent; evaluate a legal, closed-information policy integration before promotion.",
+  "artifacts": {
+    "evaluation_launcher": "scripts/evaluate_round607_round600h_first5_confirmation.sh",
+    "pilot_launcher": "scripts/evaluate_round606_round600h_first5_transfer.sh",
+    "raw_output": "training/outputs/phase12_headless/round607_round600h_first5_confirmation_256x1_20261114"
+  }
+}
