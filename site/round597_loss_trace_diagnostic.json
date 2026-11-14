@@ -1,0 +1,83 @@
+{
+  "round": 597,
+  "status": "Small traced diagnostic complete; descriptive only",
+  "sample": {
+    "opponent": "Max Damage",
+    "checkpoint": "Round430 PPO",
+    "team_pair_clusters": 12,
+    "games": 24,
+    "score_rate": 0.2916666666666667,
+    "team_cluster_bootstrap_95_ci": [
+      0.125,
+      0.4583333333333333
+    ],
+    "wins": 7,
+    "losses": 17,
+    "draws": 0,
+    "action_adjustments": 0,
+    "development_split_only": true,
+    "seed": 597900
+  },
+  "descriptive_loss_patterns": {
+    "median_policy_decisions_wins": 7.0,
+    "median_policy_decisions_losses": 7.0,
+    "mean_action_kind_fractions_wins": {
+      "move": 0.7560263235729074,
+      "pass": 0.12220250419008183,
+      "switch": 0.12177117223701074
+    },
+    "mean_action_kind_fractions_losses": {
+      "move": 0.6467572243988783,
+      "pass": 0.2186267620417697,
+      "switch": 0.134616013559352
+    },
+    "joint_post_state_snapshots": [
+      {
+        "joint_snapshot": 1,
+        "games_observed": 17,
+        "mean_policy_alive": 5.352941176470588,
+        "mean_opponent_alive": 5.823529411764706,
+        "mean_policy_team_hp_sum": 4.92746087617531,
+        "mean_opponent_team_hp_sum": 5.321424133202508
+      },
+      {
+        "joint_snapshot": 2,
+        "games_observed": 17,
+        "mean_policy_alive": 4.705882352941177,
+        "mean_opponent_alive": 5.117647058823529,
+        "mean_policy_team_hp_sum": 4.138428719056868,
+        "mean_opponent_team_hp_sum": 4.810772211597735
+      },
+      {
+        "joint_snapshot": 3,
+        "games_observed": 17,
+        "mean_policy_alive": 3.9411764705882355,
+        "mean_opponent_alive": 5.0,
+        "mean_policy_team_hp_sum": 3.7027204803598686,
+        "mean_opponent_team_hp_sum": 4.668070451593506
+      },
+      {
+        "joint_snapshot": 4,
+        "games_observed": 17,
+        "mean_policy_alive": 3.3529411764705883,
+        "mean_opponent_alive": 4.470588235294118,
+        "mean_policy_team_hp_sum": 2.9750954052325054,
+        "mean_opponent_team_hp_sum": 4.061181516172706
+      }
+    ]
+  },
+  "speed": {
+    "workers": 4,
+    "games_per_second": 1.1901962943883322,
+    "wall_seconds": 20.16474098697654,
+    "note": "Trace logging was enabled, and one worker ran much longer than the others. Not comparable to normal evaluation speed."
+  },
+  "interpretation": "Losses show a small early disadvantage in surviving Pok\u00e9mon and team HP, which widens through the first four observed post-turn snapshots. This is outcome-stratified correlation only. It does not identify causal bad actions or estimate counterfactual value. The 12-cluster sample is too small to support training conclusions. Next diagnose first-turn team/action choices with legal counterfactuals and repeated chance outcomes.",
+  "long_tail": "Winning matches had very long traces in one outlier (up to 830 steps); one loss reached 655 steps. Typical medians were 7\u20138 trace steps. Investigate evaluator/replay overhead and termination tails separately.",
+  "artifacts": {
+    "summary": "training/outputs/phase12_headless/round597_loss_trace_diagnostic_12x1_20261113/analysis.json",
+    "markdown": "training/outputs/phase12_headless/round597_loss_trace_diagnostic_12x1_20261113/analysis.md",
+    "raw_matches": "Local only; team roster redistribution rights remain unresolved.",
+    "command": "venv/bin/python scripts/analyze_action_loss_traces.py --input-dir training/outputs/phase12_headless/round597_loss_trace_diagnostic_12x1_20261113 --output-json ... --output-md ..."
+  }
+}

@@ -1435,7 +1435,7 @@
   "method": "Masked PPO action logits are the default move policy. Terminal win/loss is the primary PPO objective; win probability and hidden-set prediction are auxiliary targets. Optional search remains disabled unless a broader held-out league supports it.",
   "jax_decision": "Recent throughput gains came from policy/observation and rollout work; a GPU battle-engine rewrite remains gated on representative end-to-end profiling and parity against local Showdown.",
   "evaluation_note": "Round597 balanced team assignment and side swaps show Round430 at 35.0% vs Max Damage [23.6,47.1] and 34.3% vs Public Counterplay [22.1,47.1] on 35 competitive development clusters. These are exploratory low-sample development results; final events remain untouched. Restricted symmetric payoff matrices do not establish global Nash or optimal play.",
-  "generated_at": "2026-11-14 04:59 UTC",
+  "generated_at": "2026-11-14 05:02 UTC",
   "round462_evaluation": {
     "status": "Round462 not promoted \u00b7 initial paired screen complete",
     "summary": "Round462 scored 44.82% against Max Damage [41.02%, 48.54%]. On the same teams and seeds, Round430 scored 44.73% and Round432 scored 44.43%; paired deltas were +0.10 pp [-1.37, +1.56] and +0.39 pp [-1.37, +2.05]. The update did not measurably change this weakness. Results against Public Counterplay and historical PPO are inconclusive; Random is an easy-baseline check.",
@@ -9628,5 +9628,23 @@
       "public_counterplay_summary": "training/outputs/phase12_headless/round595_competitive_event_splits_top256_20261113/dev_public_counterplay_35x4/paired_summary.json",
       "round430_summary": "training/outputs/phase12_headless/round595_competitive_event_splits_top256_20261113/dev_round430_35x4/paired_summary.json"
     }
+  },
+  "round597_loss_trace_diagnostic": {
+    "round": 597,
+    "score_rate": 0.2916666667,
+    "games": 24,
+    "clusters": 12,
+    "wins": 7,
+    "losses": 17,
+    "team_cluster_bootstrap_95_ci": [
+      0.125,
+      0.4583333333
+    ],
+    "action_adjustments": 0,
+    "speed": {
+      "games_per_second": 1.1902,
+      "note": "Trace logging enabled; not comparable with standard evaluation throughput."
+    },
+    "interpretation": "Small descriptive sample: losses show an early HP/alive-count deficit that widens by observed post-turn snapshot four. Not causal evidence. Match lengths include an 830-step win and 655-step loss; long-match tails are a profiling target."
   }
 }

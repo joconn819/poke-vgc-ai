@@ -635,6 +635,24 @@ Pokémon Showdown remains the correctness reference and required battle platform
       "public_counterplay_summary": "training/outputs/phase12_headless/round595_competitive_event_splits_top256_20261113/dev_public_counterplay_35x4/paired_summary.json",
       "round430_summary": "training/outputs/phase12_headless/round595_competitive_event_splits_top256_20261113/dev_round430_35x4/paired_summary.json"
     }
+  },
+  "round597_loss_trace_diagnostic": {
+    "round": 597,
+    "score_rate": 0.2916666667,
+    "games": 24,
+    "clusters": 12,
+    "wins": 7,
+    "losses": 17,
+    "team_cluster_bootstrap_95_ci": [
+      0.125,
+      0.4583333333
+    ],
+    "action_adjustments": 0,
+    "speed": {
+      "games_per_second": 1.1902,
+      "note": "Trace logging enabled; not comparable with standard evaluation throughput."
+    },
+    "interpretation": "Small descriptive sample: losses show an early HP/alive-count deficit that widens by observed post-turn snapshot four. Not causal evidence. Match lengths include an 830-step win and 655-step loss; long-match tails are a profiling target."
   }
 }
 DASHBOARD_PROGRESS_JSON -->
@@ -19790,3 +19808,11 @@ and OUT set to the Round524 checkpoint and output paths.
 - Matchup rates are side-swapped and team-role-balanced. A restricted, symmetric four-strategy payoff matrix has a 50% value by construction; that number is not evidence of strength or global Nash equilibrium. The data instead show Round430 losing to both direct baselines in point estimates on these tournament teams. Full information-boundary audit remains open for Round430 and Max Damage.
 - Four-worker end-to-end evaluation ran at 1.42–2.00 games/s for Round430 matchups and 11.36 games/s for Public Counterplay vs Max Damage. One PPO-vs-Random episode exceeded the initial 60-second worker timeout and was replayed successfully with a 180-second timeout. This reflects evaluation workload/match-length tails, not rollout throughput. Seeded randomized equal shards measured 1.49 vs 1.42 games/s (+5.6%) in one same-seed 140-match rerun. The longest worker still took 91.9 seconds, and one game outcome changed across runs; this is preliminary and should be repeated before treating it as a stable gain.
 - Report: `site/round597_competitive_meta_game.json`; raw match summaries: `training/outputs/phase12_headless/round597_balanced_competitive_meta_game_35x2_20261113/fullrun/`; runner: `scripts/evaluate_round597_balanced_competitive_meta_game.sh`.
+
+
+### Round597: small traced loss diagnostic (complete; descriptive only)
+
+- Collected full per-decision traces for Round430 vs Max Damage on 12 development clusters, both seats and one repeat (24 matches). Round430 scored 29.2% (7–17; cluster interval 12.5–45.8%), with zero action adjustments. This is a small separate-seed diagnostic sample, not a fresh strength estimate.
+- In losses, mean surviving roster count / normalized team HP was 5.35 / 4.93 after the first observed post-turn snapshot, compared with 5.86 / 5.22 in wins; by snapshot four, losses averaged 3.35 / 2.98 versus 4.14 / 3.87 in wins. This outcome-stratified pattern suggests the deficit appears early and widens, but it does not identify causal actions or rule out team matchup effects. Move/action frequencies are descriptive only. Next: evaluate legal first-turn action counterfactuals with repeated chance outcomes on matched states.
+- The traces include an 830-step win and a 655-step loss; typical median episode lengths were 7–8 trace steps. Trace logging ran at 1.19 games/s on four workers, slower than ordinary evaluation and not suitable as a speed benchmark. The long matches and worker scheduling tails merit profiling separately.
+- Summary: `site/round597_loss_trace_diagnostic.json`; local detailed trace analysis: `training/outputs/phase12_headless/round597_loss_trace_diagnostic_12x1_20261113/analysis.md`. Cached team rosters and raw traces stay local because redistribution terms are unconfirmed.
