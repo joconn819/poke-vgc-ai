@@ -3,8 +3,9 @@
 
 Requires ninjask==0.4.0, Node dependencies in the local Showdown checkout, and
 the development-team pool plus its Showdown-packed equivalent as input files.
-Ninjask actions are filtered by its player request because its raw choice list
-can include switches marked trapped/maybeTrapped and disabled moves.
+Actions are enumerated from each player's Showdown request, not from the full
+simulator's omniscient legal-choice list. If a hidden trap or Imprison refuses
+an action, the refreshed request is used and the player retries.
 """
 
 from __future__ import annotations
@@ -16,25 +17,35 @@ import subprocess
 from pathlib import Path
 
 import ninjask
+from ninjask.choices import joint_choices
 from ninjask.refsim import seed_from_int
 
 
-def request_legal(choice: str, request: dict) -> bool:
-    active = request.get("active", [])
-    for slot, action in enumerate(choice.split(", ")):
-        fields = action.split()
-        if not fields or slot >= len(active):
-            continue
-        if fields[0] == "switch":
-            view = active[slot]
-            if view.get("trapped", False) or view.get("maybeTrapped", False):
-                return False
-        elif fields[0] == "move":
-            move_index = int(fields[1]) - 1
-            moves = active[slot].get("moves", [])
-            if 0 <= move_index < len(moves) and moves[move_index].get("disabled", False):
-                return False
-    return True
+def choose_with_request_refresh(
+    battle: ninjask.Battle,
+    side: str,
+    choice: str,
+    rng: random.Random,
+) -> tuple[str, int]:
+    """Submit a player-view action, retrying only after request refresh."""
+    retries = 0
+    for _ in range(6):
+        previous_request = battle.request(side)
+        try:
+            battle.choose(side, choice)
+            return choice, retries
+        except ValueError as exc:
+            if not str(exc).startswith("[Unavailable choice]"):
+                raise
+            refreshed_request = battle.request(side)
+            if refreshed_request is None or refreshed_request == previous_request:
+                raise
+            choices = joint_choices(json.loads(refreshed_request), game_type="doubles")
+            if not choices:
+                raise
+            choice = rng.choice(choices)
+            retries += 1
+    raise RuntimeError("exceeded six refreshed-request retries")
 
 
 def normalized_ninjask_log(battle: ninjask.Battle) -> list[str]:
@@ -72,6 +83,7 @@ def main() -> None:
         bufsize=1,
     )
     matched = 0
+    hidden_choice_retries = 0
     choice_rejections: list[dict] = []
     divergences: list[dict] = []
 
@@ -101,23 +113,21 @@ def main() -> None:
                         pair.append("")
                         continue
                     request = json.loads(battle.request(side))
-                    options = [
-                        action
-                        for action in battle.legal_choices(side)
-                        if request_legal(action, request)
-                    ]
+                    options = joint_choices(request, game_type="doubles")
                     if not options:
-                        failure = {"game": game, "turn": battle.turn, "side": side, "reason": "no filtered choices"}
+                        failure = {"game": game, "turn": battle.turn, "side": side, "reason": "no request-derived choices"}
                         break
                     pair.append(rng.choice(options))
                 if failure:
                     break
                 try:
-                    if pair[0]:
-                        battle.choose("p1", pair[0])
-                    if pair[1]:
-                        battle.choose("p2", pair[1])
-                except Exception as exc:  # A backend legal-choice mismatch is an audit finding.
+                    for side_index, side in enumerate(("p1", "p2")):
+                        if pair[side_index]:
+                            pair[side_index], retries = choose_with_request_refresh(
+                                battle, side, pair[side_index], rng
+                            )
+                            hidden_choice_retries += retries
+                except Exception as exc:
                     failure = {"game": game, "turn": battle.turn, "choices": pair, "reason": str(exc)}
                     break
                 choices.append(pair)
@@ -177,9 +187,10 @@ def main() -> None:
     report = {
         "requested_games": args.games,
         "matched_games": matched,
+        "request_refresh_retries": hidden_choice_retries,
         "choice_rejections": choice_rejections,
         "state_or_log_divergences": divergences,
-        "legality_filter": "drop switch actions on trapped or maybeTrapped active slots; drop disabled moves",
+        "choice_generation": "ninjask.choices.joint_choices from each acting player's own request; retry from refreshed request after hidden trap/Imprison refusal",
         "scope_limit": "Random legal-choice sample only; does not certify all mechanics or action combinations.",
     }
     rendered = json.dumps(report, indent=2)

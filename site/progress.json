@@ -11054,21 +11054,21 @@
       "games": 256,
       "matched": 256,
       "state_or_log_divergences": 0,
-      "pre_filter_choice_rejections": 3,
-      "rejection_cases": [
-        42,
-        112,
-        113
-      ]
+      "raw_engine_choice_rejections": 3,
+      "request_refresh_retries": 6,
+      "games_requiring_retry": 5
     },
-    "choice_constraint": "Use acting-player request flags trapped/maybeTrapped and disabled-move flags; raw Ninjask legal_choices can include server-rejected switches.",
+    "choice_constraint": "Generate choices solely from each acting player\u2019s request using ninjask.choices.joint_choices. On hidden trap/Imprison refusal, refresh that request and retry; do not use the omniscient legal_choices list.",
     "closed_sheet_view": {
       "opponent_teams": 70,
       "preselection_hidden_set_mutations": 70,
       "preselection_views_unchanged": 70,
       "postselection_hidden_move_mutations": 70,
       "postselection_views_unchanged": 70,
-      "scope": "Hidden sets at preview; hidden moves after leads. Other midgame hidden-data cases remain."
+      "midgame_hidden_bench_games": 70,
+      "midgame_player_view_states": 813,
+      "midgame_request_refresh_retries": 6,
+      "scope": "Hidden sets at preview; hidden moves after leads; hidden fifth/sixth bench sets during sampled live turns."
     },
     "critical_privacy_finding": "Battle.projection() contains opponent hidden moves/items/abilities/stats. Never expose it to policy; use Tracker.view plus acting-player request and protocol stream.",
     "next": "Audit all hidden fields and midgame reveals; then prototype optional Rust search backend with request-constrained actions and differential checks before deciding whether JAX is needed."

@@ -15,6 +15,7 @@ import random
 from pathlib import Path
 
 import ninjask
+from ninjask.choices import joint_choices
 from ninjask.refsim import seed_from_int
 
 
@@ -44,21 +45,30 @@ def player_view(dex: ninjask.Dex, battle: ninjask.Battle) -> str:
     return tracker.view()
 
 
-def allowed_by_request(choice: str, request: dict) -> bool:
-    active = request.get("active", [])
-    for slot, action in enumerate(choice.split(", ")):
-        fields = action.split()
-        if not fields or slot >= len(active):
-            continue
-        view = active[slot]
-        if fields[0] == "switch" and (view.get("trapped") or view.get("maybeTrapped")):
-            return False
-        if fields[0] == "move":
-            moves = view.get("moves", [])
-            move_index = int(fields[1]) - 1
-            if 0 <= move_index < len(moves) and moves[move_index].get("disabled"):
-                return False
-    return True
+def choose_with_request_refresh(
+    battle: ninjask.Battle,
+    side: str,
+    choice: str,
+    rng: random.Random,
+) -> tuple[str, int]:
+    retries = 0
+    for _ in range(6):
+        previous_request = battle.request(side)
+        try:
+            battle.choose(side, choice)
+            return choice, retries
+        except ValueError as exc:
+            if not str(exc).startswith("[Unavailable choice]"):
+                raise
+            refreshed_request = battle.request(side)
+            if refreshed_request is None or refreshed_request == previous_request:
+                raise
+            options = joint_choices(json.loads(refreshed_request), game_type="doubles")
+            if not options:
+                raise
+            choice = rng.choice(options)
+            retries += 1
+    raise RuntimeError("exceeded six refreshed-request retries")
 
 
 def main() -> None:
@@ -80,6 +90,7 @@ def main() -> None:
     fully_checked_games = 0
     choice_rejections: list[dict] = []
     view_divergences: list[dict] = []
+    request_refresh_retries = 0
     for game, foe in enumerate(packed):
         own = packed[(game + 1) % len(packed)]
         seed = seed_from_int(args.seed + game)
@@ -114,23 +125,22 @@ def main() -> None:
                     choices.append("")
                     continue
                 request = json.loads(baseline.request(side))
-                legal = [
-                    action
-                    for action in baseline.legal_choices(side)
-                    if allowed_by_request(action, request)
-                ]
+                legal = joint_choices(request, game_type="doubles")
                 if not legal:
-                    choice_rejections.append({"game": game, "turn": baseline.turn, "side": side, "reason": "no filtered choices"})
+                    choice_rejections.append({"game": game, "turn": baseline.turn, "side": side, "reason": "no request-derived choices"})
                     break
                 choices.append(rng.choice(legal))
             if choice_rejections and choice_rejections[-1]["game"] == game:
                 break
             try:
-                for battle in (baseline, hidden_variant):
-                    if choices[0]:
-                        battle.choose("p1", choices[0])
-                    if choices[1]:
-                        battle.choose("p2", choices[1])
+                for side_index, side in enumerate(("p1", "p2")):
+                    if not choices[side_index]:
+                        continue
+                    choices[side_index], retries = choose_with_request_refresh(
+                        baseline, side, choices[side_index], rng
+                    )
+                    request_refresh_retries += retries
+                    hidden_variant.choose(side, choices[side_index])
             except Exception as exc:
                 choice_rejections.append({"game": game, "turn": baseline.turn, "choices": choices, "reason": str(exc)})
                 break
@@ -150,6 +160,7 @@ def main() -> None:
         "opponent_teams": len(packed),
         "fully_checked_games": fully_checked_games,
         "matched_player_view_states": matched_states,
+        "request_refresh_retries": request_refresh_retries,
         "choice_cycles_per_game_max": args.choice_cycles,
         "mutated_hidden_members": "fifth and sixth team members; selected four and all public species preserved",
         "mutated_fields": ["moves", "held item", "ability", "nature", "EVs"],

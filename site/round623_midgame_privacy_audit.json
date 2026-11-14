@@ -4,25 +4,34 @@
   "target_format": "gen9championsdoubles2026mcclosed",
   "opponent_teams": 70,
   "fully_checked_games": 70,
-  "matched_player_view_states": 780,
+  "matched_player_view_states": 813,
   "choice_cycles_per_game_max": 12,
   "mutation": {
     "members": "Opponent's fifth and sixth team members, which are not selected by team 1234.",
-    "fields": ["moves", "held item", "ability", "nature", "EVs"],
+    "fields": [
+      "moves",
+      "held item",
+      "ability",
+      "nature",
+      "EVs"
+    ],
     "public_species_preserved": true,
     "selected_four_preserved": true
   },
-  "method": "For each opponent team, create a baseline and a hidden-bench variant with the same seed. Select the same four Pokémon. At every live decision, compare the full player-visible protocol log and Tracker.view, choose a random action from the baseline using only its player request flags, then apply the same joint choice to both battles.",
+  "method": "For each opponent team, create baseline and hidden-bench variant with the same seed. Select the same four Pok\u00e9mon. At every live decision, compare the full player-visible protocol log and Tracker.view, choose from ninjask.choices.joint_choices using only the acting player request, retry after a refreshed request if a hidden trap or Imprison refuses, then apply the same accepted joint choice to both battles.",
   "results": {
     "player_log_divergences": 0,
     "tracker_view_divergences": 0,
-    "choice_rejections": 0
+    "choice_rejections": 0,
+    "request_refresh_retries": 6
   },
-  "scope_limit": "Sampled random-choice trajectories only. Because only unrevealed bench sets were changed, this does not certify active Pokémon hidden sets, every midgame event, all mechanics, or all hidden-world assumptions.",
+  "scope_limit": "Sampled random-choice trajectories only. Because only unrevealed bench sets were changed, this does not certify active Pok\u00e9mon hidden sets, every midgame event, all mechanics, or all hidden-world assumptions.",
   "reproduction": {
     "command": "python scripts/audit_ninjask_midgame_privacy.py --teams TEAM_POOL.json --packed-teams PACKED_TEAMS.json --dex FORMAT_DEX.json",
     "script": "scripts/audit_ninjask_midgame_privacy.py",
     "dependency": "ninjask==0.4.0"
   },
-  "next": "Add the Tracker.world-based Ninjask simulator as an optional sampling backend behind player-view-only inputs, then compare full decision latency and paired playing strength against the Showdown search path."
+  "next": "Add the Tracker.world-based Ninjask simulator as an optional sampling backend behind player-view-only inputs, then compare full decision latency and paired playing strength against the Showdown search path.",
+  "request_refresh_retries": 6,
+  "limits": "Sampled random-choice trajectories only. Because only unrevealed bench sets were changed, this does not certify active hidden sets, every midgame event, all mechanics, or all hidden-world assumptions."
 }

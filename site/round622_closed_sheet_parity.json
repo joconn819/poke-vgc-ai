@@ -14,18 +14,18 @@
     "matched": 256,
     "state_or_log_divergences": 0,
     "seed_start": 720160,
-    "choice_rejections_before_request_filter": 3,
-    "rejection_game_indices": [
+    "raw_engine_choice_rejections": 3,
+    "raw_engine_rejection_indices": [
       42,
       112,
       113
     ],
-    "request_filter": [
-      "Drop switch actions when the acting player's request marks that active slot trapped or maybeTrapped.",
-      "Drop moves marked disabled in the acting player's request."
-    ],
+    "player_choice_generation": "Enumerate each player\u2019s choices with ninjask.choices.joint_choices from that player\u2019s request, never from the engine\u2019s omniscient legal_choices list.",
+    "request_refresh_retries": 6,
+    "refusals_before_retry": 5,
+    "retry": "When a hidden trap or Imprison refuses a choice, read the refreshed request, re-enumerate that player\u2019s choices, and retry (limit six).",
     "comparison": "Normalized player-view logs, turn count, terminal flag, and winner.",
-    "limits": "Random legal-choice trajectories only. This does not certify all mechanics, state combinations, or all legal actions. The request filter is conservative for maybeTrapped slots."
+    "limits": "Random legal-choice trajectories only. This does not certify all mechanics, state combinations, or all legal actions."
   },
   "hidden_information_audit": {
     "opponent_teams": 70,
@@ -56,7 +56,8 @@
       "scripts/audit_ninjask_closed_view.py"
     ],
     "dependencies": "ninjask==0.4.0; local Showdown Node dependencies for parity replay",
-    "privacy_result": "70/70 preselection hidden-set mutations and 70/70 postselection move mutations left Tracker.view byte-for-byte unchanged."
+    "privacy_result": "70/70 preselection hidden-set mutations and 70/70 postselection move mutations left Tracker.view byte-for-byte unchanged.",
+    "parity_result": "256/256 full replays matched; six request-refresh retries across five games."
   },
   "next": "Audit other hidden fields and midgame reveals, then integrate an optional request-constrained Ninjask sampling backend behind Showdown differential checks. Reconsider JAX only after end-to-end CPU backend profiling."
 }
