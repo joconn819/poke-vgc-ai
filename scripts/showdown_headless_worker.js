@@ -363,10 +363,14 @@ async function playMatch(init) {
       process.stderr.write(`before makeChoices turn=${battle.turn} state=${battle.requestState} choices=${JSON.stringify(message.choices)} p1=${JSON.stringify(activeState(battle.p1))} p2=${JSON.stringify(activeState(battle.p2))}\n`);
     }
     const rejectedSides = [];
+    const rejectedErrors = [];
     for (let sideIndex = 0; sideIndex < 2; sideIndex++) {
       if (!message.choices[sideIndex]) continue;
       if (!battle.sides[sideIndex].choose(message.choices[sideIndex])) {
         rejectedSides.push(sideIndex);
+        // clearChoice() resets choice.error; preserve the server's reason
+        // before clearing so the Python retry path can diagnose bad orders.
+        rejectedErrors.push(battle.sides[sideIndex].choice.error);
         battle.sides[sideIndex].clearChoice();
       }
     }
@@ -374,7 +378,7 @@ async function playMatch(init) {
       publishState({
         choice_retry: {
           sides: rejectedSides,
-          errors: rejectedSides.map(sideIndex => battle.sides[sideIndex].choice.error),
+          errors: rejectedErrors,
         },
       });
       continue;

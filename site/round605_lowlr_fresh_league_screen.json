@@ -1,0 +1,163 @@
+{
+  "round": 605,
+  "candidate": "Round605 low-learning-rate one-pass imitation from Round600h",
+  "status": "complete_not_promoted",
+  "format": "gen9championsdoubles2026mcclosed",
+  "design": {
+    "team_pair_clusters": 128,
+    "outcome_repeats_per_cluster": 1,
+    "seat_orders": "both",
+    "seed": 605160,
+    "team_assignment": "balanced team assignment",
+    "preview": "Round402 selector on both sides",
+    "episode_timeout_seconds": 60,
+    "random_arm_replay_timeout_seconds": 180,
+    "random_arm_replay": "entire arm replayed on identical seed range after one 60-second timeout",
+    "final_incomplete_pairs": 0
+  },
+  "training": {
+    "parent": "Round600h",
+    "source_games": 20000,
+    "source_transitions": 153828,
+    "safe_player_view_rows": 40000,
+    "teacher_states_scored": 3546,
+    "teacher": "Max Damage for first five actions on 5000 of 20000 games",
+    "method": "supervised teacher imitation only; PPO reward, value, entropy, win probability and hidden-set losses disabled",
+    "epochs": 1,
+    "minibatch_size": 512,
+    "learning_rate": 2e-06,
+    "device": "cuda",
+    "optimizer_steps": 301,
+    "checkpoint": "training/outputs/phase12_headless/round605_lowlr_imitation_from_round602f_20261114/checkpoints/latest.pt",
+    "checkpoint_bytes": 10864315,
+    "input_preparation_seconds": 102.28,
+    "optimizer_seconds": 13.38
+  },
+  "teacher_alignment": {
+    "states_scored": 40000,
+    "invalid_label_states": 0,
+    "teacher_label_action_mismatches": 0,
+    "teacher_states_scored": 3546,
+    "parent_teacher_exact_joint_match": 0.2608573040045121,
+    "candidate_teacher_exact_joint_match": 0.26959954878736603,
+    "parent_executed_action_exact_joint_match": 0.483825,
+    "candidate_executed_action_exact_joint_match": 0.474625,
+    "candidate_parent_exact_joint_agreement": 0.84585,
+    "mean_conditional_state_kl_start_to_candidate_nats_per_slot": 0.034183685423375756,
+    "candidate_mean_negative_log_likelihood_per_joint_action": 1.8073918576318917
+  },
+  "arms": {
+    "max_damage": {
+      "opponent": "max_damage",
+      "score_rate": 0.3515625,
+      "cluster_bootstrap_95_ci": [
+        0.27734375,
+        0.42578125
+      ],
+      "wins": 90,
+      "losses": 166,
+      "draws": 0,
+      "games": 256,
+      "clusters": 128,
+      "timeouts_or_errors": 0,
+      "action_adjustments": 0,
+      "games_per_second": 2.9975590502075646,
+      "screen_parallel_wall_seconds": 85.40282133300207
+    },
+    "public_counterplay": {
+      "opponent": "public_counterplay",
+      "score_rate": 0.328125,
+      "cluster_bootstrap_95_ci": [
+        0.2578125,
+        0.3984375
+      ],
+      "wins": 84,
+      "losses": 172,
+      "draws": 0,
+      "games": 256,
+      "clusters": 128,
+      "timeouts_or_errors": 0,
+      "action_adjustments": 0,
+      "games_per_second": 3.3784714439505916,
+      "screen_parallel_wall_seconds": 75.77391262500896
+    },
+    "random": {
+      "opponent": "random",
+      "score_rate": 0.93359375,
+      "cluster_bootstrap_95_ci": [
+        0.8984375,
+        0.96484375
+      ],
+      "wins": 239,
+      "losses": 17,
+      "draws": 0,
+      "games": 256,
+      "clusters": 128,
+      "timeouts_or_errors": 0,
+      "action_adjustments": 0,
+      "games_per_second": 2.01033636316079,
+      "screen_parallel_wall_seconds": 127.34187407200807
+    },
+    "round600h": {
+      "opponent": "round600h",
+      "score_rate": 0.4765625,
+      "cluster_bootstrap_95_ci": [
+        0.3984375,
+        0.5546875
+      ],
+      "wins": 122,
+      "losses": 134,
+      "draws": 0,
+      "games": 256,
+      "clusters": 128,
+      "timeouts_or_errors": 0,
+      "action_adjustments": 0,
+      "games_per_second": 4.269232905840423,
+      "screen_parallel_wall_seconds": 59.96393395398627
+    },
+    "round585": {
+      "opponent": "round585",
+      "score_rate": 0.5,
+      "cluster_bootstrap_95_ci": [
+        0.41796875,
+        0.578125
+      ],
+      "wins": 128,
+      "losses": 128,
+      "draws": 0,
+      "games": 256,
+      "clusters": 128,
+      "timeouts_or_errors": 0,
+      "action_adjustments": 0,
+      "games_per_second": 3.9545239005035326,
+      "screen_parallel_wall_seconds": 64.73598502398818
+    },
+    "round102": {
+      "opponent": "round102",
+      "score_rate": 0.4765625,
+      "cluster_bootstrap_95_ci": [
+        0.3984375,
+        0.5546875
+      ],
+      "wins": 122,
+      "losses": 134,
+      "draws": 0,
+      "games": 256,
+      "clusters": 128,
+      "timeouts_or_errors": 0,
+      "action_adjustments": 0,
+      "games_per_second": 3.231230512453605,
+      "screen_parallel_wall_seconds": 79.22678342301515
+    }
+  },
+  "interpretation": "The fivefold smaller learning rate limited drift (KL 0.034 nats per slot) but barely improved teacher agreement and did not improve matchup performance. Scores remain below 50% against Max Damage and Public Counterplay; do not promote. This falsifies the idea that simply reducing the supervised update size will recover useful strength from these labels.",
+  "next": "Keep Round600h as incumbent. Stop tuning imitation learning rate on this label set. Diagnose losses at the state/action level and test a strategy-oriented target (simultaneous action response / approximate equilibrium or value-guided search) with an incumbent fallback and fresh paired evaluation.",
+  "artifacts": {
+    "training_launcher": "scripts/train_round605_lowlr_imitation.sh",
+    "evaluation_launcher": "scripts/evaluate_round605_lowlr_league.sh",
+    "alignment": "training/outputs/phase12_headless/round605_lowlr_imitation_from_round602f_20261114/alignment.json",
+    "raw_evaluation": "training/outputs/phase12_headless/round605_lowlr_fresh_league_screen_128x1_20261114",
+    "random_timeout_replay": "training/outputs/phase12_headless/round605_random_replay_180s_128x1_20261114",
+    "source_rollouts": "training/outputs/phase12_headless/round602f_round600h_opening_teacher_w1_20k_20261114/rollouts"
+  }
+}

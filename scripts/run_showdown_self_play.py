@@ -289,14 +289,31 @@ def current_observations(
                     preview_mask[offset + species.index(name) + 1] = 1
         return preview_mask
 
+    def request_key(battle: Any) -> tuple[Any, ...]:
+        request = getattr(battle, "_last_request", {}) or {}
+        active = tuple(
+            tuple(
+                (str(move.get("id", "")), move.get("pp"), bool(move.get("disabled", False)))
+                for move in (active_request or {}).get("moves", [])
+            )
+            for active_request in request.get("active", [])
+        )
+        return (
+            request.get("rqid"), bool(request.get("teamPreview", False)),
+            tuple(request.get("forceSwitch", []) or ()), active,
+            tuple(tuple(str(order) for order in orders) for orders in battle.valid_orders),
+        )
+
     result = {
         env.agents[0]: {
             "observation": env.embed_battle(env.battle1),
             "action_mask": synchronized_mask(env.battle1),
+            "request_key": request_key(env.battle1),
         },
         env.agents[1]: {
             "observation": env.embed_battle(env.battle2),
             "action_mask": synchronized_mask(env.battle2),
+            "request_key": request_key(env.battle2),
         },
     }
     # poke-env updates active Pokémon and valid orders in separate websocket
@@ -304,6 +321,24 @@ def current_observations(
     # old switch list can be paired with a new battle state.
     signature = tuple(
         (
+            # A battle can retain the same active species and formatted
+            # ``valid_orders`` while receiving a new request (for example,
+            # when a move runs out of PP and Struggle becomes available).
+            # Include the request identity and actionable fields so a mask
+            # from the previous request is never paired with the new state.
+            request_key(battle),
+            bool((getattr(battle, "_last_request", {}) or {}).get("wait", False)),
+            tuple(
+                (
+                    tuple(
+                        (str(move.get("id", "")), move.get("pp"), bool(move.get("disabled", False)))
+                        for move in (active_request or {}).get("moves", [])
+                    ),
+                    bool((active_request or {}).get("trapped", False)),
+                )
+                for active_request in (getattr(battle, "_last_request", {}) or {}).get("active", [])
+            ),
+            tuple((getattr(battle, "force_switch", ()) or ())),
             tuple(getattr(p, "base_species", None) if p is not None else None
                   for p in battle.active_pokemon),
             tuple(

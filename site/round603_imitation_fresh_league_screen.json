@@ -1,0 +1,146 @@
+{
+  "round": 603,
+  "candidate": "Round603 imitation-only from Round600h",
+  "status": "complete_not_promoted",
+  "format": "gen9championsdoubles2026mcclosed",
+  "design": {
+    "team_pair_clusters": 128,
+    "outcome_repeats_per_cluster": 1,
+    "seat_orders": "both",
+    "seed": 603160,
+    "team_assignment": "balanced team assignment",
+    "preview": "Round402 selector on both sides",
+    "episode_timeout_seconds": 60,
+    "final_incomplete_pairs": 0
+  },
+  "training": {
+    "parent": "Round600h",
+    "source_games": 20000,
+    "source_transitions": 153828,
+    "safe_player_view_rows": 40000,
+    "teacher_states_scored": 3546,
+    "teacher": "Max Damage for first five actions on 5000 of 20000 games",
+    "method": "supervised teacher imitation only; PPO reward, value, entropy, win probability and hidden-set losses disabled",
+    "epochs": 4,
+    "minibatch_size": 512,
+    "learning_rate": 1e-05,
+    "device": "cuda",
+    "optimizer_steps": 1204,
+    "checkpoint": "training/outputs/phase12_headless/round603_opening_imitation_from_round602f_20261114/checkpoints/latest.pt",
+    "checkpoint_bytes": 10864315,
+    "input_preparation_seconds": 101.39,
+    "optimizer_seconds": 51.75
+  },
+  "arms": {
+    "max_damage": {
+      "opponent": "max_damage",
+      "score_rate": 0.21875,
+      "cluster_bootstrap_95_ci": [
+        0.16015625,
+        0.28515625
+      ],
+      "wins": 56,
+      "losses": 200,
+      "draws": 0,
+      "games": 256,
+      "clusters": 128,
+      "timeouts_or_errors": 0,
+      "action_adjustments": 0,
+      "games_per_second": 5.444829092953435,
+      "screen_parallel_wall_seconds": 47.017086418985855
+    },
+    "public_counterplay": {
+      "opponent": "public_counterplay",
+      "score_rate": 0.23046875,
+      "cluster_bootstrap_95_ci": [
+        0.16796875,
+        0.29296875
+      ],
+      "wins": 59,
+      "losses": 197,
+      "draws": 0,
+      "games": 256,
+      "clusters": 128,
+      "timeouts_or_errors": 0,
+      "action_adjustments": 0,
+      "games_per_second": 4.71640424636509,
+      "screen_parallel_wall_seconds": 54.27863826500834
+    },
+    "random": {
+      "opponent": "random",
+      "score_rate": 0.921875,
+      "cluster_bootstrap_95_ci": [
+        0.8828125,
+        0.95703125
+      ],
+      "wins": 236,
+      "losses": 20,
+      "draws": 0,
+      "games": 256,
+      "clusters": 128,
+      "timeouts_or_errors": 0,
+      "action_adjustments": 0,
+      "games_per_second": 5.094355584861109,
+      "screen_parallel_wall_seconds": 50.2516943969822
+    },
+    "round600h": {
+      "opponent": "round600h",
+      "score_rate": 0.359375,
+      "cluster_bootstrap_95_ci": [
+        0.2890625,
+        0.43359375
+      ],
+      "wins": 92,
+      "losses": 164,
+      "draws": 0,
+      "games": 256,
+      "clusters": 128,
+      "timeouts_or_errors": 0,
+      "action_adjustments": 0,
+      "games_per_second": 1.9718694306928066,
+      "screen_parallel_wall_seconds": 129.82604021101724
+    },
+    "round585": {
+      "opponent": "round585",
+      "score_rate": 0.390625,
+      "cluster_bootstrap_95_ci": [
+        0.31640625,
+        0.46484375
+      ],
+      "wins": 100,
+      "losses": 156,
+      "draws": 0,
+      "games": 256,
+      "clusters": 128,
+      "timeouts_or_errors": 0,
+      "action_adjustments": 0,
+      "games_per_second": 2.552070551498856,
+      "screen_parallel_wall_seconds": 100.31070647700108
+    },
+    "round102": {
+      "opponent": "round102",
+      "score_rate": 0.37109375,
+      "cluster_bootstrap_95_ci": [
+        0.296875,
+        0.44921875
+      ],
+      "wins": 95,
+      "losses": 161,
+      "draws": 0,
+      "games": 256,
+      "clusters": 128,
+      "timeouts_or_errors": 0,
+      "action_adjustments": 0,
+      "games_per_second": 1.7378345278919356,
+      "screen_parallel_wall_seconds": 147.30976735198055
+    }
+  },
+  "interpretation": "Imitation-only training moved the policy away from the audited Round600h parent but failed to transfer into match strength. It scored 21.9% vs Max Damage, 23.0% vs Public Counterplay and 35.9% vs Round600h; do not promote. The labeled first-five Max Damage actions are not a sufficient standalone policy target across the full state distribution.",
+  "next": "Keep Round600h as reference. Diagnose action-level failure by comparing parent and Round603 choices on teacher-labeled states and examining loss-game traces, then construct a conservative distillation experiment with a small policy trust region and fresh league evaluation. Do not treat the imitation checkpoint as a new parent.",
+  "artifacts": {
+    "training_launcher": "scripts/train_round603_opening_imitation_from_round602f.sh",
+    "evaluation_launcher": "scripts/evaluate_round603_imitation_league.sh",
+    "raw_evaluation": "training/outputs/phase12_headless/round603_fresh_league_screen_128x1_20261114",
+    "source_rollouts": "training/outputs/phase12_headless/round602f_round600h_opening_teacher_w1_20k_20261114/rollouts"
+  }
+}

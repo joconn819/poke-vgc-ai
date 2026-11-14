@@ -975,53 +975,12 @@ def run_game(
                             if action_slot not in {0, 1}:
                                 raise ValueError("max_damage_action_slots must contain only 0 and 1")
                             native_action[action_slot] = max_damage_pair[action_slot]
-                        try:
-                            match.choices_from_native_actions([
-                                native_action,
-                                actions[agent_names[1]],
-                            ])
-                        except ValueError:
-                            # A one-slot hybrid can create an incompatible
-                            # joint order, such as both active Pokémon
-                            # switching to the same teammate. Keep the policy
-                            # pair when the proposed hybrid is invalid.
-                            native_action = np.asarray(policy_action, dtype=np.int64)
-                            max_damage_action_fallbacks += 1
-                            try:
-                                match.choices_from_native_actions([
-                                    native_action,
-                                    actions[agent_names[1]],
-                                ])
-                            except ValueError:
-                                # Forced-switch masks can occasionally admit
-                                # two copies of one switch target. Find the
-                                # first strictly valid pair as a safe fallback.
-                                legal_mask = np.asarray(masks[agent], dtype=np.int8)
-                                width = legal_mask.size // 2
-                                legal0 = np.flatnonzero(legal_mask[:width]).tolist()
-                                legal1 = np.flatnonzero(legal_mask[width:]).tolist()
-                                valid_fallback = None
-                                for first in legal0:
-                                    for second in legal1:
-                                        if first == second and 1 <= first <= 6:
-                                            continue
-                                        candidate = np.asarray([first, second], dtype=np.int64)
-                                        try:
-                                            match.choices_from_native_actions([
-                                                candidate,
-                                                actions[agent_names[1]],
-                                            ])
-                                        except ValueError:
-                                            continue
-                                        valid_fallback = candidate
-                                        break
-                                    if valid_fallback is not None:
-                                        break
-                                if valid_fallback is None:
-                                    raise RuntimeError(
-                                        "no strictly valid action pair found after Max Damage intervention rejection"
-                                    )
-                                native_action = valid_fallback
+                        # Do not validate against actions[agent_names[1]] here:
+                        # that value is only a provisional placeholder until
+                        # the second side's strategy is selected below. The
+                        # Max Damage helper returns an internally compatible
+                        # pair; the finalized side choices are validated by
+                        # the normal Showdown submission path.
                         first_turn_action_source = "max_damage"
                         first_turn_max_damage_override_actions += int(bool(slots_to_override))
                         # Retain the intervention as a teacher-labeled policy
@@ -2315,13 +2274,16 @@ def run_game(
             ):
                 match.reseed_random(reseed_random_at_decision[1])
 
+            retry_banned_moves: dict[int, set[tuple[int, str]]] = {}
+
             def retry_rejected_choices(
                 updated_state: dict[str, Any],
                 rejected_sides: list[int],
                 previous_choices: tuple[str, str],
             ) -> tuple[str, str]:
                 """Resample only rejected sides against Showdown's refreshed private request."""
-                del updated_state  # match.advance already applied this player-view state.
+                # match.advance already applied this player-view state; keep
+                # the retry payload for its exact server-reported error.
                 updated_observations = match.observations()
                 for side in rejected_sides:
                     # A search-selected targetless order was replaced by a
@@ -2330,7 +2292,78 @@ def run_game(
                     forced_targetless_search_positions.clear()
                     agent = agent_names[side]
                     observation = updated_observations[side * 2]
-                    legal_mask = updated_observations[side * 2 + 1]
+                    legal_mask = updated_observations[side * 2 + 1].copy()
+                    # Showdown can reject moves disabled by a public effect
+                    # (for example Imprison) while its cached request still
+                    # says enabled. Accumulate the exact rejections for this
+                    # decision; otherwise the policy can alternate forever
+                    # between two moves disabled by the same effect.
+                    errors = (updated_state.get("choice_retry") or {}).get("errors") or []
+                    error_index = rejected_sides.index(side)
+                    error_text = str(errors[error_index]) if error_index < len(errors) else ""
+                    prefix = "Can't move: "
+                    suffix = " is disabled"
+                    if error_text.startswith(prefix) and error_text.endswith(suffix):
+                        detail = error_text[len(prefix):-len(suffix)]
+                        if "'s " in detail:
+                            pokemon_name, move_name = detail.rsplit("'s ", 1)
+                            pokemon_id = to_id_str(pokemon_name)
+                            move_id = to_id_str(move_name)
+                            from poke_env.environment.doubles_env import DoublesEnv
+
+                            battle = match.battles[side]
+                            width = legal_mask.size // 2
+                            active_slot = next(
+                                (
+                                    slot for slot, pokemon in enumerate(battle.active_pokemon[:2])
+                                    if pokemon is not None
+                                    and pokemon_id in {
+                                        to_id_str(str(getattr(pokemon, "species", ""))),
+                                        to_id_str(str(getattr(pokemon, "name", ""))),
+                                    }
+                                ),
+                                None,
+                            )
+                            if active_slot is not None:
+                                retry_banned_moves.setdefault(side, set()).add(
+                                    (active_slot, move_id)
+                                )
+                    battle = match.battles[side]
+                    width = legal_mask.size // 2
+                    from poke_env.environment.doubles_env import DoublesEnv
+
+                    for active_slot, move_id in retry_banned_moves.get(side, set()):
+                        if active_slot >= len(battle.active_pokemon):
+                            continue
+                        slot_mask = legal_mask[
+                            active_slot * width:(active_slot + 1) * width
+                        ]
+                        banned = []
+                        for action_index in np.flatnonzero(slot_mask):
+                            try:
+                                order = DoublesEnv._action_to_order_individual(
+                                    np.int64(action_index), battle, True, active_slot
+                                )
+                            except (IndexError, ValueError):
+                                continue
+                            chosen_move = getattr(order, "order", None)
+                            if to_id_str(str(getattr(chosen_move, "id", ""))) == move_id:
+                                banned.append(int(action_index))
+                        if banned:
+                            slot_mask[banned] = 0
+                            if os.environ.get("POKE_HEADLESS_DEBUG"):
+                                print(
+                                    "headless_disabled_move_retry",
+                                    json.dumps({
+                                        "side": side,
+                                        "error": error_text,
+                                        "active_slot": active_slot,
+                                        "move_id": move_id,
+                                        "banned_action_indices": banned,
+                                        "remaining_slot_actions": np.flatnonzero(slot_mask).tolist(),
+                                    }),
+                                    flush=True,
+                                )
                     policy = policies.get(agent)
                     if policy is None:
                         payload = {

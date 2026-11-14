@@ -14,14 +14,14 @@ Pokémon Showdown remains the correctness reference and required battle platform
     "ci95": "[35.16%, 44.53%]",
     "games": 512,
     "clusters": 256,
-    "status": "Round430 remains the evaluated PPO reference; Round585 is a promising but unpromoted development candidate. Its absolute scores remain below 50% vs direct heuristics.",
-    "evaluation": "Round580: Round579 scored 35.94% Max Damage (+0.78 pp [-2.73,+4.69]), 34.38% Counterplay (-0.78 [-4.69,+3.13]), and 33.59% Public Counterplay (-0.78 [-4.30,+2.73]); all below 50% and no paired improvement. It regressed vs Round524 by -3.91 pp [-7.81,-0.39]. Round430 remains reference only."
+    "status": "Round430 remains the historical validated reference. Round600h remains an unpromoted development checkpoint; Round601d trained an opening Max Damage teacher but did not demonstrate superiority and is not promoted.",
+    "evaluation": "Round601d fresh screen (128 team-pair clusters, one repeat, both seats): 39.5% vs Max Damage [32.4,46.9], 35.9% vs Public Counterplay [28.9,43.0], 93.4% vs Random [90.2,96.5], 51.6% vs Round102 [44.1,59.0], 44.5% vs Round585 [37.1,52.3], and 46.9% vs Round600h [39.5,54.3]. No protocol errors or action corrections. It remains below 50% against both simple heuristics and loses to its parent in point estimate; do not promote."
   },
   "speed": {
-    "games_per_second": "30.31 rollout / 18.62 input-to-checkpoint",
-    "context": "Round579: 20,000 audited games; rollout 659.88 s; input-to-checkpoint 1,074.19 s; 20 shards compressed from 4.00 GB to 229 MB.",
-    "decision_latency": "Round542 remains latest detailed weighted rollout profile.",
-    "current_bottleneck": "Action selection 89.4 ms/episode; inference 38.2 ms; baseline action scoring 36.1 ms; engine roundtrip 32.4 ms; observation encoding 26.7 ms (Round542). CPU rollout throughput depends strongly on opponent type.",
+    "games_per_second": "37.88 rollout / 28.54 input-to-checkpoint",
+    "context": "Round601d: 20,000 audited games, 8 CPU rollout workers; rollout 527.99 s; preflight 62.44 s; learner preparation/update/checkpoint 110.25 s; total 700.72 s. Peak aggregate worker RSS 9.96 GiB and mean CPU use 6.87 cores.",
+    "decision_latency": "Round601d per-episode wall profile varied by opponent: 134 ms on Max Damage teacher shards, 207 ms on Public Counterplay, and 182–213 ms on policy-pool shards.",
+    "current_bottleneck": "Rollout generation still dominates wall time. Within PPO-opponent shards, CPU policy action selection and inference plus observation encoding take about 183–213 ms per episode; Public Counterplay shards were the slowest at 4.78–4.79 games/s each. Max Damage teacher shards reached 7.35 games/s. The GPU is used for PPO optimization, while match rollouts run on CPU. PPO data preparation/optimization took 110.25 s, but the KL guard stopped after 360/1,208 planned optimizer steps (1.19 effective passes).",
     "gpu_status": "CUDA PPO; headless simulation on CPU",
     "latest_competitive_team_evaluation": {
       "workers": 4,
@@ -37,16 +37,176 @@ Pokémon Showdown remains the correctness reference and required battle platform
     }
   },
   "latest_run": {
-    "round": 598,
-    "status": "Round585 candidate transfer evaluated; no promotion",
-    "summary": "Round585 scored 46.4% vs both Max Damage and Public Counterplay on 35 competitive development clusters. Paired gains over Round430 were +10.0 pp [0.7,20.0] vs Max Damage and +7.1 pp [0.0,15.7] vs Public Counterplay. It scored 52.9% [40,65] head-to-head; no robust edge established and both absolute heuristic results remain below 50%.",
-    "games": "5 cells × 140 games; 35 clusters, two repeats and both seats",
-    "epochs": "Round585: one PPO update from 20,000 games; no training in Round598",
-    "evaluation": "Competitive-team development transfer; reserved final event set untouched"
+    "round": 601,
+    "status": "Round601d opening-teacher PPO trained and screened; not promoted",
+    "summary": "Round601d's 20k PPO update added supervised first-five-action labels from Max Damage teacher episodes. On 128 fresh RandomChampions team-pair clusters with both seats: it scored 39.5% vs Max Damage, 35.9% vs Public Counterplay, 93.4% vs Random, 51.6% vs Round102, 44.5% vs Round585 and 46.9% head-to-head vs its Round600h parent. It did not establish a robust improvement and remains below 50% against both direct heuristics.",
+    "games": "20,000 audited training games; 6 opponent arms × 256 fresh-seed matches, 128 clusters per arm",
+    "epochs": "One update; KL guard stopped after 360 of 1,208 planned optimizer steps (1.19 effective passes)",
+    "evaluation": "Development screen, seed 601120. Team-cluster bootstrap 95% intervals are reported in site/round601d_fresh_league_screen.json. No promotion; Round430 remains the historical validated reference."
   },
   "method": "Masked PPO action logits are the default move policy. Terminal win/loss is the primary PPO objective; win probability and hidden-set prediction are auxiliary targets. Optional search remains disabled unless a broader held-out league supports it.",
   "jax_decision": "Recent throughput gains came from policy/observation and rollout work; a GPU battle-engine rewrite remains gated on representative end-to-end profiling and parity against local Showdown.",
-  "evaluation_note": "Round598: Round585 showed a promising development-set gain over Round430 (+10.0 pp vs Max Damage [0.7,20.0], +7.1 pp vs Public Counterplay [0.0,15.7]) on 35 clusters. Absolute scores were 46.4% vs both direct heuristics; head-to-head was 52.9% [40,65]. This is not a promotion or an optimal-play claim. Final events are still untouched.",
+    "evaluation_note": "Round601d's raw PPO score remains below 50% against Max Damage and Public Counterplay. A fixed first-five Max Damage action overlay adds 11.9 pp on average across five non-random paired opponents [6.7,17.0], but this is an intervention, not learned behavior. Round601d is not promoted; its teacher-trained policy matched only 27.4% of teacher joint actions on the audited sample. The next controlled continuation increases teacher loss weight from 0.25 to 1.0 while holding the starting checkpoint and other settings fixed.",
+  "round601d_training_status": {
+    "round": 601,
+    "status": "Trained and screened; not promoted",
+    "parent_checkpoint": "Round600h",
+    "checkpoint": "training/outputs/phase12_headless/round601d_round600h_opening_teacher_20k_20261114/checkpoints/latest.pt",
+    "training_games": 20000,
+    "strict_audit": {
+      "trainable_games": 20000,
+      "player_view_rows": 40000,
+      "safe_rows": 40000,
+      "trainable_transitions": 154253,
+      "teacher_episodes": 5000,
+      "errors": 0
+    },
+    "speed": {
+      "rollout_games_per_second": 37.88,
+      "input_to_checkpoint_games_per_second": 28.54,
+      "rollout_seconds": 527.99,
+      "preflight_seconds": 62.44,
+      "learner_preparation_update_checkpoint_seconds": 110.25,
+      "total_seconds": 700.72,
+      "rollout_workers": 8,
+      "mean_cpu_cores": 6.87,
+      "peak_aggregate_worker_rss_gib": 9.96,
+      "shard_games_per_second_range": [
+        4.63,
+        7.36
+      ]
+    },
+    "ppo_update": {
+      "optimizer_steps": 360,
+      "planned_optimizer_steps": 1208,
+      "effective_passes": 1.192,
+      "stop_reason": "kl_limit",
+      "approx_kl": 0.03137,
+      "clip_fraction": 0.35281
+    },
+    "evaluation_report": "round601d_fresh_league_screen.json",
+    "evaluation_seed": 601120,
+    "team_pair_clusters_per_opponent": 128,
+    "outcome_repeats": 1,
+    "both_seats": true,
+    "scorecard": {
+      "max_damage": {
+        "score_rate": 0.39453125,
+        "cluster_bootstrap_95_ci": [
+          0.32421875,
+          0.46875
+        ]
+      },
+      "public_counterplay": {
+        "score_rate": 0.359375,
+        "cluster_bootstrap_95_ci": [
+          0.2890625,
+          0.4296875
+        ]
+      },
+      "random": {
+        "score_rate": 0.93359375,
+        "cluster_bootstrap_95_ci": [
+          0.90234375,
+          0.96484375
+        ]
+      },
+      "round102": {
+        "score_rate": 0.515625,
+        "cluster_bootstrap_95_ci": [
+          0.44140625,
+          0.58984375
+        ]
+      },
+      "round585": {
+        "score_rate": 0.4453125,
+        "cluster_bootstrap_95_ci": [
+          0.37109375,
+          0.5234375
+        ]
+      },
+      "round600h": {
+        "score_rate": 0.46875,
+        "cluster_bootstrap_95_ci": [
+          0.39453125,
+          0.54296875
+        ]
+      }
+    },
+    "timeouts_errors_or_action_adjustments": 0,
+    "decision": "Do not promote; candidate remains below 50% against both direct heuristics and the head-to-head interval overlaps parity."
+  },
+  "round601d_first5_transfer": {
+    "status": "Intervention screen complete; not a standalone deployable policy",
+    "report": "round601d_first5_transfer_league.json",
+    "seed": 601400,
+    "team_pair_clusters": 128,
+    "outcome_repeats_per_cluster": 1,
+    "equal_weight_five_opponent_raw_score_rate": 0.45,
+    "equal_weight_five_opponent_overlay_score_rate": 0.56875,
+    "equal_weight_five_opponent_paired_delta": 0.11875,
+    "equal_weight_five_opponent_cluster_bootstrap_95_ci": [
+      0.0671875,
+      0.1703125
+    ],
+    "arms": {
+      "max_damage": {
+        "raw_score_rate": 0.359375,
+        "first5_score_rate": 0.4921875,
+        "paired_delta": 0.1328125,
+        "paired_ci": [
+          0.0546875,
+          0.21484375
+        ]
+      },
+      "public_counterplay": {
+        "raw_score_rate": 0.36328125,
+        "first5_score_rate": 0.4609375,
+        "paired_delta": 0.09765625,
+        "paired_ci": [
+          0.0234375,
+          0.171875
+        ]
+      },
+      "random": {
+        "raw_score_rate": 0.96484375,
+        "first5_score_rate": 0.97265625,
+        "paired_delta": 0.0078125,
+        "paired_ci": [
+          -0.01953125,
+          0.03515625
+        ]
+      },
+      "round600h": {
+        "raw_score_rate": 0.48046875,
+        "first5_score_rate": 0.64453125,
+        "paired_delta": 0.1640625,
+        "paired_ci": [
+          0.08203125,
+          0.24609375
+        ]
+      },
+      "round585": {
+        "raw_score_rate": 0.515625,
+        "first5_score_rate": 0.6484375,
+        "paired_delta": 0.1328125,
+        "paired_ci": [
+          0.046875,
+          0.21875
+        ]
+      },
+      "round102": {
+        "raw_score_rate": 0.53125,
+        "first5_score_rate": 0.59765625,
+        "paired_delta": 0.06640625,
+        "paired_ci": [
+          -0.01171875,
+          0.1484375
+        ]
+      }
+    },
+    "interpretation": "First-five overlay gains are supported on four direct/PPO opponents, uncertain vs Round102, and absent vs Random. PPO teacher alignment increased only 1.7 percentage points exact-joint on 8,581 labeled states."
+  },
   "round499_policy_ensemble": {
     "round": 499,
     "status": "Collection and held-out fits complete; selector not promoted",
@@ -19883,3 +20043,38 @@ and OUT set to the Round524 checkpoint and output paths.
 
 
 - Round600h trace report: `site/round600h_loss_trace_diagnostic.json`; runner: `scripts/evaluate_round600h_loss_trace_diagnostic.sh`.
+
+### Round601d: first-five Max Damage teacher PPO (trained and screened; not promoted)
+
+- Controlled 20,000-game continuation from Round600h. The opponent mix, team distribution, optimizer settings and eight CPU rollout workers were retained; the targeted change was to label the first five in-battle decisions from the Max Damage chooser on 5,000 of the 20,000 training games. Teacher decisions were excluded from the PPO policy loss and trained with teacher cross-entropy weight 0.25. The teacher is a fixed action heuristic, not a learned opponent model.
+- Strict audit passed: 20,000 trainable games, 40,000 player-view rows, 154,253 trainable transitions, 5,000 teacher episodes and zero audit errors. The checkpoint was atomically written to `training/outputs/phase12_headless/round601d_round600h_opening_teacher_20k_20261114/checkpoints/latest.pt`.
+- PPO stopped at its KL guard after 360/1,208 planned optimizer steps (1.19 effective passes); approximate KL was 0.0314 and clip fraction 0.353. The requested four passes did not run to completion. This checkpoint is usable for evaluation but must not be described as a full four-pass update.
+- Speed: rollout generation took 527.99 s for 20,000 games = 37.88 aggregate games/s with eight workers. Input-to-checkpoint time was 700.72 s = 28.54 games/s. Preflight took 62.44 s and learner preparation/update/checkpoint took 110.25 s. Shard rates ranged from 4.63 to 7.36 games/s; Max Damage teacher shards reached 7.35, Public Counterplay shards averaged 4.79, and PPO-pool shards averaged about 4.8–5.4 games/s. Rollout aggregate CPU use was 6.87 cores and peak aggregate worker RSS was 9.96 GiB. CPU-side policy selection/inference and observation encoding remain the rollout bottleneck; Public Counterplay episodes were the slowest class. Disk use was 45% after training artifacts were compressed/removed by the runner.
+- Fresh-seed screen: 128 RandomChampions team-pair clusters per opponent, one outcome repeat and both sides, seed 601120, balanced team assignment. Round601d scored 39.45% vs Max Damage (101–155; team-cluster bootstrap 95% CI 32.42–46.88%), 35.94% vs Public Counterplay (92–164; 28.91–42.97%), 93.36% vs Random (239–17; 90.23–96.48%), 51.56% vs Round102 (132–124; 44.14–58.98%), 44.53% vs Round585 (114–142; 37.11–52.34%), and 46.88% head-to-head vs Round600h (120–136; 39.45–54.30%). Every cell completed 256 games with zero timeouts/errors and zero action adjustments. The intervals are based on resampling the 128 team-pair clusters, not individual matches.
+- Conclusion: this teacher-labeled PPO update does not demonstrate a gain over its parent and still loses to Max Damage and Public Counterplay. Do not promote Round601d. The fixed first-five overlay was tested on the same 128 fresh team clusters against six opponents: it gained +13.3 pp vs Max Damage [5.5,21.5], +9.8 vs Public Counterplay [2.3,17.2], +16.4 vs Round600h [8.2,24.6], +13.3 vs Round585 [4.7,21.9], +6.6 vs Round102 [−1.2,14.8], and +0.8 vs Random [−2.0,3.5]. The equal-weight average over the five non-random opponents improved from 45.0% to 56.9%, paired +11.9 pp [6.7,17.0]. These are development results for a fixed heuristic intervention, not a deployable learned policy or a global VGC estimate. An audited behavior-alignment pass over 8,581 teacher-labeled decisions found exact joint top-1 teacher agreement increased only from 25.7% in Round600h to 27.4% in Round601d; invalid labels were zero and stored log probabilities reproduced within 2.2e-6. The labels were sound, but the student barely moved toward them. Round601d remains unpromoted.
+- Round602f tested one controlled change from Round600h: the same 20,000-game environment, opponents, teams, teacher coverage (5,000 games), PPO settings and eight rollout workers, with first-five Max Damage teacher cross-entropy weight raised from 0.25 to 1.0. Strict audit passed with 40,000 safe player-view rows, 20,000 trainable games, 153,828 transitions and zero errors. Rollouts took 531.56 s (37.63 aggregate games/s); input-to-checkpoint took 690.98 s (28.94 games/s). The 3.80 GB raw trajectories compressed to 220 MB. Runtime samples per game were 0.030 s Showdown turn advancement, 0.115 s action selection, 0.035 s observation encoding and 0.031 s policy inference. This supports prioritizing CPU action/observation throughput over a simulator rewrite. The GPU was used for the learner; it stays mostly idle during CPU rollout generation.
+- PPO hit the KL guard after 48 of 1,204 planned optimizer steps (0.159 equivalent passes), approx KL 0.0246 and clip fraction 0.295. The checkpoint is usable for evaluation but this was not a four-pass update. The 40,000-state alignment audit found 3,546 teacher states, zero invalid labels and zero label/action mismatches. Exact joint teacher agreement moved only from 26.09% to 27.16%; overall exact top-1 match on executed rollout actions fell from 48.38% to 47.33%. Teacher weight alone did not fix the weak transfer.
+- Fresh screen used 128 new team-pair clusters, both seats, one repeat, Round402 preview, seed 602160, four workers, and a 60-second episode timeout. Two timeout clusters were replayed with identical teams and battle seeds at 180 seconds. Final complete scores with cluster-bootstrap 95% intervals: Max Damage 34.4% [27.3,41.4], Public Counterplay 34.4% [27.3,41.8], Random 94.5% [91.4,97.3], Round600h 41.0% [34.0,48.4], Round585 44.1% [36.7,52.0], Round102 47.7% [40.2,55.1]. All repaired final cells have 256 complete games, 128 clusters, zero unresolved errors/timeouts and zero action adjustments. Round602f is not promoted.
+- The isolated imitation-only experiment is complete and did not transfer. Round603 is an evaluated four-pass imitation-only model; Round604 is the one-pass follow-up. Neither is promoted. Continue to use Round600h as the experimental incumbent while diagnosing targets and update size.
+- During the retries we fixed two action-translation gaps: the worker now preserves Showdown's rejection reason before clearing a failed choice; retry handling accumulates engine-reported disabled moves so the policy cannot oscillate between Imprison-disabled actions; and serialization omits automatic fainted-slot passes while retaining a required pass when fewer healthy reserves exist than forced switches. The exact Imprison match and the excess forced-switch episode both completed after the fix. Partial Round602d/e data were not used for training.
+- Reports: `site/round602f_fresh_league_screen.json`, `training/outputs/phase12_headless/round602f_round600h_opening_teacher_w1_20k_20261114/teacher_alignment_full.json`. Reproduction: `scripts/train_round602f_round600h_opening_teacher_w1_20k.sh` and `scripts/evaluate_round602f_opening_teacher_league.sh`. The candidate checkpoint remains at `training/outputs/phase12_headless/round602f_round600h_opening_teacher_w1_20k_20261114/checkpoints/latest.pt` for later comparisons; do not promote it.
+
+### Round603: imitation-only from audited Max Damage labels (2026-11-14)
+
+- Starting from Round600h, trained on 20,000 Round602f games / 153,828 transitions, including 3,546 teacher-labeled decision states. PPO reward, value, entropy, win-probability, and hidden-set losses were disabled. Four supervised passes, batch 512, learning rate 1e-5; 1,204 optimizer steps. Strict source audit had 40,000 player-view rows and zero invalid labels or teacher/action mismatches.
+- Alignment changed materially: teacher exact-joint match rose 26.1%→40.8%, but exact match to executed rollout actions fell 48.4%→34.3%; parent/candidate exact joint agreement was 43.2% and conditional KL was 0.348 nats per slot. This overfit-like shift is visible even though labels were valid.
+- Fresh screen used 128 balanced team-pair clusters, both seats, one repeat, Round402 preview, seed 603160, four workers. Scores / cluster-bootstrap 95% intervals: Max Damage 21.9% [16.0,28.5], Public Counterplay 23.0% [16.8,29.3], Random 92.2% [88.3,95.7], Round600h 35.9% [28.9,43.4], Round585 39.1% [31.6,46.5], Round102 37.1% [29.7,44.9]. Every arm completed 256 games over 128 clusters with zero errors/timeouts and zero action adjustments. Do not promote.
+- Interpretation: the Max Damage labels are not a sufficient full-policy target; making the student imitate them more closely reduces strength against the heuristic and historical policy pool. Full record: `site/round603_imitation_fresh_league_screen.json`; alignment: `training/outputs/phase12_headless/round603_opening_imitation_from_round602f_20261114/alignment.json`.
+
+### Round604: one-pass imitation ablation (2026-11-14)
+
+- Same audited data and parent as Round603, changing only epochs from four to one (301 optimizer steps). Alignment still showed a large 0.238-nat-per-slot KL; teacher agreement rose to 32.8%, while executed-action exact match fell to 37.7% from 48.4% and parent agreement was 50.7%.
+- Fresh screen seed 604160, same 128 clusters / both seats / one repeat. Results: Max Damage 36.7% [29.7,44.1], Public Counterplay 37.5% [30.1,44.9], Random 94.9% [92.2,97.3], Round600h 46.1% [38.3,54.3], Round585 45.3% [37.5,53.1], Round102 44.9% [37.1,53.1]. Every arm completed 256 games, zero errors/timeouts and zero action adjustments. Still not promoted.
+- One pass reduced the damage from four-pass imitation but did not beat the simple heuristics; the high uncertainty versus historical policies does not establish an improvement. Report: `site/round604_onepass_fresh_league_screen.json`.
+
+### Round605: fivefold lower imitation learning rate (2026-11-14)
+
+- Same parent/data and one-pass setup, changing only learning rate from 1e-5 to 2e-6. Alignment: teacher exact-joint match 26.1%→27.0%; executed-action exact match 48.4%→47.5%; parent exact joint agreement 84.6%; KL 0.034 nats per slot. This is a small update but did not materially learn the teacher labels.
+- Fresh screen: seed 605160, 128 clusters. Max Damage 35.2% [27.7,42.6], Public Counterplay 32.8% [25.8,39.8], Random 93.4% [89.8,96.5], Round600h 47.7% [39.8,55.5], Round585 50.0% [41.8,57.8], Round102 47.7% [39.8,55.5]. Each final arm has 256 complete games, 128 clusters and zero action adjustments/errors/timeouts. One Random match timed out at 60 seconds; the entire Random arm was replayed over the same seed range with a 180-second limit.
+- Conclusion: this minimal update did not improve the Max Damage/Public Counterplay matchups and is not promoted. The weak teacher labels provide little value when updates are small, while larger updates damage broad policy behavior. Report: `site/round605_lowlr_fresh_league_screen.json`.
+- Next experiment should target policy quality directly. Do not continue sweeping imitation learning rates without evidence that held-out strategic decisions improve. Analyze representative losses and legal candidate actions, then test value-guided simultaneous-action selection / robust response against multiple plausible opponent actions, with the parent policy retained as a candidate in any policy mixture. Keep all candidates gated by fresh paired full-match evaluation.

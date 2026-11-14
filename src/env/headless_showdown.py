@@ -356,7 +356,55 @@ class HeadlessShowdownProcess:
                     forced_targetless=1 in targetless_slots,
                 ),
             ]
-            result.append(", ".join(parts))
+            # Showdown's Side.getChoiceIndex() automatically consumes slots
+            # that cannot act (fainted/commanding in move requests, or not
+            # flagged for a forced switch). Sending an explicit `pass` after
+            # that auto-pass advances to a third action and rejects the whole
+            # choice. Omit only those server-defined automatic passes.
+            request_state = self.state.get("request_state")
+            force_switch = requests[side_index].get("forceSwitch") or [False, False]
+            submitted_parts = []
+            for position, (single_order, part) in enumerate(zip(single_orders, parts)):
+                if part == "pass":
+                    active = battle.active_pokemon[position]
+                    effects = getattr(active, "effects", {}) if active is not None else {}
+                    commanding = any(
+                        str(getattr(effect, "name", effect)).lower() == "commanding"
+                        for effect in effects
+                    )
+                    if request_state == "move":
+                        auto_pass = (
+                            active is None
+                            or bool(getattr(active, "fainted", False))
+                            or commanding
+                        )
+                    elif request_state == "switch":
+                        auto_pass = not bool(force_switch[position])
+                        if not auto_pass:
+                            # When fewer living reserves remain than fainted
+                            # actives, Showdown requires an explicit pass for
+                            # the excess forced-switch slot. `forceSwitch`
+                            # marks both fainted actives, so preserve this
+                            # server-legal pass instead of treating it as an
+                            # automatically skipped slot.
+                            submitted_parts.append(part)
+                            continue
+                    else:
+                        auto_pass = False
+                    if not auto_pass:
+                        raise ValueError(
+                            "native pass order is not an automatic Showdown pass: "
+                            f"request_state={request_state!r}, side={side_index}, "
+                            f"position={position}, request={requests[side_index]!r}"
+                        )
+                    continue
+                submitted_parts.append(part)
+            if not submitted_parts:
+                raise ValueError(
+                    "all active slots auto-pass despite a non-wait request: "
+                    f"side={side_index}, request={requests[side_index]!r}"
+                )
+            result.append(", ".join(submitted_parts))
         return result[0], result[1]
 
     def _single_order_to_choice(
@@ -484,7 +532,19 @@ class HeadlessShowdownProcess:
         if self.ended:
             raise RuntimeError("cannot advance a completed headless match")
         choices = (choice1, choice2)
+        seen_retries: set[tuple[str, str, str]] = set()
         for retry_index in range(5):
+            request_fingerprint = json.dumps(
+                self.state.get("requests"), sort_keys=True, separators=(",", ":")
+            )
+            retry_key = (request_fingerprint, choices[0], choices[1])
+            if retry_key in seen_retries:
+                raise RuntimeError(
+                    "Showdown rejected an unchanged choice for an unchanged request; "
+                    f"choices={choices!r}; retry={self.state.get('choice_retry')!r}; "
+                    f"requests={self.state.get('requests')!r}"
+                )
+            seen_retries.add(retry_key)
             self._send({"type": "choices", "choices": list(choices)})
             self._last_state = self._receive()
             self._apply_state(self._last_state)
