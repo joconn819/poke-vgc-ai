@@ -9295,5 +9295,23 @@
     "conclusion": "No supported gain; retain learned preview. Standalone Public Counterplay heuristic, not PPO; full information-boundary and roster-disjoint audit remain open.",
     "reproduction": "scripts/evaluate_round589_damage_preview.sh",
     "report": "round589_damage_preview.json"
+  },
+  "round591_local_server_smoke": {
+    "status": "complete; one full local-server match",
+    "format": "gen9championsdoubles2026mcclosed",
+    "bot_checkpoint": "Round430 policy + Round402 learned preview selector",
+    "result": "Won vs poke-env RandomPlayer in 9 turns; one match only, not strength evidence",
+    "decisions": 12,
+    "invalid_action_fallbacks": 0,
+    "decision_latency_ms": {
+      "mean": 19.9979,
+      "p50": 4.8748,
+      "p95": 86.604,
+      "max": 185.4637
+    },
+    "public_context_updates": 13,
+    "search_decisions": 0,
+    "reproduction": "scripts/evaluate_round591_local_server_smoke.sh",
+    "report": "round591_local_server_smoke.json"
   }
 }

@@ -1,0 +1,39 @@
+{
+  "round": 591,
+  "status": "Complete local-server integration smoke test",
+  "scope": "One full match; protocol and adapter validation only, not a strength benchmark",
+  "server": "Existing local Pokemon Showdown server at 127.0.0.1:8000",
+  "format": "gen9championsdoubles2026mcclosed",
+  "bot": {
+    "username": "CodexEvalBot",
+    "policy_checkpoint": "training/outputs/phase12_headless/round430_hard_opponent_auxiliary_ppo_20k_20261030/checkpoints/latest.pt",
+    "preview_checkpoint": "training/outputs/phase12_headless/round402_selector_currentdata_8ep_20261030/selector_candidate.pt",
+    "team_seed": 891001
+  },
+  "opponent": {
+    "username": "VGCTestOpp2",
+    "policy": "poke-env RandomPlayer",
+    "team_seed": 891101
+  },
+  "result": {
+    "battle_tag": "battle-gen9championsdoubles2026mcclosed-1632907",
+    "turns": 9,
+    "bot_won": true,
+    "challenger_won": false,
+    "complete": true
+  },
+  "runtime": {
+    "accepted_battles": 1,
+    "battle_decisions": 12,
+    "invalid_action_fallbacks": 0,
+    "decision_latency_ms_mean": 19.9979,
+    "decision_latency_ms_p50": 4.8748,
+    "decision_latency_ms_p95": 86.604,
+    "decision_latency_ms_max": 185.4637,
+    "public_context_updates": 13,
+    "search_decisions": 0
+  },
+  "reproduction": "scripts/evaluate_round591_local_server_smoke.sh",
+  "server_requirement": "Start the local Showdown server first; no public server was used.",
+  "limitation": "A single random-opponent game verifies complete protocol flow only. It provides no reliable estimate of policy strength, latency distribution, or information-boundary correctness."
+}
