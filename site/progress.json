@@ -1407,12 +1407,12 @@
     "round584_evaluation_games_per_second": "7.79 Round430 / 8.64 Round583 games/s, eight evaluator workers"
   },
   "latest_run": {
-    "round": 584,
-    "status": "Max Damage comparison complete; 70% target not achieved",
-    "summary": "On 512 matched team-pair clusters with two outcome repeats and both seats, Round583 scored 36.52% vs Max Damage and Round430 37.45%. Paired change \u22120.93 pp (95% cluster interval \u22123.03 to +1.12); no demonstrated improvement. Round583 trained mostly against privileged Counterplay.",
-    "games": "2,048 matches per policy; 512 team-pair clusters",
-    "epochs": "Previously trained checkpoint; no training in Round584",
-    "evaluation": "Zero errors and action corrections; fresh seeds, roster disjointness not established; full opponent boundary audit pending"
+    "round": 585,
+    "status": "20,000-game PPO run in progress",
+    "summary": "Training from Round430 against 50% Max Damage, 25% Public Counterplay and 25% historical PPO; privileged legacy Counterplay excluded. Information-boundary audit is incomplete. No strength claim until fresh matched evaluation.",
+    "games": "20,000 requested; in progress",
+    "epochs": "4 PPO passes planned",
+    "evaluation": "Pending; latest Round584: Round430 37.45%, Round583 36.52% vs Max Damage"
   },
   "method": "Native self-play PPO for in-battle decisions. Terminal win/loss remains the main objective; win-probability and hidden-set prediction are auxiliary tasks. Search comes after a stronger policy.",
   "jax_decision": "Round430 has a confirmed self-play head-to-head lift over Round424, but external-opponent screens remain inconclusive. Prioritize measured inference batching, observation throughput, and rollouts; keep equilibrium-oriented opponent coverage and defer a JAX/GPU engine rewrite until its end-to-end payoff is measured.",
@@ -9086,5 +9086,12 @@
       "starting_summary": "training/outputs/phase12_headless/round584_round583_maxdamage_512x2_20261113/round430/paired_summary.json"
     },
     "interpretation": "No evidence of improvement vs Round430; neither score meets the 70% target. Round583 trained mainly against privileged Counterplay. Information-boundary checks are incomplete."
+  },
+  "round585_training": {
+    "status": "in progress",
+    "starting_policy": "Round430",
+    "games_requested": 20000,
+    "opponent_mix": "50% Max Damage, 25% Public Counterplay, 25% historical policies",
+    "reproduction": "scripts/train_round585_public_pool_20k.sh"
   }
 }
