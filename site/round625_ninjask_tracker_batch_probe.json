@@ -1,0 +1,48 @@
+{
+  "title": "Round625: request-only player-view conversion in Ninjask Batch",
+  "status": "prototype throughput measured; current PPO not connected",
+  "backend": "Ninjask 0.4.0 Batch on CPU",
+  "format": "Local Champions Reg M-C doubles with open-team-sheet rule removed",
+  "host": {
+    "logical_cpu_count": 16,
+    "gpu_used": false
+  },
+  "method": {
+    "batch_games": 256,
+    "trials": 3,
+    "view_source": "incremental per-player Battle.log plus that player's current request",
+    "engine_projection_passed_to_tracker_or_policy": false,
+    "tracker_json_parsed_each_decision": true,
+    "random_legal_action_selection": true,
+    "reset_and_team_setup_in_timed_region": false,
+    "policy_inference_or_feature_mapping_included": false,
+    "ppo_update_included": false
+  },
+  "throughput": {
+    "games_per_second": {
+      "median": 114.42,
+      "minimum": 111.77,
+      "maximum": 118.41
+    },
+    "trials": [
+      {"seconds": 2.2374, "games_per_second": 114.42, "decision_rows": 6692, "tracker_views_parsed": 6692, "view_json_megabytes": 51.41},
+      {"seconds": 2.2904, "games_per_second": 111.77, "decision_rows": 6990, "tracker_views_parsed": 6990, "view_json_megabytes": 53.68},
+      {"seconds": 2.1621, "games_per_second": 118.41, "decision_rows": 6698, "tracker_views_parsed": 6698, "view_json_megabytes": 51.43}
+    ],
+    "numeric_encoding_matches": 20380,
+    "numeric_encoding_mismatches": 0,
+    "comparison_note": "The previous Ninjask numeric-only random loop measured 8171.5 games/s. Round602f full Showdown PPO rollouts measured 37.63 games/s, but these are not like-for-like: this probe excludes current-policy feature mapping, inference, PPO updates, and writes. The 3.0x ratio to that rollout rate is only an investigation signal, not a demonstrated speedup."
+  },
+  "interpretation": "Redacted log/request trackers retain the richer JSON view and match Batch OBS/IDS encodings exactly in 20,380 decision rows. Parsing that view reduced the random-policy Batch rate by about 98.6% relative to numeric-only Batch, but the remaining 114 games/s is still a promising ceiling for an eventual feature adapter. This is not current-policy training throughput and does not yet establish that the present model's full inputs can be reconstructed.",
+  "next": "Map the player Tracker.view into the existing model inputs without dropping volatile/history features; compare reconstructed features against local Showdown records; only then attach the checkpoint, measure complete CPU/CUDA rollout throughput, and decide whether a JAX simulator is justified.",
+  "reproduction": {
+    "script": "scripts/benchmark_ninjask_tracker_batch.py",
+    "command": "python scripts/benchmark_ninjask_tracker_batch.py --packed-teams PACKED_TEAMS.json --dex FORMAT_DEX.json --games 256 --trials 3 --seed 625100",
+    "dependency": "ninjask==0.4.0"
+  },
+  "limitations": [
+    "Random legal actions only; no PPO action scoring, current checkpoint, conversion to project features, data writing, or learner update.",
+    "CPU only; no GPU game simulation or model inference was measured.",
+    "This is a throughput probe, not a strength result, full mechanics certification, or direct comparison with Showdown training throughput."
+  ]
+}

@@ -11112,5 +11112,26 @@
       "roster": "Same positions 1-4 selected; hidden fields changed only on unselected positions 5-6"
     },
     "next": "Adapt Batch OBS/IDS and legal-action buffers to the current policy. Benchmark policy inference on CPU and CUDA, then measure end-to-end rollout throughput."
+  },
+  "round625_ninjask_tracker_batch_probe": {
+    "status": "request-only view throughput measured; PPO is not integrated",
+    "report": "round625_ninjask_tracker_batch_probe.json",
+    "cpu_logical_cores": 16,
+    "batch_size_games": 256,
+    "throughput_trials": 3,
+    "median_games_per_second": 114.42,
+    "min_games_per_second": 111.77,
+    "max_games_per_second": 118.41,
+    "request_only_tracker_views_parsed": 20380,
+    "numeric_encoding_mismatches": 0,
+    "includes": "Incremental side-redacted protocol logs and requests, Tracker.view JSON parsing, random legal action selection",
+    "excludes": [
+      "current-policy feature mapping",
+      "model inference",
+      "PPO updates",
+      "training writes",
+      "setup/reset"
+    ],
+    "next": "Map complete player Tracker.view state into the existing policy without dropping volatile/history features, compare with Showdown observations, then profile actual CPU/CUDA rollout inference."
   }
 }

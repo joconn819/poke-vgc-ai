@@ -18,11 +18,11 @@ Pokémon Showdown remains the correctness reference and required battle platform
     "evaluation": "Round601d fresh screen (128 team-pair clusters, one repeat, both seats): 39.5% vs Max Damage [32.4,46.9], 35.9% vs Public Counterplay [28.9,43.0], 93.4% vs Random [90.2,96.5], 51.6% vs Round102 [44.1,59.0], 44.5% vs Round585 [37.1,52.3], and 46.9% vs Round600h [39.5,54.3]. No protocol errors or action corrections. It remains below 50% against both simple heuristics and loses to its parent in point estimate; do not promote."
   },
   "speed": {
-    "games_per_second": "37.88 rollout / 28.54 input-to-checkpoint",
-    "context": "Round601d: 20,000 audited games, 8 CPU rollout workers; rollout 527.99 s; preflight 62.44 s; learner preparation/update/checkpoint 110.25 s; total 700.72 s. Peak aggregate worker RSS 9.96 GiB and mean CPU use 6.87 cores.",
-    "decision_latency": "Round601d per-episode wall profile varied by opponent: 134 ms on Max Damage teacher shards, 207 ms on Public Counterplay, and 182–213 ms on policy-pool shards.",
-    "current_bottleneck": "Rollout generation still dominates wall time. Within PPO-opponent shards, CPU policy action selection and inference plus observation encoding take about 183–213 ms per episode; Public Counterplay shards were the slowest at 4.78–4.79 games/s each. Max Damage teacher shards reached 7.35 games/s. The GPU is used for PPO optimization, while match rollouts run on CPU. PPO data preparation/optimization took 110.25 s, but the KL guard stopped after 360/1,208 planned optimizer steps (1.19 effective passes).",
-    "gpu_status": "CUDA PPO; headless simulation on CPU",
+    "games_per_second": "Ninjask CPU Batch with request-only Tracker.view conversion: 114.42 random games/s; latest full Showdown PPO rollout: 37.63 games/s (not like-for-like)",
+    "context": "Round625: 256-game batches, three trials, 16 logical CPU cores; 114.42 random games/s median with side-redacted Tracker.view conversion. Round602f: 20,000 Showdown PPO rollouts in 531.56 s (37.63 games/s); not a like-for-like comparison.",
+    "decision_latency": "Round602f samples per episode: 30 ms Showdown turn advancement, 115 ms policy action selection, 35 ms observation encoding, 31 ms model inference.",
+    "current_bottleneck": "The current PPO is not integrated with Ninjask Batch. Round625 parsed each request-only player Tracker.view at 114.42 random games/s, but still excludes project feature mapping, PPO inference, learner updates and data writes. Round602f full Showdown rollouts measured 37.63 games/s; this is not a like-for-like speedup. CPU feature/action processing and inference remain the likely rollout bottleneck; a JAX battle engine is not yet justified.",
+    "gpu_status": "The training runs used CUDA for PPO updates; rollouts ran on CPU. Current active Python environment has no Torch/JAX runtime, so this turn measured CPU only.",
     "latest_competitive_team_evaluation": {
       "workers": 4,
       "round598_games_per_second": {
@@ -45,7 +45,7 @@ Pokémon Showdown remains the correctness reference and required battle platform
     "evaluation": "Development screen, seed 601120. Team-cluster bootstrap 95% intervals are reported in site/round601d_fresh_league_screen.json. No promotion; Round430 remains the historical validated reference."
   },
   "method": "Masked PPO action logits are the default move policy. Terminal win/loss is the primary PPO objective; win probability and hidden-set prediction are auxiliary targets. Optional search remains disabled unless a broader held-out league supports it.",
-  "jax_decision": "Recent throughput gains came from policy/observation and rollout work; a GPU battle-engine rewrite remains gated on representative end-to-end profiling and parity against local Showdown.",
+  "jax_decision": "Round625 showed 114.42 random games/s with player-redacted Tracker.view reconstruction and JSON parsing on CPU, while numeric-only Batch measured 8,171.5 games/s. First connect lossless policy features and measure complete batched rollouts plus CPU/CUDA inference. A JAX GPU simulator remains gated on that end-to-end profile and exact mechanics parity with local Showdown.",
     "evaluation_note": "Round601d's raw PPO score remains below 50% against Max Damage and Public Counterplay. A fixed first-five Max Damage action overlay adds 11.9 pp on average across five non-random paired opponents [6.7,17.0], but this is an intervention, not learned behavior. Round601d is not promoted; its teacher-trained policy matched only 27.4% of teacher joint actions on the audited sample. The next controlled continuation increases teacher loss weight from 0.25 to 1.0 while holding the starting checkpoint and other settings fixed.",
   "round601d_training_status": {
     "round": 601,
@@ -20159,3 +20159,10 @@ and OUT set to the Round524 checkpoint and output paths.
 - Method correction: an earlier trial randomized team preview, occasionally selecting a mutated fifth/sixth member; those differences were legitimate because the changed Pokémon became battle participants. The formal audit now fixes the same first-four roster before comparing the player-facing buffers.
 - Reproducers: `scripts/benchmark_ninjask_batch_games.py` and `scripts/audit_ninjask_batch_privacy.py`; report: `site/round624_ninjask_batch_probe.json`.
 - Speed implication: CPU batched simulation is now a stronger near-term throughput lead than a custom JAX simulator. The current PPO model is not yet connected to Ninjask's OBS/IDS/action buffers; measure that conversion and batched CPU/CUDA inference before any million-game rollout. Keep the Showdown engine as the correctness oracle.
+
+### Round625: lossless player-view reconstruction throughput probe
+
+- Added a Batch bridge benchmark that reconstructs each acting player's tracker incrementally from that side's redacted protocol log and current request. It never passes the omniscient engine projection into the tracker. Every reconstructed `Tracker.encode()` and `encode_ids()` matched the corresponding Batch OBS/IDS buffers across 20,380 decision rows.
+- Parsing the richer JSON `Tracker.view()` and choosing random legal action rows ran at 111.77–118.41 complete games/s (median 114.42) on the 16-logical-core CPU. This is about 98.6% slower than numeric-only Batch's 8,171.5 games/s, but about 3.0× the Round602f Showdown PPO rollout rate of 37.63 games/s. That ratio is only an investigation signal: Round625 excludes current-model feature mapping, inference, PPO updates and data writes, so it is not an end-to-end speedup.
+- This narrows the next engineering task: map the safe `Tracker.view()` into all current policy features without losing volatile/history signals; check parity with local Showdown records; then benchmark the actual checkpoint with batched CPU/CUDA inference. The current environment has no installed Torch or JAX runtime, so no GPU model/simulator result is available from this probe. Do not start a JAX simulator rewrite until the integrated CPU pipeline is profiled.
+- Reproducer: `scripts/benchmark_ninjask_tracker_batch.py`; report: `site/round625_ninjask_tracker_batch_probe.json`.
