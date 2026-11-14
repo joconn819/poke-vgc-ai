@@ -1540,17 +1540,17 @@
     }
   },
   "latest_run": {
-    "round": 608,
-    "status": "Round608 one-turn search/device speed probe complete; strength unresolved",
-    "summary": "For two hidden-set worlds and a 6x12 action-response matrix (72 Showdown turn advances), three CPU seeds used 280\u2013447 ms inside search at 161\u2013257 transitions/s. CPU warm frontier setup/inference was ~63\u201366/~8\u201311 ms. CUDA was ~58/~4\u20135 ms warmed but did not reduce search time on the paired seed; cold GPU inference was 457 ms. No strength claim: this used an old Round37 evaluator and one chance sample. PPO remains baseline; one-turn search is an experimental complement.",
-    "games": "No full games; four opening-state probes, each 72 simulated turn advances",
-    "epochs": "No training",
-    "evaluation": "See site/round608_first_turn_search_speed_probe.json. Reproduce with scripts/benchmark_first_turn_search.py."
+    "round": 609,
+    "status": "current-policy state-value model trained; held-out evaluation complete",
+    "summary": "Trained from scratch on Round600h self-play player views with whole-roster-disjoint splits: 155,815 train / 27,298 calibration / 69,644 held-out states from 20,131 rosters. Held-out Brier 0.1685, log loss 0.5006, ECE 0.0136; opening Brier 0.2277 shows the early-game weakness. This estimates outcomes under the training mixture, not ideal-play value.",
+    "games": "20,000 source games; 40,000 player-view rows",
+    "epochs": "10 completed; epoch 5 selected",
+    "evaluation": "site/round609_value_and_round611_search.json"
   },
   "method": "Masked PPO action logits are the default move policy. Terminal win/loss is the primary PPO objective; win probability and hidden-set prediction are auxiliary targets. Optional search remains disabled unless a broader held-out league supports it.",
   "jax_decision": "Recent throughput gains came from policy/observation and rollout work; a GPU battle-engine rewrite remains gated on representative end-to-end profiling and parity against local Showdown.",
   "evaluation_note": "Round607 confirms transferable first-five action-intervention gains but leaves absolute hard-heuristic performance below 50%; Round608 speed-probed existing one-turn simultaneous-action search. CPU search simulation and feature construction dominate; GPU value inference warmed to 4\u20135 ms but did not improve end-to-end search on the paired seed. Its old Round37 value model and single chance sample cannot establish strength. Keep Round600h/PPO as incumbent and test a current-policy value/search complement under matched latency and held-out evaluation.",
-  "generated_at": "2026-11-14 16:30 UTC",
+  "generated_at": "2026-11-14",
   "round462_evaluation": {
     "status": "Round462 not promoted \u00b7 initial paired screen complete",
     "summary": "Round462 scored 44.82% against Max Damage [41.02%, 48.54%]. On the same teams and seeds, Round430 scored 44.73% and Round432 scored 44.43%; paired deltas were +0.10 pp [-1.37, +1.56] and +0.39 pp [-1.37, +2.05]. The update did not measurably change this weakness. Results against Public Counterplay and historical PPO are inconclusive; Random is an easy-baseline check.",
@@ -10955,5 +10955,37 @@
     "report": "round608_first_turn_search_speed_probe.json",
     "raw_output": "training/outputs/phase12_headless/round608_first_turn_device_probe_20261114/summary.json",
     "next": "Train/validate a state value on current-policy player-view self-play, then compare raw PPO to bounded one-turn equilibrium search at matched p95 latency on held-out teams with repeated/exact chance handling."
+  },
+  "round609_value_and_round611_search": {
+    "status": "evaluator trained; one-turn search not promoted",
+    "report": "round609_value_and_round611_search.json",
+    "round611_max_damage_delta_pp": -1.5625,
+    "round611_max_damage_ci95_pp": [
+      -5.2734,
+      1.9531
+    ],
+    "round611_public_counterplay_delta_pp": -0.5859,
+    "round611_public_counterplay_ci95_pp": [
+      -3.7109,
+      2.5391
+    ],
+    "round612_realized_joint_response_coverage": {
+      "max_damage": 0.531746,
+      "public_counterplay": 0.329365
+    },
+    "decision_latency_p95_ms": 1135,
+    "next": "Improve candidate response proposal quality and measure best-response coverage before increasing matrix width again.",
+    "round613_slot_coverage_joint_response_coverage": {
+      "max_damage": 0.535714,
+      "public_counterplay": 0.321429
+    },
+    "round614_eight_response_joint_response_coverage": {
+      "max_damage": 0.611111,
+      "public_counterplay": 0.456349
+    },
+    "round614_eight_response_matches_per_second": {
+      "max_damage": 1.2334,
+      "public_counterplay": 1.1474
+    }
   }
 }

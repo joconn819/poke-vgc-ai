@@ -1,0 +1,151 @@
+{
+  "round": 609,
+  "status": "current-policy evaluator trained and held-out; value-guided search failed confirmation",
+  "format": "gen9championsdoubles2026mcclosed",
+  "training_data": {
+    "source": "Round600h, 20,000 self-play games",
+    "player_view_rows": 40000,
+    "train_states": 155815,
+    "calibration_states": 27298,
+    "heldout_states": 69644,
+    "unique_rosters": 20131,
+    "split": "whole-roster-disjoint train/calibration/test; held-out search teams were separately sampled and had no roster overlap with training rosters",
+    "perspective_safety": "all source rows passed the player-view information-boundary validator"
+  },
+  "heldout_metrics": {
+    "accuracy": 0.7392166,
+    "brier_score": 0.1684555,
+    "log_loss": 0.5006056,
+    "expected_calibration_error": 0.0136121,
+    "opening_turn_1": {
+      "states": 12634,
+      "accuracy": 0.6134241,
+      "brier_score": 0.2277245
+    },
+    "turns_2_3": {
+      "states": 26751,
+      "brier_score": 0.18395
+    },
+    "turn_4_plus": {
+      "states": 30259,
+      "brier_score": 0.13001
+    },
+    "interpretation": "predictive for the Round600h training mixture, not an ideal-play or Nash value; opening estimates are materially weaker"
+  },
+  "round611_search_confirmation": {
+    "clusters_per_opponent": 256,
+    "seats": "both",
+    "matches_per_arm_per_opponent": 512,
+    "total_matches": 2048,
+    "teams": "512 evaluation rosters per opponent, all disjoint from Round600h training rosters",
+    "search": "one midgame decision, 2 sampled hidden worlds, 4 own candidates x 4 responses, 4 chance samples, equilibrium selection; policy-only control",
+    "max_damage": {
+      "raw_score": 0.44921875,
+      "search_score": 0.43359375,
+      "paired_delta_pp": -1.5625,
+      "paired_cluster_bootstrap_95_ci_pp": [
+        -5.2734,
+        1.9531
+      ]
+    },
+    "public_counterplay": {
+      "raw_score": 0.41796875,
+      "search_score": 0.412109375,
+      "paired_delta_pp": -0.5859,
+      "paired_cluster_bootstrap_95_ci_pp": [
+        -3.7109,
+        2.5391
+      ]
+    },
+    "decision_latency_ms": {
+      "adapter_median": 760,
+      "adapter_p95": 1135,
+      "search_process_median": 652,
+      "search_process_p95": 1029,
+      "value_inference_median": 13.7,
+      "value_inference_p95": 14.3
+    },
+    "fallbacks": "26/512 attempts per opponent safely fell back: 14 Illusion preview ambiguities and 12 publicly observed Transform states; no match failures",
+    "decision": "no supported gain; do not deploy or scale this search configuration"
+  },
+  "round612_response_coverage": {
+    "status": "diagnostic complete; 64 clusters per opponent, 256 matches per opponent",
+    "candidate_count": 4,
+    "hidden_worlds": 2,
+    "measure": "fraction of sampled worlds where the actual opponent joint action appeared in the four-action response shortlist",
+    "max_damage": {
+      "worlds": 126,
+      "exact_joint_coverage": 0.531746,
+      "slot_1_marginal_coverage": 0.761905,
+      "slot_2_marginal_coverage": 0.77381
+    },
+    "public_counterplay": {
+      "worlds": 126,
+      "exact_joint_coverage": 0.329365,
+      "slot_1_marginal_coverage": 0.702381,
+      "slot_2_marginal_coverage": 0.59127
+    },
+    "search_successes": {
+      "max_damage": 63,
+      "public_counterplay": 63
+    },
+    "interpretation": "shortlist misses the realized joint response in 46.8% of Max Damage worlds and 67.1% of Public Counterplay worlds; action-slot marginal coverage is higher but does not guarantee a represented joint counter"
+  },
+  "next": "Do not keep scaling the matrix blindly. Improve response proposal quality: evaluate policy-supported and strategically threatening joint actions, plus selective best-response generation to the current mixed strategy. Measure held-out joint-response coverage and exact/measured per-decision cost first; only then run a sufficiently powered paired match screen.",
+  "artifacts": {
+    "evaluator": "training/outputs/phase12_headless/round609_round600h_state_value_20k_20261114/evaluator/best.pt",
+    "evaluation": "training/outputs/phase12_headless/round609_round600h_state_value_20k_20261114/evaluator/heldout_evaluation.json",
+    "round611": "training/outputs/phase12_headless/round611_current_value_search_256x1_20261114/",
+    "round612": "training/outputs/phase12_headless/round612_response_coverage_64x1_20261114/",
+    "training_launcher": "scripts/train_round609_round600h_state_value_20k.sh",
+    "search_launcher": "scripts/evaluate_round610_current_value_search.sh"
+  },
+  "round613_same_team_selector_ablation": {
+    "design": "64 same seeded clusters per opponent, both seats, four response candidates; compared semantic vs slot_coverage selector",
+    "max_damage": {
+      "semantic_joint_coverage": 0.531746,
+      "slot_coverage_joint_coverage": 0.535714,
+      "slot_coverage_slot_marginals": [
+        0.876984,
+        0.837302
+      ],
+      "semantic_matches_per_second": 2.0254,
+      "slot_coverage_matches_per_second": 2.1188
+    },
+    "public_counterplay": {
+      "semantic_joint_coverage": 0.329365,
+      "slot_coverage_joint_coverage": 0.321429,
+      "slot_coverage_slot_marginals": [
+        0.853175,
+        0.742063
+      ],
+      "semantic_matches_per_second": 1.7998,
+      "slot_coverage_matches_per_second": 1.8826
+    },
+    "score_note": "Each side-swapped arm had only 64 clusters; raw/search score deltas are exploratory and too noisy for a strength claim.",
+    "conclusion": "Slot coverage increases marginal per-slot coverage but does not improve full joint-action coverage."
+  },
+  "round614_eight_response_ablation": {
+    "design": "64 same seeded clusters per opponent, both seats; 4 own candidates x 8 responses, 4 chance samples, 2 hidden worlds",
+    "max_damage": {
+      "four_response_joint_coverage": 0.531746,
+      "eight_response_joint_coverage": 0.611111,
+      "eight_response_slot_marginals": [
+        0.81746,
+        0.825397
+      ],
+      "matches_per_second": 1.2334
+    },
+    "public_counterplay": {
+      "four_response_joint_coverage": 0.329365,
+      "eight_response_joint_coverage": 0.456349,
+      "eight_response_slot_marginals": [
+        0.781746,
+        0.714286
+      ],
+      "matches_per_second": 1.1474
+    },
+    "score_note": "The 64-cluster score differences are exploratory and do not establish a strength change.",
+    "conclusion": "More response columns improve coverage, but exact joint coverage remains below 62% and throughput falls about 39\u201342% versus the four-response diagnostic. This cost is too high without demonstrated match gains."
+  }
+}
