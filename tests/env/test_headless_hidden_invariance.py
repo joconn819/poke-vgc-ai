@@ -36,8 +36,8 @@ def incumbent_model():
 @pytest.mark.parametrize("acting_side", [0, 1])
 @pytest.mark.parametrize(
     "decision_point,hidden_slot",
-    [("initial", 0), ("initial", 3), ("after_one_turn", 3)],
-    ids=["initial-active", "initial-bench", "later-bench"],
+    [("initial", 0), ("initial", 3), ("forced_switch", 4)],
+    ids=["initial-active", "initial-bench", "forced-switch-unselected"],
 )
 @pytest.mark.parametrize("hidden_field", ["moves_item", "ability"])
 def test_unrevealed_set_does_not_change_player_view_or_decision(
@@ -62,7 +62,7 @@ def test_unrevealed_set_does_not_change_player_view_or_decision(
     for world in (teams, alternative):
         with HeadlessShowdownProcess(*world, format_id=FORMAT, seed=32145, showdown_path=SHOWDOWN) as match:
             match.advance("team 1234", "team 1234")
-            if decision_point == "after_one_turn":
+            if decision_point == "forced_switch":
                 observation1, mask1, observation2, mask2 = match.observations()
                 if transition_choices is None:
                     actions = [
@@ -77,6 +77,10 @@ def test_unrevealed_set_does_not_change_player_view_or_decision(
                     ]
                     transition_choices = match.choices_from_native_actions(actions)
                 match.advance(*transition_choices)
+                assert any(
+                    request is not None and any(request.get("forceSwitch") or ())
+                    for request in match.state["requests"]
+                ), "fixture should reach a forced-switch request after one battle turn"
             observation1, mask1, observation2, mask2 = match.observations()
             observation, mask = ((observation1, mask1), (observation2, mask2))[acting_side]
             battle = match.battles[acting_side]

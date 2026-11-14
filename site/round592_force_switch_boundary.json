@@ -1,0 +1,28 @@
+{
+  "round": 592,
+  "status": "Controlled hidden-state invariance regression passed",
+  "scope": "Headless local Showdown; opening states plus a deterministic forced-switch request after one turn",
+  "format": "gen9championsdoubles2026mcclosed",
+  "cases": 12,
+  "opening_cases": 8,
+  "forced_switch_cases": 4,
+  "forced_switch_fixture": {
+    "setup": "Replay the same Public Counterplay choices in equivalent worlds after team preview; assert that at least one side has forceSwitch in the resulting request",
+    "hidden_roster_slot": 4,
+    "selection": "Unselected by team 1234, so its set remains unrevealed and cannot affect the battle transition",
+    "acting_sides_checked": ["p1", "p2"]
+  },
+  "hidden_variants": ["moves and item", "non-announcing ability"],
+  "compared": [
+    "player observation",
+    "legal action mask",
+    "Public Counterplay action",
+    "Max Damage action",
+    "encoded 73-feature public-mechanics context",
+    "Round430 policy action, log probability, and value"
+  ],
+  "result": "All 12 cases passed. The forced-switch side's decisions were invariant; the side marked waiting was checked using the no-choice sentinel.",
+  "runtime_seconds": 18.9,
+  "reproduction": "PYTHONPATH=. POKEMON_SHOWDOWN_PATH=/path/to/local/pokemon-showdown OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 venv/bin/python -m pytest tests/env/test_headless_hidden_invariance.py -q",
+  "limitations": "This covers one forced-switch fixture and controlled hidden-set perturbations. It does not certify live-server state parity, multi-turn reveal histories, every forced replacement type, or complete training-data provenance."
+}

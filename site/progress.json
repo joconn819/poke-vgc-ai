@@ -9313,5 +9313,15 @@
     "search_decisions": 0,
     "reproduction": "scripts/evaluate_round591_local_server_smoke.sh",
     "report": "round591_local_server_smoke.json"
+  },
+  "round592_force_switch_boundary": {
+    "status": "12/12 controlled hidden-set cases pass; forced switch explicitly asserted",
+    "opening_cases": 8,
+    "forced_switch_cases": 4,
+    "forced_switch_fixture": "After one turn, one side has a forced-switch request; hidden set is on an unselected roster member.",
+    "checks": "Both seats; observation, legal mask, Max Damage/Public Counterplay actions, 73-feature public context, Round430 action/log probability/value; waiting-side sentinel.",
+    "reproduction": "tests/env/test_headless_hidden_invariance.py",
+    "report": "round592_force_switch_boundary.json",
+    "limitations": "Controlled headless fixture only; live-server parity and full training/protocol boundary remain open."
   }
 }
