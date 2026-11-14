@@ -2,7 +2,7 @@
   "title": "Round622: Rust simulator parity and closed-sheet information boundary",
   "status": "sampled parity and move-secrecy checks passed; backend not integrated",
   "target_format": "gen9championsdoubles2026mcclosed",
-  "reference": "Local Pokémon Showdown",
+  "reference": "Local Pok\u00e9mon Showdown",
   "backend": {
     "name": "Ninjask",
     "version": "0.4.0",
@@ -15,7 +15,11 @@
     "state_or_log_divergences": 0,
     "seed_start": 720160,
     "choice_rejections_before_request_filter": 3,
-    "rejection_game_indices": [42, 112, 113],
+    "rejection_game_indices": [
+      42,
+      112,
+      113
+    ],
     "request_filter": [
       "Drop switch actions when the acting player's request marks that active slot trapped or maybeTrapped.",
       "Drop moves marked disabled in the acting player's request."
@@ -25,12 +29,23 @@
   },
   "hidden_information_audit": {
     "opponent_teams": 70,
-    "phase": "After team preview and lead selection, before turn-one choices.",
-    "mutated_hidden_attribute": "All opponent move sets.",
-    "unchanged_tracker_views": 70,
-    "result": "The acting player's Tracker.view was byte-for-byte identical before and after hidden opponent moves were changed.",
-    "critical_finding": "Battle.projection() contains opponent hidden moves, held items, abilities, and stats. Never pass this engine snapshot to a policy or player-view feature encoder. Use Tracker.view, the acting player's request, and the player's protocol stream.",
-    "limits": "This audit covers move secrecy at one phase only. It does not yet certify hidden items, abilities, stats, opponent-world assumptions, or every midgame reveal."
+    "preselection_phase": "Team preview, before lead selection.",
+    "preselection_mutations": [
+      "moves",
+      "held item",
+      "ability",
+      "nature",
+      "EVs"
+    ],
+    "preselection_views_unchanged": 70,
+    "postselection_phase": "After lead selection, before turn-one choices.",
+    "postselection_mutations": [
+      "moves"
+    ],
+    "postselection_views_unchanged": 70,
+    "result": "Tracker.view was byte-for-byte identical under hidden-set mutations in all tested views.",
+    "critical_finding": "Battle.projection() contains opponent hidden moves, held items, abilities, and stats. Never pass this engine snapshot to a policy or player-view feature encoder. Use Tracker.view, the acting player request, and the player-visible protocol stream.",
+    "limits": "These are smoke checks on a 70-team pool and two early-game phases; every hidden field, world-sampling path, and midgame reveal still requires audit."
   },
   "reproduction": {
     "parity_command": "python scripts/verify_ninjask_showdown_parity.py --teams TEAM_POOL.json --packed-teams PACKED_TEAMS.json --dex FORMAT_DEX.json --showdown /path/to/local/pokemon-showdown --games 256",
@@ -40,7 +55,8 @@
       "scripts/ninjask_showdown_bridge.js",
       "scripts/audit_ninjask_closed_view.py"
     ],
-    "dependencies": "ninjask==0.4.0; local Showdown Node dependencies for parity replay"
+    "dependencies": "ninjask==0.4.0; local Showdown Node dependencies for parity replay",
+    "privacy_result": "70/70 preselection hidden-set mutations and 70/70 postselection move mutations left Tracker.view byte-for-byte unchanged."
   },
   "next": "Audit other hidden fields and midgame reveals, then integrate an optional request-constrained Ninjask sampling backend behind Showdown differential checks. Reconsider JAX only after end-to-end CPU backend profiling."
 }

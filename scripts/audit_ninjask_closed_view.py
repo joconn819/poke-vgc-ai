@@ -15,21 +15,32 @@ import ninjask
 from ninjask.refsim import seed_from_int
 
 
-def mutate_moves(packed: str) -> str:
-    """Change all hidden move sets while preserving species, items, and abilities."""
+def mutate_hidden_fields(packed: str) -> str:
+    """Change hidden set fields while preserving public species and gender."""
     changed = []
     for pokemon in packed.split("]"):
         if not pokemon:
             continue
         fields = pokemon.split("|")
-        if len(fields) < 5:
+        if len(fields) < 7:
             raise ValueError("Unexpected packed team record")
+        fields[2] = "sitrusberry" if fields[2] != "sitrusberry" else "focussash"
+        fields[3] = "intimidate" if fields[3] != "intimidate" else "pressure"
         fields[4] = "protect,helpinghand,facade,rockslide"
+        fields[5] = "Timid" if fields[5] != "Timid" else "Adamant"
+        fields[6] = "0,32,0,0,0,32"
         changed.append("|".join(fields))
     return "]".join(changed)
 
 
-def player_view(dex: ninjask.Dex, own: str, foe: str, seed: int) -> str:
+def player_view(
+    dex: ninjask.Dex,
+    own: str,
+    foe: str,
+    seed: int,
+    *,
+    select_leads: bool,
+) -> str:
     battle = ninjask.Battle.reference(
         dex,
         own,
@@ -37,8 +48,9 @@ def player_view(dex: ninjask.Dex, own: str, foe: str, seed: int) -> str:
         seed_from_int(seed),
         names=("Observer", "Opponent"),
     )
-    battle.choose("p1", "team 1234")
-    battle.choose("p2", "team 1234")
+    if select_leads:
+        battle.choose("p1", "team 1234")
+        battle.choose("p2", "team 1234")
     tracker = ninjask.Tracker(dex, "p1")
     tracker.feed(battle.log("p1", 0))
     tracker.feed_request(battle.request("p1"))
@@ -59,29 +71,77 @@ def main() -> None:
         raise ValueError("Packed teams and source teams have different lengths")
     dex = ninjask.Dex.load(str(args.dex))
 
-    checked = 0
+    preselection_checked = 0
+    postselection_move_checked = 0
     for opponent_index, foe in enumerate(packed):
-        changed_foe = mutate_moves(foe)
+        changed_foe = mutate_hidden_fields(foe)
         if changed_foe == foe:
             raise AssertionError(f"Team {opponent_index} was not mutated")
-        original = player_view(dex, packed[0], foe, args.seed + opponent_index)
-        changed = player_view(dex, packed[0], changed_foe, args.seed + opponent_index)
+        original = player_view(
+            dex, packed[0], foe, args.seed + opponent_index, select_leads=False
+        )
+        changed = player_view(
+            dex, packed[0], changed_foe, args.seed + opponent_index, select_leads=False
+        )
         if original != changed:
             raise AssertionError(
-                f"Observer view changed when unrevealed moves changed, opponent team {opponent_index}"
+                f"Observer preview changed when hidden opponent sets changed, team {opponent_index}"
             )
-        checked += 1
+        preselection_checked += 1
+
+        # Items and abilities may activate and become public at battle start,
+        # so only mutate moves in the post-selection comparison.
+        move_variant = []
+        for pokemon in foe.split("]"):
+            if not pokemon:
+                continue
+            fields = pokemon.split("|")
+            fields[4] = "protect,helpinghand,facade,rockslide"
+            move_variant.append("|".join(fields))
+        original = player_view(
+            dex, packed[0], foe, args.seed + opponent_index, select_leads=True
+        )
+        changed = player_view(
+            dex,
+            packed[0],
+            "]".join(move_variant),
+            args.seed + opponent_index,
+            select_leads=True,
+        )
+        if original != changed:
+            raise AssertionError(
+                f"Observer battle view changed when opponent moves changed, team {opponent_index}"
+            )
+        postselection_move_checked += 1
+
+    sample_battle = ninjask.Battle.reference(
+        dex, packed[0], packed[1], seed_from_int(args.seed)
+    )
+    projection = json.loads(sample_battle.projection())
+    opponent_member = projection["sides"][1]["pokemon"][0]
+    projection_contains_hidden_sets = bool(
+        opponent_member.get("moves")
+        and opponent_member.get("item")
+        and opponent_member.get("ability")
+        and opponent_member.get("storedStats")
+    )
+    if not projection_contains_hidden_sets:
+        raise AssertionError("Expected full battle projection to contain hidden opponent set data")
 
     print(
         json.dumps(
             {
                 "status": "pass",
-                "phase": "after team preview and lead selection, before turn-one choices",
+                "preselection_phase": "team preview, before lead selection",
+                "preselection_opponent_teams_checked": preselection_checked,
+                "preselection_hidden_fields_mutated": ["item", "ability", "moves", "nature", "EVs"],
+                "postselection_phase": "after lead selection, before turn-one choices",
+                "postselection_opponent_teams_checked": postselection_move_checked,
+                "postselection_hidden_fields_mutated": ["opponent_moves"],
                 "observer_team_index": 0,
-                "opponent_teams_checked": checked,
-                "hidden_fields_mutated": ["opponent_moves"],
                 "public_species_and_selected_leads_preserved": True,
-                "scope_limit": "Smoke test for move secrecy in Tracker.view; not a full audit of every field, event, or hidden attribute.",
+                "projection_contains_hidden_opponent_sets": projection_contains_hidden_sets,
+                "scope_limit": "Tracker.view invariance smoke tests only; not every hidden field, event, or midgame observation is certified.",
             },
             indent=2,
         )

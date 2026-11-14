@@ -11064,11 +11064,13 @@
     "choice_constraint": "Use acting-player request flags trapped/maybeTrapped and disabled-move flags; raw Ninjask legal_choices can include server-rejected switches.",
     "closed_sheet_view": {
       "opponent_teams": 70,
-      "hidden_move_mutations": 70,
-      "tracker_views_unchanged": 70,
-      "scope": "Moves only, immediately after preview and lead selection."
+      "preselection_hidden_set_mutations": 70,
+      "preselection_views_unchanged": 70,
+      "postselection_hidden_move_mutations": 70,
+      "postselection_views_unchanged": 70,
+      "scope": "Hidden sets at preview; hidden moves after leads. Other midgame hidden-data cases remain."
     },
-    "critical_privacy_finding": "Battle.projection() contains opponent hidden moves/items/abilities/stats. Use Tracker.view and acting-player request; never pass projection to policy.",
+    "critical_privacy_finding": "Battle.projection() contains opponent hidden moves/items/abilities/stats. Never expose it to policy; use Tracker.view plus acting-player request and protocol stream.",
     "next": "Audit all hidden fields and midgame reveals; then prototype optional Rust search backend with request-constrained actions and differential checks before deciding whether JAX is needed."
   }
 }
