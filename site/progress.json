@@ -11083,5 +11083,34 @@
     "choice_rejections": 0,
     "mutated": "moves/items/abilities/nature/EVs of the unselected fifth and sixth Pok\u00e9mon; selected four fixed",
     "next": "Prototype optional Tracker.world Ninjask search backend using player-view-only inputs and request-constrained actions."
+  },
+  "round624_ninjask_batch_probe": {
+    "status": "probe passed; policy/training integration not started",
+    "report": "round624_ninjask_batch_probe.json",
+    "cpu_logical_cores": 16,
+    "batch_size_games": 256,
+    "throughput_trials": 5,
+    "median_games_per_second": 8171.5,
+    "min_games_per_second": 7338.0,
+    "max_games_per_second": 8612.5,
+    "includes": "Batch observe/step plus Python random legal-choice selection",
+    "excludes": [
+      "model inference",
+      "PPO updates",
+      "feature conversion",
+      "training writes",
+      "setup/reset"
+    ],
+    "batch_privacy": {
+      "paired_games": 140,
+      "teams": 70,
+      "matched_p1_observation_states": 842,
+      "matched_action_lists": 1681,
+      "decision_rows": 3362,
+      "matched_refusals": 2,
+      "divergences": 0,
+      "roster": "Same positions 1-4 selected; hidden fields changed only on unselected positions 5-6"
+    },
+    "next": "Adapt Batch OBS/IDS and legal-action buffers to the current policy. Benchmark policy inference on CPU and CUDA, then measure end-to-end rollout throughput."
   }
 }

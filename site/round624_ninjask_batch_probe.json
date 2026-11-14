@@ -1,0 +1,47 @@
+{
+  "title": "Round624: batched Rust rollout speed and player-view invariance",
+  "status": "CPU batch probe and sampled closed-sheet check passed; not integrated into PPO",
+  "backend": "Ninjask 0.4.0 Batch API on CPU",
+  "format": "Local Champions Reg M-C doubles with open-team-sheet rule removed",
+  "machine": {
+    "logical_cpu_count": 16,
+    "gpu_used_for_simulation": false
+  },
+  "throughput": {
+    "policy": "Uniform random legal choice index from each batched action row",
+    "batch_size_games": 256,
+    "trials": 5,
+    "games_per_second": {
+      "median": 8171.5,
+      "minimum": 7338.0,
+      "maximum": 8612.5
+    },
+    "mean_match_length_turns": "about 10.3",
+    "request_refusals": "2 to 8 per trial; the batch exposes the refreshed request and the loop continues",
+    "timed_work": "Ninjask Batch observe/step loop plus Python random legal-choice selection",
+    "excluded_work": ["battle setup/reset", "neural policy inference", "PPO updates", "feature conversion", "training data writes"],
+    "scope_limit": "This is not end-to-end training throughput, not an evaluation-strength result, and not a GPU simulator benchmark."
+  },
+  "batch_player_view_audit": {
+    "paired_battles": 140,
+    "opponent_teams": 70,
+    "turn_limit": 12,
+    "team_preview_choice": "Action row 0 selects positions 1-4 for both paired games; positions 5-6 remain unselected.",
+    "mutated_hidden_fields": ["moves", "item", "ability", "nature", "EVs"],
+    "mutated_opponent_members": "positions 5-6 only",
+    "p1_observation_states_matched": 842,
+    "paired_action_lists_matched": 1681,
+    "decision_rows_compared": 3362,
+    "paired_choice_refusals": 2,
+    "observation_or_action_divergences": 0,
+    "scope_limit": "Sampled trajectories with selected rosters fixed. P2's own observation may differ because it legitimately knows its own changed sets. This does not cover every mechanic or active hidden-set case."
+  },
+  "methodology_correction": "An initial probe randomized team preview and therefore sometimes selected one of the mutated members; those observation differences were legitimate. The audit now fixes the same first-four roster in both worlds before checking privacy.",
+  "reproduction": {
+    "throughput": "python scripts/benchmark_ninjask_batch_games.py --packed-teams PACKED_TEAMS.json --dex FORMAT_DEX.json --games 256 --trials 5",
+    "privacy": "python scripts/audit_ninjask_batch_privacy.py --packed-teams PACKED_TEAMS.json --dex FORMAT_DEX.json",
+    "scripts": ["scripts/benchmark_ninjask_batch_games.py", "scripts/audit_ninjask_batch_privacy.py"],
+    "dependency": "ninjask==0.4.0"
+  },
+  "next": "Connect Batch numeric player-view observations and legal-action rows to a batched version of the current policy, then measure CPU/GPU inference and end-to-end self-play throughput before starting a large PPO run."
+}
