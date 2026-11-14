@@ -14,7 +14,7 @@ Pokémon Showdown remains the correctness reference and required battle platform
     "ci95": "[35.16%, 44.53%]",
     "games": 512,
     "clusters": 256,
-    "status": "Round430 remains the PPO reference. Round597 confirms low scores on a small tournament-derived development set; no candidate promoted.",
+    "status": "Round430 remains the evaluated PPO reference; Round585 is a promising but unpromoted development candidate. Its absolute scores remain below 50% vs direct heuristics.",
     "evaluation": "Round580: Round579 scored 35.94% Max Damage (+0.78 pp [-2.73,+4.69]), 34.38% Counterplay (-0.78 [-4.69,+3.13]), and 33.59% Public Counterplay (-0.78 [-4.30,+2.73]); all below 50% and no paired improvement. It regressed vs Round524 by -3.91 pp [-7.81,-0.39]. Round430 remains reference only."
   },
   "speed": {
@@ -25,28 +25,28 @@ Pokémon Showdown remains the correctness reference and required battle platform
     "gpu_status": "CUDA PPO; headless simulation on CPU",
     "latest_competitive_team_evaluation": {
       "workers": 4,
-      "round597_round430_games_per_second": {
-        "vs_round430": 1.74,
-        "vs_public_counterplay": 1.5,
-        "vs_max_damage": 2.0,
-        "vs_random": 1.42
+      "round598_games_per_second": {
+        "round585_vs_max_damage": 1.46,
+        "round430_vs_max_damage": 1.3,
+        "round585_vs_public_counterplay": 2.64,
+        "round430_vs_public_counterplay": 1.37,
+        "round585_vs_round430": 0.68
       },
-      "public_counterplay_vs_max_damage_games_per_second": 11.36,
-      "context": "Round597, 140 matches per matchup cell on 35 competitive team-pair clusters; full end-to-end evaluation rates.",
-      "measured_bottleneck": "PPO-involving tournament matchups are 1.42–2.00 games/s with large long-game tails; seeded shuffled shards measured 1.49 games/s vs 1.42 in one rerun but the 91.9-second worker tail remained. Repeat the comparison before adopting; no component profile yet."
+      "context": "Round598, 140 complete matches per matchup, 35 competitive development team-pair clusters; 180-second per-match timeout. End-to-end evaluation rates, not training rollout speed.",
+      "measured_bottleneck": "Long match tails dominate PPO matchups: one head-to-head worker took 204 seconds while the other three took 12–24 seconds. Seeded equal shards do not balance extreme episode lengths. Measure smaller dynamic task scheduling before scaling evaluation; full per-component profile is unavailable."
     }
   },
   "latest_run": {
-    "round": 597,
-    "status": "Balanced competitive development meta-game complete; exploratory only",
-    "summary": "On 35 event-held-out tournament team-pair clusters, Round430 PPO scored 35.0% vs Max Damage and 34.3% vs Public Counterplay, with 140 matches per cell and wide cluster intervals. No policy promoted; reserved final events remain untouched.",
-    "games": "10 matchup cells × 140 games; 35 clusters, two repeats and both seats",
-    "epochs": "No training in this round",
-    "evaluation": "Balanced four-participant empirical scorecard; final event split not evaluated"
+    "round": 598,
+    "status": "Round585 candidate transfer evaluated; no promotion",
+    "summary": "Round585 scored 46.4% vs both Max Damage and Public Counterplay on 35 competitive development clusters. Paired gains over Round430 were +10.0 pp [0.7,20.0] vs Max Damage and +7.1 pp [0.0,15.7] vs Public Counterplay. It scored 52.9% [40,65] head-to-head; no robust edge established and both absolute heuristic results remain below 50%.",
+    "games": "5 cells × 140 games; 35 clusters, two repeats and both seats",
+    "epochs": "Round585: one PPO update from 20,000 games; no training in Round598",
+    "evaluation": "Competitive-team development transfer; reserved final event set untouched"
   },
   "method": "Masked PPO action logits are the default move policy. Terminal win/loss is the primary PPO objective; win probability and hidden-set prediction are auxiliary targets. Optional search remains disabled unless a broader held-out league supports it.",
   "jax_decision": "Recent throughput gains came from policy/observation and rollout work; a GPU battle-engine rewrite remains gated on representative end-to-end profiling and parity against local Showdown.",
-  "evaluation_note": "Round597 balanced team assignment and side swaps show Round430 at 35.0% vs Max Damage [23.6,47.1] and 34.3% vs Public Counterplay [22.1,47.1] on 35 competitive development clusters. These are exploratory low-sample development results; final events remain untouched. Restricted symmetric payoff matrices do not establish global Nash or optimal play.",
+  "evaluation_note": "Round598: Round585 showed a promising development-set gain over Round430 (+10.0 pp vs Max Damage [0.7,20.0], +7.1 pp vs Public Counterplay [0.0,15.7]) on 35 clusters. Absolute scores were 46.4% vs both direct heuristics; head-to-head was 52.9% [40,65]. This is not a promotion or an optimal-play claim. Final events are still untouched.",
   "round499_policy_ensemble": {
     "round": 499,
     "status": "Collection and held-out fits complete; selector not promoted",
@@ -653,6 +653,38 @@ Pokémon Showdown remains the correctness reference and required battle platform
       "note": "Trace logging enabled; not comparable with standard evaluation throughput."
     },
     "interpretation": "Small descriptive sample: losses show an early HP/alive-count deficit that widens by observed post-turn snapshot four. Not causal evidence. Match lengths include an 830-step win and 655-step loss; long-match tails are a profiling target."
+  },
+  "round598_round585_competitive_transfer": {
+    "round": 598,
+    "status": "Complete; Round585 retained as candidate, not promoted",
+    "development_clusters": 35,
+    "paired_deltas": {
+      "vs_max_damage": {
+        "difference": 0.1,
+        "ci95": [
+          0.0071428571,
+          0.2
+        ]
+      },
+      "vs_public_counterplay": {
+        "difference": 0.0714285714,
+        "ci95": [
+          0.0,
+          0.15
+        ]
+      }
+    },
+    "head_to_head_score": 0.5285714286,
+    "head_to_head_ci95": [
+      0.4,
+      0.65
+    ],
+    "absolute_round585_scores": {
+      "vs_max_damage": 0.4642857143,
+      "vs_public_counterplay": 0.4642857143
+    },
+    "final_events_touched": false,
+    "information_boundary": "Full audit remains open."
   }
 }
 DASHBOARD_PROGRESS_JSON -->
@@ -19816,3 +19848,29 @@ and OUT set to the Round524 checkpoint and output paths.
 - In losses, mean surviving roster count / normalized team HP was 5.35 / 4.93 after the first observed post-turn snapshot, compared with 5.86 / 5.22 in wins; by snapshot four, losses averaged 3.35 / 2.98 versus 4.14 / 3.87 in wins. This outcome-stratified pattern suggests the deficit appears early and widens, but it does not identify causal actions or rule out team matchup effects. Move/action frequencies are descriptive only. Next: evaluate legal first-turn action counterfactuals with repeated chance outcomes on matched states.
 - The traces include an 830-step win and a 655-step loss; typical median episode lengths were 7–8 trace steps. Trace logging ran at 1.19 games/s on four workers, slower than ordinary evaluation and not suitable as a speed benchmark. The long matches and worker scheduling tails merit profiling separately.
 - Summary: `site/round597_loss_trace_diagnostic.json`; local detailed trace analysis: `training/outputs/phase12_headless/round597_loss_trace_diagnostic_12x1_20261113/analysis.md`. Cached team rosters and raw traces stay local because redistribution terms are unconfirmed.
+
+
+### Round598: Round585 competitive-team transfer evaluation (complete; no promotion)
+
+- Compared the Round585 PPO candidate against Round430 on the Round595 event-held-out development split. Each arm used 35 fixed team-pair clusters, two repeats, both seat orders, alternated A/B team assignment, the same Round402 learned preview selector, and a 180-second per-match timeout. The reserved final event set remained untouched. All five matchup cells completed 140 games each with zero timeouts/errors and zero action adjustments.
+- Round585 scored 46.4% vs Max Damage (65–75; 95% team-cluster interval 34.3–58.6%) and 46.4% vs Public Counterplay (65–75; 32.9–59.3%). Round430 scored 36.4% vs Max Damage (51–89; 25.7–47.9%) and 39.3% vs Public Counterplay (55–85; 27.9–51.4%). Paired Round585-minus-Round430 gains were +10.0 pp vs Max Damage [0.7,20.0] (13 clusters better, 7 worse, 15 tied) and +7.1 pp vs Public Counterplay [0.0,15.0] (12 better, 4 worse, 19 tied). These are promising development-set transfer deltas, but only 35 clusters and not independent final evidence.
+- Round585 scored 52.9% head-to-head vs Round430 (74–66; cluster interval 40–65%), inconclusive. It still scored below 50% against both direct heuristics; keep Round430 as the reference and Round585 as an unpromoted candidate. Round585 was trained from Round430 with 20,000 games and one PPO update; its 25% policy pool, 50% Max Damage and 25% Public Counterplay opponent mix excluded legacy privileged Counterplay. Round586 previously found no supported Max Damage gain on generated teams, so the competitive-set result is promising but distribution-specific until independently confirmed.
+- Four-worker evaluation throughput was 1.30–2.64 games/s for PPO-vs-heuristic cells and 0.68 games/s head-to-head. In that head-to-head cell, one worker took 204 seconds while the other three took 12–24 seconds, confirming extreme long-match skew despite seeded pair shuffling. Treat throughput as workload-specific. The subsequent smaller-task dynamic queue probe was slower, so no scheduling speedup is established.
+- The Round598 scheduling probe compared the 206.13-second equal static-shard run (0.6792 games/s) with 12 dynamic tasks of three pair clusters each (234.27 seconds; 0.5976 games/s, about 12% slower). A single PPO-vs-PPO worker still took 228.48 seconds while most tasks took about 6 seconds. Do not replace static scheduling based on this result; long individual games dominate and the small-task scheduling overhead did not pay back.
+- Provenance correction: the Round595 split assigned five regional events to development, but the selected 70-team pool contains teams from only four: Louisville 29, Baltimore 26, Frankfurt 9, and Brisbane 6. Recife contributed zero selected top-256 teams. The separate 66-team final set still spans five event groups. The report now distinguishes assigned events from events represented in the selected team cohort.
+
+### Round599: Round585 final-event transfer check (complete; holdout consumed)
+
+- One-time final check on 33 reserved event-held-out team-pair clusters, two repeats, both seat orders, balanced A/B team roles, and the Round402 preview selector. All five arms completed 132 games with zero timeouts, protocol errors, or action adjustments. This 66-team holdout is now consumed and must not be used for training or further candidate selection.
+- Round585 scored 41.7% vs Max Damage (55–77; cluster interval 29.5–54.5%) and 34.1% vs Public Counterplay (45–87; 20.5–48.5%). Paired Round585-minus-Round430 was +2.3 pp vs Max Damage [−6.1,+11.4] and −7.6 pp vs Public Counterplay [−14.4,−1.5]. It scored 39.4% head-to-head (52–80; 25.0–54.5%). The development gain did not transfer; do not promote Round585. The Public Counterplay regression is supported on this one holdout, but all estimates still use only 33 clusters.
+- Evaluation throughput for Round585 ranged from 3.39 to 9.53 games/s across matchups (5.97 games/s head-to-head); these are workload-specific complete-match rates, not training throughput. The simultaneous Round598 dynamic-chunk probe was slower than static scheduling.
+- Future final evaluation requires a newly acquired event/team cohort. The Round599 final cohort is never eligible for training or model selection. Report and runner: `site/round599_round585_final_confirmation.json`, `scripts/evaluate_round599_round585_final_confirmation.sh`.
+
+### Round600: competitive-team training-distribution experiment (blocked before PPO update)
+
+- Controlled continuation from Round585: 20,000 episodes, unchanged PPO settings and opponent mixture, with only the team distribution changed to 50% of the Round595 development pool and 50% Showdown RandomChampions teams. The source pool is development-only: 70 unique six-Pokemon teams from four observed events; no Round599 final teams are included. The run uses CUDA for PPO and eight CPU rollout workers. Candidate promotion awaits training completion, strict rollout audit, and fresh development evaluation; final-set data are not reusable.
+- Round600g failed before its PPO update after 19,887 of 20,000 episodes completed (19,500 reported in complete shard summaries plus 387 in the failed shard). The deterministic failure is episode 17,887 (seed 231213600): the player's current request marks Starmie's Expanding Force enabled, but an active opposing Indeedee had used Imprison, so Showdown rejected the move as unavailable. Showdown intentionally hides this opponent-set-dependent disabled flag in the closed-team-sheet request. This is a protocol legality/retry gap, not evidence of a PPO update or policy-strength change. The run produced no candidate checkpoint; its partial rollout files are not a training dataset. The failed worker also caused a secondary BrokenPipe during cleanup.
+- Before resuming, implement a safe rejected-choice retry path. It must consume the updated player-only request after Showdown rejects the move, reselect a legal action for the rejected side, preserve the other side's pending choice, and store the action that actually executed (or exclude the corrected transition from PPO loss). Add a small deterministic Imprison reproduction and confirm no crash, no invalid-action label, and no information leakage. Then restart the full 20,000-episode run from the original Round585 checkpoint; do not splice partial Round600g episodes into a new run.
+- Round600g generated about 19,887 episodes in 3.6 GiB of rollout files before the failed shard halted the trainer. Complete-shard logs show 4.58–6.93 games/s per rollout shard, depending on opponent/workload. This partial run has no valid aggregate or end-to-end training speed because it did not finish or update PPO. The latest audited Round585 throughput remains 38.00 rollout games/s and 21.51 audited input-to-checkpoint games/s. Measure the full corrected run end-to-end before setting a new speed baseline.
+- The state-value + joint-action search idea remains a later complement to PPO: train the value head from policy-generated terminal outcomes, then compare policy-only against one-turn simultaneous-action equilibrium search at matched decision latency. PPO is the current policy-learning backbone; a value head does not by itself make play optimal, and search quality depends on value calibration, legal action coverage, chance modeling, and opponent-response coverage. Do not replace PPO or restart broad search until the agent is substantially stronger and a matched-budget experiment shows improvement.
+- Report: `site/round598_round585_competitive_transfer.json`; runner: `scripts/evaluate_round598_round585_competitive_transfer.sh`; analyzer: `scripts/summarize_round598_competitive_transfer.py`; raw results remain local under `training/outputs/phase12_headless/round598_round585_competitive_transfer_35x2_20261113/`.
