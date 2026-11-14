@@ -9323,5 +9323,41 @@
     "reproduction": "tests/env/test_headless_hidden_invariance.py",
     "report": "round592_force_switch_boundary.json",
     "limitations": "Controlled headless fixture only; live-server parity and full training/protocol boundary remain open."
+  },
+  "round593_roster_disjoint_development": {
+    "status": "Development evaluation complete; final split remains untouched",
+    "report": "round593_roster_disjoint_development.json",
+    "roster_audit": {
+      "unique_training_species_rosters": 99998,
+      "family_rule": "at most 3 shared species with any training, prior evaluation, or reserved roster",
+      "development_clusters": 256,
+      "final_clusters_reserved": 1024
+    },
+    "arms": {
+      "round430_ppo": {
+        "score": 0.3798828125,
+        "team_cluster_bootstrap_95_ci": [
+          0.3329833984375,
+          0.4267578125
+        ],
+        "games_per_second": 10.045948291323487
+      },
+      "public_counterplay_round588_parameters": {
+        "score": 0.5078125,
+        "team_cluster_bootstrap_95_ci": [
+          0.458984375,
+          0.5556640625
+        ],
+        "games_per_second": 24.823211736799852,
+        "parameters": {
+          "incoming_threat_weight": 1.5,
+          "ko_bonus": 0.35
+        }
+      }
+    },
+    "games_per_arm": 1024,
+    "errors_or_timeouts": 0,
+    "action_adjustments": 0,
+    "interpretation": "The historical ~69% Public Counterplay result did not transfer to this roster-family-filtered generated-team stress test."
   }
 }

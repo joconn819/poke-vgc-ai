@@ -1,0 +1,71 @@
+{
+  "round": 593,
+  "status": "development evaluation complete; final split remains untouched",
+  "format": "gen9championsdoubles2026mcclosed",
+  "showdown_revision": "bebf328c69f5d065b4c0f738197e146cab699771",
+  "roster_audit": {
+    "training_roster_sources": {
+      "round430_ppo": 40000,
+      "round585_ppo": 40000,
+      "round401_preview_selector": 20000
+    },
+    "unique_training_species_rosters": 99998,
+    "prior_evaluations_checked": ["round586", "round587", "round588", "round589"],
+    "exact_species_roster_overlap": 0,
+    "family_filter": "Every accepted development/final roster shares at most 3 of 6 species with every training roster, prior evaluation roster, and already-reserved roster.",
+    "threshold_caveat": "A 4/6 shared-species threshold is a practical family proxy, not a universal definition of competitive team family.",
+    "development_clusters": 256,
+    "final_clusters_reserved": 1024,
+    "split_verification": "verified; source manifest hash, six-species legality shape, development/final disjointness and Showdown revision checked"
+  },
+  "evaluation": {
+    "paired_design": "256 fixed team-pair clusters, two outcome repeats per cluster, both player seats; all arms share teams, preview selector and seed schedule",
+    "preview_selector": "Round402 learned team selector for both players",
+    "opponent": "Max Damage",
+    "games_per_arm": 1024,
+    "errors_or_timeouts": 0,
+    "action_adjustments": 0,
+    "arms": {
+      "round430_ppo": {
+        "checkpoint": "training/outputs/phase12_headless/round430_hard_opponent_auxiliary_ppo_20k_20261030/checkpoints/latest.pt",
+        "public_counterplay_parameters": null,
+        "score": 0.3798828125,
+        "team_cluster_bootstrap_95_ci": [0.3329833984375, 0.4267578125],
+        "games_per_second": 10.045948291323487
+      },
+      "public_counterplay_default_parameters": {
+        "incoming_threat_weight": 1.0,
+        "ko_bonus": 0.7,
+        "score": 0.51953125,
+        "team_cluster_bootstrap_95_ci": [0.4697265625, 0.568359375],
+        "paired_delta_vs_round430": 0.1328125,
+        "paired_delta_team_cluster_bootstrap_95_ci": [0.06640625, 0.19921875],
+        "games_per_second": 24.991412951118523
+      },
+      "public_counterplay_round588_parameters": {
+        "incoming_threat_weight": 1.5,
+        "ko_bonus": 0.35,
+        "score": 0.5078125,
+        "team_cluster_bootstrap_95_ci": [0.458984375, 0.5556640625],
+        "paired_delta_vs_round430": 0.099609375,
+        "paired_delta_team_cluster_bootstrap_95_ci": [0.03515625, 0.1640625],
+        "games_per_second": 24.823211736799852
+      }
+    },
+    "interpretation": "Round430 is weak on this family-disjoint development sample. Public Counterplay beats it by a statistically positive paired margin, but scores only about 51% against Max Damage here. The previous 69% result did not transfer to this deliberately filtered roster distribution; this is a distribution stress test, not a final benchmark. No policy improvement or optimality claim follows."
+  },
+  "reproduction": {
+    "roster_audit": "venv/bin/python scripts/audit_roster_disjointness.py --help",
+    "split_verification": "venv/bin/python scripts/verify_roster_disjoint_team_splits.py --help",
+    "round430": "PYTHONPATH=. venv/bin/python scripts/evaluate_counterplay_paired.py --player policy --checkpoint training/outputs/phase12_headless/round430_hard_opponent_auxiliary_ppo_20k_20261030/checkpoints/latest.pt --pairs 256 --repeats 2 --workers 8 --team-selection-checkpoint training/outputs/phase12_headless/round402_selector_currentdata_8ep_20261030/selector_candidate.pt --player-preview-strategy learned --opponent-preview-strategy learned --team-pair-manifest training/outputs/phase12_headless/round593_roster_audit_20261113/disjoint_team_splits.json --team-pair-split development --seed 231915093",
+    "public_counterplay": "Use the same arguments with --player public_counterplay and omit --checkpoint; compare default parameters and --counterplay-incoming-weight 1.5 --counterplay-ko-bonus 0.35 separately."
+  },
+  "artifacts": {
+    "team_split_manifest": "training/outputs/phase12_headless/round593_roster_audit_20261113/disjoint_team_splits.json",
+    "training_roster_manifest": "training/outputs/phase12_headless/round593_roster_audit_20261113/training_roster_manifest.json",
+    "roster_overlap_report": "training/outputs/phase12_headless/round593_roster_audit_20261113/roster_overlap.json",
+    "round430_summary": "training/outputs/phase12_headless/round593_roster_audit_20261113/round430_development_256x2/paired_summary.json",
+    "public_counterplay_default_summary": "training/outputs/phase12_headless/round593_roster_audit_20261113/public_counterplay_development_256x2/paired_summary.json",
+    "public_counterplay_round588_summary": "training/outputs/phase12_headless/round593_roster_audit_20261113/public_counterplay_135_035_development_256x2/paired_summary.json"
+  }
+}

@@ -365,6 +365,16 @@ def run_worker(args: argparse.Namespace, worker: int, pair_ids: list[int]) -> di
         )
         selector.load_state_dict(selector_state["model_state_dict"])
         selector.eval()
+    manifest_pairs = None
+    if args.team_pair_manifest is not None:
+        manifest = json.loads(args.team_pair_manifest.read_text(encoding="utf-8"))
+        if manifest.get("format") != args.battle_format:
+            raise ValueError("team-pair manifest format does not match evaluator format")
+        manifest_pairs = manifest.get("splits", {}).get(args.team_pair_split)
+        if not isinstance(manifest_pairs, list):
+            raise ValueError(f"team-pair manifest lacks split {args.team_pair_split!r}")
+        if pair_ids and max(pair_ids) >= len(manifest_pairs):
+            raise ValueError("requested pair index is outside the team-pair manifest")
 
     def choose_preview(
         own_team: list[dict], opponent_team: list[dict], rng_seed: int,
@@ -407,16 +417,23 @@ def run_worker(args: argparse.Namespace, worker: int, pair_ids: list[int]) -> di
     started = time.perf_counter()
     for pair_index in pair_ids:
         team_seed = args.seed + pair_index * 2
-        team_a = generate_showdown_champions_team_data(team_seed, args.battle_format)
-        team_b = generate_showdown_champions_team_data(team_seed + 1, args.battle_format)
-        retries = 0
-        while team_a == team_b and retries < 10:
-            retries += 1
-            team_b = generate_showdown_champions_team_data(
-                team_seed + 1 + retries * 100_000, args.battle_format
-            )
-        if team_a == team_b:
-            raise RuntimeError(f"could not generate distinct teams for pair {pair_index}")
+        manifest_pair = manifest_pairs[pair_index] if manifest_pairs is not None else None
+        if manifest_pair is not None:
+            team_a = manifest_pair["team_a"]
+            team_b = manifest_pair["team_b"]
+            generator_seeds = [manifest_pair.get("team_seed_a"), manifest_pair.get("team_seed_b")]
+        else:
+            team_a = generate_showdown_champions_team_data(team_seed, args.battle_format)
+            team_b = generate_showdown_champions_team_data(team_seed + 1, args.battle_format)
+            retries = 0
+            while team_a == team_b and retries < 10:
+                retries += 1
+                team_b = generate_showdown_champions_team_data(
+                    team_seed + 1 + retries * 100_000, args.battle_format
+                )
+            if team_a == team_b:
+                raise RuntimeError(f"could not generate distinct teams for pair {pair_index}")
+            generator_seeds = [team_seed, team_seed + 1 + retries * 100_000]
         team_a_path = worker_dir / f"pair_{pair_index:04d}_A.json"
         team_b_path = worker_dir / f"pair_{pair_index:04d}_B.json"
         save_team(team_a_path, team_a)
@@ -458,7 +475,7 @@ def run_worker(args: argparse.Namespace, worker: int, pair_ids: list[int]) -> di
                 "trace_decisions": args.trace_decisions,
             }
             leg1 = evaluate(
-                checkpoint=None,
+                checkpoint=args.checkpoint if args.player == "policy" else None,
                 output=leg1_path,
                 seed=args.seed + case_index,
                 opponent="max_damage",
@@ -467,6 +484,7 @@ def run_worker(args: argparse.Namespace, worker: int, pair_ids: list[int]) -> di
                 team2_json=team_b_path,
                 preview_action_player1=preview_a,
                 preview_action_player2=preview_b,
+                team_selection_checkpoint=args.team_selection_checkpoint,
                 **common,
             )
             # Swap teams and preview choices. Player 1 now uses max-damage;
@@ -481,6 +499,8 @@ def run_worker(args: argparse.Namespace, worker: int, pair_ids: list[int]) -> di
                 team2_json=team_a_path,
                 preview_action_player1=preview_b,
                 preview_action_player2=preview_a,
+                opponent_checkpoint=args.checkpoint if args.player == "policy" else None,
+                team_selection_checkpoint=args.team_selection_checkpoint,
                 **common,
             )
             result1 = json.loads(leg1_path.read_text(encoding="utf-8").splitlines()[0])["result"]
@@ -494,6 +514,8 @@ def run_worker(args: argparse.Namespace, worker: int, pair_ids: list[int]) -> di
                 "pair": pair_index,
                 "repeat": repeat,
                 "team_seed": team_seed,
+                "team_generator_seeds": generator_seeds,
+                "team_manifest_split": args.team_pair_split if manifest_pair is not None else None,
                 "team_a": [p.get("speciesId", p.get("species", "")) for p in team_a],
                 "team_b": [p.get("speciesId", p.get("species", "")) for p in team_b],
                 "preview_a": preview_a,
@@ -534,6 +556,7 @@ def run_worker_process(args: argparse.Namespace, worker: int, pair_ids: list[int
         "--repeats", str(args.repeats),
         "--episode-timeout", str(args.episode_timeout),
         "--battle-format", args.battle_format,
+        "--player", args.player,
         "--preview-strategy", args.preview_strategy,
         "--player-preview-strategy", args.player_preview_strategy,
         "--opponent-preview-strategy", args.opponent_preview_strategy,
@@ -550,6 +573,13 @@ def run_worker_process(args: argparse.Namespace, worker: int, pair_ids: list[int
         "--counterplay-threat-aggregation", args.counterplay_threat_aggregation,
         "--output-dir", str(args.output_dir),
     ]
+    if args.checkpoint is not None:
+        command.extend(["--checkpoint", str(args.checkpoint)])
+    if args.team_pair_manifest is not None:
+        command.extend([
+            "--team-pair-manifest", str(args.team_pair_manifest),
+            "--team-pair-split", args.team_pair_split,
+        ])
     if args.trace_decisions:
         command.append("--trace-decisions")
     if args.public_counterplay_support_actions:
@@ -594,7 +624,8 @@ def main() -> None:
     parser.add_argument("--seed", type=int, default=20261100)
     parser.add_argument("--episode-timeout", type=int, default=60)
     parser.add_argument("--battle-format", default="gen9championsdoubles2026mcclosed")
-    parser.add_argument("--player", choices=("counterplay", "public_counterplay"), default="counterplay")
+    parser.add_argument("--player", choices=("counterplay", "public_counterplay", "policy"), default="counterplay")
+    parser.add_argument("--checkpoint", type=Path, help="in-battle policy checkpoint when --player=policy")
     parser.add_argument("--counterplay-incoming-weight", type=float, default=1.0)
     parser.add_argument("--counterplay-ko-bonus", type=float, default=0.7)
     parser.add_argument("--counterplay-setup-bonus", type=float, default=0.0)
@@ -653,9 +684,29 @@ def main() -> None:
     parser.add_argument("--output-dir", type=Path, required=True)
     parser.add_argument("--worker-id", type=int)
     parser.add_argument("--pair-ids")
+    parser.add_argument("--team-pair-manifest", type=Path)
+    parser.add_argument(
+        "--team-pair-split", choices=("development", "final"), default="development"
+    )
     args = parser.parse_args()
     if (args.player_preview_strategy == "learned" or args.opponent_preview_strategy == "learned") and args.team_selection_checkpoint is None:
         parser.error("learned preview requires --team-selection-checkpoint")
+    if args.team_pair_manifest is not None:
+        try:
+            manifest = json.loads(args.team_pair_manifest.read_text(encoding="utf-8"))
+            split_pairs = manifest["splits"][args.team_pair_split]
+        except (OSError, json.JSONDecodeError, KeyError, TypeError) as error:
+            parser.error(f"could not read requested team-pair manifest split: {error}")
+        if manifest.get("format") != args.battle_format:
+            parser.error("team-pair manifest format does not match --battle-format")
+        if args.pairs > len(split_pairs):
+            parser.error(
+                f"requested {args.pairs} pairs but split contains {len(split_pairs)}"
+            )
+    if args.player == "policy" and args.checkpoint is None:
+        parser.error("--checkpoint is required when --player=policy")
+    if args.player != "policy" and args.checkpoint is not None:
+        parser.error("--checkpoint is only valid with --player=policy")
     if args.worker_id is not None:
         ids = [int(value) for value in (args.pair_ids or "").split(",") if value]
         result = run_worker(args, args.worker_id, ids)
@@ -738,8 +789,15 @@ def main() -> None:
         "counterplay_threat_aggregation": args.counterplay_threat_aggregation,
         "trace_decisions": args.trace_decisions,
         "team_selection_checkpoint": str(args.team_selection_checkpoint) if args.team_selection_checkpoint else None,
+        "team_pair_manifest": str(args.team_pair_manifest) if args.team_pair_manifest else None,
+        "team_pair_split": args.team_pair_split if args.team_pair_manifest else None,
         "counterplay_support_actions": args.player == "counterplay",
-        "information_boundary": "public_only" if args.player == "public_counterplay" else "privileged_opponent_battle",
+        "checkpoint": str(args.checkpoint) if args.checkpoint else None,
+        "information_boundary": (
+            "public_only" if args.player == "public_counterplay" else
+            "policy_player_view (full audit pending)" if args.player == "policy" else
+            "privileged_opponent_battle"
+        ),
         "pairs_requested": args.pairs,
         "outcome_repeats_per_pair": args.repeats,
         "pairs_completed": len(complete),
